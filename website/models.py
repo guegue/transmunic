@@ -47,6 +47,7 @@ class Gastos(models.Model):
     area = models.ForeignKey(Area, related_name="area_gasto")
     financiamieno = models.ForeignKey(FuenteFmto, related_name="fmto_gasto")
     tipo_gasto = models.ForeignKey(TipoGastos, related_name="tipo_gasto")
+    fecha = models.DateField(null=True)
 
     class Meta:
         verbose_name_plural = 'Gastos'
@@ -56,8 +57,14 @@ class Inversion(models.Model):
     area = models.ForeignKey(Area, related_name="area_inversion")
     categoria_inv = models.ForeignKey(CategoriaInversion, related_name="categoria")
     financiamiento = models.ForeignKey(FuenteFmto, related_name="fmto_inv")
-
+    fecha = models.DateField(null=True)
 
     class Meta:
         verbose_name_plural = 'Inversion'
+
+class Presupuesto(models.Model):
+    municipio = models.ForeignKey(Municipio, related_name="municipio_presupuesto")
+    monto = models.IntegerField()
+    fecha = models.DateField()
+    descripcon = models.TextField(blank=True,null=True)
 
