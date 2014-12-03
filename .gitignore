@@ -17,6 +17,8 @@ parts
 media/uploads
 tmp
 .DS_Store
++*/migrations/*
+
 
 #other ignored files
 
