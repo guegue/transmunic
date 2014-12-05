@@ -1,0 +1,43 @@
+#typical django gitignore
+
+*~
+*.orig
+*.pyc
+*.log
+*.pot
+*.rej
+.installed.cfg
+__minitage__*
+bin/*
+develop-eggs
+downloads
+eggs
+log
+parts
+media/uploads
+tmp
+.DS_Store
++*/migrations/*
+
+
+#other ignored files
+
+*.swp
+*.sql
+*.db
+*.sqlite
+
+# archivos a ignorar para este proyecto
+media/
+static/
+transmunic/static/
+local_settings.py
+
+# archivos a ingnorar de varios IDE
+.project
+.pydevproject
+.*.swo
+.*.swp
+
+.idea
+env
