@@ -26,6 +26,7 @@ tmp
 *.sql
 *.db
 *.sqlite
+wsgi.py
 
 # archivos a ignorar para este proyecto
 media/
