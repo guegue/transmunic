@@ -132,7 +132,6 @@ class Ingreso(models.Model):
     def __unicode__(self):
         return self.anio
 
-#detalles de los ingresos y las modificaciones a este
 class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso)
     fecha = models.DateField(null=False)
@@ -145,7 +144,6 @@ class IngresoDetalle(models.Model):
     def __unicode__(self):
         return self.fecha
 
-#Gastos e inversiones del municipio
 class Gasto(models.Model):
     GASTO = 0
     INVERSION = 1

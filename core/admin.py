@@ -5,6 +5,7 @@ from core.models import *
 class SubSubTipoIngresoInline(admin.TabularInline):
     model = SubSubTipoIngreso
     extra = 5
+
 class SubTipoIngresoAdmin(admin.ModelAdmin):
     inlines = [SubSubTipoIngresoInline]
 
