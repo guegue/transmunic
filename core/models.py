@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from lugar.models import *
 from autoslug import AutoSlugField
+from smart_selects.db_fields import ChainedForeignKey
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
