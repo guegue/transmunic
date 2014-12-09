@@ -8,6 +8,8 @@ class SubSubTipoIngresoInline(admin.TabularInline):
 
 class SubTipoIngresoAdmin(admin.ModelAdmin):
     inlines = [SubSubTipoIngresoInline]
+    list_display = ('nombre','tipoingreso','slug')
+    list_filter = ['tipoingreso']
 
 class GastoFuenteFmtoInline(admin.StackedInline):
     model = GastoFuenteFmto
