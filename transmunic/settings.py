@@ -68,13 +68,7 @@ ROOT_URLCONF = 'transmunic.urls'
 
 WSGI_APPLICATION = 'transmunic.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///transmunic.sqlite')
-}
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -94,8 +88,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-
 MEDIA_URL = '/media/'
+SITE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(SITE_ROOT, 'media'))
+STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(SITE_ROOT, 'static'))
 
 try:
    LOCAL_SETTINGS
