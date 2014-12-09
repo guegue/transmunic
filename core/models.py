@@ -65,7 +65,7 @@ class SubTipoIngreso(models.Model):
     tipoingreso = models.ForeignKey(TipoIngreso, related_name='tipo')
     nombre = models.CharField(max_length=250)
     slug = models.SlugField(max_length=80)
- 
+
     class Meta:
         verbose_name_plural = 'Subtipos de ingresos'
         ordering = ['nombre']
