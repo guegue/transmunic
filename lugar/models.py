@@ -1,4 +1,5 @@
 from django.db import models
+from autoslug import AutoSlugField
 
 # Create your models here
 #la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
