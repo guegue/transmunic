@@ -4,4 +4,4 @@ dj-database-url==0.2.2
 gunicorn==19.1
 Fabric==1.6.1
 django-autoslug
-git+https://github.com/digi604/django-smart-selects.git@f5f7b826a543da2e6eeac37729edff9b7b8e8a64
+git+https://github.com/digi604/django-smart-selects
