@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.db import models
 from lugar.models import *
+from autoslug import AutoSlugField
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
 
     class Meta:
         verbose_name_plural = 'Categorias de inversion'
@@ -14,7 +15,7 @@ class CatInversion(models.Model):
  
 class TipoGasto(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
  
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
@@ -25,7 +26,7 @@ class TipoGasto(models.Model):
 class SubTipoGasto(models.Model):
     tipogasto = models.ForeignKey(TipoGasto, related_name='tipo')
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
  
     class Meta:
         verbose_name_plural = 'Sub-Tipo de gastos'
@@ -35,7 +36,7 @@ class SubTipoGasto(models.Model):
 
 class OrigenRecurso(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
 
     class Meta:
         verbose_name_plural = 'Origen  de los recursos'
@@ -51,7 +52,7 @@ class TipoIngreso(models.Model):
         (CAPITAL, 'Ingreso Capital'),
     )
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=50)
+    slug = AutoSlugField(populate_from='nombre')
     #si no es ingreso corriente, entonces es de Capital
     clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0)
  
@@ -64,7 +65,7 @@ class TipoIngreso(models.Model):
 class SubTipoIngreso(models.Model):
     tipoingreso = models.ForeignKey(TipoIngreso, related_name='tipo')
     nombre = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
 
     class Meta:
         verbose_name_plural = 'Subtipos de ingresos'
@@ -75,7 +76,7 @@ class SubTipoIngreso(models.Model):
 class SubSubTipoIngreso(models.Model):
     subtipoingreso = models.ForeignKey(SubTipoIngreso, related_name='tipo')
     nombre = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
  
     class Meta:
         verbose_name_plural = 'Sub-subtipos de ingresos'
@@ -85,7 +86,7 @@ class SubSubTipoIngreso(models.Model):
 
 class FuenteFmto(models.Model):
     nombre = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
 
     class Meta:
         verbose_name_plural = 'Fuentes de financiamiento'
@@ -112,7 +113,7 @@ class Donante(models.Model):
 
 class TipoProyecto(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=80)
+    slug = AutoSlugField(populate_from='nombre')
  
     class Meta:
         verbose_name_plural = 'Tipo de proyectos'
