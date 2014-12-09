@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'lugar',
     'core',
     'website',
+    'smart_selects',
 )
 
 MIDDLEWARE_CLASSES = (
