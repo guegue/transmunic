@@ -162,9 +162,9 @@ class Gasto(models.Model):
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     comarca = ChainedForeignKey(Comarca,chained_field='municipio',chained_model_field='municipio', null=True, blank=True)
-    tipogasto = models.ForeignKey(TipoGasto)
+    tipogasto = models.ForeignKey(TipoGasto, null=True, blank=True)
     subtipogasto = ChainedForeignKey(SubTipoGasto,chained_field='tipogasto',chained_model_field='tipogasto', null=True, blank=True)
-    catinversion = models.ForeignKey(CatInversion)
+    catinversion = models.ForeignKey(CatInversion, null=True, blank=True)
     areageografica = models.ForeignKey(AreaGeografica)
     descripcion = models.TextField(blank=True,null=True)
 
