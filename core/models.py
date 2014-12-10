@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from lugar.models import *
 from autoslug import AutoSlugField
-from smart_selects.db_fields import ChainedForeignKey
+from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
@@ -126,7 +126,11 @@ class TipoProyecto(models.Model):
 class Ingreso(models.Model):
     anio = models.IntegerField(null=False)
     municipio = models.ForeignKey(Municipio)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
+    tipoingreso = models.ForeignKey(TipoIngreso)
+    subtipoingreso = ChainedForeignKey(SubTipoIngreso,chained_field='tipoingreso',chained_model_field='tipoingreso', null=True, blank=True)
+    #subtipoingreso = models.ForeignKey(SubTipoIngreso)
+    subsubtipoingreso = ChainedForeignKey(SubSubTipoIngreso,chained_field='subtipoingreso',chained_model_field='subtipoingreso', null=True, blank=True)
+    #subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
     descripcion = models.TextField(blank=True,null=True)
 
     class Meta:
