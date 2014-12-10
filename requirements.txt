@@ -4,4 +4,4 @@ dj-database-url==0.2.2
 gunicorn==19.1
 Fabric==1.6.1
 django-autoslug
-git+https://github.com/digi604/django-smart-selects
+pixelfields_smart_selects
