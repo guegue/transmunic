@@ -1,6 +1,6 @@
 from django.db import models
 from autoslug import AutoSlugField
-from smart_selects.db_fields import ChainedForeignKey
+from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 # Create your models here
 #la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
@@ -45,7 +45,7 @@ class Comarca(models.Model):
     #municipio = models.ForeignKey(Municipio)
     slug = AutoSlugField(populate_from='nombre')
     departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='nombre', null=True, blank=True)
+    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     poblacion = models.IntegerField()
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
