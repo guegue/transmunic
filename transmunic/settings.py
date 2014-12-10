@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'lugar',
     'core',
     'website',
-    'smart_selects',
+    'pixelfields_smart_selects',
 )
 
 MIDDLEWARE_CLASSES = (
