@@ -125,11 +125,12 @@ class TipoProyecto(models.Model):
 # Ingresos del municipio
 class Ingreso(models.Model):
     anio = models.IntegerField(null=False)
-    municipio = models.ForeignKey(Municipio)
+    ingreso = models.CharField(max_length=250)
+    departamento = models.ForeignKey(Departamento)
+    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     tipoingreso = models.ForeignKey(TipoIngreso)
     subtipoingreso = ChainedForeignKey(SubTipoIngreso,chained_field='tipoingreso',chained_model_field='tipoingreso', null=True, blank=True)
     subsubtipoingreso = ChainedForeignKey(SubSubTipoIngreso,chained_field='subtipoingreso',chained_model_field='subtipoingreso', null=True, blank=True)
-    #subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
     descripcion = models.TextField(blank=True,null=True)
 
     class Meta:
@@ -157,6 +158,7 @@ class Gasto(models.Model):
         (INVERSION, 'Inversion'),
     )
     anio = models.IntegerField(null=True)
+    ingreso = models.CharField(max_length=250)
     tipo = models.IntegerField(choices=TIPO_CHOICES, default=0)
     origen = models.ForeignKey(SubSubTipoIngreso)
     departamento = models.ForeignKey(Departamento)
