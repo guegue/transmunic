@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from decimal import Decimal
 from lugar.models import *
 from autoslug import AutoSlugField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
@@ -15,6 +16,7 @@ class CatInversion(models.Model):
         return self.nombre
  
 class TipoGasto(models.Model):
+    codigo = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
  
@@ -25,12 +27,25 @@ class TipoGasto(models.Model):
         return self.nombre
 
 class SubTipoGasto(models.Model):
+    codigo = models.CharField(max_length=25,  primary_key=True)
     tipogasto = models.ForeignKey(TipoGasto, related_name='tipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
  
     class Meta:
         verbose_name_plural = 'Sub-Tipo de gastos'
+        ordering = ['nombre']
+    def __unicode__(self):
+        return self.nombre
+
+class SubSubTipoGasto(models.Model):
+    codigo = models.CharField(max_length=25,  primary_key=True)
+    subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
+    nombre = models.CharField(max_length=200)
+    slug = AutoSlugField(populate_from='nombre')
+ 
+    class Meta:
+        verbose_name_plural = 'Sub-Sub-Tipo de gastos'
         ordering = ['nombre']
     def __unicode__(self):
         return self.nombre
@@ -124,80 +139,61 @@ class TipoProyecto(models.Model):
 
 # Ingresos del municipio
 class Ingreso(models.Model):
-    anio = models.IntegerField(null=False)
-    ingreso = models.CharField(max_length=250)
+    fecha = models.DateField(null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
-    tipoingreso = models.ForeignKey(TipoIngreso)
-    subtipoingreso = ChainedForeignKey(SubTipoIngreso,chained_field='tipoingreso',chained_model_field='tipoingreso', null=True, blank=True)
-    subsubtipoingreso = ChainedForeignKey(SubSubTipoIngreso,chained_field='subtipoingreso',chained_model_field='subtipoingreso', null=True, blank=True)
     descripcion = models.TextField(blank=True,null=True)
 
     class Meta:
         verbose_name_plural = 'Ingresos'
-    def __unicode__(self):
-        return self.anio
+    #def __unicode__(self):
+    #    return self.ingreso
 
 class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso)
     fecha = models.DateField(null=False)
-    monto = models.DecimalField(max_digits=12, decimal_places=6, blank=False, null=False)
-    ejecutado = models.DecimalField(max_digits=12, decimal_places=6, blank=False, null=False)
-    donante = models.ForeignKey(Donante)
+    titulo = models.CharField(max_length=450)
+    tipoingreso = models.ForeignKey(TipoIngreso)
+    subtipoingreso = ChainedForeignKey(SubTipoIngreso,chained_field='tipoingreso',chained_model_field='tipoingreso', null=True, blank=True)
+    subsubtipoingreso = ChainedForeignKey(SubSubTipoIngreso,chained_field='subtipoingreso',chained_model_field='subtipoingreso', null=True, blank=True)
+    monto = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+    ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+    donante = models.ForeignKey(Donante,blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Detalle de Ingresos'
-    def __unicode__(self):
-        return self.fecha
+    #def __unicode__(self):
+    #    return self.fecha
 
 class Gasto(models.Model):
-    GASTO = 0
-    INVERSION = 1
-    TIPO_CHOICES = (
-        (GASTO, 'Gasto'),
-        (INVERSION, 'Inversion'),
-    )
-    anio = models.IntegerField(null=True)
-    ingreso = models.CharField(max_length=250)
-    tipo = models.IntegerField(choices=TIPO_CHOICES, default=0)
-    origen = models.ForeignKey(SubSubTipoIngreso)
+    fecha = models.DateField(null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
-    comarca = ChainedForeignKey(Comarca,chained_field='municipio',chained_model_field='municipio', null=True, blank=True)
-    tipogasto = models.ForeignKey(TipoGasto, null=True, blank=True)
-    subtipogasto = ChainedForeignKey(SubTipoGasto,chained_field='tipogasto',chained_model_field='tipogasto', null=True, blank=True)
-    catinversion = models.ForeignKey(CatInversion, null=True, blank=True)
-    areageografica = models.ForeignKey(AreaGeografica)
     descripcion = models.TextField(blank=True,null=True)
 
     class Meta:
-        verbose_name_plural = 'Gastos/Inversion'
-        ordering = ['anio']
-    def __unicode__(self):
-        return self.anio
-
-#detalle del gasto
-class GastoDetalle(models.Model):
-    gasto = models.ForeignKey(Gasto)
-    fecha = models.DateField(null=True)
-    monto = models.DecimalField(max_digits=12, decimal_places=6, blank=True, null=True)
-    ejecutado = models.DecimalField(max_digits=12, decimal_places=6, blank=False, null=False)
-
-    class Meta:
-        verbose_name_plural = 'Detalle de gastos/Inversion'
+        verbose_name_plural = 'Gastos'
         ordering = ['fecha']
     def __unicode__(self):
         return self.fecha
 
-#Fuente de financiamiento
-class GastoFuenteFmto(models.Model):
+#detalle del gasto
+class GastoDetalle(models.Model):
     gasto = models.ForeignKey(Gasto)
-    fuentefmto = models.ForeignKey(FuenteFmto)
+    codigo = models.CharField(max_length=15, null=False)
+    tipogasto = models.ForeignKey(TipoGasto)
+    subtipogasto = ChainedForeignKey(SubTipoGasto,chained_field='tipogasto',chained_model_field='tipogasto', null=True, blank=True)
+    subsubtipogasto = ChainedForeignKey(SubSubTipoGasto,chained_field='subtipogasto',chained_model_field='subtipogasto', null=True, blank=True)
+    cuenta = models.CharField(max_length=400, null=False)
+    asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
-        verbose_name_plural = 'Gastos - Fuentes de financiamiento'
+        verbose_name_plural = 'Detalle de gastos'
+        ordering = ['gasto']
     def __unicode__(self):
-        return self.fuentefmto
+        return self.codigo
+
 
 class Proyecto(models.Model):
     M2 = 0
@@ -230,7 +226,7 @@ class Proyecto(models.Model):
 
 class ProyectoDetalle(models.Model):
     proyecto = models.ForeignKey(Proyecto)
-    financiamiento = models.DecimalField(max_digits=12, decimal_places=6)
+    financiamiento = models.DecimalField(max_digits=12, decimal_places=2)
     fecha = models.DateField(null=True)
 
     class Meta:

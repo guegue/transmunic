@@ -18,7 +18,6 @@ from django.conf import global_settings as DJANGO_DEFAULT
 DEBUG = 'DEBUG' in os.environ and not os.environ['DEBUG'] == 'False'
 TEMPLATE_DEBUG = DEBUG
 
-
 #BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -48,11 +47,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
+
     #'sorl.thumbnail',
+    'pixelfields_smart_selects',
+
     'lugar',
     'core',
     'website',
-    'pixelfields_smart_selects',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,6 +64,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'transmunic.forcelanguage.ForceDefaultLanguageMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'transmunic.urls'
@@ -73,17 +76,16 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'America/Managua'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+USE_THOUSAND_SEPARATOR = True
+DECIMAL_SEPARATOR = '.'
+THOUSAND_SEPARATOR = ','
+NUMBER_GROUPING = 3
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
