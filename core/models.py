@@ -17,8 +17,8 @@ class CatInversion(models.Model):
  
 class TipoGasto(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
-    nombre = models.CharField(max_length=200)
-    slug = AutoSlugField(populate_from='nombre')
+    nombre = models.CharField(max_length=200, )
+    slug = AutoSlugField(populate_from='nombre', null=True)
  
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
@@ -174,8 +174,6 @@ class Gasto(models.Model):
     class Meta:
         verbose_name_plural = 'Gastos'
         ordering = ['fecha']
-    def __unicode__(self):
-        return self.fecha
 
 #detalle del gasto
 class GastoDetalle(models.Model):
