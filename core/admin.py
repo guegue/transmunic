@@ -12,7 +12,7 @@ class SubTipoIngresoAdmin(admin.ModelAdmin):
     list_filter = ['tipoingreso']
 
 class SubSubTipoIngresoAdmin(admin.ModelAdmin):
-    list_display = ('id','subtipoingreso','nombre')
+    list_display = ('codigo','subtipoingreso','nombre')
     list_filter = ['subtipoingreso']
 
 class GastoDetalleInline(admin.TabularInline):
@@ -20,6 +20,7 @@ class GastoDetalleInline(admin.TabularInline):
     extra = 1
 
 class GastoAdmin(admin.ModelAdmin):
+    list_display = ('municipio','departamento','fecha')
     inlines = [GastoDetalleInline]
 
 class IngresoDetalleInline(admin.TabularInline):
@@ -34,12 +35,16 @@ class IngresoAdmin(admin.ModelAdmin):
     list_display = ['id','fecha', 'departamento','municipio']
     list_filter = ('fecha','departamento','municipio')
 
-class ProyectoDetalleInline(admin.TabularInline):
-    model = ProyectoDetalle
+class ProyectoInline(admin.TabularInline):
+    model = Proyecto
     extra = 1
+    class Meta:
+        localized_fields = ('__all__')
 
-class ProyectoAdmin(admin.ModelAdmin):
-    inlines = [ProyectoDetalleInline]
+class InversionAdmin(admin.ModelAdmin):
+    inlines = [ProyectoInline]
+    list_display = ['id','departamento','municipio']
+    list_filter = ('departamento','municipio')
 
 admin.site.register(CatInversion)
 admin.site.register(TipoGasto)
@@ -51,8 +56,7 @@ admin.site.register(SubSubTipoIngreso, SubSubTipoIngresoAdmin)
 admin.site.register(SubTipoIngreso, SubTipoIngresoAdmin)
 admin.site.register(FuenteFmto)
 admin.site.register(Donante)
-#admin.site.register(Ingreso)
+admin.site.register(Inversion,InversionAdmin)
+admin.site.register(Proyecto)
 admin.site.register(Ingreso,IngresoAdmin)
 admin.site.register(Gasto,GastoAdmin)
-admin.site.register(Proyecto,ProyectoAdmin)
-admin.site.register(AreaGeografica)
