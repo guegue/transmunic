@@ -8,3 +8,4 @@ class MunicipioAdmin(admin.ModelAdmin):
 admin.site.register(Departamento)
 admin.site.register(Municipio,MunicipioAdmin)
 admin.site.register(Comarca)
+admin.site.register(ClasificacionMunic)
