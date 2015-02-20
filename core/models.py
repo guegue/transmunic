@@ -16,9 +16,16 @@ class CatInversion(models.Model):
         return self.nombre
  
 class TipoGasto(models.Model):
+    CORRIENTE = 0
+    CAPITAL = 1
+    CLASIFICACION_CHOICES = (
+        (CORRIENTE, 'Gasto Corriente'),
+        (CAPITAL, 'Gasto de Capital'),
+    )
     codigo = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
+    clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0, null=True)
  
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
