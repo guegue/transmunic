@@ -213,7 +213,7 @@ class Proyecto(models.Model):
         (OTROS, 'Otros'),
     )
     inversion = models.ForeignKey(Inversion, related_name='inversion', null=True)
-    codigo = models.CharField(max_length=20)
+    codigo = models.CharField( null=True, max_length=20)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(TipoProyecto, related_name='tipo_proyecto', null=True)
     catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion', null=True)

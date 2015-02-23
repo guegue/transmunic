@@ -6,3 +6,4 @@ Fabric==1.6.1
 django-autoslug
 pixelfields_smart_selects
 -e git://github.com/jakewins/django-money.git#egg=django-money
+-e git://github.com/cajbecu/django-chartit#egg=django-chartit
