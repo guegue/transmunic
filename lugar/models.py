@@ -38,9 +38,9 @@ class Municipio(models.Model):
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
 
     class Meta:
-        ordering = ['nombre']
+        ordering = [u'nombre']
     def __unicode__(self):
-        return self.nombre
+        return u'%s' % (self.nombre,)
 
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)

@@ -3,14 +3,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title> Django Chartit Demo - {{title}} </title>
+<title>{{title}}</title>
 {% load static %}
     <script src="/static/jquery-1.11.2.min.js"></script>
     <script src="/static/highcharts.js"></script>
 </head>
 <body>
     {% load chartit %}
-    {{ oimpiechart|load_charts:"container" }}
-    <div id='container'> Chart will be rendered here </div>
+    {{ pies|load_charts:"asignado,ejecutado" }}
+    <div id='asignado'> Chart will be rendered here </div>
+    <div id='ejecutado'> Chart will be rendered here </div>
+
+    <form method="GET">
+    <select name="year">
+    {% for year in year_list %}
+        <option value="{{year|date:'Y'}}">{{year|date:"Y"}}</option>
+    {% endfor %}
+    </select>
+    <select name="municipio">
+    <option value="">--</option>
+    {% for municipio in municipio_list %}
+        <option value="{{municipio.slug}}">{{municipio}}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="Submit"/>
+    </form>
 </body>
 </html>
