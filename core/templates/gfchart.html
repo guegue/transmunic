@@ -14,11 +14,6 @@
     <div id='gfbar'> Chart will be rendered here </div>
 
     <form method="GET">
-    <select name="year">
-    {% for year in year_list %}
-        <option value="{{year|date:'Y'}}">{{year|date:"Y"}}</option>
-    {% endfor %}
-    </select>
     <select name="municipio">
     <option value="">--</option>
     {% for municipio in municipio_list %}
@@ -28,6 +23,5 @@
     <input type="submit" value="Submit"/>
     </form>
 
-    <div id='asignado_barra'> Chart will be rendered here </div>
 </body>
 </html>

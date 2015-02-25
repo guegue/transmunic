@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, time
+
 from django.shortcuts import render_to_response
 from django.db.models import Sum, Max
 
@@ -14,9 +16,16 @@ def gf_chart(request):
     periodos = Gasto_periodos()
     municipio = request.GET.get('municipio','')
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
+            extra(select={'year': "EXTRACT('year' FROM fecha)"}).\
+            values('gasto__fecha','year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
-        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE).\
+            extra(select={'year': "EXTRACT('year' FROM fecha)"}).\
+            values('gasto__fecha', 'year').\
+            annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     oimdata = DataPool(
            series=
@@ -38,13 +47,16 @@ def gf_chart(request):
                     'asignado',
                     'ejecutado']
                   }}],
-            chart_options =
-              {'title': {
-                   'text': 'Gastos de funcionamiento %s ' % (municipio,)},
-                       'text': 'GF'})
+            chart_options = {
+                #'xAxis': { 'type': 'datetime', 'labels': { 'formatter': 'getYear' } },
+                'title': {
+                  'text': 'Gastos de funcionamiento %s ' % (municipio,)},
+                       'text': 'GF'
+                },
+            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            )
 
     return render_to_response('gfchart.html',{'charts': (gfbar, ), 'municipio_list': municipio_list})
-    #return render_to_response('gfchart.html',{'charts': (gfbar, ), 'year_list': year_list, 'municipio_list': municipio_list})
 
 
 def inversion_pie_chart(request):
