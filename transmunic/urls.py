@@ -7,8 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'core.views.home', name='home'),
-    url(r'^(?P<slug>\w+)/$', 'core.views.municipio', name='municipio'),
     url(r'^core/', include('core.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^chaining/', include('pixelfields_smart_selects.urls')),
+    url(r'^(?P<slug>\w+)/$', 'core.views.municipio', name='municipio'),
 )
