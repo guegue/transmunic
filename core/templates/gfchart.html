@@ -10,9 +10,8 @@
 </head>
 <body>
     {% load chartit %}
-    {{ charts|load_charts:"asignado,ejecutado" }}
-    <div id='asignado'> Chart will be rendered here </div>
-    <div id='ejecutado'> Chart will be rendered here </div>
+    {{ charts|load_charts:"gfbar" }}
+    <div id='gfbar'> Chart will be rendered here </div>
 
     <form method="GET">
     <select name="year">

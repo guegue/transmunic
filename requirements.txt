@@ -4,6 +4,7 @@ dj-database-url==0.2.2
 gunicorn==19.1
 Fabric==1.6.1
 django-autoslug
+sorl-thumbnail
 pixelfields_smart_selects
 -e git://github.com/jakewins/django-money.git#egg=django-money
--e git://github.com/cajbecu/django-chartit#egg=django-chartit
+-e git://github.com/javierwilson/django-chartit#egg=django-chartit

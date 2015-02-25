@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block slide_portada %}
+    <!--Slider-->
+    <section id="slide-show">
+     <div id="slider" class="sl-slider-wrapper">
+        <!--Slider Items-->    
+        <div class="sl-slider">
+            <!--Slider Item1-->
+            <div class="sl-slide item1" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-scale="2" data-slice2-scale="2">
+                <div class="sl-slide-inner">
+                    <div class="container">
+                        <img class="pull-right" src="{% static 'images/sample/slider/img1.png' %}" alt="" />
+                        <h2>Presupuesto aprobado para 2012</h2>
+                        <h3 class="gap">Tincidunt condimentum eros</h3>
+                        <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <!--/Slider Item1-->
+
+            <!--Slider Item2-->
+            <div class="sl-slide item2" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="-15" data-slice1-scale="1.5" data-slice2-scale="1.5">
+                <div class="sl-slide-inner">
+                    <div class="container">
+                        <img class="pull-right" src="{% static 'images/sample/slider/img2.png' %}" alt="" />
+                        <h2>Planning &amp; Analysis</h2>
+                        <h3 class="gap">Aenean ultricies mi vitast</h3>
+                        <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <!--Slider Item2-->
+
+            <!--Slider Item3-->
+            <div class="sl-slide item3" data-orientation="horizontal" data-slice1-rotation="3" data-slice2-rotation="3" data-slice1-scale="2" data-slice2-scale="1">
+                <div class="sl-slide-inner">
+                   <div class="container">
+                    <img class="pull-right" src="{% static 'images/sample/slider/img3.png' %}" alt="" />
+                    <h2>Unique Solutions</h2>
+                    <h3 class="gap">Breatures who have been utterly</h3>
+                    <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <!--Slider Item3-->
+
+    </div>
+    <!--/Slider Items-->
+
+    <!--Slider Next Prev button-->
+    <nav id="nav-arrows" class="nav-arrows">
+        <span class="nav-arrow-prev"><i class="icon-angle-left"></i></span>
+        <span class="nav-arrow-next"><i class="icon-angle-right"></i></span> 
+    </nav>
+    <!--/Slider Next Prev button-->
+
+</div>
+<!-- /slider-wrapper -->           
+</section>
+<!--/Slider-->
+{% endblock %}
+
+{% block cajas_portada %}
+
+<section class="main-info">
+    <div class="container">
+        <div class="row-fluid recuadros">
+            <div class="span3" style="background-color: #3498DB">
+		<img src="{% static 'images/burbuja.png' %}" width="70" align="left"/>
+		<h3>Item 1</h3>
+		<span class="cifra">50%</span>
+            </div>
+            <div class="span3" style="background-color: #00a651">
+		<img src="{% static 'images/calendar.png' %}" width="70" align="left"/>
+		<h3>Item 2</h3>
+		<span class="cifra">50%</span>
+            </div>
+            <div class="span3" style="background-color: #d9534f">
+		<img src="{% static 'images/dolar.png' %}" width="70" align="left"/>
+		<h3>Item3</h3>
+		<span class="dolar"></span>
+		<span class="cifra">50%</span>
+            </div>
+            <div class="span3" style="background-color: #E67E22">
+		<img src="{% static 'images/comment.png' %}" width="70" align="left"/>
+		<h3>Item 4</h3>
+		<span class="dolar"></span>
+		<span class="cifra">50%</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block maincontent %}
+
+	    <div class="span4">
+		<h2>Cuanto ingresa?</h2>
+	        <div class="span11 graficos-portada">	
+		<div id="ingresos-totales" style="height: 380px;width:280px;"></div>
+		<p>En 2012, las principales fuentes de ingresos fueron las transferencias de Ley (64%) y las recaudaciones municipales por impuestos y tasas. Aunque los ingresos totales han crecido, las recaudaciones disminuyeron del 37% en 2011 al 26% en 2012.</p>
+	        </div>	
+	    </div>
+	    <div class="span4">
+		<h2>En que se gasta?</h2>	
+	        <div class="span11 graficos-portada">	
+		<div id="gastos-totales" style="height: 380px; width:280px;"></div>
+		<p>Los gastos de funcionamiento que son Ios que utiliza la municipalidad para operar, representaron en el 2012 el 33% de ios gastos totales. El promedio nacional para los municipios Categoría "C" fue del 29%.</p>
+		</div>
+	    </div>
+	    <div class="span4">
+		<h2>Fuentes de Financiamiento</h2>	
+	        <div class="span11 graficos-portada">	
+		<div id="fuentes-financiamiento" style="height: 380px;width:280px;"></div>
+		<p>Los gastos de funcionamiento que son Ios que utiliza la municipalidad para operar, representaron en el 2012 el 33% de ios gastos totales. El promedio nacional para los municipios Categoría "C" fue del 29%.</p>
+		</div>
+
+
+{% endblock %}
+
+{% block inversiones_portada %}
+
+<section id="clients" class="main">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="span2">
+                <div class="clearfix">
+                    <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
+                    <div class="pull-right">
+                        <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
+                    </div>
+                </div>
+                <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+            </div>
+            <div class="span10">
+                <div id="myCarousel" class="carousel slide clients">
+                  <!-- Carousel items -->
+                  <div class="carousel-inner">
+                    <div class="active item">
+                        <div class="row-fluid">
+                            <ul class="thumbnails">
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/puente-caminos.jpg' %}"><br />Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/calles-aceras.jpg' %}"><br />Calles, aceras y andenes</a><p>37%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/fortalecimiento.jpg' %}"><br />Fortalecimiento institucional</a><p>4%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/vivienda.jpg' %}"><br />Viviendas</a><p>1%</p></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="row-fluid">
+                            <ul class="thumbnails">
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/puente-caminos.jpg' %}"><br />Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/calles-aceras.jpg' %}"><br />Calles, aceras y andenes</a><p>37%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/fortalecimiento.jpg' %}"><br />Fortalecimiento institucional</a><p>4%</p></li>
+                                <li class="span3"><a href="#"><img src="{% static 'images/icons/vivienda.jpg' %}"><br />Viviendas</a><p>1%</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Carousel items -->
+
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<!--Services-->
+<section id="services">
+    <div class="container">
+        <div class="center gap">
+            <h3>Proyectos relevantes ejecutados en 2012</h3>
+            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y alcantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+        </div>
+
+        <div class="row-fluid">
+          <div class="span8">
+              <div class="span6">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-globe icon-medium"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Caminos, puentes y alcantarillados</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                    </div>
+                </div>
+              </div>            
+              <div class="span6">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-thumbs-up-alt icon-medium"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Calles, aceras y andenes</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                    </div>
+                </div>
+              </div>            
+	    </div>
+            <div class="span4">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-leaf icon-medium icon-rounded"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Fortalecimiento institucional</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!--/Services-->
+
+<section id="recent-work">
+    <div class="container">
+        <div class="center">
+            <h2>Distribuci&oacute;n territorial de la inversi&oacute;n</h2>
+            <p class="lead2">En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
+        </div> 
+	<div class="span12">
+	    <div class="span6">
+		<div class="panel panel-default">
+			<div class="panel-heading">Distribucion por sector</div>
+			<div class="panel-body">
+			    <div id="container" style="width:100%; height:500px;"></div>
+			</div>
+		</div>
+	    </div>
+	    <div class="span5">
+		<div class="panel panel-default">
+			<div class="panel-heading2">Distribucion por comunidad</div>
+			<div class="panel-body">
+	        	    <img src="{% static 'images/mapa-nicaragua.png' %}" width="466" />
+				<div style="width:100%; float:left;">
+				<p><div class="rosado"></div>Presupuesto menor a $</div></p>
+				<p><div class="cafe"></div>Presupuesto menor a $</p>
+				<p><div class="amarillo"></div>Presupuesto menor a $</p>
+				</div>
+			</div>
+	    </div>
+	</div>
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models
-from decimal import Decimal
-from lugar.models import *
+from django.db.models import Sum, Max
+
 from autoslug import AutoSlugField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
+
+from lugar.models import *
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
@@ -15,8 +19,18 @@ class CatInversion(models.Model):
         verbose_name_plural = 'Categorias de inversion'
         ordering = ['nombre']
     def __unicode__(self):
+        return u'%s' % (self.nombre,)
+
+class OrigenGasto(models.Model):
+    nombre = models.CharField(max_length=200)
+    slug = AutoSlugField(populate_from='nombre')
+
+    class Meta:
+        verbose_name_plural = 'Origen  de los gastos'
+        ordering = ['nombre']
+    def __unicode__(self):
         return self.nombre
- 
+
 class TipoGasto(models.Model):
     CORRIENTE = 0
     CAPITAL = 1
@@ -52,6 +66,7 @@ class SubSubTipoGasto(models.Model):
     subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
+    origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
  
     class Meta:
         verbose_name_plural = 'Sub-Sub-Tipo de gastos'
@@ -168,6 +183,15 @@ class Gasto(models.Model):
     class Meta:
         verbose_name_plural = 'Gastos'
         ordering = ['fecha']
+
+def Gasto_year_list():
+    return Gasto.objects.dates('fecha','year')
+def Gasto_periodos():
+    periodos = []
+    for year in Gasto_year_list():
+        un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
+        periodos.append( un_periodo['fecha__max'] )
+    return periodos
 
 #detalle del gasto
 class GastoDetalle(models.Model):

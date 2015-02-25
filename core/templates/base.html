@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no.js' %}"> <!--<![endif]-->
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Inicio | Presupuesto Municipal</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/extras.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sl-slide.css' %}">
+
+    <script src="{% static 'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'images/ico/apple-touch-icon-144-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
+
+    <script src="{% static 'jquery-1.11.2.min.js' %}"></script>
+    <script src="{% static 'highcharts.js' %}"></script>
+
+<script type="text/javascript"> 
+
+</script>
+</head>
+
+<body>
+
+    <!--Header-->
+    <header class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <h2 style="margin-top: 30px;"><a class="pull-left" href="index.html" style="color: #999;">{% block titulo %} {% endblock %}</a></h2>
+                <div class="nav-collapse collapse pull-right">
+                    <ul class="nav">
+                        <li class="active"><a href="/">Inicio</a></li>
+                        <li><a href="about-us.html">Acerca de</a></li>
+                        <li><a href="services.html"></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Presupuesto <i class="icon-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="">Presupuesto aprobado</a></li>
+                                <li><a href="">Origen de los recursos</a></li>
+                                <li><a href="">Gasto ejecutado</a></li>
+                                <li><a href="">Inversiones ejecutadas</a></li>
+                                <li><a href="">Distribucion territorial de los recursos</a></li>
+                                <li><a href="">Distribucion sectorial de los recursos</a></li>
+                                <li><a href="#">Proyectos</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">Proyectos</a></li>
+                        <li><a href="contact-us.html">Contactenos</a></li>
+                        <li class="login">
+                            <a data-toggle="modal" href="#loginForm"><i class="icon-lock"></i></a>
+                        </li>
+                    </ul>        
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </header>
+    <!-- /header -->
+
+<!--banner de portada -->
+{% block slide_portada %}
+{% endblock %}
+<!--finaliza banner de portada -->
+
+<!--Cajas de colores de portada -->
+{% block cajas_portada %}
+{% endblock %}
+<!--Fin de cajas de colores de portada -->
+
+<!--graficos-->
+<section id="graficos-portada">
+    <div class="container">
+        <div class="row-fluid">
+        {% block main_content %}
+        {% endblock %}
+	    </div>
+	</div>
+</section>
+
+{% block inversiones_portada %}
+
+{% endblock %}
+
+<!--Bottom-->
+<section id="bottom" class="main">
+    <!--Container-->
+    <div class="container">
+
+        <!--row-fluids-->
+        <div class="row-fluid">
+
+        </div>
+
+    </div>
+    <!--/row-fluid-->
+</div>
+<!--/container-->
+
+</section>
+<!--/bottom-->
+
+<!--Footer-->
+<footer id="footer">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="span5 cp">
+                &copy; 2013 <a target="_blank" href="http://shapebootstrap.net/" title="Free Twitter Bootstrap WordPress Themes and HTML templates">ShapeBootstrap</a>. All Rights Reserved.
+            </div>
+            <!--/Copyright-->
+
+            <div class="span6">
+                <ul class="social pull-right">
+                    <li><a href="#"><i class="icon-facebook"></i></a></li>
+                    <li><a href="#"><i class="icon-twitter"></i></a></li>
+                    <li><a href="#"><i class="icon-pinterest"></i></a></li>
+                    <li><a href="#"><i class="icon-linkedin"></i></a></li>
+                    <li><a href="#"><i class="icon-google-plus"></i></a></li>                       
+                    <li><a href="#"><i class="icon-youtube"></i></a></li>
+                    <li><a href="#"><i class="icon-tumblr"></i></a></li>                        
+                    <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                    <li><a href="#"><i class="icon-rss"></i></a></li>
+                    <li><a href="#"><i class="icon-github-alt"></i></a></li>
+                    <li><a href="#"><i class="icon-instagram"></i></a></li>                   
+                </ul>
+            </div>
+
+            <div class="span1">
+                <a id="gototop" class="gototop pull-right" href="#"><i class="icon-angle-up"></i></a>
+            </div>
+            <!--/Goto Top-->
+        </div>
+    </div>
+</footer>
+<!--/Footer-->
+
+<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<!-- Required javascript files for Slider -->
+<script src="{% static 'js/jquery.ba-cond.min.js' %}"></script>
+<script src="{% static 'js/jquery.slitslider.js' %}"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+
+<!-- /Required javascript files for Slider -->
+
+<!-- SL Slider -->
+<script type="text/javascript"> 
+$(function() {
+    var Page = (function() {
+
+        var $navArrows = $( '#nav-arrows' ),
+        slitslider = $( '#slider' ).slitslider( {
+            autoplay : true
+        } ),
+
+        init = function() {
+            initEvents();
+        },
+        initEvents = function() {
+            $navArrows.children( ':last' ).on( 'click', function() {
+                slitslider.next();
+                return false;
+            });
+
+            $navArrows.children( ':first' ).on( 'click', function() {
+                slitslider.previous();
+                return false;
+            });
+        };
+
+        return { init : init };
+
+    })();
+
+    Page.init();
+});
+</script>
+</body>
+</html>
