@@ -1,45 +1,56 @@
 {% extends "base.html" %}
-{% load chartit %}
+{% load static thumbnail chartit %}
 
 {% block titulo %}
 Presupuesto Municipal: {{ obj.nombre }}
 {% endblock %}
 
-<!--banner de portada -->
 {% block slide_portada %}
     <!--Slider-->
+
     <section id="slide-show">
      <div id="slider" class="sl-slider-wrapper">
-        <!--Slider Items-->
+        <!--Slider Items-->    
         <div class="sl-slider">
-{% for banner in banners %}
+            {% for banner in banners %}
             <!--Slider Item{{ banners.count }}-->
-            <div class="sl-slide item{{ banners.count}}" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-    scale="2" data-slice2-scale="2">
+                {% if banner.vertical %}
+                    <div class="sl-slide item{{ banners.count}}" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="15" data-slice1-scale="1.5" data-slice2-scale="1.5">
+                {% else%}
+                    <div class="sl-slide item{{ banners.count}}" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-scale="2" data-slice2-scale="2">
+                {% endif %}
                 <div class="sl-slide-inner">
                     <div class="container">
-                        <a href="{{ banner.enlace }}"><img class="pull-right" src="/media/{{ banner.imagen }}" alt="banner"/></a>
-                        <h2>{{ banner.titulo }}</h2>
-                        <h3 class="gap">Tincidunt condimentum eros</h3>
-                        <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+                        {% if banner.vertical %}
+                            {% thumbnail banner.imagen "400x300" as img %}
+                               <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
+                            {% endthumbnail %}
+                        {% else %}
+                            {% thumbnail banner.imagen "1500x250" crop='center' as img %}
+                                <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
+                            {% endthumbnail %}
+                        {% endif %}
+                        <div class="slide-text">
+                            <h2>{{ banner.titulo }}</h2>
+                            <h3 class="gap">Tincidunt condimentum eros</h3>
+                            <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+                        </div>
                     </div>
                 </div>
             </div>
-{% endfor %}
-    </div>
-    <!--/Slider Items-->
-
-    <!--Slider Next Prev button-->
-    <nav id="nav-arrows" class="nav-arrows">
-        <span class="nav-arrow-prev"><i class="icon-angle-left"></i></span>
-        <span class="nav-arrow-next"><i class="icon-angle-right"></i></span>
-    </nav>
-    <!--/Slider Next Prev button-->
-
-
-</div>
-<!-- /slider-wrapper -->
-</section>
-<!--/Slider-->
+            <!--/Slider Item1-->
+            {% endfor %}
+        </div>
+        <!--/Slider Items-->
+        <!--Slider Next Prev button-->
+        <nav id="nav-arrows" class="nav-arrows">
+            <span class="nav-arrow-prev"><i class="icon-angle-left"></i></span>
+            <span class="nav-arrow-next"><i class="icon-angle-right"></i></span>
+        </nav>
+        <!--/Slider Next Prev button-->
+     </div>
+     <!-- /slider-wrapper -->
+    </section>
 
 {% endblock %}
 <!--finaliza banner de portada -->
