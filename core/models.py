@@ -158,6 +158,16 @@ class Ingreso(models.Model):
     #def __unicode__(self):
     #    return self.ingreso
 
+def Ingreso_year_list():
+    return Ingreso.objects.dates('fecha','year')
+def Ingreso_periodos():
+    periodos = []
+    for year in Ingreso_year_list():
+        un_periodo = Ingreso.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
+        periodos.append( un_periodo['fecha__max'] )
+    return periodos
+
+
 class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso)
     codigo = models.CharField(max_length=15, null=False)
