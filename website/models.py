@@ -6,6 +6,7 @@ from sorl.thumbnail import ImageField
 class Banner(models.Model):
     municipio = models.ForeignKey(Municipio)
     titulo = models.CharField(max_length=200)
+    vertical = models.BooleanField(default=False)
     descripcion = models.CharField(max_length=500, null=True, blank=True)
     enlace = models.CharField(max_length=200, null=True, blank=True)
     orden = models.IntegerField(null=True, blank=True)
