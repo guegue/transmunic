@@ -22,6 +22,7 @@ class GastoDetalleInline(admin.TabularInline):
 class GastoAdmin(admin.ModelAdmin):
     list_display = ('municipio','departamento','fecha')
     inlines = [GastoDetalleInline]
+    list_filter = ('fecha','departamento','municipio')
 
 class IngresoDetalleInline(admin.TabularInline):
     model = IngresoDetalle
