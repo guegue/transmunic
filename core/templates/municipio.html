@@ -6,58 +6,194 @@ Presupuesto Municipal: {{ obj.nombre }}
 {% endblock %}
 
 {% block slide_portada %}
-    <!--Slider-->
+    <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel2" data-slide-to="1"></li>
+        <li data-target="#myCarousel2" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        {% for banner in banners %}
+          <!--Slider Item{{ banners.count }}-->
+          <div class="item{% if forloop.first %} active{% endif%}">
+            {% thumbnail banner.imagen "1600x400" crop='center' as img %}
+              <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
+            {% endthumbnail %}
+            <div class="container">
+              <div class="carousel-caption">
+                <h1>{{ banner.titulo }}</h1>
+                <p>{{ banner.descripcion }}</p>
+                <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div><!-- /.carousel -->
+{% endblock %}
+{% block cajas_portada %}
+    <section id="recuadros">
+      <div class="container">
+        <div class="row-fluid col-md-3 col-xs-6">
+            <button class="col-md-3 btn btn-primary">
+                <img src="{% static 'img/burbuja.png' %}"  class="pull-left img-responsive"/>
+                <h3>Item 1</h3>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 col-xs-6 btn btn-success">
+                <img src="{% static 'img/calendar.png' %}"  class="pull-left img-responsive"/>
+                <h3>Item 2</h3>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 col-xs-6 btn btn-info">
+                <img src="{% static 'img/dolar.png' %}" width="70" align="left"/>
+                <h3>Item3</h3>
+                <span class="dolar"></span>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 btn btn-danger">
+                <img src="{% static 'img/comment.png' %}" width="70" align="left"/>
+                <h3>Item 4</h3>
+                <span class="dolar"></span>
+                <span class="cifra">50%</span>
+            </button>
+        </div>
+      </div>
+    </section>
+{% endblock %}
 
-    <section id="slide-show">
-     <div id="slider" class="sl-slider-wrapper">
-        <!--Slider Items-->    
-        <div class="sl-slider">
-            {% for banner in banners %}
-            <!--Slider Item{{ banners.count }}-->
-                {% if banner.vertical %}
-                    <div class="sl-slide item{{ banners.count}}" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="15" data-slice1-scale="1.5" data-slice2-scale="1.5">
-                {% else%}
-                    <div class="sl-slide item{{ banners.count}}" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-scale="2" data-slice2-scale="2">
-                {% endif %}
-                <div class="sl-slide-inner">
-                    <div class="container">
-                        {% if banner.vertical %}
-                            {% thumbnail banner.imagen "400x300" as img %}
-                               <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
-                            {% endthumbnail %}
-                        {% else %}
-                            {% thumbnail banner.imagen "1500x250" crop='center' as img %}
-                                <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
-                            {% endthumbnail %}
-                        {% endif %}
-                        <div class="slide-text">
-                            <h2>{{ banner.titulo }}</h2>
-                            <h3 class="gap">Tincidunt condimentum eros</h3>
-                            <a class="btn btn-large btn-transparent" href="#">Learn More</a>
+{% block main_content %}
+        <!--{{ charts|load_charts:"asignado,ejecutado" }} -->
+        {{ charts|load_charts:"ejecutado" }}
+        <div class="col-md-4 col-sm-4">
+          <div id='ejecutado'> Chart will be rendered here 
+            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+          </div>
+        </div>
+{% endblock %}
+
+{% block inversiones_portada %}
+    <section id="inversiones" class="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="clearfix">
+                        <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
+                        <div class="pull-right">
+                            <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
                         </div>
+                    </div>
+                    <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+                </div>
+		<div class="col-md-10">
+    		    <div id="carousel-inv" class="carousel slide" data-ride="carousel">
+                       <!-- Indicators -->
+                        <ul class="carousel-indicators">
+                            <li data-target="#carousel-inv" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-inv" data-slide-to="1"></li>
+                        </ul>
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item inversion active text-center">
+                                <ul class="thumbnails">
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/puente-caminos.jpg' %}" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/calles-aceras.jpg' %}" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/fortalecimiento.jpg' %}" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/vivienda.jpg' %}" class="img-responsive">Viviendas</a><p>1%</p></li>
+                                </ul>
+                            </div>
+                            <div class="item inversion">
+                                <ul class="thumbnails text-center">
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/puente-caminos.jpg' %}" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/calles-aceras.jpg' %}" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/fortalecimiento.jpg' %}" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/vivienda.jpg' %}" class="img-responsive">Viviendas</a><p>%</p></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="left carousel-control" href="#carousel-inv" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-inv" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div><!-- /.carousel -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="proyectos">
+    <div class="container">
+        <div class="text-center">
+            <h3>Proyectos relevantes ejecutados en 2012</h3>
+            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+        </div>
+        <div class="row-fluid">
+          <div class="col-md-8">
+              <div class="col-md-6">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-globe icon-medium"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Caminos, puentes y alcantarillados</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                    </div>
+                </div>
+              </div>            
+              <div class="col-md-6">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-thumbs-up-alt icon-medium"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Calles, aceras y andenes</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                    </div>
+                </div>
+              </div>            
+	    </div>
+            <div class="col-md-4">
+                <div class="media">
+                    <div class="pull-left">
+                        <i class="icon-leaf icon-medium icon-rounded"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Fortalecimiento institucional</h4>
+                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
                     </div>
                 </div>
             </div>
-            <!--/Slider Item1-->
-            {% endfor %}
         </div>
-        <!--/Slider Items-->
-        <!--Slider Next Prev button-->
-        <nav id="nav-arrows" class="nav-arrows">
-            <span class="nav-arrow-prev"><i class="icon-angle-left"></i></span>
-            <span class="nav-arrow-next"><i class="icon-angle-right"></i></span>
-        </nav>
-        <!--/Slider Next Prev button-->
-     </div>
-     <!-- /slider-wrapper -->
+    </div>
     </section>
 
-{% endblock %}
-<!--finaliza banner de portada -->
+    <section id="distribucion">
+    <div class="container">
+        <div class="text-center">
+            <h2>Distribuci&oacute;n territorial de la inversi&oacute;n</h2>
+            <p>En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
+        </div> 
+	<div class="col-md-12">
+	    <div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><h3>Distribucion por sector</h3></div>
+			<div class="panel-body">
+	        	    <img src="{% static 'img/grafico-barras.png' %}" width="500" />
+			</div>
+		</div>
+	    </div>
+	    <div class="col-md-6">
+		<div class="panel panel-success">
+			<div class="panel-heading"><h3>Comportamiento del presupuesto</h3></div>
+			<div class="panel-body">
+	        	    <img src="{% static 'img/grafico-barras.png' %}" width="500" />
+			</div>
+	    </div>	
+	</div>
+    </div>
+   </section>
 
-{% block main_content %}
-    {{ charts|load_charts:"asignado,ejecutado" }}
-    <div id='asignado'> Chart will be rendered here </div>
-    <div id='ejecutado'> Chart will be rendered here </div>
 {% endblock %}
-

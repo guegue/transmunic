@@ -1,183 +1,240 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-{% block slide_portada %}
-    <!--Slider-->
-    <section id="slide-show">
-     <div id="slider" class="sl-slider-wrapper">
-        <!--Slider Items-->    
-        <div class="sl-slider">
-            <!--Slider Item1-->
-            <div class="sl-slide item1" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-scale="2" data-slice2-scale="2">
-                <div class="sl-slide-inner">
-                    <div class="container">
-                        <img class="pull-right" src="{% static 'images/sample/slider/img1.png' %}" alt="" />
-                        <h2>Presupuesto aprobado para 2012</h2>
-                        <h3 class="gap">Tincidunt condimentum eros</h3>
-                        <a class="btn btn-large btn-transparent" href="#">Learn More</a>
-                    </div>
-                </div>
+    <title>Carousel Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="static/assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    <link href="static/css/carousel.css" rel="stylesheet">
+    <link href="static/css/custom.css" rel="stylesheet">
+  </head>
+<!-- NAVBAR
+================================================== -->
+  <body>
+    <div class="navbar-wrapper">
+      <div class="container">
+
+        <nav class="navbar navbar-inverse navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Transparencia Municipal Acoyapa</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <h2><a href="#">Presupuesto Municipal Acoyapa</a></h2>
             </div>
-            <!--/Slider Item1-->
-
-            <!--Slider Item2-->
-            <div class="sl-slide item2" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="-15" data-slice1-scale="1.5" data-slice2-scale="1.5">
-                <div class="sl-slide-inner">
-                    <div class="container">
-                        <img class="pull-right" src="{% static 'images/sample/slider/img2.png' %}" alt="" />
-                        <h2>Planning &amp; Analysis</h2>
-                        <h3 class="gap">Aenean ultricies mi vitast</h3>
-                        <a class="btn btn-large btn-transparent" href="#">Learn More</a>
-                    </div>
-                </div>
+            <div id="navbar" class="navbar-collapse collapse pull-right">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#">INICIO</a></li>
+                <li><a href="#about">ACERCA DE</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PRESUPUESTO <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Nav header</li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                  </ul>
+                </li>
+                <li><a href="#contact">PROYECTOS</a></li>
+                <li><a href="#contact">CONTACTENOS</a></li>
+              </ul>
             </div>
-            <!--Slider Item2-->
+          </div>
+        </nav>
 
-            <!--Slider Item3-->
-            <div class="sl-slide item3" data-orientation="horizontal" data-slice1-rotation="3" data-slice2-rotation="3" data-slice1-scale="2" data-slice2-scale="1">
-                <div class="sl-slide-inner">
-                   <div class="container">
-                    <img class="pull-right" src="{% static 'images/sample/slider/img3.png' %}" alt="" />
-                    <h2>Unique Solutions</h2>
-                    <h3 class="gap">Breatures who have been utterly</h3>
-                    <a class="btn btn-large btn-transparent" href="#">Learn More</a>
-                </div>
-            </div>
-        </div>
-        <!--Slider Item3-->
-
+      </div>
     </div>
-    <!--/Slider Items-->
 
-    <!--Slider Next Prev button-->
-    <nav id="nav-arrows" class="nav-arrows">
-        <span class="nav-arrow-prev"><i class="icon-angle-left"></i></span>
-        <span class="nav-arrow-next"><i class="icon-angle-right"></i></span> 
-    </nav>
-    <!--/Slider Next Prev button-->
 
-</div>
-<!-- /slider-wrapper -->           
-</section>
-<!--/Slider-->
-{% endblock %}
-
-{% block cajas_portada %}
-
-<section class="main-info">
-    <div class="container">
-        <div class="row-fluid recuadros">
-            <div class="span3" style="background-color: #3498DB">
-		<img src="{% static 'images/burbuja.png' %}" width="70" align="left"/>
-		<h3>Item 1</h3>
-		<span class="cifra">50%</span>
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel2" data-slide-to="1"></li>
+        <li data-target="#myCarousel2" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <div class="item active">
+          <img src="static/img/granada.jpg" alt="First slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Example headline.</h1>
+              <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
             </div>
-            <div class="span3" style="background-color: #00a651">
-		<img src="{% static 'images/calendar.png' %}" width="70" align="left"/>
-		<h3>Item 2</h3>
-		<span class="cifra">50%</span>
-            </div>
-            <div class="span3" style="background-color: #d9534f">
-		<img src="{% static 'images/dolar.png' %}" width="70" align="left"/>
-		<h3>Item3</h3>
-		<span class="dolar"></span>
-		<span class="cifra">50%</span>
-            </div>
-            <div class="span3" style="background-color: #E67E22">
-		<img src="{% static 'images/comment.png' %}" width="70" align="left"/>
-		<h3>Item 4</h3>
-		<span class="dolar"></span>
-		<span class="cifra">50%</span>
-            </div>
+          </div>
         </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block maincontent %}
-
-	    <div class="span4">
-		<h2>Cuanto ingresa?</h2>
-	        <div class="span11 graficos-portada">	
-		<div id="ingresos-totales" style="height: 380px;width:280px;"></div>
-		<p>En 2012, las principales fuentes de ingresos fueron las transferencias de Ley (64%) y las recaudaciones municipales por impuestos y tasas. Aunque los ingresos totales han crecido, las recaudaciones disminuyeron del 37% en 2011 al 26% en 2012.</p>
-	        </div>	
-	    </div>
-	    <div class="span4">
-		<h2>En que se gasta?</h2>	
-	        <div class="span11 graficos-portada">	
-		<div id="gastos-totales" style="height: 380px; width:280px;"></div>
-		<p>Los gastos de funcionamiento que son Ios que utiliza la municipalidad para operar, representaron en el 2012 el 33% de ios gastos totales. El promedio nacional para los municipios Categoría "C" fue del 29%.</p>
-		</div>
-	    </div>
-	    <div class="span4">
-		<h2>Fuentes de Financiamiento</h2>	
-	        <div class="span11 graficos-portada">	
-		<div id="fuentes-financiamiento" style="height: 380px;width:280px;"></div>
-		<p>Los gastos de funcionamiento que son Ios que utiliza la municipalidad para operar, representaron en el 2012 el 33% de ios gastos totales. El promedio nacional para los municipios Categoría "C" fue del 29%.</p>
-		</div>
-
-
-{% endblock %}
-
-{% block inversiones_portada %}
-
-<section id="clients" class="main">
-    <div class="container">
-        <div class="row-fluid">
-            <div class="span2">
-                <div class="clearfix">
-                    <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
-                    <div class="pull-right">
-                        <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
-                    </div>
-                </div>
-                <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+        <div class="item">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAGZmZgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Second slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Another example headline.</h1>
+              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
             </div>
-            <div class="span10">
-                <div id="myCarousel" class="carousel slide clients">
-                  <!-- Carousel items -->
-                  <div class="carousel-inner">
-                    <div class="active item">
-                        <div class="row-fluid">
-                            <ul class="thumbnails">
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/puente-caminos.jpg' %}"><br />Caminos, puentes y alcantarillados</a><p>57%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/calles-aceras.jpg' %}"><br />Calles, aceras y andenes</a><p>37%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/fortalecimiento.jpg' %}"><br />Fortalecimiento institucional</a><p>4%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/vivienda.jpg' %}"><br />Viviendas</a><p>1%</p></li>
-                            </ul>
+          </div>
+        </div>
+        <div class="item">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAFVVVQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Third slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>One more for good measure.</h1>
+              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div><!-- /.carousel -->
+
+    <section id="recuadros">
+      <div class="container">
+        <div class="row-fluid col-md-3 col-xs-6">
+            <button class="col-md-3 btn btn-primary">
+                <img src="static/img/burbuja.png"  class="pull-left img-responsive"/>
+                <h3>Item 1</h3>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 col-xs-6 btn btn-success">
+                <img src="static/img/calendar.png"  class="pull-left img-responsive"/>
+                <h3>Item 2</h3>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 col-xs-6 btn btn-info">
+                <img src="static/img/dolar.png" width="70" align="left"/>
+                <h3>Item3</h3>
+                <span class="dolar"></span>
+                <span class="cifra">50%</span>
+            </button>
+            <button class="col-md-3 btn btn-danger">
+                <img src="static/img/comment.png" width="70" align="left"/>
+                <h3>Item 4</h3>
+                <span class="dolar"></span>
+                <span class="cifra">50%</span>
+            </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="graficos">
+        <div class="container">
+	    <div class="row text-center">
+                <div class="col-md-4 col-sm-4">
+                    <h2>Cuanto ingresa?</h2>
+                    <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+                    <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+                </div><!-- /.col-md-4 -->
+                <div class="col-md-4 col-sm-4">
+                    <h2>En que se gasta?</h2>
+                    <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+                </div><!-- /.col-md-4 -->
+                <div class="col-md-4 col-sm-4">
+                  <h2>Fuentes de Financiamiento</h2>
+                  <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+                  <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                  <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+                </div><!-- /.col-md-4 -->
+            </div><!-- /.row -->
+        </div>
+    </section>
+
+    <section id="inversiones" class="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="clearfix">
+                        <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
+                        <div class="pull-right">
+                            <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
                         </div>
                     </div>
-
-                    <div class="item">
-                        <div class="row-fluid">
-                            <ul class="thumbnails">
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/puente-caminos.jpg' %}"><br />Caminos, puentes y alcantarillados</a><p>57%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/calles-aceras.jpg' %}"><br />Calles, aceras y andenes</a><p>37%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/fortalecimiento.jpg' %}"><br />Fortalecimiento institucional</a><p>4%</p></li>
-                                <li class="span3"><a href="#"><img src="{% static 'images/icons/vivienda.jpg' %}"><br />Viviendas</a><p>1%</p></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
                 </div>
-                <!-- /Carousel items -->
-
+		<div class="col-md-10">
+    		    <div id="carousel-inv" class="carousel slide" data-ride="carousel">
+                       <!-- Indicators -->
+                        <ul class="carousel-indicators">
+                            <li data-target="#carousel-inv" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-inv" data-slide-to="1"></li>
+                        </ul>
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item inversion active text-center">
+                                <ul class="thumbnails">
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/puente-caminos.jpg" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/calles-aceras.jpg" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/fortalecimiento.jpg" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/vivienda.jpg" class="img-responsive">Viviendas</a><p>1%</p></li>
+                                </ul>
+                            </div>
+                            <div class="item inversion">
+                                <ul class="thumbnails text-center">
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/puente-caminos.jpg" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/calles-aceras.jpg" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/fortalecimiento.jpg" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
+                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="static/img/vivienda.jpg" class="img-responsive">Viviendas</a><p>%</p></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="left carousel-control" href="#carousel-inv" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-inv" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div><!-- /.carousel -->
+                </div>
             </div>
         </div>
-    </div>
-</div>
-</section>
-<!--Services-->
-<section id="services">
+    </section>
+    <section id="proyectos">
     <div class="container">
-        <div class="center gap">
+        <div class="text-center">
             <h3>Proyectos relevantes ejecutados en 2012</h3>
-            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y alcantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
         </div>
-
         <div class="row-fluid">
-          <div class="span8">
-              <div class="span6">
+          <div class="col-md-8">
+              <div class="col-md-6">
                 <div class="media">
                     <div class="pull-left">
                         <i class="icon-globe icon-medium"></i>
@@ -188,7 +245,7 @@
                     </div>
                 </div>
               </div>            
-              <div class="span6">
+              <div class="col-md-6">
                 <div class="media">
                     <div class="pull-left">
                         <i class="icon-thumbs-up-alt icon-medium"></i>
@@ -200,7 +257,7 @@
                 </div>
               </div>            
 	    </div>
-            <div class="span4">
+            <div class="col-md-4">
                 <div class="media">
                     <div class="pull-left">
                         <i class="icon-leaf icon-medium icon-rounded"></i>
@@ -212,41 +269,55 @@
                 </div>
             </div>
         </div>
-
     </div>
-</section>
-<!--/Services-->
+    </section>
 
-<section id="recent-work">
+    <section id="distribucion">
     <div class="container">
-        <div class="center">
+        <div class="text-center">
             <h2>Distribuci&oacute;n territorial de la inversi&oacute;n</h2>
-            <p class="lead2">En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
+            <p>En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
         </div> 
-	<div class="span12">
-	    <div class="span6">
-		<div class="panel panel-default">
-			<div class="panel-heading">Distribucion por sector</div>
+	<div class="col-md-12">
+	    <div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><h3>Distribucion por sector</h3></div>
 			<div class="panel-body">
-			    <div id="container" style="width:100%; height:500px;"></div>
+	        	    <img src="static/img/grafico-barras.png" width="500" />
 			</div>
 		</div>
 	    </div>
-	    <div class="span5">
-		<div class="panel panel-default">
-			<div class="panel-heading2">Distribucion por comunidad</div>
+	    <div class="col-md-6">
+		<div class="panel panel-success">
+			<div class="panel-heading"><h3>Comportamiento del presupuesto</h3></div>
 			<div class="panel-body">
-	        	    <img src="{% static 'images/mapa-nicaragua.png' %}" width="466" />
-				<div style="width:100%; float:left;">
-				<p><div class="rosado"></div>Presupuesto menor a $</div></p>
-				<p><div class="cafe"></div>Presupuesto menor a $</p>
-				<p><div class="amarillo"></div>Presupuesto menor a $</p>
-				</div>
+	        	    <img src="static/img/grafico-barras.png" width="500" />
 			</div>
-	    </div>
+	    </div>	
 	</div>
     </div>
+   </section>
 
-</section>
 
-{% endblock %}
+
+
+
+      <!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+      </footer>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/assets/js/docs.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="static/assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
