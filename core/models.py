@@ -11,6 +11,11 @@ from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 from lugar.models import *
 
+#class AGO(models.Model):
+#    fecha = models.DateField(null=False)
+#    asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+#    ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
@@ -155,6 +160,7 @@ class Ingreso(models.Model):
 
     class Meta:
         verbose_name_plural = 'Ingresos'
+
     #def __unicode__(self):
     #    return self.ingreso
 

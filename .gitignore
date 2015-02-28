@@ -3,8 +3,12 @@
 .vim*
 .zsh*
 .virtualenvs
+.oh-my-zsh
 environment.sh
+.zcompdump*
 */migrations/
+.z
+.ipython
 
 #typical django gitignore
 

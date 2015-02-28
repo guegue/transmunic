@@ -5,10 +5,90 @@ from datetime import datetime, time
 from django.shortcuts import render_to_response
 from django.db.models import Sum, Max
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart
+from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos
+
+def ago_chart(request):
+    with open ("core/ago.sql", "r") as query_file:
+        sql=query_file.read()
+    municipio_list = Municipio.objects.all()
+    year_list = Ingreso_year_list()
+    periodos = Ingreso_periodos()
+    municipio = request.GET.get('municipio','')
+
+    if municipio:
+        source = IngresoDetalle.objects.raw(sql, [periodos])
+    else:
+        source = IngresoDetalle.objects.raw(sql, [periodos])
+
+    data = RawDataPool(
+           series=
+            [{'options': {'source': source },
+              'terms': [
+                'fecha',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+
+    bar = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'bar',},
+                'terms':{
+                  'fecha': [
+                    'asignado',
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {
+                  'text': u'Autonomía %s ' % (municipio,)},
+                },
+            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            )
+
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+
+def gpersonal_chart(request):
+    municipio_list = Municipio.objects.all()
+    year_list = Gasto_year_list()
+    periodos = Gasto_periodos()
+    municipio = request.GET.get('municipio','')
+
+    if municipio:
+        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=1000000)
+    else:
+        source_barra = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=1000000)
+
+    data = PivotDataPool(
+           series=
+            [{'options': {
+                'source': source_barra,
+                'categories': 'gasto__fecha',
+                'legend_by': 'subtipogasto__nombre',
+                },
+              'terms': {
+                'sum_ejecutado':Sum('ejecutado'),
+                }}
+             ],
+             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+    )
+    chart = PivotChart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'area',
+                  'stacking': True},
+                'terms':['sum_ejecutado']}],
+            chart_options =
+              {'title': {
+                   'text': 'Gastos personal: %s' % (municipio, )},
+              },
+    )
+    return render_to_response('gpersonal.html',{'charts': (chart, ), 'municipio_list': municipio_list})
 
 def gf_chart(request):
     municipio_list = Municipio.objects.all()
@@ -251,7 +331,6 @@ def oim_pie_chart(request):
               })
 
     return render_to_response('oimpiechart.html',{'charts': (ejecutado, asignado, asignado_barra, ), 'year_list': year_list, 'municipio_list': municipio_list})
-    #return render_to_response('oimpiechart.html',{'charts': (ejecutado, asignado, ), 'year_list': year_list, 'municipio_list': municipio_list})
 
 def oim_chart(slug):
     municipio_list = Municipio.objects.all()
