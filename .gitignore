@@ -35,7 +35,8 @@ tmp
 #other ignored files
 
 *.swp
-*.sql
+/*.sql
+/sql
 *.db
 *.sqlite
 wsgi.py

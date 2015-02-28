@@ -11,16 +11,18 @@ from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proy
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos
 
 def ago_chart(request):
-    with open ("core/ago.sql", "r") as query_file:
-        sql=query_file.read()
     municipio_list = Municipio.objects.all()
     year_list = Ingreso_year_list()
     periodos = Ingreso_periodos()
     municipio = request.GET.get('municipio','')
 
     if municipio:
-        source = IngresoDetalle.objects.raw(sql, [periodos])
+        with open ("core/ago_municipio.sql", "r") as query_file:
+            sql=query_file.read()
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, periodos])
     else:
+        with open ("core/ago.sql", "r") as query_file:
+            sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [periodos])
 
     data = RawDataPool(
