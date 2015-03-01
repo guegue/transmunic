@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^gpersonal$', 'core.charts.gpersonal_chart', name='gastos_personal'),
     url(r'^ago$', 'core.charts.ago_chart', name='autonomia_gastos'),
     url(r'^aci$', 'core.charts.aci_chart', name='ahorro_corriente'),
+    url(r'^psd$', 'core.charts.psd_chart', name='peso_deuda'),
 )

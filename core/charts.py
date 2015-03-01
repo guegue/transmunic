@@ -10,6 +10,48 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos
 
+def psd_chart(request):
+    municipio_list = Municipio.objects.all()
+    year_list = Ingreso_year_list()
+    periodos = Ingreso_periodos()
+    municipio = request.GET.get('municipio','')
+    if municipio:
+        with open ("core/psd_municipio.sql", "r") as query_file:
+            sql=query_file.read()
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, periodos])
+    else:
+        with open ("core/psd.sql", "r") as query_file:
+            sql=query_file.read()
+        source = IngresoDetalle.objects.raw(sql, [periodos])
+    data = RawDataPool(
+           series=
+            [{'options': {'source': source },
+              'terms': [
+                'fecha',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+
+    bar = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'bar',},
+                'terms':{
+                  'fecha': [
+                    'asignado',
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {
+                  'text': u'Peso del servicio de la deuda %s ' % (municipio,)},
+                },
+            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            )
+
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+
 def aci_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = Ingreso_year_list()
