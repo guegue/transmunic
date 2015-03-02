@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^ago$', 'core.charts.ago_chart', name='autonomia_gastos'),
     url(r'^aci$', 'core.charts.aci_chart', name='ahorro_corriente'),
     url(r'^psd$', 'core.charts.psd_chart', name='peso_deuda'),
+    url(r'^ep$', 'core.charts.ep_chart', name='ejecucion_presupuesto'),
 )
