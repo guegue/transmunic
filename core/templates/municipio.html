@@ -9,9 +9,9 @@ Presupuesto Municipal: {{ obj.nombre }}
     <div id="myCarousel2" class="carousel slide" data-ride="carousel">
       <!-- Indicators -->
       <ol class="carousel-indicators">
-        <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel2" data-slide-to="1"></li>
-        <li data-target="#myCarousel2" data-slide-to="2"></li>
+        {% for banner in banners %}
+          <li data-target="#myCarousel2" data-slide-to="{{forloop.counter0}}" {% if forloop.first %} class="active"{% endif%}></li>
+        {% endfor %}
       </ol>
       <div class="carousel-inner" role="listbox">
         {% for banner in banners %}
@@ -35,29 +35,29 @@ Presupuesto Municipal: {{ obj.nombre }}
 {% block cajas_portada %}
     <section id="recuadros">
       <div class="container">
-        <div class="row-fluid col-md-3 col-xs-6">
-            <button class="col-md-3 btn btn-primary">
-                <img src="{% static 'img/burbuja.png' %}"  class="pull-left img-responsive"/>
-                <h3>Item 1</h3>
+        <div class="row-fluid">
+              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-primary">
+                <i class="fa fa-street-view fa-4x pull-left"></i>
+                <h3>Poblaci&oacute;n</h3>
                 <span class="cifra">50%</span>
-            </button>
-            <button class="col-md-3 col-xs-6 btn btn-success">
-                <img src="{% static 'img/calendar.png' %}"  class="pull-left img-responsive"/>
+              </button>
+              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-success">
+                <i class="fa fa-building fa-4x pull-left"></i>
                 <h3>Item 2</h3>
                 <span class="cifra">50%</span>
-            </button>
-            <button class="col-md-3 col-xs-6 btn btn-info">
-                <img src="{% static 'img/dolar.png' %}" width="70" align="left"/>
+              </button>
+              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-danger">
+                <i class="fa fa-child fa-4x pull-left"></i>
                 <h3>Item3</h3>
                 <span class="dolar"></span>
                 <span class="cifra">50%</span>
-            </button>
-            <button class="col-md-3 btn btn-danger">
-                <img src="{% static 'img/comment.png' %}" width="70" align="left"/>
-                <h3>Item 4</h3>
+              </button>
+              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-info">
+                <i class="fa fa-child fa-4x pull-left"></i>
+                <h3>Item3</h3>
                 <span class="dolar"></span>
                 <span class="cifra">50%</span>
-            </button>
+              </button>
         </div>
       </div>
     </section>
