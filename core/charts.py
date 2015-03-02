@@ -8,7 +8,83 @@ from django.db.models import Sum, Max
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto
-from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos
+from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos
+
+def inversion(request):
+    municipio_list = Municipio.objects.all()
+    periodos = Inversion_periodos()
+    municipio = request.GET.get('municipio','')
+
+    if municipio:
+        source = Proyecto.objects.filter(inversion__fecha__in=periodos, inversion__municipio__slug=municipio). \
+            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+    else:
+        source = Proyecto.objects.filter(inversion__fecha__in=periodos). \
+            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+
+    data = DataPool(
+           series=
+            [{'options': {
+                'source': source,
+                'categories': 'inversion__fecha',
+                },
+              'terms': ['inversion__fecha', 'ejecutado', 'asignado',]
+            }],
+    )
+    chart = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'bar',
+                  'stacking': True},
+                'terms': {'inversion__fecha': ['asignado', 'ejecutado']}
+                }],
+            chart_options =
+              {'title': {
+                   'text': u'Inversión por años %s' % (municipio, )},
+              },
+            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+    )
+    return render_to_response('gpersonal.html',{'charts': (chart, ), 'municipio_list': municipio_list})
+
+
+def inversion_area_chart(request):
+    municipio_list = Municipio.objects.all()
+    periodos = Inversion_periodos()
+    municipio = request.GET.get('municipio','')
+
+    if municipio:
+        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha__in=periodos)
+    else:
+        source = Proyecto.objects.filter(inversion__fecha__in=periodos)
+
+    data = PivotDataPool(
+           series=
+            [{'options': {
+                'source': source,
+                'categories': 'inversion__fecha',
+                'legend_by': ['areageografica'],
+                },
+              'terms': {
+                'sum_ejecutado':Sum('ejecutado'),
+                'sum_asignado':Sum('asignado'),
+                }}
+             ],
+             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+    )
+    chart = PivotChart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'bar',
+                  'stacking': True},
+                'terms':['sum_ejecutado']}],
+            chart_options =
+              {'title': {
+                   'text': u'Inversión por área %s' % (municipio, )},
+              },
+    )
+    return render_to_response('gpersonal.html',{'charts': (chart, ), 'municipio_list': municipio_list})
 
 def ep_chart(request):
     municipio_list = Municipio.objects.all()
@@ -265,7 +341,7 @@ def gf_chart(request):
     return render_to_response('gfchart.html',{'charts': (gfbar, ), 'municipio_list': municipio_list})
 
 
-def inversion_pie_chart(request):
+def inversion_categoria_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = Inversion.objects.dates('fecha','year')
     year = request.GET.get('year','2014')

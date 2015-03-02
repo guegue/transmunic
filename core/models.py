@@ -244,6 +244,14 @@ class Inversion(models.Model):
 
     class Meta:
         verbose_name_plural = 'Inversion'
+def Inversion_year_list():
+    return Inversion.objects.dates('fecha','year')
+def Inversion_periodos():
+    periodos = []
+    for year in Inversion_year_list():
+        un_periodo = Inversion.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
+        periodos.append( un_periodo['fecha__max'] )
+    return periodos
 
 class Proyecto(models.Model):
     URBANA = 'U'
@@ -262,6 +270,10 @@ class Proyecto(models.Model):
     areageografica = models.CharField(choices=AREA_CHOICES, max_length=1, null=True)
     asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+
+    @property
+    def areageografica_verbose(self):
+        return self.areageografica
 
     class Meta:
         verbose_name_plural = 'Proyectos'
