@@ -17,6 +17,12 @@
     </form>
 
     {{ charts|load_charts:"asignado,ejecutado" }}
-    <div id='asignado'> Chart will be rendered here </div>
-    <div id='ejecutado'> Chart will be rendered here </div>
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <div id='asignado'> Chart will be rendered here </div>
+      </div>
+      <div class="col-md-6">
+        <div id='ejecutado'> Chart will be rendered here </div>
+      </div>
+    </div>
 {% endblock %}

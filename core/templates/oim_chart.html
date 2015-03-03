@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
+{% block titulo %}
+
+{% endblock %}
 {% block main_content %}
     <form method="GET">
     <select name="year">
@@ -17,7 +20,15 @@
     </form>
 
     {{ charts|load_charts:"asignado,ejecutado,asignado_barra" }}
-    <div id='asignado'> Chart will be rendered here </div>
-    <div id='ejecutado'> Chart will be rendered here </div>
-    <div id='asignado_barra'> Chart will be rendered here </div>
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <div id='asignado'> Chart will be rendered here </div>
+      </div>
+      <div class="col-md-6">
+        <div id='ejecutado'> Chart will be rendered here </div>
+      </div>
+    </div>
+    <div class="col-md-12 separador">
+      <div id='asignado_barra'> Chart will be rendered here </div>
+    </div>
 {% endblock %}
