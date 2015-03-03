@@ -3,9 +3,10 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.views.generic.detail import DetailView
+from django.db.models import Sum, Max
 
-from models import Municipio
-from charts import oim_chart
+from models import Municipio, Inversion, Inversion_year_list, Proyecto
+from charts import oim_chart, ogm_chart
 from website.models import Banner
 
 # Create your views here.
@@ -19,9 +20,35 @@ def municipio(request, slug):
     template_name = 'municipio.html'
 
     banners = Banner.objects.filter(municipio__slug=slug)
-    chart_data = oim_chart(slug)
+
+    year_list = Inversion_year_list()
+    year = list(year_list)[-1].year
+
+    data_oim = oim_chart(municipio=slug, year=year)
+    data_ogm = ogm_chart(municipio=slug, year=year)
+
+    periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
+            aggregate(ejecutado=Sum('ejecutado'))
+    inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
+            values('catinversion__slug').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     return render_to_response(template_name, { 'obj': obj, 'banners': banners,
-        'charts': chart_data['charts'], 'year_list': chart_data['year_list'], 'municipio_list': chart_data['municipio_list'],
+        'charts':( data_oim['charts'][1], data_ogm['charts'][1], ),
+        'inversion_categoria': inversion_categoria,
+        'total_inversion': total_inversion,
     })
 
+def ogm_view(request):
+    template_name = 'ogm_chart.html'
+    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year','')
+    data = ogm_chart(municipio=municipio, year=year)
+    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+
+def oim_view(request):
+    template_name = 'oim_chart.html'
+    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year','')
+    data = oim_chart(municipio=municipio, year=year)
+    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})

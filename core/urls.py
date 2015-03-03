@@ -2,8 +2,8 @@ from django.conf.urls import patterns, include, url
 from . import charts
 
 urlpatterns = patterns('',
-    url(r'^oim$', 'core.charts.oim_pie_chart', name='origen_ingresos'),
-    url(r'^ogm$', 'core.charts.ogm_pie_chart', name='origen_gastos'),
+    url(r'^oim$', 'core.views.oim_view', name='origen_ingresos'),
+    url(r'^ogm$', 'core.views.ogm_view', name='origen_gastos'),
     url(r'^inversion-categoria$', 'core.charts.inversion_categoria_chart', name='inversion_categoria'),
     url(r'^gf$', 'core.charts.gf_chart', name='gastos_funcion'),
     url(r'^gpersonal$', 'core.charts.gpersonal_chart', name='gastos_personal'),

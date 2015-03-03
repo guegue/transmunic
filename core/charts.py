@@ -250,7 +250,7 @@ def ago_chart(request):
                 'title': {
                   'text': u'Autonomía %s ' % (municipio,)},
                 },
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+                x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
@@ -331,7 +331,6 @@ def gf_chart(request):
                     'ejecutado']
                   }}],
             chart_options = {
-                #'xAxis': { 'type': 'datetime', 'labels': { 'formatter': 'getYear' } },
                 'title': {
                   'text': 'Gastos de funcionamiento %s ' % (municipio,)},
                 },
@@ -343,8 +342,8 @@ def gf_chart(request):
 
 def inversion_categoria_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Inversion.objects.dates('fecha','year')
-    year = request.GET.get('year','2014')
+    year_list = Inversion_year_list()
+    year = list(year_list)[-1].year
     municipio = request.GET.get('municipio','')
     periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
 
@@ -395,11 +394,11 @@ def inversion_categoria_chart(request):
 
     return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ), 'year_list': year_list, 'municipio_list': municipio_list})
 
-def ogm_pie_chart(request):
+def ogm_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
     year_list = Gasto_year_list()
-    year = request.GET.get('year','2014')
-    municipio = request.GET.get('municipio','')
+    if not year:
+        year = list(year_list)[-1].year
     periodo = Gasto.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
 
     if municipio:
@@ -429,7 +428,8 @@ def ogm_pie_chart(request):
                   }}],
             chart_options =
               {'title': {
-                   'text': 'Gastos asignados: %s %s' % (municipio, year,)},
+                  'text': 'Gastos asignados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
     ejecutado = Chart(
@@ -443,123 +443,52 @@ def ogm_pie_chart(request):
                     'ejecutado']
                   }}],
             chart_options =
-              {'title': {
-                   'text': 'Gastos ejecutados: %s %s' % (municipio, year,)},
+              {
+                  'title': {'text': 'Gastos ejecutados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
-    return render_to_response('ogmpiechart.html',{'charts': (ejecutado, asignado, ), 'year_list': year_list, 'municipio_list': municipio_list})
+    return {'charts': (ejecutado, asignado, ), 'year_list': year_list, 'municipio_list': municipio_list}
 
-def oim_pie_chart(request):
+def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
     year_list = Ingreso_year_list()
-    periodos = Ingreso_periodos()
-    year = request.GET.get('year','2014')
-    municipio = request.GET.get('municipio','')
+    if not year:
+        year = list(year_list)[-1].year
     periodo = Ingreso.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    periodos = Ingreso_periodos()
 
     if municipio:
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha__in=periodos)
+        source_barra = IngresoDetalle.objects.all().values('ingreso__fecha','subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
     else:
         source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        #source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos).values('ingreso__fecha','subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
-
 
     oimdata_barra = PivotDataPool(
            series=
-            [{'options': {
-                'source': source_barra,
-                'categories': 'ingreso__fecha',
-                'legend_by': 'subsubtipoingreso__origen__nombre',
-                },
+            [{'options': {'source': source_barra,
+                        'categories': 'ingreso__fecha',
+                        'legend_by': 'subsubtipoingreso__origen__nombre', },
               'terms': {
-                'sum_ejecutado':Sum('ejecutado'),
-                #'sum_asignado':Sum('asignado'),
-                }}
-             ],
-             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-             )
-    oimdata = DataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'subsubtipoingreso__origen__nombre',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
-
+                  'ejecutado':Sum('ejecutado'),
+                  'asignado':Sum('asignado'),
+                }
+              }],
+            sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+            )
     asignado_barra = PivotChart(
             datasource = oimdata_barra,
             series_options =
               [{'options':{
                   'type': 'column',
                   'stacking': 'percent'},
-                'terms':['sum_ejecutado']}],
+                'terms':['asignado']
+                }],
             chart_options =
-              {'title': {
-                   'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
-              },
-           )
+              {'title': { 'text': 'Ingresos asignados: %s %s' % (municipio, year,)}},
+            )
 
-    asignado = Chart(
-            datasource = oimdata,
-            series_options =
-              [{'options':{
-                  'type': 'pie',
-                  'stacking': False},
-                'terms':{
-                  'subsubtipoingreso__origen__nombre': [
-                    'asignado']
-                  }}],
-            chart_options =
-              {'title': {
-                   'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
-              })
-
-    ejecutado = Chart(
-            datasource = oimdata,
-            series_options =
-              [{'options':{
-                  'type': 'pie',
-                  'stacking': False},
-                'terms':{
-                  'subsubtipoingreso__origen__nombre': [
-                    'ejecutado']
-                  }}],
-            chart_options =
-              {'title': {
-                   'text': 'Ingresos ejecutados: %s %s' % (municipio, year,)},
-              })
-
-    return render_to_response('oimpiechart.html',{'charts': (ejecutado, asignado, asignado_barra, ), 'year_list': year_list, 'municipio_list': municipio_list})
-
-def oim_chart(slug):
-    municipio_list = Municipio.objects.all()
-    year_list = Ingreso.objects.all().dates('fecha','year').distinct()
-    year = '2014'
-    municipio = slug
-    periodo = Ingreso.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-
-    if municipio:
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.all().values('ingreso__fecha','subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-    else:
-        source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.all().values('ingreso__fecha','subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-
-
-    oimdata_barra = DataPool(
-           series=
-            [{'options': {'source': source_barra },
-              'terms': [
-                'ingreso__fecha',
-                'subsubtipoingreso__origen__nombre',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
     oimdata = DataPool(
            series=
             [{'options': {'source': source },
@@ -570,21 +499,6 @@ def oim_chart(slug):
                 ]}
              ])
 
-    asignado_barra = Chart(
-            datasource = oimdata_barra,
-            series_options =
-              [{'options':{
-                  'type': 'column',
-                  'stacking': 'percent'},
-                'terms':{
-                  'ingreso__fecha': [
-                    'asignado']
-                  }}],
-            chart_options =
-              {'title': {
-                   'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
-              })
-
     asignado = Chart(
             datasource = oimdata,
             series_options =
@@ -597,7 +511,8 @@ def oim_chart(slug):
                   }}],
             chart_options =
               {'title': {
-                   'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
+                  'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
     ejecutado = Chart(
@@ -611,8 +526,10 @@ def oim_chart(slug):
                     'ejecutado']
                   }}],
             chart_options =
-              {'title': {
-                   'text': 'Ingresos ejecutados: %s %s' % (municipio, year,)},
-              })
+              {
+                  'title': {'text': 'Ingresos ejecutados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+              }
+    )
 
-    return {'charts': (ejecutado, asignado, ), 'year_list': year_list, 'municipio_list': municipio_list}
+    return {'charts': (ejecutado, asignado, asignado_barra), 'year_list': year_list, 'municipio_list': municipio_list}

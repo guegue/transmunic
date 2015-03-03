@@ -64,11 +64,15 @@ Presupuesto Municipal: {{ obj.nombre }}
 {% endblock %}
 
 {% block main_content %}
-        <!--{{ charts|load_charts:"asignado,ejecutado" }} -->
-        {{ charts|load_charts:"ejecutado" }}
+        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado" }}
         <div class="col-md-4 col-sm-4">
-          <div id='ejecutado'> Chart will be rendered here 
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+          <div id='oim_ejecutado'>
+            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+          <div id='ogm_ejecutado'>
+            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
           </div>
         </div>
 {% endblock %}
@@ -94,22 +98,20 @@ Presupuesto Municipal: {{ obj.nombre }}
                             <li data-target="#carousel-inv" data-slide-to="1"></li>
                         </ul>
                         <div class="carousel-inner" role="listbox">
-                            <div class="item inversion active text-center">
+
+                        {% for i in inversion_categoria %}
+                            {% if forloop.first or forloop.counter0|divisibleby:3 %}
+                            <div class="item inversion {% if forloop.first %}active{% endif %} text-center">
                                 <ul class="thumbnails">
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/puente-caminos.jpg' %}" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/calles-aceras.jpg' %}" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/fortalecimiento.jpg' %}" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/vivienda.jpg' %}" class="img-responsive">Viviendas</a><p>1%</p></li>
+                            {% endif %}
+                                <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/'|add:i.catinversion__slug|add:'.jpg' %}" 
+                                    class="img-responsive">{{ i.catinversion__nombre }}</a><p>{% widthratio i.ejecutado total_inversion.ejecutado 100 %}%</p>
+                                </li>
+                            {% if forloop.last or forloop.counter|divisibleby:3 %}
                                 </ul>
                             </div>
-                            <div class="item inversion">
-                                <ul class="thumbnails text-center">
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/puente-caminos.jpg' %}" class="img-responsive">Caminos, puentes y alcantarillados</a><p>57%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/calles-aceras.jpg' %}" class="img-responsive">Calles, aceras y andenes</a><p>37%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/fortalecimiento.jpg' %}" class="img-responsive">Fortalecimiento institucional</a><p>4%</p></li>
-                                    <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/vivienda.jpg' %}" class="img-responsive">Viviendas</a><p>%</p></li>
-                                </ul>
-                            </div>
+                            {% endif %}
+                        {% endfor %}
                         </div>
                         <a class="left carousel-control" href="#carousel-inv" role="button" data-slide="prev">
                             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
