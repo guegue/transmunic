@@ -33,7 +33,7 @@ def municipio(request, slug):
     total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
             aggregate(ejecutado=Sum('ejecutado'))
     inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
-            values('catinversion__slug').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     return render_to_response(template_name, { 'obj': obj, 'banners': banners,
         'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),

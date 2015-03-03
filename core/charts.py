@@ -35,7 +35,7 @@ def inversion_chart(municipio=None):
             series_options =
               [{'options':{
                   'type': 'bar',
-                  'stacking': True},
+                  'stacking': False},
                 'terms': {'inversion__fecha': ['asignado', 'ejecutado']}
                 }],
             chart_options =
