@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
 from . import charts
 
 urlpatterns = patterns('',
+    url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
     url(r'^oim$', 'core.views.oim_view', name='origen_ingresos'),
     url(r'^ogm$', 'core.views.ogm_view', name='origen_gastos'),
     url(r'^inversion-categoria$', 'core.charts.inversion_categoria_chart', name='inversion_categoria'),
