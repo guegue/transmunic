@@ -100,14 +100,16 @@
                         <div class="carousel-inner" role="listbox">
 
                         {% for i in inversion_categoria %}
-                            {% if forloop.first or forloop.counter0|divisibleby:3 %}
+                            {% if forloop.first or forloop.counter0|divisibleby:4 %}
                             <div class="item inversion {% if forloop.first %}active{% endif %} text-center">
                                 <ul class="thumbnails">
                             {% endif %}
-                                <li class="col-md-3 col-sm-3 col-xs-6"><a href="#"><img src="{% static 'img/'|add:i.catinversion__slug|add:'.jpg' %}" 
-                                    class="img-responsive">{{ i.catinversion__nombre }}</a><p>{% widthratio i.ejecutado total_inversion.ejecutado 100 %}%</p>
+                                <li class="col-md-3 col-sm-3 col-xs-6">
+                                  <div class="circular {{ i.catinversion__slug }}" style="background: url('{% static 'img/'|add:i.catinversion__slug|add:'.png' %}') no-repeat;" class="img-responsive" ></div>
+                                  <a href="#">{{ i.catinversion__nombre }}</a>
+                                  <p>{% widthratio i.ejecutado total_inversion.ejecutado 100 %}%</p>
                                 </li>
-                            {% if forloop.last or forloop.counter|divisibleby:3 %}
+                            {% if forloop.last or forloop.counter|divisibleby:4 %}
                                 </ul>
                             </div>
                             {% endif %}
