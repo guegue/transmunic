@@ -10,10 +10,9 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos
 
-def inversion(request):
+def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
     periodos = Inversion_periodos()
-    municipio = request.GET.get('municipio','')
 
     if municipio:
         source = Proyecto.objects.filter(inversion__fecha__in=periodos, inversion__municipio__slug=municipio). \
@@ -45,13 +44,12 @@ def inversion(request):
               },
             x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
     )
-    return render_to_response('gpersonal.html',{'charts': (chart, ), 'municipio_list': municipio_list})
+    return {'charts': (chart,), 'municipio_list': municipio_list}
 
 
-def inversion_area_chart(request):
+def inversion_area_chart(municipio=None):
     municipio_list = Municipio.objects.all()
     periodos = Inversion_periodos()
-    municipio = request.GET.get('municipio','')
 
     if municipio:
         source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha__in=periodos)
@@ -84,7 +82,7 @@ def inversion_area_chart(request):
                    'text': u'Inversión por área %s' % (municipio, )},
               },
     )
-    return render_to_response('gpersonal.html',{'charts': (chart, ), 'municipio_list': municipio_list})
+    return {'charts': (chart,), 'municipio_list': municipio_list}
 
 def ep_chart(request):
     municipio_list = Municipio.objects.all()

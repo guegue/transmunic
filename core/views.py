@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Inversion_year_list, Proyecto
-from charts import oim_chart, ogm_chart
+from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart
 from website.models import Banner
 
 # Create your views here.
@@ -26,6 +26,8 @@ def municipio(request, slug):
 
     data_oim = oim_chart(municipio=slug, year=year)
     data_ogm = ogm_chart(municipio=slug, year=year)
+    data_inversion = inversion_chart(municipio=slug)
+    data_inversion_area = inversion_area_chart(municipio=slug)
 
     periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
     total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
@@ -34,7 +36,7 @@ def municipio(request, slug):
             values('catinversion__slug').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     return render_to_response(template_name, { 'obj': obj, 'banners': banners,
-        'charts':( data_oim['charts'][1], data_ogm['charts'][1], ),
+        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
     })
@@ -52,3 +54,15 @@ def oim_view(request):
     year = request.GET.get('year','')
     data = oim_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+
+def inversion_view(request):
+    template_name = 'gpersonal.html'
+    municipio = request.GET.get('municipio','')
+    data = inversion_chart(municipio=municipio, year=year)
+    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': municipio_list})
+
+def inversion_area_view(request):
+    template_name = 'gpersonal.html'
+    municipio = request.GET.get('municipio','')
+    data = inversion_area_chart(municipio=municipio, year=year)
+    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': municipio_list})

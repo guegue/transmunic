@@ -13,6 +13,6 @@ urlpatterns = patterns('',
     url(r'^aci$', 'core.charts.aci_chart', name='ahorro_corriente'),
     url(r'^psd$', 'core.charts.psd_chart', name='peso_deuda'),
     url(r'^ep$', 'core.charts.ep_chart', name='ejecucion_presupuesto'),
-    url(r'^inversion-area$', 'core.charts.inversion_area_chart', name='inversion_area'),
-    url(r'^inversion$', 'core.charts.inversion', name='inversion'),
+    url(r'^inversion-area$', 'core.views.inversion_area_view', name='inversion_area'),
+    url(r'^inversion$', 'core.views.inversion_view', name='inversion'),
 )

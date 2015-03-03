@@ -64,7 +64,7 @@
 {% endblock %}
 
 {% block main_content %}
-        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado" }}
+        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area" }}
         <div class="col-md-4 col-sm-4">
           <div id='oim_ejecutado'>
             <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
@@ -183,7 +183,8 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading"><h3>Distribucion por sector</h3></div>
 			<div class="panel-body">
-	        	    <img src="{% static 'img/grafico-barras.png' %}" width="500" />
+              <div id='inversion_area'>
+              </div>
 			</div>
 		</div>
 	    </div>
@@ -191,7 +192,8 @@
 		<div class="panel panel-success">
 			<div class="panel-heading"><h3>Comportamiento del presupuesto</h3></div>
 			<div class="panel-body">
-	        	    <img src="{% static 'img/grafico-barras.png' %}" width="500" />
+              <div id='inversion'>
+              </div>
 			</div>
 	    </div>	
 	</div>
