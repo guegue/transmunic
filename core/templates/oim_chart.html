@@ -19,7 +19,7 @@
     <input type="submit" value="Submit"/>
     </form>
 
-    {{ charts|load_charts:"asignado,ejecutado,asignado_barra" }}
+    {{ charts|load_charts:"asignado,ejecutado,asignado_barra,barra2" }}
     <div class="col-md-12">
       <div class="col-md-6">
         <div id='asignado'> Chart will be rendered here </div>
@@ -30,5 +30,8 @@
     </div>
     <div class="col-md-12 separador">
       <div id='asignado_barra'> Chart will be rendered here </div>
+    </div>
+    <div class="col-md-12 separador">
+      <div id='barra2'> Chart will be rendered here </div>
     </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 from datetime import datetime, time
 
 from django.shortcuts import render_to_response
-from django.db.models import Sum, Max
+from django.db.models import Q, Sum, Max
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
@@ -462,6 +462,11 @@ def oim_chart(municipio=None, year=None):
     else:
         source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
+        #source_barra2 = IngresoDetalle.objects.filter(ingreso__fecha__year__in=list(year_list)[-3:])
+        q = Q()
+        for y in list(year_list)[-3:]:
+            q |= Q(ingreso__fecha__year=y.year)
+        source_barra2 = IngresoDetalle.objects.filter(q)
 
     oimdata_barra = PivotDataPool(
            series=
@@ -484,7 +489,29 @@ def oim_chart(municipio=None, year=None):
                 'terms':['asignado']
                 }],
             chart_options =
-              {'title': { 'text': 'Ingresos asignados: %s %s' % (municipio, year,)}},
+              {'title': { 'text': 'Ingresos asignados %s' % (municipio,)}},
+            )
+    oimdata_barra2 = PivotDataPool(
+           series=
+            [{'options': {'source': source_barra2,
+                        'categories': 'ingreso__fecha',
+                         },
+              'terms': {
+                  'ejecutado':Sum('ejecutado'),
+                  'asignado':Sum('asignado'),
+                }
+              }],
+            )
+    barra2 = PivotChart(
+            datasource = oimdata_barra2,
+            series_options =
+              [{'options':{
+                  'type': 'column',
+                },
+                'terms':['asignado','ejecutado']
+                }],
+            chart_options =
+              {'title': { 'text': 'Ingresos por periodo %s' % (municipio,)}},
             )
 
     oimdata = DataPool(
@@ -530,4 +557,4 @@ def oim_chart(municipio=None, year=None):
               }
     )
 
-    return {'charts': (ejecutado, asignado, asignado_barra), 'year_list': year_list, 'municipio_list': municipio_list}
+    return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'year_list': year_list, 'municipio_list': municipio_list}
