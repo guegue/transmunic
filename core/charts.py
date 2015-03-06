@@ -183,7 +183,7 @@ def ep_chart(request):
 def psd_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = Ingreso_year_list()
-    periodos = Ingreso_periodos()
+    periodos = list(Ingreso_periodos())[:-1]
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/psd_municipio.sql", "r") as query_file:
