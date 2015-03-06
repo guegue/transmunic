@@ -56,13 +56,13 @@ def oim_view(request):
     return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
 
 def inversion_view(request):
-    template_name = 'gpersonal.html'
+    template_name = 'inversion.html'
     municipio = request.GET.get('municipio','')
     data = inversion_chart(municipio=municipio)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list']})
 
 def inversion_area_view(request):
-    template_name = 'gpersonal.html'
+    template_name = 'inversionarea.html'
     municipio = request.GET.get('municipio','')
     data = inversion_area_chart(municipio=municipio)
     return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list']})

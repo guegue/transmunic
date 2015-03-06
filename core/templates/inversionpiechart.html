@@ -16,7 +16,8 @@
     <input type="submit" value="Submit"/>
     </form>
 
-    {{ charts|load_charts:"asignado,ejecutado" }}
+    {{ charts|load_charts:"asignado,ejecutado,ultimos" }}
     <div id='asignado'> Chart will be rendered here </div>
     <div id='ejecutado'> Chart will be rendered here </div>
+    <div id='ultimos'> Chart will be rendered here </div>
 {% endblock %}

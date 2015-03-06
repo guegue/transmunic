@@ -10,8 +10,7 @@
     </select>
     <input type="submit" value="Submit"/>
     </form>
-
-    {{ charts|load_charts:"gfbar,barra" }}
-    <div id='gfbar'> Chart will be rendered here </div>
+    {{ charts|load_charts:"chart,barra" }}
+    <div id='chart'> Chart will be rendered here </div>
     <div id='barra'> Chart will be rendered here </div>
 {% endblock %}
