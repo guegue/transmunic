@@ -459,6 +459,10 @@ def oim_chart(municipio=None, year=None):
     if municipio:
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos, ingreso__municipio__slug=municipio)
+        q = Q()
+        for y in list(year_list)[-3:]:
+            q |= Q(ingreso__fecha__year=y.year)
+        source_barra2 = IngresoDetalle.objects.filter(q, ingreso__municipio__slug=municipio)
     else:
         source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
