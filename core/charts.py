@@ -538,13 +538,13 @@ def ogm_chart(municipio=None, year=None):
     periodo = Gasto.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
 
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('subsubtipogasto__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipogasto__origen')
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
         source_barra = GastoDetalle.objects.filter(q, gasto__municipio__slug=municipio)
     else:
-        source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('subsubtipogasto__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipogasto__origen')
+        source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
@@ -577,7 +577,7 @@ def ogm_chart(municipio=None, year=None):
            series=
             [{'options': {'source': source },
               'terms': [
-                'subsubtipogasto__origen__nombre',
+                'tipogasto__nombre',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -590,7 +590,7 @@ def ogm_chart(municipio=None, year=None):
                   'type': 'pie',
                   'stacking': False},
                 'terms':{
-                  'subsubtipogasto__origen__nombre': [
+                  'tipogasto__nombre': [
                     'asignado']
                   }}],
             chart_options =
@@ -606,7 +606,7 @@ def ogm_chart(municipio=None, year=None):
                   'type': 'pie',
                   'stacking': False},
                 'terms':{
-                  'subsubtipogasto__origen__nombre': [
+                  'tipogasto__nombre': [
                     'ejecutado']
                   }}],
             chart_options =
