@@ -16,13 +16,16 @@
     <input type="submit" value="Submit"/>
     </form>
 
-    {{ charts|load_charts:"asignado,ejecutado,barra" }}
+    {{ charts|load_charts:"ejecutado,asignado,asignado_barra,barra" }}
     <div class="col-md-12">
+      <div class="col-md-6">
+        <div id='ejecutado'> Chart will be rendered here </div>
+      </div>
       <div class="col-md-6">
         <div id='asignado'> Chart will be rendered here </div>
       </div>
       <div class="col-md-6">
-        <div id='ejecutado'> Chart will be rendered here </div>
+        <div id='asignado_barra'> Chart will be rendered here </div>
       </div>
       <div class="col-md-6">
         <div id='barra'> Chart will be rendered here </div>

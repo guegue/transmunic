@@ -536,6 +536,7 @@ def ogm_chart(municipio=None, year=None):
     if not year:
         year = list(year_list)[-1].year
     periodo = Gasto.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    periodos = Gasto_periodos()
 
     if municipio:
         source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
@@ -543,14 +544,39 @@ def ogm_chart(municipio=None, year=None):
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
         source_barra = GastoDetalle.objects.filter(q, gasto__municipio__slug=municipio)
+        source_pivot = GastoDetalle.objects.filter(gasto__fecha__in=periodos, gasto__municipio__slug=municipio)
     else:
         source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
         source_barra = GastoDetalle.objects.filter(q)
+        source_pivot = GastoDetalle.objects.filter(gasto__fecha__in=periodos)
 
 
+    pivot_barra = PivotDataPool(
+           series=
+            [{'options': {'source': source_pivot,
+                        'categories': 'gasto__fecha',
+                        'legend_by': 'tipogasto__nombre', },
+              'terms': {
+                  'ejecutado':Sum('ejecutado'),
+                  'asignado':Sum('asignado'),
+                }
+              }],
+            sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+            )
+    asignado_barra = PivotChart(
+            datasource = pivot_barra,
+            series_options =
+              [{'options':{
+                  'type': 'column',
+                  'stacking': 'percent'},
+                'terms':['asignado']
+                }],
+            chart_options =
+              {'title': { 'text': 'Gastos asignados por tipo %s' % (municipio,)}},
+            )
     ogmdata_barra = PivotDataPool(
            series=
             [{'options': {'source': source_barra,
@@ -615,7 +641,7 @@ def ogm_chart(municipio=None, year=None):
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
-    return {'charts': (ejecutado, asignado, barra), 'year_list': year_list, 'municipio_list': municipio_list}
+    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'year_list': year_list, 'municipio_list': municipio_list}
 
 def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
@@ -662,7 +688,7 @@ def oim_chart(municipio=None, year=None):
                 'terms':['asignado']
                 }],
             chart_options =
-              {'title': { 'text': 'Ingresos asignados %s' % (municipio,)}},
+              {'title': { 'text': 'Ingresos asignados por origen %s' % (municipio,)}},
             )
     oimdata_barra2 = PivotDataPool(
            series=
