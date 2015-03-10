@@ -33,7 +33,6 @@ class Municipio(models.Model):
     nombre = models.CharField(max_length=120)
     depto = models.ForeignKey(Departamento, related_name='departamento')
     slug = AutoSlugField(populate_from='nombre')
-    poblacion = models.IntegerField()
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
 
@@ -57,3 +56,10 @@ class Comarca(models.Model):
     def __unicode__(self):
         return self.nombre
 
+class Poblacion(models.Model):
+    municipio = models.ForeignKey(Municipio)
+    anio = models.IntegerField()
+    poblacion = models.IntegerField()
+
+    class Meta:
+        ordering = ['anio']
