@@ -49,7 +49,7 @@ def fuentes_chart(municipio=None, year=None):
                   'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
-    return {'charts': (asignado), 'year_list': year_list, 'municipio_list': municipio_list}
+    return {'charts': (asignado,), 'year_list': year_list, 'municipio_list': municipio_list}
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()

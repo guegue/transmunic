@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
@@ -5,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Municipio, Inversion, Inversion_year_list, Proyecto
+from models import Municipio, Inversion, Inversion_year_list, Proyecto, InversionFuente_year_list
 from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart
 from website.models import Banner
 
@@ -13,6 +14,11 @@ from website.models import Banner
 def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
+
+    # InversionFuente tiene su propio último año
+    year_list = InversionFuente_year_list()
+    year = list(year_list)[-1].year
+    data_fuentes = fuentes_chart(year=year)
 
     year_list = Inversion_year_list()
     year = list(year_list)[-1].year
@@ -29,7 +35,9 @@ def home(request):
             values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     return render_to_response(template_name, { 'banners': banners,
-        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
+        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0],
+            data_fuentes['charts'][0],
+            ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
     })

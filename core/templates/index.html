@@ -63,21 +63,21 @@
 {% endblock %}
 
 {% block main_content %}
-        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area" }}
+        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
           <h2>Cuanto ingresa?</h2>
           <div id='oim_ejecutado'>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
           <h2>En que se gasta?</h2>
           <div id='ogm_ejecutado'>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
           <h2>Fuentes de Financiamiento</h2>
+          <div id='fuentes'>
+          </div>
         </div>
 {% endblock %}
 
