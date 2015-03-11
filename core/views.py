@@ -12,7 +12,26 @@ from website.models import Banner
 # Create your views here.
 def home(request):
     template_name = 'index.html'
-    return render_to_response(template_name, {
+    banners = Banner.objects.all()
+
+    year_list = Inversion_year_list()
+    year = list(year_list)[-1].year
+
+    data_oim = oim_chart(year=year)
+    data_ogm = ogm_chart(year=year)
+    data_inversion = inversion_chart()
+    data_inversion_area = inversion_area_chart()
+
+    periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    total_inversion = Proyecto.objects.filter(inversion__fecha=periodo). \
+            aggregate(ejecutado=Sum('ejecutado'))
+    inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, ). \
+            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+
+    return render_to_response(template_name, { 'banners': banners,
+        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
+        'inversion_categoria': inversion_categoria,
+        'total_inversion': total_inversion,
     })
 
 def municipio(request, slug):
