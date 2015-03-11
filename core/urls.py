@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^ep$', 'core.charts.ep_chart', name='ejecucion_presupuesto'),
     url(r'^inversion-area$', 'core.views.inversion_area_view', name='inversion_area'),
     url(r'^inversion$', 'core.views.inversion_view', name='inversion'),
+    url(r'^fuentes$', 'core.views.fuentes_view', name='fuentes'),
 )

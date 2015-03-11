@@ -7,8 +7,49 @@ from django.db.models import Q, Sum, Max
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto
-from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos
+from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle
+from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
+
+def fuentes_chart(municipio=None, year=None):
+    municipio_list = Municipio.objects.all()
+    year_list = InversionFuente_year_list()
+    if not year:
+        year = list(year_list)[-1].year
+    periodos = InversionFuente_periodos()
+    periodo = InversionFuente.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    if municipio:
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__fecha=periodo).\
+                values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
+    else:
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__fecha=periodo).\
+                values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
+
+    data = DataPool(
+           series=
+            [{'options': {'source': source },
+              'terms': [
+                'fuente__nombre',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+
+    asignado = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{
+                  'type': 'pie',
+                  },
+                'terms':{
+                  'fuente__nombre': [
+                    'asignado']
+                  }}],
+            chart_options =
+              {'title': {
+                  'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+              })
+    return {'charts': (asignado), 'year_list': year_list, 'municipio_list': municipio_list}
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()

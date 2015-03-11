@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Inversion_year_list, Proyecto
-from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart
+from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart
 from website.models import Banner
 
 # Create your views here.
@@ -85,3 +85,10 @@ def inversion_area_view(request):
     municipio = request.GET.get('municipio','')
     data = inversion_area_chart(municipio=municipio)
     return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list']})
+
+def fuentes_view(request):
+    template_name = 'fuentes_chart.html'
+    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year','')
+    data = fuentes_chart(municipio=municipio, year=year)
+    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})

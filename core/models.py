@@ -303,3 +303,13 @@ class InversionFuenteDetalle(models.Model):
     class Meta:
         verbose_name_plural = 'Detalle de inversion por fuente'
         ordering = ['inversionfuente']
+
+def InversionFuente_year_list():
+    return InversionFuente.objects.dates('fecha','year')
+def InversionFuente_periodos():
+    periodos = []
+    for year in InversionFuente_year_list():
+        un_periodo = InversionFuente.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
+        periodos.append( un_periodo['fecha__max'] )
+    return periodos
+
