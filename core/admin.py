@@ -30,6 +30,17 @@ class IngresoDetalleInline(admin.TabularInline):
     class Meta:
         localized_fields = ('__all__')
 
+class InversionFuenteDetalleInline(admin.TabularInline):
+    model = InversionFuenteDetalle
+    extra = 1
+    class Meta:
+        localized_fields = ('__all__')
+
+class InversionFuenteAdmin(admin.ModelAdmin):
+    list_display = ('municipio','departamento','fecha')
+    inlines = [InversionFuenteDetalleInline]
+    list_filter = ('fecha','departamento','municipio')
+
 
 class IngresoAdmin(admin.ModelAdmin):
     inlines = [IngresoDetalleInline]
@@ -56,8 +67,9 @@ admin.site.register(OrigenGasto)
 admin.site.register(TipoIngreso)
 admin.site.register(SubSubTipoIngreso, SubSubTipoIngresoAdmin)
 admin.site.register(SubTipoIngreso, SubTipoIngresoAdmin)
+admin.site.register(TipoFuenteFmto)
 admin.site.register(FuenteFmto)
-admin.site.register(Donante)
+admin.site.register(InversionFuente,InversionFuenteAdmin)
 admin.site.register(Inversion,InversionAdmin)
 admin.site.register(Proyecto)
 admin.site.register(Ingreso,IngresoAdmin)

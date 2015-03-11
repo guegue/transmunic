@@ -133,24 +133,6 @@ class SubSubTipoIngreso(models.Model):
     def __unicode__(self):
         return self.nombre
 
-class FuenteFmto(models.Model):
-    nombre = models.CharField(max_length=250)
-    slug = AutoSlugField(populate_from='nombre')
-
-    class Meta:
-        verbose_name_plural = 'Fuentes de financiamiento'
-        ordering = ['nombre']
-    def __unicode__(self):
-        return self.nombre
-
-class Donante(models.Model):
-    nombre = models.CharField(max_length=200)
-    descripcion = models.CharField(max_length=500, null=True, blank=True)
-    enlace = models.CharField(max_length=200, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.nombre
-
 # Ingresos del municipio
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
@@ -280,3 +262,44 @@ class Proyecto(models.Model):
     def __unicode__(self):
         return self.nombre
 
+#financiamiento
+class TipoFuenteFmto(models.Model):
+    nombre = models.CharField(max_length=250)
+    slug = AutoSlugField(populate_from='nombre')
+
+    class Meta:
+        verbose_name_plural = 'Tipos de Fuentes de financiamiento'
+        ordering = ['nombre']
+    def __unicode__(self):
+        return self.nombre
+
+class FuenteFmto(models.Model):
+    nombre = models.CharField(max_length=250)
+    slug = AutoSlugField(populate_from='nombre')
+    tipofuente = models.ForeignKey(TipoFuenteFmto)
+
+    class Meta:
+        verbose_name_plural = 'Fuentes de financiamiento'
+        ordering = ['nombre']
+    def __unicode__(self):
+        return self.nombre
+
+# Ingresos del municipio
+class InversionFuente(models.Model):
+    fecha = models.DateField(null=False)
+    departamento = models.ForeignKey(Departamento)
+    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Inversion de fuentes de financiamiento'
+
+class InversionFuenteDetalle(models.Model):
+    inversionfuente = models.ForeignKey(InversionFuente)
+    tipofuente = models.ForeignKey(TipoFuenteFmto)
+    fuente = ChainedForeignKey(FuenteFmto,chained_field='tipofuente',chained_model_field='tipofuente', null=True, blank=True)
+    asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+
+    class Meta:
+        verbose_name_plural = 'Detalle de inversion por fuente'
+        ordering = ['inversionfuente']
