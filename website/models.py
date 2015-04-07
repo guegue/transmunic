@@ -1,6 +1,7 @@
 from django.db import models
 from core.models import Municipio
 from sorl.thumbnail import ImageField
+from autoslug import AutoSlugField
 
 # Create your models here.
 class Banner(models.Model):
@@ -16,4 +17,27 @@ class Banner(models.Model):
         ordering = ['orden']
     def __unicode__(self):
         return self.titulo
+
+class TipoDoc(models.Model):
+    titulo = models.CharField(max_length=120)
+    slug = AutoSlugField(populate_from='titulo')
+
+    def __unicode__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = 'Tipo'
+
+class Documento(models.Model):
+    tipo = models.ForeignKey(TipoDoc,related_name="Tipo")
+    fecha = models.DateField('fecha',blank=True,null=True)
+    descripcion = models.TextField(),
+    archivo =  models.FileField(upload_to='documentos', blank=True, null=True)
+
+    def __unicode__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = 'Documentos'
+        verbose_name_plural = 'Documentos'
 
