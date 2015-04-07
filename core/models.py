@@ -222,6 +222,7 @@ class TipoProyecto(models.Model):
 class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
+    nombremunic = models.CharField(max_length=250)
     fecha = models.DateField(null=False)
 
     class Meta:
