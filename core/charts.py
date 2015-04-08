@@ -3,14 +3,58 @@
 from datetime import datetime, time
 
 from django.shortcuts import render_to_response
-from django.db.models import Q, Sum, Max
+from django.db.models import Q, Sum, Max, Min
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle
+from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
 
-def fuentes_chart(municipio=None, year=None):
+#def inversion_minima_sector_chart(municipio=None, year=None):
+def inversion_minima_sector_chart(request):
+    year = None
+    municipio_list = Municipio.objects.all()
+    year_list = Inversion_year_list()
+    if not year:
+        year = list(year_list)[-2].year
+    periodo_inicial = Inversion.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
+    periodo_final = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+    source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+    source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
+    total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial).aggregate(total=Sum('asignado'))
+    for record in source:
+        record['ejecutado'] = source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
+        record['asignado'] = source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
+        record['minimo'] = total_asignado['total'] * (record['minimo']/100)
+    data = RawDataPool(
+           series=
+            [{'options': {'source': source },
+              'terms': [
+                'nombre',
+                'minimo',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+
+    chart = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{ 'type': 'column', },
+                'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] }
+              }],
+            chart_options =
+              {'title': {
+                  #'text': 'Gasto minimo: %s %s' % (municipio, year,)},
+                  'text': 'Gasto minimo'},
+              })
+    #return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
+    return render_to_response('agochart.html',{'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list})
+
+
+
+def fuentes_chart(municipio=None,year=None):
     municipio_list = Municipio.objects.all()
     year_list = InversionFuente_year_list()
     if not year:
@@ -483,7 +527,7 @@ def gf_chart(request):
                     'ejecutado']
                   }}],
             chart_options = {
-                'title': {'text': 'Gastos de funcionamiento %s ' % (municipio,)},
+                'title': {'text': 'Gastos de funcionamiento año %s ' % (municipio,)},
                 },
             x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )

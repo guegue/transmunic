@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, Max
+from django.db.models import Sum, Max, Min
 
 from autoslug import AutoSlugField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
@@ -19,9 +19,11 @@ from lugar.models import *
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
+    minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,blank=True)
 
     class Meta:
         verbose_name_plural = 'Categorias de inversion'
+        verbose_name = 'Categoria de inversion'
         ordering = ['nombre']
     def __unicode__(self):
         return u'%s' % (self.nombre,)
