@@ -408,15 +408,44 @@ def gpersonal_chart(request):
     year_list = Gasto_year_list()
     periodos = Gasto_periodos()
     municipio = request.GET.get('municipio','')
-    actual='2015'
+    year_list = Gasto_year_list()
+    periodos = Gasto_periodos()
+    year = request.GET.get('year', None)
+    if not year:
+        year = list(year_list)[-2].year
 
     if municipio:
-        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=1000000)
-        source_ejecutado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=1000000).exclude(gasto__fecha__year=actual)
+        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL)
+        source_ejecutado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL).exclude(gasto__fecha__year=year)
     else:
-        source_barra = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=1000000)
-        source_ejecutado = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=1000000).exclude(gasto__fecha__year=actual)
+        source_barra = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL)
+        source_ejecutado = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL).exclude(gasto__fecha__year=year)
 
+        # chart: porcentage gastos de personal
+        periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
+        source_pgp_asignado =  GastoDetalle.objects.filter(gasto__fecha=periodo_inicial, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        source_pgp_asignado['nombre'] = 'Personal'
+        otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        otros_asignado['nombre'] = 'Otros'
+        source_pgp = [source_pgp_asignado, otros_asignado]
+        print source_pgp
+
+    data_pgf = RawDataPool(
+           series = [{
+              'options': {'source': source_pgp },
+              'terms': [ 'nombre', 'asignado', ]
+            }]
+    )
+    pie = Chart(
+            datasource = data_pgf,
+            series_options = [{
+                'options': {'type': 'pie',},
+                'terms': {'nombre': ['asignado']}
+            }],
+            chart_options = {
+                'title': {'text': 'Gastos de personal %s %s ' % (municipio, year,)},
+            },
+    )
     data_ejecutado = PivotDataPool(
            series=
             [{'options': {
@@ -463,7 +492,7 @@ def gpersonal_chart(request):
             chart_options =
               {'title': {'text': 'Gastos asignados personal: %s' % (municipio, )}},
     )
-    return render_to_response('gpersonal.html',{'charts': (chart, chart_ejecutado), 'municipio_list': municipio_list})
+    return render_to_response('gpersonal.html',{'charts': (chart, chart_ejecutado, pie), 'municipio_list': municipio_list, 'year_list': year_list})
 
 def gf_chart(request):
     municipio_list = Municipio.objects.all()
@@ -501,7 +530,6 @@ def gf_chart(request):
         otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
-        print source_pgf
 
     data_pgf = RawDataPool(
            series = [{

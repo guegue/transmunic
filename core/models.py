@@ -39,6 +39,7 @@ class OrigenGasto(models.Model):
         return self.nombre
 
 class TipoGasto(models.Model):
+    PERSONAL = 1000000
     CORRIENTE = 0
     CAPITAL = 1
     CLASIFICACION_CHOICES = (
