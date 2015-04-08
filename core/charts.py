@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from itertools import chain
 from datetime import datetime, time
 
 from django.shortcuts import render_to_response
@@ -12,17 +13,26 @@ from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_p
 
 #def inversion_minima_sector_chart(municipio=None, year=None):
 def inversion_minima_sector_chart(request):
-    year = None
+    municipio = request.GET.get('municipio', None)
+    year = request.GET.get('year', None)
     municipio_list = Municipio.objects.all()
     year_list = Inversion_year_list()
     if not year:
         year = list(year_list)[-2].year
     periodo_inicial = Inversion.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
     periodo_final = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-    source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
-    source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-    total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial).aggregate(total=Sum('asignado'))
+
+    if municipio:
+        source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
+        total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
+    else:
+        source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
+        total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial).aggregate(total=Sum('asignado'))
+
     for record in source:
         record['ejecutado'] = source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
         record['asignado'] = source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
@@ -46,11 +56,10 @@ def inversion_minima_sector_chart(request):
               }],
             chart_options =
               {'title': {
-                  #'text': 'Gasto minimo: %s %s' % (municipio, year,)},
-                  'text': 'Gasto minimo'},
+                  'text': u'Gasto mínimo por sector %s %s' % (municipio, year,)},
               })
     #return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
-    return render_to_response('agochart.html',{'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list})
+    return render_to_response('chart.html',{'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list})
 
 
 
@@ -458,9 +467,12 @@ def gpersonal_chart(request):
 
 def gf_chart(request):
     municipio_list = Municipio.objects.all()
+    municipio = request.GET.get('municipio', None)
     year_list = Gasto_year_list()
     periodos = Gasto_periodos()
-    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year', None)
+    if not year:
+        year = list(year_list)[-2].year
     if municipio:
         source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
@@ -482,15 +494,37 @@ def gf_chart(request):
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
+        # chart: porcentage gastos de funcionamiento
+        periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
+        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__fecha=periodo_inicial, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado['nombre'] = 'Funcionamiento'
+        otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        otros_asignado['nombre'] = 'Otros'
+        source_pgf = [source_pgf_asignado, otros_asignado]
+        print source_pgf
+
+    data_pgf = RawDataPool(
+           series = [{
+              'options': {'source': source_pgf },
+              'terms': [ 'nombre', 'asignado', ]
+            }]
+    )
+    pie = Chart(
+            datasource = data_pgf,
+            series_options = [{
+                'options': {'type': 'pie',},
+                'terms': {'nombre': ['asignado']}
+            }],
+            chart_options = {
+                'title': {'text': 'Gastos de funcionamiento %s %s ' % (municipio, year,)},
+            },
+    )
     data_barra = DataPool(
-           series=
-            [{'options': {'source': source_barra },
-              'terms': [
-                'gasto__fecha',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
+           series = [{
+              'options': {'source': source_barra },
+              'terms': [ 'gasto__fecha', 'ejecutado', 'asignado', ]
+            }]
+    )
 
     barra = Chart(
             datasource = data_barra,
@@ -532,7 +566,7 @@ def gf_chart(request):
             x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('gfchart.html',{'charts': (gfbar, barra,), 'municipio_list': municipio_list})
+    return render_to_response('gfchart.html',{'charts': (gfbar, barra, pie), 'municipio_list': municipio_list})
 
 
 def inversion_categoria_chart(request):
