@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
 {% block main_content %}
+    <div id="span12 search">
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
@@ -15,7 +16,8 @@
     </select>
     <input type="submit" value="Submit"/>
     </form>
-
+    </div>
+    <div class="clearfix"></div>
     {{ charts|load_charts:"gfbar,barra,pie" }}
     <div id='gfbar'></div>
     <div id='barra'></div>
