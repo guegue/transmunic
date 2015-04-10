@@ -89,7 +89,7 @@ def fuentes_chart(municipio=None,year=None):
               }],
             chart_options =
               {'title': {
-                  'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
+                  'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
     asignado_portada = Chart(
@@ -100,7 +100,7 @@ def fuentes_chart(municipio=None,year=None):
               }],
             chart_options =
               {'title': {
-                  'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
+                  'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
     return {'charts': (asignado, asignado_portada), 'year_list': year_list, 'municipio_list': municipio_list}
@@ -506,6 +506,7 @@ def gf_chart(request):
         year = list(year_list)[-2].year
     periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
 
+    from collections import OrderedDict #FIXME move up
     if municipio:
         source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
@@ -521,8 +522,10 @@ def gf_chart(request):
         for record in source_inicial:
             record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
             record['promedio'] = gasto_promedio.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['asignado']
+
         source = source_inicial
-        print source
+        #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
+        #print source
             
         # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
         source_barra = GastoDetalle.objects.filter( gasto__fecha__in=periodos_iniciales, \
@@ -787,7 +790,7 @@ def ogm_chart(municipio=None, year=None):
                   }}],
             chart_options =
               {'title': {
-                  'text': 'Gastos asignados: %s %s' % (municipio, year,)},
+                  'text': 'Destino de los gastos %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
@@ -897,7 +900,7 @@ def oim_chart(municipio=None, year=None):
                   }}],
             chart_options =
               {'title': {
-                  'text': 'Ingresos asignados: %s %s' % (municipio, year,)},
+                  'text': 'Origen de los ingresos %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
