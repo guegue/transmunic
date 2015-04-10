@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block titulo %}
+{{ obj.nombre }}
+{% endblock %}
 {% load static thumbnail chartit %}
 {% block main_content %}
     <form method="GET">
