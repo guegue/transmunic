@@ -3,7 +3,9 @@
 {% block titulo %}
 
 {% endblock %}
+
 {% block main_content %}
+    <h1>Origen de los ingresos </h1>
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
@@ -18,20 +20,38 @@
     </select>
     <input type="submit" value="Submit"/>
     </form>
-
+  
     {{ charts|load_charts:"asignado,ejecutado,asignado_barra,barra2" }}
-    <div class="col-md-12">
-      <div class="col-md-6">
-        <div id='asignado'> Chart will be rendered here </div>
+    <ul id="oimTab" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
+        <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones del presupuesto</a></li>
+        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
+    </ul>
+    <div id="oimTabContent" class="tab-content">
+      <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div id='ejecutado'> Chart will be rendered here </div>
+          </div>
+          <div class="col-md-6">
+            <div id='asignado'> Chart will be rendered here </div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <div id='ejecutado'> Chart will be rendered here </div>
+      <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
+          <div id='barra2'> Chart will be rendered here </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
+          <div id='asignado_barra'> Chart will be rendered here </div>
       </div>
     </div>
-    <div class="col-md-12 separador">
-      <div id='asignado_barra'> Chart will be rendered here </div>
-    </div>
-    <div class="col-md-12 separador">
-      <div id='barra2'> Chart will be rendered here </div>
-    </div>
+
+
 {% endblock %}
+
+<script>
+$('#oimTab a').click(function (e) {
+  e.preventDefault()
+    $(this).tab('show')
+    })
+</script>

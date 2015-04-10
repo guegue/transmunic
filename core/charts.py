@@ -76,33 +76,34 @@ def fuentes_chart(municipio=None,year=None):
     else:
         source = InversionFuenteDetalle.objects.filter(inversionfuente__fecha=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__fecha=periodo).\
+                values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
 
-    data = DataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'fuente__nombre',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
-
+    data = DataPool(series = [{'options': {'source': source }, 'terms': ['fuente__nombre', 'ejecutado', 'asignado', ]}])
+    data_portada = DataPool(series = [{'options': {'source': source_portada }, 'terms': ['fuente__tipofuente__nombre', 'ejecutado', 'asignado', ]}])
     asignado = Chart(
             datasource = data,
             series_options =
-              [{'options':{
-                  'type': 'pie',
-                  },
-                'terms':{
-                  'fuente__nombre': [
-                    'asignado']
-                  }}],
+              [{'options':{'type': 'pie'},
+                'terms':{'fuente__nombre': ['asignado']}
+              }],
             chart_options =
               {'title': {
                   'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
-    return {'charts': (asignado,), 'year_list': year_list, 'municipio_list': municipio_list}
+    asignado_portada = Chart(
+            datasource = data_portada,
+            series_options =
+              [{'options':{'type': 'pie'},
+                'terms':{'fuente__tipofuente__nombre': ['asignado']}
+              }],
+            chart_options =
+              {'title': {
+                  'text': 'InversionFuente asignados: %s %s' % (municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+              })
+    return {'charts': (asignado, asignado_portada), 'year_list': year_list, 'municipio_list': municipio_list}
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
@@ -498,12 +499,15 @@ def gf_chart(request):
     municipio_list = Municipio.objects.all()
     municipio = request.GET.get('municipio', None)
     year_list = Gasto_year_list()
-    periodos = Gasto_periodos()
+    periodos_iniciales = Gasto_periodos(inicial=True)
+    periodos_finales = Gasto_periodos()
     year = request.GET.get('year', None)
     if not year:
         year = list(year_list)[-2].year
+    periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
+
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, \
+        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         q = Q()
@@ -513,18 +517,28 @@ def gf_chart(request):
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
-        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos, \
+        source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE).\
+            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        for record in source_inicial:
+            record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
+        source = source_inicial
+
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
-        source_barra = GastoDetalle.objects.filter(q, \
+        # FIXME: cómo se hace en estos casos de periodos??????? inicial o final?
+        source_barra_inicial = GastoDetalle.objects.filter(q, gasto__fecha__in=periodos_iniciales, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE).\
+            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_barra_final = GastoDetalle.objects.filter(q, gasto__fecha__in=periodos_finales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # chart: porcentage gastos de funcionamiento
-        periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
         source_pgf_asignado =  GastoDetalle.objects.filter(gasto__fecha=periodo_inicial, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         source_pgf_asignado['nombre'] = 'Funcionamiento'
         otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
@@ -549,7 +563,7 @@ def gf_chart(request):
     )
     data_barra = DataPool(
            series = [{
-              'options': {'source': source_barra },
+              'options': {'source': source_barra_final },
               'terms': [ 'gasto__fecha', 'ejecutado', 'asignado', ]
             }]
     )
@@ -568,7 +582,7 @@ def gf_chart(request):
                 'title': {'text': 'Gastos de funcionamiento %s ' % (municipio,)},
                 },
             )
-    data = DataPool(
+    data = RawDataPool(
            series=
             [{'options': {'source': source },
               'terms': [
@@ -808,11 +822,7 @@ def oim_chart(municipio=None, year=None):
     else:
         source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
-        #source_barra2 = IngresoDetalle.objects.filter(ingreso__fecha__year__in=list(year_list)[-3:])
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(ingreso__fecha__year=y.year)
-        source_barra2 = IngresoDetalle.objects.filter(q)
+        source_barra2 = IngresoDetalle.objects.filter(ingreso__fecha__gt=list(year_list)[-3])
 
     oimdata_barra = PivotDataPool(
            series=

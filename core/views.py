@@ -36,7 +36,7 @@ def home(request):
 
     return render_to_response(template_name, { 'banners': banners,
         'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0],
-            data_fuentes['charts'][0],
+            data_fuentes['charts'][1],
             ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,

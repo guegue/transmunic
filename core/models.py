@@ -187,11 +187,14 @@ class Gasto(models.Model):
 
 def Gasto_year_list():
     return Gasto.objects.dates('fecha','year')
-def Gasto_periodos():
+def Gasto_periodos(inicial=False):
     periodos = []
     for year in Gasto_year_list():
-        un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
-        periodos.append( un_periodo['fecha__max'] )
+        if inicial:
+            un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(periodo=Min('fecha'))
+        else:
+            un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(periodo=Max('fecha'))
+        periodos.append( un_periodo['periodo'] )
     return periodos
 
 #detalle del gasto
