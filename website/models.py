@@ -29,6 +29,7 @@ class TipoDoc(models.Model):
         verbose_name = 'Tipo'
 
 class Documento(models.Model):
+    titulo = models.CharField(max_length=120)
     tipo = models.ForeignKey(TipoDoc,related_name="Tipo")
     fecha = models.DateField('fecha',blank=True,null=True)
     descripcion = models.TextField(),
