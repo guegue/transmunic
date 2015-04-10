@@ -8,7 +8,7 @@ from django.db.models import Q, Sum, Max, Min
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
+from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunic
 from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
 
 #def inversion_minima_sector_chart(municipio=None, year=None):
@@ -507,15 +507,35 @@ def gf_chart(request):
     periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
 
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+        source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(gasto__fecha__year=y.year)
-        source_barra = GastoDetalle.objects.filter(q, \
+        source_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        mi_gasto_promedio = GastoDetalle.objects.filter(tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).aggregate(asignado=Sum('asignado'))['asignado']
+        mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
+        gasto_promedio = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificacionmunic=mi_clasificacion). \
+            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        for record in source_inicial:
+            record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
+            record['promedio'] = gasto_promedio.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['asignado']
+        source = source_inicial
+        print source
+            
+        # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
+        source_barra = GastoDetalle.objects.filter( gasto__fecha__in=periodos_iniciales, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
+            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_barra_final = source_barra # FIXME este es un work-around
+
+        # chart: porcentage gastos de funcionamiento
+        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo_inicial, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado['nombre'] = 'Funcionamiento'
+        otros_asignado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        otros_asignado['nombre'] = 'Otros'
+        source_pgf = [source_pgf_asignado, otros_asignado]
     else:
         source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
@@ -527,14 +547,11 @@ def gf_chart(request):
             record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
         source = source_inicial
 
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(gasto__fecha__year=y.year)
-        # FIXME: cómo se hace en estos casos de periodos??????? inicial o final?
-        source_barra_inicial = GastoDetalle.objects.filter(q, gasto__fecha__in=periodos_iniciales, \
+        # FIXME. en el grafico de periodos...  de donde tomar los datos?
+        source_barra_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_barra_final = GastoDetalle.objects.filter(q, gasto__fecha__in=periodos_finales, \
+        source_barra_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
             values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -582,29 +599,17 @@ def gf_chart(request):
                 'title': {'text': 'Gastos de funcionamiento %s ' % (municipio,)},
                 },
             )
-    data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'gasto__fecha',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
+    dataterms = ['gasto__fecha', 'asignado', 'ejecutado']
+    terms = ['asignado', 'ejecutado']
+    if municipio:
+        dataterms = ['gasto__fecha', 'asignado', 'ejecutado', 'promedio']
+        terms = ['asignado', 'ejecutado', 'promedio',]
 
+    data = RawDataPool(series = [{'options': {'source': source }, 'terms': dataterms}])
     gfbar = Chart(
             datasource = data,
-            series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'gasto__fecha': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {'text': 'Gastos de funcionamiento año %s ' % (municipio,)},
-                },
+            series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__fecha': terms }}],
+            chart_options = {'title': {'text': u'Gastos de funcionamiento año %s ' % (municipio,)}},
             x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
