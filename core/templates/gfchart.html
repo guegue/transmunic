@@ -18,22 +18,22 @@
     <input type="submit" value="Submit"/>
     </form>
     </div>
-    <ul id="oimTab" class="nav nav-tabs" role="tablist">
+    <ul id="gfTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
-        <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
-        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
+        <li role="presentation"><a href="#gfmodificacion" aria-controls="gfmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
+        <li role="presentation"><a href="#gforigen" aria-controls="gforigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
     </ul>
     <div class="clearfix"></div>
     {{ charts|load_charts:"gfbar,barra,pie" }}
-    <div id="oimTabContent" class="tab-content col-md-12">
+    <div id="gfTabContent" class="tab-content col-md-12">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <div id='pie'></div>
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
+      <div role="tabpanel" class="tab-pane fade" id="gfmodificacion" aria-labelledby="gfmodificacion-tab">
         <div id='barra' class="col-md-10"></div>
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
-        <div id='gfbar'></div>
+      <div role="tabpanel" class="tab-pane fade" id="gforigen" aria-labelledby="gforigen-tab">
+        <div id='gfbar' class="col-md-10"></div>
       </div>
     </div>
 {% endblock %}
