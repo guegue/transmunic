@@ -45,7 +45,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <h2><a href="#">Presupuesto Municipal {% block titulo %} {% endblock %}</a></h2>
+              <h2><a href="/">Presupuesto Municipal {% block titulo %} {% endblock %}</a></h2>
             </div>
             <div id="navbar" class="navbar-collapse collapse pull-right">
               <ul class="nav navbar-nav">
@@ -95,6 +95,8 @@
       <div class="container">
 	    <div class="row text-center">
             <div class="row-fluid">
+              {% block content %}
+              {% endblock %}
               {% block main_content %}
               {% endblock %}
 	        </div>
