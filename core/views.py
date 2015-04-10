@@ -74,6 +74,13 @@ def municipio(request, slug):
         'total_inversion': total_inversion,
     })
 
+def inversion_minima_sector_view(request):
+    template_name = 'chart.html'
+    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year','')
+    data = inversion_minima_sector_chart(municipio=municipio, year=year)
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'], 'year_list': data['year_list']})
+
 def ogm_view(request):
     template_name = 'ogm_chart.html'
     municipio = request.GET.get('municipio','')
