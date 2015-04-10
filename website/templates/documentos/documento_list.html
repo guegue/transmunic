@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="row">
+    <div class="col-md-9">
+    {% if documento_list %}
+        {% for documento in documento_list %}
+            {% if forloop.first %}
+            <h2 class="title">{% if tipo %}{{ documento.tipo }} {% endif %}</h2>
+                <div class="linea"></div>
+            {% endif %}
+            <div class="col-md-4">
+                <h4>
+                  {% if documento.archivo %}
+                    <a href="{{ documento.archivo.url }}" target="_blank">{{ documento }}</a>
+                  {% else %}
+                    {{ documento }}
+                  {% endif %}
+                </h4>
+                <p class="fecha">{{ documento.tipo }}</p>
+                {% if documento.archivo %}<a class="verde" href="{{ documento.archivo.url }}" target="_blank"><i id="file" class="fa fa-file fa-1x"></i> Descargar &raquo;</a></p>{% endif %}
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+                <div class="clearfix"></div>
+                <div class="web-divider"></div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <i>No hay información relacionada a su búsqueda</i>
+    {% endif %}
+
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-success ft">
+            <div class="panel-heading"><h3>Documentos</h3></div>
+            <div class="panel-body">
+            {% for tipo in tipos %}
+                    <p class="secciones"><a href="{% url 'documento_by_tipo' tipo.slug %}" class="text-success"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> {{ tipo.titulo }}</a></p>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
