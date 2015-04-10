@@ -261,6 +261,12 @@ class Proyecto(models.Model):
     ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
 
     @property
+    def porcentaje_ejecutado(self):
+        if self.asignado <> 0:
+            return round(self.ejecutado / self.asignado * 100, 2)
+        else:
+            return None
+    @property
     def areageografica_verbose(self):
         return self.areageografica
 
