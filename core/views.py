@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Inversion_year_list, Proyecto, InversionFuente_year_list
-from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart
+from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
 from website.models import Banner
 
 # Create your views here.
@@ -27,6 +27,7 @@ def home(request):
     data_ogm = ogm_chart(year=year)
     data_inversion = inversion_chart()
     data_inversion_area = inversion_area_chart()
+    data_inversion_minima_sector = inversion_minima_sector_chart()
 
     periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
     total_inversion = Proyecto.objects.filter(inversion__fecha=periodo). \
@@ -35,7 +36,12 @@ def home(request):
             values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     return render_to_response(template_name, { 'banners': banners,
-        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0],
+        'charts':( 
+            data_oim['charts'][1], 
+            data_ogm['charts'][1], 
+            #data_inversion['charts'][0], 
+            data_inversion_minima_sector['charts'][0],
+            data_inversion_area['charts'][0],
             data_fuentes['charts'][1],
             ),
         'inversion_categoria': inversion_categoria,

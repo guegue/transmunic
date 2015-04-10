@@ -1,6 +1,9 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
+from model_report import report
 from . import charts
+
+report.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
@@ -17,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^inversion-area$', 'core.views.inversion_area_view', name='inversion_area'),
     url(r'^inversion$', 'core.views.inversion_view', name='inversion'),
     url(r'^fuentes$', 'core.views.fuentes_view', name='fuentes'),
+    url(r'', include('model_report.urls')),
 )

@@ -49,9 +49,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'sorl.thumbnail',
 
-    #'sorl.thumbnail',
+    'model_report',
+    'sorl.thumbnail',
     'pixelfields_smart_selects',
     'chartit',
 

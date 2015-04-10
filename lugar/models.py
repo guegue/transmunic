@@ -36,10 +36,10 @@ class Municipio(models.Model):
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
 
-    class Meta:
-        ordering = [u'nombre']
+    #class Meta:
+    #    ordering = [u'nombre']
     def __unicode__(self):
-        return u'%s' % (self.nombre,)
+        return self.nombre
 
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)
