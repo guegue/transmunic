@@ -109,7 +109,7 @@
                                 <ul class="thumbnails">
                             {% endif %}
                                 <li class="col-md-3 col-sm-3 col-xs-6">
-                                  <div class="circular {{ i.catinversion__slug }}" style="background: url('{% static 'img/'|add:i.catinversion__slug|add:'.png' %}') no-repeat;" class="img-responsive" ></div>
+                                  <img src="{% static 'img/'|add:i.catinversion__slug|add:'.jpg' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
                                   <p>{% widthratio i.ejecutado total_inversion.ejecutado 100 %}%</p>
                                 </li>
