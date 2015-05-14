@@ -20,4 +20,12 @@
     <div id='asignado'> Chart will be rendered here </div>
     <div id='ejecutado'> Chart will be rendered here </div>
     <div id='ultimos'> Chart will be rendered here </div>
+            {% for total in totales %}
+                <img src="/static/img/{{ total.catinversion__nombre }}.png" height="70" alt="{{ total.catinversion__nombre }}" />
+                {{ total.catinversion__nombre }}: {{ total.percent }}
+                {% with ''|center:total.percent as range %}
+                {% for i in range %}♥{% endfor %}
+                {% endwith %}
+                <br/>
+            {% endfor %}
 {% endblock %}

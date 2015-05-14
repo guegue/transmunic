@@ -6,7 +6,7 @@ from pixelfields_smart_selects.db_fields import ChainedForeignKey
 #la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
 class ClasificacionMunic(models.Model):
     #clasificacion = models.CharField()
-    clasificacion = models.CharField(max_length=120)
+    clasificacion = models.CharField(max_length=120) # FIXME 120???
     fecha_desde = models.DateField(null=False)
     fecha_hasta = models.DateField(null=False)
     desde = models.DecimalField('Desde', max_digits=12, decimal_places=2, blank=True, null=True)

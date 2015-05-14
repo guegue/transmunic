@@ -86,14 +86,16 @@ def ogm_view(request):
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = ogm_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name, { 'ano': data['ano'], \
+            'clasificacion': data['clasificacion'], 'porano': data['porano'], 'totales': data['totales'], \
+            'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
 
 def oim_view(request):
     template_name = 'oim_chart.html'
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = oim_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name, { 'ano': data['ano'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], 'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
 
 def inversion_view(request):
     template_name = 'inversion.html'

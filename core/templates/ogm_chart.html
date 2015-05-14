@@ -42,5 +42,12 @@
         <div id='asignado_barra' class="col-md-10"> Chart will be rendered here </div>
       </div>
     </div>
+            {% for total in totales %}
+                {{ total.tipogasto__nombre }}: {{ total.percent }}
+                {% with ''|center:total.percent as range %}
+                {% for i in range %}♥{% endfor %}
+                {% endwith %}
+                <br/>
+            {% endfor %}
 </div>
 {% endblock %}

@@ -635,12 +635,12 @@ def inversion_categoria_chart(request):
     periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
 
     if municipio:
-        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha=periodo).values('catinversion').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
         source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha__gt=list(year_list)[-3]). \
             values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
         municipio = ''
-        source = Proyecto.objects.filter(inversion__fecha=periodo).values('catinversion').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        source = Proyecto.objects.filter(inversion__fecha=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
         source_ultimos = Proyecto.objects.filter(inversion__fecha__gt=list(year_list)[-3]). \
             values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -706,7 +706,16 @@ def inversion_categoria_chart(request):
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
-    return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ultimos), 'year_list': year_list, 'municipio_list': municipio_list})
+    # tabla: get total and percent
+    total = source.aggregate(total=Sum('asignado'))['total']
+    for row in source:
+        row['percent'] = round(row['asignado'] / total * 100, 0)
+
+    mi_clasificacion = None
+    porano_table = None
+    return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ultimos), \
+        'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, \
+        'year_list': year_list, 'municipio_list': municipio_list})
 
 def ogm_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
@@ -717,7 +726,7 @@ def ogm_chart(municipio=None, year=None):
     periodos = Gasto_periodos()
 
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
@@ -725,7 +734,7 @@ def ogm_chart(municipio=None, year=None):
         source_pivot = GastoDetalle.objects.filter(gasto__fecha__in=periodos, gasto__municipio__slug=municipio)
     else:
         municipio = ''
-        source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('tipogasto').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
+        source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(gasto__fecha__year=y.year)
@@ -820,7 +829,14 @@ def ogm_chart(municipio=None, year=None):
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
               })
 
-    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'year_list': year_list, 'municipio_list': municipio_list}
+    # tabla: get total and percent
+    total = source.aggregate(total=Sum('asignado'))['total']
+    for row in source:
+        row['percent'] = round(row['asignado'] / total * 100, 0)
+
+    mi_clasificacion = None
+    porano_table = None
+    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
 
 def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
@@ -831,15 +847,20 @@ def oim_chart(municipio=None, year=None):
     periodos = Ingreso_periodos()
 
     if municipio:
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
+        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos, ingreso__municipio__slug=municipio)
         q = Q()
         for y in list(year_list)[-3:]:
             q |= Q(ingreso__fecha__year=y.year)
         source_barra2 = IngresoDetalle.objects.filter(q, ingreso__municipio__slug=municipio)
+        mi_gasto_promedio = GastoDetalle.objects.filter(tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).aggregate(asignado=Sum('asignado'))['asignado']
+        #mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)[0]
+        # FIXME: WTF?
+        mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
     else:
+        mi_clasificacion = None
         municipio = ''
-        source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
+        source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__fecha__gt=list(year_list)[-3])
 
@@ -932,4 +953,22 @@ def oim_chart(municipio=None, year=None):
               }
     )
 
-    return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'year_list': year_list, 'municipio_list': municipio_list}
+    # tabla: get total and percent
+    total = source.aggregate(total=Sum('asignado'))['total']
+    for row in source:
+        row['percent'] = round(row['asignado'] / total * 100, 0)
+
+    # tabla: get ingresos por año
+    porano_table = {}
+    ys = source_barra.order_by('subsubtipoingreso__origen__nombre').values('subsubtipoingreso__origen__nombre').distinct()
+    for y in ys:
+        label = y['subsubtipoingreso__origen__nombre']
+        porano_table[label] = {}
+        for ayear in year_list:
+            value = source_barra.filter(ingreso__fecha__year=ayear.year, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear.year] = value if value else ''
+        if municipio and year:
+            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+            porano_table[label]['extra'] = value if value else '...'
+   
+    return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
