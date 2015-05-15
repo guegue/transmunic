@@ -711,8 +711,20 @@ def inversion_categoria_chart(request):
     for row in source:
         row['percent'] = round(row['asignado'] / total * 100, 0)
 
+    # tabla: get ingresos por año
+    porano_table = {}
+    ys = source_ultimos.order_by('catinversion__nombre').values('catinversion__nombre').distinct()
+    for y in ys:
+        label = y['catinversion__nombre']
+        porano_table[label] = {}
+        for ayear in year_list:
+            value = source_ultimos.filter(inversion__fecha__year=ayear.year, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear.year] = value if value else ''
+        if municipio and year:
+            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+
     mi_clasificacion = None
-    porano_table = None
+
     return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ultimos), \
         'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, \
         'year_list': year_list, 'municipio_list': municipio_list})
@@ -834,8 +846,20 @@ def ogm_chart(municipio=None, year=None):
     for row in source:
         row['percent'] = round(row['asignado'] / total * 100, 0)
 
+    # tabla: get ingresos por año
+    porano_table = {}
+    ys = source_barra.order_by('tipogasto__nombre').values('tipogasto__nombre').distinct()
+    for y in ys:
+        label = y['tipogasto__nombre']
+        porano_table[label] = {}
+        for ayear in year_list:
+            value = source_barra.filter(gasto__fecha__year=ayear.year, tipogasto__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear.year] = value if value else ''
+        if municipio and year:
+            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+
     mi_clasificacion = None
-    porano_table = None
+
     return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
 
 def oim_chart(municipio=None, year=None):
@@ -970,5 +994,5 @@ def oim_chart(municipio=None, year=None):
         if municipio and year:
             value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
             porano_table[label]['extra'] = value if value else '...'
-   
+
     return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}

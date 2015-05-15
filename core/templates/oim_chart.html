@@ -29,31 +29,39 @@
     {{ charts|load_charts:"asignado,ejecutado,asignado_barra,barra2" }}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
-          <div class="col-md-6">
+          <div class="col-md-5">
+              <h3>Ingresos Totales del A&ntilde;o</h3>
             {% for total in totales %}
-                <img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" height="70" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
-                {{ total.subsubtipoingreso__origen__nombre }} <span class="btn btn-danger">{{ total.percent }}</span>
-                {% with ''|center:total.percent as range %}
-                {% for i in range %}
-                {% endfor %}
-                {% endwith %}
-                <br/>
+              <div class="row totales">
+                <div class="col-md-9 text-left">
+                    <img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
+                    <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> 
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                    {% with ''|center:total.percent as range %}
+                    {% for i in range %}
+                    {% endfor %}
+                    {% endwith %}
+                </div>
+              </div>
             {% endfor %}
           </div>
-        <div class="col-md-6">
-          <table>
-            <tr>
+        <div class="col-md-7">
+          <h3>Ingresos Totales de los &uacute;ltimos a&ntilde;os</h3>
+          <table class="table table-condensed">
+            <tr class="info">
               <th></th>
               {% for year in year_list %}
                 <th>{{ year|date:"Y" }}</th>
               {% endfor %}
-              <th>Promedio {{ clasificacion }} en {{ ano }}</th>
+              <th>Promedio</th>
             </tr>
             {% for key, data in porano.items %}
              <tr>
-               <td>{{ key }}</td>
+               <td class="text-left">{{ key }}</td>
                {% for year in year_list %}
-                 <td>{{ data|keyvalue:year.year|intword }}</td>
+                 <td class="text-center">{{ data|keyvalue:year.year|intword }}</td>
                {% endfor %}
                <td>{{ data.extra|intword }}</td>
                <!-- old-fashioned way:

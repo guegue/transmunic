@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
+{% load humanize %} 
+{% load core_extras %} 
 {% block main_content %}
     <form method="GET">
     <select name="year">
@@ -15,17 +17,52 @@
     </select>
     <input type="submit" value="Submit"/>
     </form>
+    <div class="clearfix"></div>
 
     {{ charts|load_charts:"asignado,ejecutado,ultimos" }}
+    <div class="col-md-5">
+            <h3>Ingresos Totales del A&ntilde;o</h3>
+            {% for total in totales %}
+              <div class="row totales">
+                <div class="col-md-9 text-left">
+                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
+                    <h4>{{ total.catinversion__nombre }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                </div>
+              </div>
+            {% endfor %}
+    </div>
+    <div class="col-md-7">
+          <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
+          <table class="table table-condensed">
+            <tr class="info">
+              <th></th>
+              {% for year in year_list %}
+                <th>{{ year|date:"Y" }}</th>
+              {% endfor %}
+              <th>Promedio</th>
+            </tr>
+            {% for key, data in porano.items %}
+             <tr>
+               <td class="text-left">{{ key }}</td>
+               {% for year in year_list %}
+                 <td>{{ data|keyvalue:year.year|intword }}</td>
+               {% endfor %}
+               <td>{{ data.extra|intword }}</td>
+               <!-- old-fashioned way:
+               {% for subkey, subdata in data.items %}
+               <td>{{ subkey }} = {{ subdata| intword}}</td>
+               {% endfor %}
+                -->
+             </tr>
+           {% endfor %}
+ 
+          </table>
+    </div>
+    <div class="clearfix"></div>
     <div id='asignado'> Chart will be rendered here </div>
     <div id='ejecutado'> Chart will be rendered here </div>
     <div id='ultimos'> Chart will be rendered here </div>
-            {% for total in totales %}
-                <img src="/static/img/{{ total.catinversion__nombre }}.png" height="70" alt="{{ total.catinversion__nombre }}" />
-                {{ total.catinversion__nombre }}: {{ total.percent }}
-                {% with ''|center:total.percent as range %}
-                {% for i in range %}♥{% endfor %}
-                {% endwith %}
-                <br/>
-            {% endfor %}
 {% endblock %}

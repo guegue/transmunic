@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %} 
+{% load core_extras %} 
 {% block titulo %}
 {{ obj.nombre }}
 {% endblock %}
-{% load static thumbnail chartit %}
 {% block main_content %}
     <h2 class="title">Destino de los gastos </h2>
     <form method="GET">
@@ -29,6 +31,47 @@
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <div class="col-md-6">
+            <h3>Gastos Totales del A&ntilde;o</h3>
+            {% for total in totales %}
+              <div class="row totales">
+                <div class="col-md-9 text-left">
+                <img src="/static/img/Otros origenes.png" class="pull-left" height="40" alt="{{ total.tipogasto__nombre }}" />
+                <h4>{{ total.tipogasto__nombre }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+        <h3>Gastos Totales de los &uacute;ltimos a&ntilde;os</h3>
+          <table class="table table-condensed">
+            <tr  class="info">
+              <th></th>
+              {% for year in year_list %}
+                <th>{{ year|date:"Y" }}</th>
+              {% endfor %}
+              <th>Promedio</th>
+            </tr>
+            {% for key, data in porano.items %}
+             <tr>
+               <td class="text-left">{{ key }}</td>
+               {% for year in year_list %}
+                 <td>{{ data|keyvalue:year.year|intword }}</td>
+               {% endfor %}
+               <td>{{ data.extra|intword }}</td>
+               <!-- old-fashioned way:
+               {% for subkey, subdata in data.items %}
+               <td>{{ subkey }} = {{ subdata| intword}}</td>
+               {% endfor %}
+                -->
+             </tr>
+           {% endfor %}
+ 
+          </table>
+        </div>
+        <div class="col-md-6">
             <div id='asignado'> Chart will be rendered here </div>
         </div>
         <div class="col-md-6">
@@ -42,12 +85,5 @@
         <div id='asignado_barra' class="col-md-10"> Chart will be rendered here </div>
       </div>
     </div>
-            {% for total in totales %}
-                {{ total.tipogasto__nombre }}: {{ total.percent }}
-                {% with ''|center:total.percent as range %}
-                {% for i in range %}♥{% endfor %}
-                {% endwith %}
-                <br/>
-            {% endfor %}
 </div>
 {% endblock %}

@@ -33,18 +33,22 @@
 {% endblock %}
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
-      <div class="container">
-        <div class="row-fluid">
-              <button class="recuadro col-sm-4 col-xs-12 btn btn-primary">
+    <div class="container">
+    <div class="row-fluid">
+        <div class="col-md-5">
+            <h2>Antecedentes de las transferencias municipales</h2>
+              <button class="recuadro col-md-12 col-sm-12 col-xs-12 btn btn-primary">
                 <i class="fa fa-street-view fa-3x pull-left"></i>
                 <h4>Marco Legal</h4>
                 <span class="cifra">Municipal</span>
               </button>
-              <button class="recuadro col-sm-4 col-xs-12 btn btn-success">
+              <button class="recuadro btn btn-success">
                 <i class="fa fa-building fa-3x pull-left"></i>
                 <h4>Ciclo Presupuestario</h4>
                 <span class="cifra">Municipal</span>
               </button>
+              <div class="clearfix"></div>
+              <br />
               <button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
                 <i class="fa fa-child fa-3x pull-left"></i>
                 <h4>Analisis Presupuestario</h4>
@@ -57,6 +61,9 @@
                 <span class="dolar"></span>
                 <span class="cifra">Gestion Municipal</span>
               </button>
+        </div>
+        <div class="col-md-7">
+            <img src="/static/img/nicaragua.png" alt="" alt="img-responsive" width="600px"/>
         </div>
       </div>
     </section>
