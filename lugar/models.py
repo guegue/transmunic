@@ -35,11 +35,18 @@ class Municipio(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
+    clasificaciones = models.ManyToManyField(ClasificacionMunic, through='ClasificacionMunicAno')
 
     #class Meta:
     #    ordering = [u'nombre']
+
     def __unicode__(self):
         return self.nombre
+
+class ClasificacionMunicAno(models.Model):
+    municipio = models.ForeignKey(Municipio)
+    clasificacion = models.ForeignKey(ClasificacionMunic)
+    year = models.IntegerField()
 
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)
