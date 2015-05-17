@@ -139,6 +139,8 @@ class SubSubTipoIngreso(models.Model):
 # Ingresos del municipio
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
+    year = models.IntegerField(null=False)
+    periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     descripcion = models.TextField(blank=True,null=True)
@@ -148,15 +150,6 @@ class Ingreso(models.Model):
 
     #def __unicode__(self):
     #    return self.ingreso
-
-def Ingreso_year_list():
-    return Ingreso.objects.dates('fecha','year')
-def Ingreso_periodos():
-    periodos = []
-    for year in Ingreso_year_list():
-        un_periodo = Ingreso.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
-        periodos.append( un_periodo['fecha__max'] )
-    return periodos
 
 
 class IngresoDetalle(models.Model):
@@ -177,6 +170,8 @@ class IngresoDetalle(models.Model):
 
 class Gasto(models.Model):
     fecha = models.DateField(null=False)
+    year = models.IntegerField(null=False)
+    periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     descripcion = models.TextField(blank=True,null=True)
@@ -184,18 +179,6 @@ class Gasto(models.Model):
     class Meta:
         verbose_name_plural = 'Gastos'
         ordering = ['fecha']
-
-def Gasto_year_list():
-    return Gasto.objects.dates('fecha','year')
-def Gasto_periodos(inicial=False):
-    periodos = []
-    for year in Gasto_year_list():
-        if inicial:
-            un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(periodo=Min('fecha'))
-        else:
-            un_periodo = Gasto.objects.filter(fecha__year=year.year).aggregate(periodo=Max('fecha'))
-        periodos.append( un_periodo['periodo'] )
-    return periodos
 
 #detalle del gasto
 class GastoDetalle(models.Model):
@@ -230,17 +213,11 @@ class Inversion(models.Model):
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     nombremunic = models.CharField(max_length=250)
     fecha = models.DateField(null=False)
+    year = models.IntegerField(null=False)
+    periodo = models.CharField(max_length=1, null=False)
 
     class Meta:
         verbose_name_plural = 'Inversion'
-def Inversion_year_list():
-    return Inversion.objects.dates('fecha','year')
-def Inversion_periodos():
-    periodos = []
-    for year in Inversion_year_list():
-        un_periodo = Inversion.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
-        periodos.append( un_periodo['fecha__max'] )
-    return periodos
 
 class Proyecto(models.Model):
     URBANA = 'U'
@@ -300,6 +277,8 @@ class FuenteFmto(models.Model):
 # Ingresos del municipio
 class InversionFuente(models.Model):
     fecha = models.DateField(null=False)
+    year = models.IntegerField(null=False)
+    periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
 
@@ -316,13 +295,3 @@ class InversionFuenteDetalle(models.Model):
     class Meta:
         verbose_name_plural = 'Detalle de inversion por fuente'
         ordering = ['inversionfuente']
-
-def InversionFuente_year_list():
-    return InversionFuente.objects.dates('fecha','year')
-def InversionFuente_periodos():
-    periodos = []
-    for year in InversionFuente_year_list():
-        un_periodo = InversionFuente.objects.filter(fecha__year=year.year).aggregate(Max('fecha'))
-        periodos.append( un_periodo['fecha__max'] )
-    return periodos
-
