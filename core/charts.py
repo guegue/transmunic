@@ -9,7 +9,7 @@ from django.db.models import Q, Sum, Max, Min
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunic
-from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
+#from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
 
 def inversion_minima_sector_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()

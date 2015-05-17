@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Municipio, Inversion, Inversion_year_list, Proyecto, InversionFuente_year_list
+#from models import Municipio, Inversion, Inversion_year_list, Proyecto, InversionFuente_year_list
 from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
 from website.models import Banner
 
