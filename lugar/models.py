@@ -44,12 +44,12 @@ class Municipio(models.Model):
         return self.nombre
 
 class ClasificacionMunicAno(models.Model):
-    municipio = models.ForeignKey(Municipio)
-    clasificacion = models.ForeignKey(ClasificacionMunic)
-    year = models.IntegerField()
+    municipio = models.ForeignKey(Municipio, related_name="clase")
+    clasificacion = models.ForeignKey(ClasificacionMunic, related_name="clase")
+    anio = models.IntegerField()
 
     class Meta:
-        unique_together = ('municipio', 'year')
+        unique_together = ('municipio', 'anio')
 
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)

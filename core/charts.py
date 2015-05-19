@@ -4,7 +4,7 @@ from itertools import chain
 from datetime import datetime, time
 
 from django.shortcuts import render_to_response
-from django.db.models import Q, Sum, Max, Min
+from django.db.models import Q, Sum, Max, Min, Avg
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
@@ -864,7 +864,7 @@ def oim_chart(municipio=None, year=None):
         for y in list(year_list)[-3:]:
             q |= Q(ingreso__year=y)
         source_barra2 = IngresoDetalle.objects.filter(q, ingreso__municipio__slug=municipio)
-        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, year=year)
+        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
     else:
         mi_clasificacion = None
         municipio = ''
@@ -976,13 +976,9 @@ def oim_chart(municipio=None, year=None):
             value = source_barra.filter(ingreso__year=ayear, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum('asignado'))['total']
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            print mi_clasificacion.clasificacion
-            x = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunicano=mi_clasificacion)
-            for i in x:
-                print "..."
-                print i.ingreso.municipio.clasificaciones
-            #FIXME too tired!
-            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificaciones=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, \
+                    ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
+                    aggregate(total=Avg('asignado'))['total']
             porano_table[label]['extra'] = value if value else '...'
 
     return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
