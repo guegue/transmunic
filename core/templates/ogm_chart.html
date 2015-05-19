@@ -58,7 +58,7 @@
              <tr>
                <td class="text-left">{{ key }}</td>
                {% for year in year_list %}
-                 <td>{{ data|keyvalue:year.year|intword }}</td>
+                 <td>{{ data|keyvalue:year|intword }}</td>
                {% endfor %}
                <td>{{ data.extra|intword }}</td>
                <!-- old-fashioned way:

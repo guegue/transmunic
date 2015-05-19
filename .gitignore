@@ -56,3 +56,5 @@ local_settings.py
 .idea
 env
 /git-shell-commands/
+.lesshst
+.ssh

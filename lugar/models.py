@@ -48,6 +48,9 @@ class ClasificacionMunicAno(models.Model):
     clasificacion = models.ForeignKey(ClasificacionMunic)
     year = models.IntegerField()
 
+    class Meta:
+        unique_together = ('municipio', 'year')
+
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)
     #municipio = models.ForeignKey(Municipio)

@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-#from models import Municipio, Inversion, Inversion_year_list, Proyecto, InversionFuente_year_list
+from models import Municipio, Inversion, Proyecto, InversionFuente
 from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
 from website.models import Banner
 
@@ -16,11 +16,11 @@ def home(request):
     banners = Banner.objects.all()
 
     # InversionFuente tiene su propio último año
-    year_list = InversionFuente_year_list()
+    year_list = InversionFuente.objects.distinct('year')
     year = list(year_list)[-1].year
     data_fuentes = fuentes_chart(year=year)
 
-    year_list = Inversion_year_list()
+    year_list = Inversion.objects.distinct('year')
     year = list(year_list)[-1].year
 
     data_oim = oim_chart(year=year)
@@ -62,7 +62,7 @@ def municipio(request, slug):
     data_inversion = inversion_chart(municipio=slug)
     data_inversion_area = inversion_area_chart(municipio=slug)
 
-    periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+    periodo = Inversion.objects.filter(year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
     total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
             aggregate(ejecutado=Sum('ejecutado'))
     inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \

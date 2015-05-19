@@ -11,10 +11,9 @@ from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 from lugar.models import *
 
-#class AGO(models.Model):
-#    fecha = models.DateField(null=False)
-#    asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-#    ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+PERIODO_INICIAL = 'I'
+PERIODO_ACTUALIZADO = 'A'
+PERIODO_FINAL = 'F'
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
@@ -197,6 +196,9 @@ class GastoDetalle(models.Model):
     def __unicode__(self):
         return self.codigo
 
+def getYears(model):
+    years = model.objects.values_list('year').order_by('year').distinct('year')
+    return [x[0] for x in years]
 
 class TipoProyecto(models.Model):
     nombre = models.CharField(max_length=200)

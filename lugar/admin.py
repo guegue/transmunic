@@ -4,11 +4,11 @@ from lugar.models import *
 # Register your models here.
 class ClasificacionMunicInline(admin.TabularInline):
     model = ClasificacionMunicAno
-    extra = 5
+    extra = 1
 
 class PoblacionInline(admin.TabularInline):
     model = Poblacion
-    extra = 5
+    extra = 1
 
 class MunicipioAdmin(admin.ModelAdmin):
     list_display = ['id','depto','nombre']

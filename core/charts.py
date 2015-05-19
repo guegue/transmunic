@@ -8,33 +8,33 @@ from django.db.models import Q, Sum, Max, Min
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunic
+from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 #from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
+from models import getYears
+from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 
 def inversion_minima_sector_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
-    year_list = Inversion_year_list()
+    year_list = getYears(Inversion)
     if not year:
-        year = list(year_list)[-2].year
-    periodo_inicial = Inversion.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
-    periodo_final = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+        year = list(year_list)[-2]
 
     if municipio:
-        source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
+        total_asignado = Proyecto.objects.filter(inversion__year=year_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
     else:
         municipio = ''
-        source_ejecutado = Proyecto.objects.filter(inversion__fecha=periodo_final, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__fecha=periodo_inicial).aggregate(total=Sum('asignado'))
+        total_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))
 
     for record in source:
-        record['ejecutado'] = source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
-        record['asignado'] = source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
-        record['minimo'] = total_asignado['total'] * (record['minimo']/100)
+        record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
+        record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
+        record['minimo'] = 0 if not total_asignado['total'] else total_asignado['total'] * (record['minimo']/100)
     data = RawDataPool(
            series=
             [{'options': {'source': source },
@@ -62,19 +62,17 @@ def inversion_minima_sector_chart(municipio=None, year=None):
 
 def fuentes_chart(municipio=None,year=None):
     municipio_list = Municipio.objects.all()
-    year_list = InversionFuente_year_list()
+    year_list = InversionFuente.objects.distinct('year')
     if not year:
-        year = list(year_list)[-1].year
-    periodos = InversionFuente_periodos()
-    periodo = InversionFuente.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
+        year = list(year_list)[-1]
     if municipio:
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__fecha=periodo).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
     else:
         municipio = ''
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__fecha=periodo).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
-        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__fecha=periodo).\
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).\
                 values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
 
     data = DataPool(series = [{'options': {'source': source }, 'terms': ['fuente__nombre', 'ejecutado', 'asignado', ]}])
@@ -105,29 +103,28 @@ def fuentes_chart(municipio=None,year=None):
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
-    year_list = Inversion_year_list()
-    periodos = Inversion_periodos()
+    year_list = getYears(Inversion)
 
     if municipio:
-        source = Proyecto.objects.filter(inversion__fecha__in=periodos, inversion__municipio__slug=municipio). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_ultimos = Proyecto.objects.filter(inversion__fecha__in=periodos, inversion__municipio__slug=municipio, \
-            inversion__fecha__gt=list(year_list)[-3]). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__municipio__slug=municipio). \
+            values('year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_ultimos = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__municipio__slug=municipio, \
+            inversion__year__gt=list(year_list)[-3]). \
+            values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
         municipio = ''
-        source = Proyecto.objects.filter(inversion__fecha__in=periodos). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_ultimos = Proyecto.objects.filter(inversion__fecha__in=periodos, inversion__fecha__gt=list(year_list)[-3]). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL). \
+            values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_ultimos = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__year__gt=list(year_list)[-3]). \
+            values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     data_ultimos = DataPool(
            series=
             [{'options': {
                 'source': source_ultimos,
-                'categories': 'inversion__fecha',
+                'categories': 'inversion__year',
                 },
-              'terms': ['inversion__fecha', 'ejecutado', 'asignado',]
+              'terms': ['inversion__year', 'ejecutado', 'asignado',]
             }],
     )
     chart_ultimos = Chart(
@@ -136,19 +133,19 @@ def inversion_chart(municipio=None):
               [{'options':{
                   'type': 'bar',
                   'stacking': False},
-                'terms': {'inversion__fecha': ['asignado', 'ejecutado']}
+                'terms': {'inversion__year': ['asignado', 'ejecutado']}
                 }],
             chart_options =
               {'title': {'text': u'Inversión por últimos años %s' % (municipio, )}},
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
     )
     data = DataPool(
            series=
             [{'options': {
                 'source': source,
-                'categories': 'inversion__fecha',
+                'categories': 'inversion__year',
                 },
-              'terms': ['inversion__fecha', 'ejecutado', 'asignado',]
+              'terms': ['inversion__year', 'ejecutado', 'asignado',]
             }],
     )
     chart = Chart(
@@ -157,39 +154,38 @@ def inversion_chart(municipio=None):
               [{'options':{
                   'type': 'bar',
                   'stacking': False},
-                'terms': {'inversion__fecha': ['asignado', 'ejecutado']}
+                'terms': {'inversion__year': ['asignado', 'ejecutado']}
                 }],
             chart_options =
               {'title': {'text': u'Inversión por años %s' % (municipio, )}},
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
     )
     return {'charts': (chart, chart_ultimos), 'municipio_list': municipio_list}
 
 
 def inversion_area_chart(municipio=None):
     municipio_list = Municipio.objects.all()
-    year_list = Inversion_year_list()
-    periodos = Inversion_periodos()
+    year_list = getYears(Inversion)
 
     if municipio:
-        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha__in=periodos)
+        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL)
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(inversion__fecha__year=y.year)
-        source_barra = Proyecto.objects.filter(q, inversion__municipio__slug=municipio, inversion__fecha__in=periodos)
+            q |= Q(inversion__year=y)
+        source_barra = Proyecto.objects.filter(q, inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL)
     else:
         municipio = ''
-        source = Proyecto.objects.filter(inversion__fecha__in=periodos)
+        source = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL)
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(inversion__fecha__year=y.year)
-        source_barra = Proyecto.objects.filter(q, inversion__fecha__in=periodos)
+            q |= Q(inversion__year=y)
+        source_barra = Proyecto.objects.filter(q, inversion__periodo=PERIODO_INICIAL)
 
     data_barra = PivotDataPool(
            series=
             [{'options': {
                 'source': source_barra,
-                'categories': 'inversion__fecha',
+                'categories': 'inversion__year',
                 'legend_by': ['areageografica'],
                 },
               'terms': {
@@ -197,7 +193,7 @@ def inversion_area_chart(municipio=None):
                 'sum_asignado':Sum('asignado'),
                 }}
              ],
-             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+             #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     barra = PivotChart(
             datasource = data_barra,
@@ -213,7 +209,7 @@ def inversion_area_chart(municipio=None):
            series=
             [{'options': {
                 'source': source,
-                'categories': 'inversion__fecha',
+                'categories': 'inversion__year',
                 'legend_by': ['areageografica'],
                 },
               'terms': {
@@ -221,7 +217,7 @@ def inversion_area_chart(municipio=None):
                 'sum_asignado':Sum('asignado'),
                 }}
              ],
-             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+             #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     chart = PivotChart(
             datasource = data,
@@ -237,8 +233,7 @@ def inversion_area_chart(municipio=None):
 
 def ep_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Ingreso_year_list()
-    periodos = Ingreso_periodos()
+    year_list = getYears(Ingreso)
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/ep_municipio.sql", "r") as query_file:
@@ -248,12 +243,12 @@ def ep_chart(request):
         municipio = ''
         with open ("core/ep.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [periodos])
+        source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
            series=
             [{'options': {'source': source },
               'terms': [
-                'fecha',
+                'year',
                 'ejecutado',
                 ]}
              ])
@@ -264,22 +259,22 @@ def ep_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'fecha': [
+                  'year': [
                     'ejecutado']
                   }}],
             chart_options = {
                 'title': {
                   'text': u'Ejecución del presupuesto %s ' % (municipio,)},
                 },
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
 
 def psd_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Ingreso_year_list()
-    periodos = list(Ingreso_periodos())[:-1]
+    year_list = getYears(Ingreso)[:-1]
+    #periodos = list(Ingreso_periodos())[:-1]
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/psd_municipio.sql", "r") as query_file:
@@ -289,12 +284,12 @@ def psd_chart(request):
         municipio = ''
         with open ("core/psd.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [periodos])
+        source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
            series=
             [{'options': {'source': source },
               'terms': [
-                'fecha',
+                'year',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -306,7 +301,7 @@ def psd_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'fecha': [
+                  'year': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -314,15 +309,14 @@ def psd_chart(request):
                 'title': {
                   'text': u'Peso del servicio de la deuda %s ' % (municipio,)},
                 },
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
 
 def aci_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Ingreso_year_list()
-    periodos = Ingreso_periodos()
+    year_list = getYears(Ingreso)
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/aci_municipio.sql", "r") as query_file:
@@ -332,12 +326,12 @@ def aci_chart(request):
         municipio = ''
         with open ("core/aci.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [periodos])
+        source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
            series=
             [{'options': {'source': source },
               'terms': [
-                'fecha',
+                'year',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -349,7 +343,7 @@ def aci_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'fecha': [
+                  'year': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -357,7 +351,7 @@ def aci_chart(request):
                 'title': {
                   'text': u'Ahorro corriente para inversiones %s ' % (municipio,)},
                 },
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
@@ -365,8 +359,8 @@ def aci_chart(request):
 
 def ago_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Ingreso_year_list()
-    periodos = list(Ingreso_periodos())[:-1]
+    year_list = getYears(Ingreso)[:-1]
+    #periodos = list(Ingreso_periodos())[:-1]
     municipio = request.GET.get('municipio','')
 
     if municipio:
@@ -377,13 +371,13 @@ def ago_chart(request):
         municipio = ''
         with open ("core/ago.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [periodos])
+        source = IngresoDetalle.objects.raw(sql, [year_list])
 
     data = RawDataPool(
            series=
             [{'options': {'source': source },
               'terms': [
-                'fecha',
+                'year',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -395,7 +389,7 @@ def ago_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'fecha': [
+                  'year': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -403,38 +397,33 @@ def ago_chart(request):
                 'title': {
                   'text': u'Autonomía %s ' % (municipio,)},
                 },
-                x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+                #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
 
 def gpersonal_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Gasto_year_list()
-    periodos = Gasto_periodos()
+    year_list = getYears(Gasto)
     municipio = request.GET.get('municipio','')
-    year_list = Gasto_year_list()
-    periodos = Gasto_periodos()
     year = request.GET.get('year', None)
     if not year:
-        year = list(year_list)[-2].year
+        year = list(year_list)[-2]
 
     if municipio:
-        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL)
-        source_ejecutado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL).exclude(gasto__fecha__year=year)
+        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
+        source_ejecutado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).exclude(gasto__year=year)
     else:
         municipio = ''
-        source_barra = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL)
-        source_ejecutado = GastoDetalle.objects.filter(gasto__fecha__in=periodos, tipogasto=TipoGasto.PERSONAL).exclude(gasto__fecha__year=year)
+        source_barra = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
+        source_ejecutado = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).exclude(gasto__year=year)
 
         # chart: porcentage gastos de personal
-        periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
-        source_pgp_asignado =  GastoDetalle.objects.filter(gasto__fecha=periodo_inicial, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        source_pgp_asignado =  GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
         source_pgp_asignado['nombre'] = 'Personal'
-        otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        otros_asignado = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).exclude(tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgp = [source_pgp_asignado, otros_asignado]
-        print source_pgp
 
     data_pgf = RawDataPool(
            series = [{
@@ -456,14 +445,14 @@ def gpersonal_chart(request):
            series=
             [{'options': {
                 'source': source_ejecutado,
-                'categories': 'gasto__fecha',
+                'categories': 'gasto__year',
                 'legend_by': 'subtipogasto__nombre',
                 },
               'terms': {
                 'sum_ejecutado':Sum('ejecutado'),
                 }}
              ],
-             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+             #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     chart_ejecutado = PivotChart(
             datasource = data_ejecutado,
@@ -479,14 +468,14 @@ def gpersonal_chart(request):
            series=
             [{'options': {
                 'source': source_barra,
-                'categories': 'gasto__fecha',
+                'categories': 'gasto__year',
                 'legend_by': 'subtipogasto__nombre',
                 },
               'terms': {
                 'sum_asignado':Sum('asignado'),
                 }}
              ],
-             sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+             #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     chart = PivotChart(
             datasource = data,
@@ -503,71 +492,74 @@ def gpersonal_chart(request):
 def gf_chart(request):
     municipio_list = Municipio.objects.all()
     municipio = request.GET.get('municipio', None)
-    year_list = Gasto_year_list()
-    periodos_iniciales = Gasto_periodos(inicial=True)
-    periodos_finales = Gasto_periodos()
+    year_list = getYears(Gasto)
     year = request.GET.get('year', None)
     if not year:
-        year = list(year_list)[-2].year
-    periodo_inicial = Gasto.objects.filter(fecha__year=year).aggregate(min_fecha=Min('fecha'))['min_fecha']
+        year = list(year_list)[-2]
 
     from collections import OrderedDict #FIXME move up
     if municipio:
-        source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
+        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         mi_gasto_promedio = GastoDetalle.objects.filter(tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).aggregate(asignado=Sum('asignado'))['asignado']
-        mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
-        gasto_promedio = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
-            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificacionmunic=mi_clasificacion). \
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        for record in source_inicial:
-            record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
-            record['promedio'] = gasto_promedio.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['asignado']
+        mi_clasificacion = ClasificacionMunicAno.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
+        gasto_promedio = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificacionmunicano=mi_clasificacion). \
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        try:
+            for record in source_inicial:
+                record['ejecutado'] = source_final.filter(gasto__year=record['gasto__year'])[0]['ejecutado']
+                record['promedio'] = gasto_promedio.filter(gasto__year=record['gasto__year'])[0]['asignado']
+        except IndexError:
+            record['promedio'] = 0 #FIXME: really?
+            pass
 
         source = source_inicial
         #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
-        #print source
             
         # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
-        source_barra = GastoDetalle.objects.filter( gasto__fecha__in=periodos_iniciales, \
+        source_barra = GastoDetalle.objects.filter( gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_barra_final = source_barra # FIXME este es un work-around
 
         # chart: porcentage gastos de funcionamiento
-        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo_inicial, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         source_pgf_asignado['nombre'] = 'Funcionamiento'
-        otros_asignado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        otros_asignado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
     else:
         municipio = ''
-        source_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
+        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        for record in source_inicial:
-            record['ejecutado'] = source_final.filter(gasto__fecha__year=record['gasto__fecha'].year)[0]['ejecutado']
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        try:
+            for record in source_inicial:
+                record['ejecutado'] = source_final.filter(gasto__year=record['gasto__year'])[0]['ejecutado']
+        except IndexError:
+            pass
         source = source_inicial
 
         # FIXME. en el grafico de periodos...  de donde tomar los datos?
-        source_barra_inicial = GastoDetalle.objects.filter(gasto__fecha__in=periodos_iniciales, \
+        source_barra_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_barra_final = GastoDetalle.objects.filter(gasto__fecha__in=periodos_finales, \
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_barra_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            values('gasto__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # chart: porcentage gastos de funcionamiento
-        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__fecha=periodo_inicial, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         source_pgf_asignado['nombre'] = 'Funcionamiento'
-        otros_asignado = GastoDetalle.objects.filter(gasto__fecha=periodo_inicial).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        otros_asignado = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
 
@@ -590,7 +582,7 @@ def gf_chart(request):
     data_barra = DataPool(
            series = [{
               'options': {'source': source_barra_final },
-              'terms': [ 'gasto__fecha', 'ejecutado', 'asignado', ]
+              'terms': [ 'gasto__year', 'ejecutado', 'asignado', ]
             }]
     )
 
@@ -600,7 +592,7 @@ def gf_chart(request):
               [{'options':{
                   'type': 'column',},
                 'terms':{
-                  'gasto__fecha': [
+                  'gasto__year': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -609,19 +601,19 @@ def gf_chart(request):
                 },
             )
     if municipio:
-        dataterms = ['gasto__fecha', 'asignado', 'ejecutado', 'promedio']
+        dataterms = ['gasto__year', 'asignado', 'ejecutado', 'promedio']
         terms = ['asignado', 'ejecutado', 'promedio',]
     else:
         municipio = ''
-        dataterms = ['gasto__fecha', 'asignado', 'ejecutado']
+        dataterms = ['gasto__year', 'asignado', 'ejecutado']
         terms = ['asignado', 'ejecutado']
 
     data = RawDataPool(series = [{'options': {'source': source }, 'terms': dataterms}])
     gfbar = Chart(
             datasource = data,
-            series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__fecha': terms }}],
+            series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__year': terms }}],
             chart_options = {'title': {'text': u'Gastos de funcionamiento año %s ' % (municipio,)}},
-            x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
     return render_to_response('gfchart.html',{'charts': (gfbar, barra, pie), 'municipio_list': municipio_list})
@@ -629,28 +621,27 @@ def gf_chart(request):
 
 def inversion_categoria_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = Inversion_year_list()
-    year = list(year_list)[-1].year
+    year_list = getYears(Inversion)
+    year = list(year_list)[-1]
     municipio = request.GET.get('municipio','')
-    periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
 
     if municipio:
-        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
-        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__fecha__gt=list(year_list)[-3]). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year__gt=list(year_list)[-3]). \
+            values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
         municipio = ''
-        source = Proyecto.objects.filter(inversion__fecha=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
-        source_ultimos = Proyecto.objects.filter(inversion__fecha__gt=list(year_list)[-3]). \
-            values('inversion__fecha').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source = Proyecto.objects.filter(inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        source_ultimos = Proyecto.objects.filter(inversion__year__gt=list(year_list)[-3]). \
+            values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     data_ultimos = DataPool(
            series=
             [{'options': {
                 'source': source_ultimos,
-                'categories': 'inversion__fecha',
+                'categories': 'inversion__year',
                 },
-              'terms': ['inversion__fecha', 'ejecutado', 'asignado',]
+              'terms': ['inversion__year', 'ejecutado', 'asignado',]
             }],
     )
     ultimos = Chart(
@@ -659,7 +650,7 @@ def inversion_categoria_chart(request):
               [{'options':{
                   'type': 'bar',
                   'stacking': False},
-                'terms': {'inversion__fecha': ['asignado', 'ejecutado']}
+                'terms': {'inversion__year': ['asignado', 'ejecutado']}
                 }],
             chart_options =
               {'title': {'text': u'Inversión por últimos años %s' % (municipio, )}},
@@ -718,10 +709,10 @@ def inversion_categoria_chart(request):
         label = y['catinversion__nombre']
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_ultimos.filter(inversion__fecha__year=ayear.year, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear.year] = value if value else ''
+            value = source_ultimos.filter(inversion__year=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
 
     mi_clasificacion = None
 
@@ -731,40 +722,40 @@ def inversion_categoria_chart(request):
 
 def ogm_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
-    year_list = Gasto_year_list()
+    year_list = getYears(Gasto)
     if not year:
-        year = list(year_list)[-1].year
-    periodo = Gasto.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    periodos = Gasto_periodos()
+        year = list(year_list)[-1]
 
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__fecha=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(gasto__fecha__year=y.year)
+            q |= Q(gasto__year=y)
         source_barra = GastoDetalle.objects.filter(q, gasto__municipio__slug=municipio)
-        source_pivot = GastoDetalle.objects.filter(gasto__fecha__in=periodos, gasto__municipio__slug=municipio)
+        source_pivot = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, gasto__municipio__slug=municipio)
+        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, year=year)
     else:
         municipio = ''
-        source = GastoDetalle.objects.filter(gasto__fecha=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
+        mi_clasificacion = None
+        source = GastoDetalle.objects.filter(gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(gasto__fecha__year=y.year)
+            q |= Q(gasto__year=y)
         source_barra = GastoDetalle.objects.filter(q)
-        source_pivot = GastoDetalle.objects.filter(gasto__fecha__in=periodos)
+        source_pivot = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL)
 
 
     pivot_barra = PivotDataPool(
            series=
             [{'options': {'source': source_pivot,
-                        'categories': 'gasto__fecha',
+                        'categories': 'gasto__year',
                         'legend_by': 'tipogasto__nombre', },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
                   'asignado':Sum('asignado'),
                 }
               }],
-            sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
             )
     asignado_barra = PivotChart(
             datasource = pivot_barra,
@@ -780,7 +771,7 @@ def ogm_chart(municipio=None, year=None):
     ogmdata_barra = PivotDataPool(
            series=
             [{'options': {'source': source_barra,
-                        'categories': 'gasto__fecha',
+                        'categories': 'gasto__year',
                          },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
@@ -853,52 +844,45 @@ def ogm_chart(municipio=None, year=None):
         label = y['tipogasto__nombre']
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_barra.filter(gasto__fecha__year=ayear.year, tipogasto__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear.year] = value if value else ''
+            value = source_barra.filter(gasto__year=ayear, tipogasto__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
-
-    mi_clasificacion = None
+            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunicano=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
 
     return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
 
 def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
-    year_list = Ingreso_year_list()
+    year_list = getYears(Ingreso)
     if not year:
-        year = list(year_list)[-1].year
-    periodo = Ingreso.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    periodos = Ingreso_periodos()
+        year = list(year_list)[-1]
 
     if municipio:
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__fecha=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos, ingreso__municipio__slug=municipio)
+        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
+        source_barra = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, ingreso__municipio__slug=municipio)
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(ingreso__fecha__year=y.year)
+            q |= Q(ingreso__year=y)
         source_barra2 = IngresoDetalle.objects.filter(q, ingreso__municipio__slug=municipio)
-        mi_gasto_promedio = GastoDetalle.objects.filter(tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).aggregate(asignado=Sum('asignado'))['asignado']
-        #mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)[0]
-        # FIXME: WTF?
-        mi_clasificacion = ClasificacionMunic.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
+        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, year=year)
     else:
         mi_clasificacion = None
         municipio = ''
-        source = IngresoDetalle.objects.filter(ingreso__fecha=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.filter(ingreso__fecha__in=periodos)
-        source_barra2 = IngresoDetalle.objects.filter(ingreso__fecha__gt=list(year_list)[-3])
+        source = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
+        source_barra = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL)
+        source_barra2 = IngresoDetalle.objects.filter(ingreso__year__gt=list(year_list)[-3])
 
     oimdata_barra = PivotDataPool(
            series=
             [{'options': {'source': source_barra,
-                        'categories': 'ingreso__fecha',
+                        'categories': 'ingreso__year',
                         'legend_by': 'subsubtipoingreso__origen__nombre', },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
                   'asignado':Sum('asignado'),
                 }
               }],
-            sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
             )
     asignado_barra = PivotChart(
             datasource = oimdata_barra,
@@ -914,7 +898,7 @@ def oim_chart(municipio=None, year=None):
     oimdata_barra2 = PivotDataPool(
            series=
             [{'options': {'source': source_barra2,
-                        'categories': 'ingreso__fecha',
+                        'categories': 'ingreso__year',
                          },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
@@ -989,10 +973,16 @@ def oim_chart(municipio=None, year=None):
         label = y['subsubtipoingreso__origen__nombre']
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_barra.filter(ingreso__fecha__year=ayear.year, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear.year] = value if value else ''
+            value = source_barra.filter(ingreso__year=ayear, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum('asignado'))['total']
+            porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            value = IngresoDetalle.objects.filter(ingreso__fecha__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+            print mi_clasificacion.clasificacion
+            x = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunicano=mi_clasificacion)
+            for i in x:
+                print "..."
+                print i.ingreso.municipio.clasificaciones
+            #FIXME too tired!
+            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificaciones=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
             porano_table[label]['extra'] = value if value else '...'
 
     return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
