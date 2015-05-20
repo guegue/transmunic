@@ -10,7 +10,7 @@
       <!-- Indicators -->
       <ol class="carousel-indicators">
         {% for banner in banners %}
-          <li data-target="#myCarousel2" data-slide-to="{{forloop.counter0}}" {% if forloop.first %} class="active"{% endif%}></li>
+        <li data-target="#myCarousel2" data-slide-to="{{forloop.counter0}}" {% if forloop.first %} class="active"{% endif%} style="background-color: #{{ banner.color }}"></li>
         {% endfor %}
       </ol>
       <div class="carousel-inner" role="listbox">

@@ -12,6 +12,7 @@ class Banner(models.Model):
     enlace = models.CharField(max_length=200, null=True, blank=True)
     orden = models.IntegerField(null=True, blank=True)
     imagen = ImageField(upload_to='banner',null=True,blank=True)
+    color = models.CharField(max_length=6)
 
     class Meta:
         ordering = ['orden']

@@ -10,7 +10,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 #from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
-from models import getYears
+from models import Anio, getYears
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 
 def inversion_minima_sector_chart(municipio=None, year=None):
@@ -855,22 +855,25 @@ def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
     if not year:
-        year = list(year_list)[-1]
+        year = year_list[-1]
+
+    #if year == year_list[-1]:
+    #    PERIODO_FINAL=PERIODO_INICIAL
+
+    periodo = Anio.objects.get(anio=year).periodo
+    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if municipio:
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, ingreso__municipio__slug=municipio)
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(ingreso__year=y)
-        source_barra2 = IngresoDetalle.objects.filter(q, ingreso__municipio__slug=municipio)
+        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
+        source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
+        source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
         mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
     else:
         mi_clasificacion = None
         municipio = ''
-        source = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('subsubtipoingreso__origen')
-        source_barra = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL)
-        source_barra2 = IngresoDetalle.objects.filter(ingreso__year__gt=list(year_list)[-3])
+        source = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
+        source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
+        source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
 
     oimdata_barra = PivotDataPool(
            series=
@@ -924,7 +927,6 @@ def oim_chart(municipio=None, year=None):
               'terms': [
                 'subsubtipoingreso__origen__nombre',
                 'ejecutado',
-                'asignado',
                 ]}
              ])
 
@@ -936,12 +938,14 @@ def oim_chart(municipio=None, year=None):
                   'stacking': False},
                 'terms':{
                   'subsubtipoingreso__origen__nombre': [
-                    'asignado']
+                    'ejecutado']
                   }}],
             chart_options =
-              {'title': {
-                  'text': 'Origen de los ingresos %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+              {
+                  'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 
     ejecutado = Chart(
@@ -956,29 +960,39 @@ def oim_chart(municipio=None, year=None):
                   }}],
             chart_options =
               {
-                  'title': {'text': 'Ingresos ejecutados: %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35, }},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               }
     )
 
     # tabla: get total and percent
-    total = source.aggregate(total=Sum('asignado'))['total']
+    total = source.aggregate(total=Sum('ejecutado'))['total']
     for row in source:
-        row['percent'] = round(row['asignado'] / total * 100, 0)
+        row['percent'] = round(row['ejecutado'] / total * 100, 0)
 
     # tabla: get ingresos por año
+    if municipio:
+        source_cuadro = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio)
+    else:
+        source_cuadro = IngresoDetalle.objects.all()
     porano_table = {}
-    ys = source_barra.order_by('subsubtipoingreso__origen__nombre').values('subsubtipoingreso__origen__nombre').distinct()
+    ys = source_cuadro.order_by('subsubtipoingreso__origen__nombre').values('subsubtipoingreso__origen__nombre').distinct()
     for y in ys:
         label = y['subsubtipoingreso__origen__nombre']
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_barra.filter(ingreso__year=ayear, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum('asignado'))['total']
+            periodo = Anio.objects.get(anio=ayear).periodo
+            quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+            value = source_cuadro.filter(ingreso__year=ayear, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, \
+            periodo = PERIODO_FINAL
+            quesumar = 'ejecutado'
+            value = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label, \
                     ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
-                    aggregate(total=Avg('asignado'))['total']
+                    aggregate(total=Avg(quesumar))['total']
             porano_table[label]['extra'] = value if value else '...'
 
     return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}

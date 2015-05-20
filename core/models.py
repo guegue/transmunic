@@ -15,6 +15,12 @@ PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
 PERIODO_FINAL = 'F'
 
+class Anio(models.Model):
+    anio = models.IntegerField()
+    periodo = models.CharField(max_length=1)
+    def __unicode__(self):
+        return u'%s %s' % (self.anio, self.periodo)
+
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')

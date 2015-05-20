@@ -58,6 +58,7 @@ class InversionAdmin(admin.ModelAdmin):
     list_display = ['id','departamento','municipio']
     list_filter = ('departamento','municipio')
 
+admin.site.register(Anio)
 admin.site.register(CatInversion)
 admin.site.register(TipoGasto)
 admin.site.register(SubTipoGasto)
