@@ -5,6 +5,7 @@ from datetime import datetime, time
 
 from django.shortcuts import render_to_response
 from django.db.models import Q, Sum, Max, Min, Avg
+from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
@@ -442,6 +443,9 @@ def gpersonal_chart(request):
             }],
             chart_options = {
                 'title': {'text': 'Gastos de personal %s %s ' % (municipio, year,)},
+                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
             },
     )
     data_ejecutado = PivotDataPool(
@@ -490,7 +494,8 @@ def gpersonal_chart(request):
             chart_options =
               {'title': {'text': 'Gastos asignados personal: %s' % (municipio, )}},
     )
-    return render_to_response('gpersonal.html',{'charts': (chart, chart_ejecutado, pie), 'municipio_list': municipio_list, 'year_list': year_list})
+    return render_to_response('gpersonal.html',{'charts': (chart, chart_ejecutado, pie), 'municipio_list': municipio_list, 'year_list': year_list},\
+        context_instance=RequestContext(request))
 
 def gf_chart(request):
     municipio_list = Municipio.objects.all()
@@ -498,7 +503,7 @@ def gf_chart(request):
     year_list = getYears(Gasto)
     year = request.GET.get('year', None)
     if not year:
-        year = list(year_list)[-2]
+        year = year_list[-2]
 
     from collections import OrderedDict #FIXME move up
     if municipio:
@@ -508,10 +513,10 @@ def gf_chart(request):
         source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        mi_gasto_promedio = GastoDetalle.objects.filter(tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).aggregate(asignado=Sum('asignado'))['asignado']
-        mi_clasificacion = ClasificacionMunicAno.objects.filter(desde__lt=mi_gasto_promedio, hasta__gt=mi_gasto_promedio)
+        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
         gasto_promedio = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
-            tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificacionmunicano=mi_clasificacion). \
+            tipogasto__clasificacion=TipoGasto.CORRIENTE, \
+            gasto__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, gasto__municipio__clase__anio=year).\
             values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         try:
             for record in source_inicial:
@@ -580,6 +585,9 @@ def gf_chart(request):
             }],
             chart_options = {
                 'title': {'text': 'Gastos de funcionamiento %s %s ' % (municipio, year,)},
+                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
             },
     )
     data_barra = DataPool(
@@ -601,6 +609,7 @@ def gf_chart(request):
                   }}],
             chart_options = {
                 'title': {'text': 'Gastos de funcionamiento %s ' % (municipio,)},
+                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
                 },
             )
     if municipio:
@@ -615,11 +624,15 @@ def gf_chart(request):
     gfbar = Chart(
             datasource = data,
             series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__year': terms }}],
-            chart_options = {'title': {'text': u'Gastos de funcionamiento año %s ' % (municipio,)}},
+            chart_options = {
+                'title': {'text': u'Gastos de funcionamiento año %s ' % (municipio,)},
+                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
+                },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('gfchart.html',{'charts': (gfbar, barra, pie), 'municipio_list': municipio_list})
+    return render_to_response('gfchart.html',{'charts': (gfbar, barra, pie), 'municipio_list': municipio_list, 'year_list': year_list},\
+        context_instance=RequestContext(request))
 
 
 def inversion_categoria_chart(request):

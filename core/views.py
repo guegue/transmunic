@@ -47,7 +47,7 @@ def home(request):
             ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
-    })
+    }, context_instance=RequestContext(request))
 
 def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
@@ -73,14 +73,15 @@ def municipio(request, slug):
         'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
-    })
+        }, context_instance=RequestContext(request))
 
 def inversion_minima_sector_view(request):
     template_name = 'chart.html'
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = inversion_minima_sector_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'], 'year_list': data['year_list']})
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'], 'year_list': data['year_list']},\
+            context_instance=RequestContext(request))
 
 def ogm_view(request):
     template_name = 'ogm_chart.html'
@@ -89,30 +90,36 @@ def ogm_view(request):
     data = ogm_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { 'ano': data['ano'], \
             'clasificacion': data['clasificacion'], 'porano': data['porano'], 'totales': data['totales'], \
-            'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+            'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+            context_instance=RequestContext(request))
 
 def oim_view(request):
     template_name = 'oim_chart.html'
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = oim_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'ano': data['ano'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], 'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name, { 'ano': data['ano'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+            context_instance=RequestContext(request))
 
 def inversion_view(request):
     template_name = 'inversion.html'
     municipio = request.GET.get('municipio','')
     data = inversion_chart(municipio=municipio)
-    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list']},\
+            context_instance=RequestContext(request))
 
 def inversion_area_view(request):
     template_name = 'inversionarea.html'
     municipio = request.GET.get('municipio','')
     data = inversion_area_chart(municipio=municipio)
-    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list']},\
+            context_instance=RequestContext(request))
 
 def fuentes_view(request):
     template_name = 'fuentes_chart.html'
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = fuentes_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']})
+    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']},\
+            context_instance=RequestContext(request))
