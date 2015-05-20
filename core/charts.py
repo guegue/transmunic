@@ -417,6 +417,14 @@ def gpersonal_chart(request):
     if municipio:
         source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
         source_ejecutado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).exclude(gasto__year=year)
+        
+        # chart: porcentage gastos de personal
+        source_pgp_asignado =  GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        source_pgp_asignado['nombre'] = 'Personal'
+        otros_asignado = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL).exclude(tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        otros_asignado['nombre'] = 'Otros'
+        source_pgp = [source_pgp_asignado, otros_asignado]
+
     else:
         municipio = ''
         source_barra = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
