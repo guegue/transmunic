@@ -10,7 +10,7 @@
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
-        <option value="{{year|date:'Y'}}">{{year|date:"Y"}}</option>
+        <option value="{{year}}">{{year}}</option>
     {% endfor %}
     </select>
     <select name="municipio">
@@ -50,7 +50,7 @@
             <tr  class="info">
               <th></th>
               {% for year in year_list %}
-                <th>{{ year|date:"Y" }}</th>
+                <th>{{ year }}</th>
               {% endfor %}
               <th>Promedio</th>
             </tr>

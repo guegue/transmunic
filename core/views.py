@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Proyecto, InversionFuente
+from models import getYears
 from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
 from website.models import Banner
 
@@ -16,12 +17,12 @@ def home(request):
     banners = Banner.objects.all()
 
     # InversionFuente tiene su propio último año
-    year_list = InversionFuente.objects.distinct('year')
-    year = list(year_list)[-1].year
+    year_list = getYears(InversionFuente)
+    year = year_list[-1]
     data_fuentes = fuentes_chart(year=year)
 
-    year_list = Inversion.objects.distinct('year')
-    year = list(year_list)[-1].year
+    year_list = getYears(Inversion)
+    year = list(year_list)[-1]
 
     data_oim = oim_chart(year=year)
     data_ogm = ogm_chart(year=year)

@@ -62,9 +62,9 @@ def inversion_minima_sector_chart(municipio=None, year=None):
 
 def fuentes_chart(municipio=None,year=None):
     municipio_list = Municipio.objects.all()
-    year_list = InversionFuente.objects.distinct('year')
+    year_list = getYears(InversionFuente)
     if not year:
-        year = list(year_list)[-1]
+        year = year_list[-1]
     if municipio:
         source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
@@ -83,21 +83,24 @@ def fuentes_chart(municipio=None,year=None):
               [{'options':{'type': 'pie'},
                 'terms':{'fuente__nombre': ['asignado']}
               }],
-            chart_options =
-              {'title': {
-                  'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
-              })
+            chart_options = {
+                'title': {'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+            }
+    )
     asignado_portada = Chart(
             datasource = data_portada,
             series_options =
               [{'options':{'type': 'pie'},
                 'terms':{'fuente__tipofuente__nombre': ['asignado']}
               }],
-            chart_options =
-              {'title': {
-                  'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+            chart_options = {
+                'title': {'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
     return {'charts': (asignado, asignado_portada), 'year_list': year_list, 'municipio_list': municipio_list}
 
@@ -726,23 +729,20 @@ def ogm_chart(municipio=None, year=None):
     if not year:
         year = list(year_list)[-1]
 
+    periodo = Anio.objects.get(anio=year).periodo
+    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(gasto__year=y)
-        source_barra = GastoDetalle.objects.filter(q, gasto__municipio__slug=municipio)
-        source_pivot = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, gasto__municipio__slug=municipio)
-        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, year=year)
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum(quesumar)).order_by('tipogasto__nombre')
+        source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=periodo, gasto__year__gt=year_list[-3])
+        source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__municipio__slug=municipio)
+        mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
     else:
-        municipio = ''
         mi_clasificacion = None
-        source = GastoDetalle.objects.filter(gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('tipogasto__nombre')
-        q = Q()
-        for y in list(year_list)[-3:]:
-            q |= Q(gasto__year=y)
-        source_barra = GastoDetalle.objects.filter(q)
-        source_pivot = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL)
+        municipio = ''
+        source = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum(quesumar)).order_by('tipogasto__nombre')
+        source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__year__gt=year_list[-3])
+        source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo)
 
 
     pivot_barra = PivotDataPool(
@@ -752,7 +752,6 @@ def ogm_chart(municipio=None, year=None):
                         'legend_by': 'tipogasto__nombre', },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
-                  'asignado':Sum('asignado'),
                 }
               }],
             #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -763,11 +762,13 @@ def ogm_chart(municipio=None, year=None):
               [{'options':{
                   'type': 'column',
                   'stacking': 'percent'},
-                'terms':['asignado']
+                'terms':['ejecutado']
                 }],
-            chart_options =
-              {'title': { 'text': 'Gastos asignados por tipo %s' % (municipio,)}},
-            )
+            chart_options = {
+              'title': { 'text': 'Gastos %s por tipo %s' % (quesumar, municipio,)},
+              'options3d': { 'enabled': 'true',  'alpha': 10, 'beta': 10, 'depth': 50 },
+            },
+    )
     ogmdata_barra = PivotDataPool(
            series=
             [{'options': {'source': source_barra,
@@ -775,7 +776,6 @@ def ogm_chart(municipio=None, year=None):
                          },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
-                  'asignado':Sum('asignado'),
                 }
               }],
             )
@@ -785,18 +785,19 @@ def ogm_chart(municipio=None, year=None):
               [{'options':{
                   'type': 'column',
                 },
-                'terms':['asignado','ejecutado']
+                'terms':['ejecutado']
                 }],
-            chart_options =
-              {'title': { 'text': 'Gastos por periodo %s' % (municipio,)}},
-            )
+            chart_options = {
+              'title': { 'text': 'Gastos por periodo %s' % (municipio,)},
+              'options3d': { 'enabled': 'true',  'alpha': 10, 'beta': 10, 'depth': 50 },
+            }
+    )
     ogmdata = DataPool(
            series=
             [{'options': {'source': source },
               'terms': [
                 'tipogasto__nombre',
                 'ejecutado',
-                'asignado',
                 ]}
              ])
 
@@ -808,13 +809,15 @@ def ogm_chart(municipio=None, year=None):
                   'stacking': False},
                 'terms':{
                   'tipogasto__nombre': [
-                    'asignado']
+                    'ejecutado']
                   }}],
-            chart_options =
-              {'title': {
-                  'text': 'Destino de los gastos %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
-              })
+            chart_options = {
+                'title': { 'text': 'Destino de los gastos %s %s' % (municipio, year,)},
+                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+            }
+    )
 
     ejecutado = Chart(
             datasource = ogmdata,
@@ -829,27 +832,41 @@ def ogm_chart(municipio=None, year=None):
             chart_options =
               {
                   'title': {'text': 'Gastos ejecutados: %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 
     # tabla: get total and percent
-    total = source.aggregate(total=Sum('asignado'))['total']
+    total = source.aggregate(total=Sum('ejecutado'))['total']
     for row in source:
-        row['percent'] = round(row['asignado'] / total * 100, 0)
+        row['percent'] = round(row['ejecutado'] / total * 100, 0)
 
     # tabla: get ingresos por año
+    if municipio:
+        source_cuadro = GastoDetalle.objects.filter(gasto__municipio__slug=municipio)
+    else:
+        source_cuadro = GastoDetalle.objects.all()
     porano_table = {}
-    ys = source_barra.order_by('tipogasto__nombre').values('tipogasto__nombre').distinct()
+    ys = source_cuadro.order_by('tipogasto__nombre').values('tipogasto__nombre').distinct()
     for y in ys:
         label = y['tipogasto__nombre']
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_barra.filter(gasto__year=ayear, tipogasto__nombre=label).aggregate(total=Sum('asignado'))['total']
+            periodo = Anio.objects.get(anio=ayear).periodo
+            quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+            value = source_cuadro.filter(gasto__year=ayear, gasto__periodo=periodo, tipogasto__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
-            value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunicano=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
+            periodo = PERIODO_FINAL
+            quesumar = 'ejecutado'
+            value = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo, tipogasto__nombre=label, \
+                    gasto__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, gasto__municipio__clase__anio=year).\
+                    aggregate(total=Avg(quesumar))['total']
+            porano_table[label]['extra'] = value if value else '...'
 
     return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
+
 
 def oim_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
