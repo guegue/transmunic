@@ -242,7 +242,7 @@ def ep_chart(request):
     if municipio:
         with open ("core/ep_municipio.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, periodos])
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, year_list])
     else:
         municipio = ''
         with open ("core/ep.sql", "r") as query_file:
@@ -273,17 +273,17 @@ def ep_chart(request):
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
+        context_instance=RequestContext(request))
 
 def psd_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)[:-1]
-    #periodos = list(Ingreso_periodos())[:-1]
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/psd_municipio.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, periodos])
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, year_list])
     else:
         municipio = ''
         with open ("core/psd.sql", "r") as query_file:
@@ -316,7 +316,8 @@ def psd_chart(request):
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
+        context_instance=RequestContext(request))
 
 def aci_chart(request):
     municipio_list = Municipio.objects.all()
@@ -325,7 +326,7 @@ def aci_chart(request):
     if municipio:
         with open ("core/aci_municipio.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, periodos])
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, year_list])
     else:
         municipio = ''
         with open ("core/aci.sql", "r") as query_file:
@@ -340,7 +341,6 @@ def aci_chart(request):
                 'asignado',
                 ]}
              ])
-
     bar = Chart(
             datasource = data,
             series_options =
@@ -358,19 +358,20 @@ def aci_chart(request):
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
+        context_instance=RequestContext(request))
 
 
 def ago_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)[:-1]
-    #periodos = list(Ingreso_periodos())[:-1]
     municipio = request.GET.get('municipio','')
 
     if municipio:
         with open ("core/ago_municipio.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, periodos])
+        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, year_list])
     else:
         municipio = ''
         with open ("core/ago.sql", "r") as query_file:
@@ -404,7 +405,8 @@ def ago_chart(request):
                 #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
-    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list})
+    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
+        context_instance=RequestContext(request))
 
 def gpersonal_chart(request):
     municipio_list = Municipio.objects.all()
@@ -646,17 +648,17 @@ def gf_chart(request):
 def inversion_categoria_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
-    year = list(year_list)[-1]
+    year = year_list[-1]
     municipio = request.GET.get('municipio','')
 
     if municipio:
         source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
-        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year__gt=list(year_list)[-3]). \
+        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year__gt=year_list[-3]). \
             values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
     else:
         municipio = ''
         source = Proyecto.objects.filter(inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
-        source_ultimos = Proyecto.objects.filter(inversion__year__gt=list(year_list)[-3]). \
+        source_ultimos = Proyecto.objects.filter(inversion__year__gt=year_list[-3]). \
             values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
     data_ultimos = DataPool(
@@ -702,7 +704,9 @@ def inversion_categoria_chart(request):
             chart_options =
               {'title': {
                   'text': 'Inversion asignados: %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 
     ejecutado = Chart(
@@ -718,7 +722,9 @@ def inversion_categoria_chart(request):
             chart_options =
               {'title': {
                   'text': 'Inversion ejecutados: %s %s' % (municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, }},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 
     # tabla: get total and percent
@@ -736,13 +742,15 @@ def inversion_categoria_chart(request):
             value = source_ultimos.filter(inversion__year=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
+            #FIXM wooot?
             value = IngresoDetalle.objects.filter(ingreso__year=year, subsubtipoingreso__origen__nombre=label, ingreso__municipio__clasificacionmunic=mi_clasificacion).aggregate(total=Sum('asignado'))['total']
 
     mi_clasificacion = None
 
     return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ultimos), \
         'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, \
-        'year_list': year_list, 'municipio_list': municipio_list})
+        'year_list': year_list, 'municipio_list': municipio_list},\
+        context_instance=RequestContext(request))
 
 def ogm_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()

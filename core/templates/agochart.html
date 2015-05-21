@@ -8,7 +8,7 @@
     <select name="municipio">
     <option value="">--</option>
     {% for municipio in municipio_list %}
-        <option value="{{municipio.slug}}">{{municipio}}</option>
+        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
     {% endfor %}
     </select>
     <input type="submit" value="Submit"/>
