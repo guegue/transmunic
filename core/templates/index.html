@@ -16,11 +16,11 @@
       <div class="carousel-inner" role="listbox">
         {% for banner in banners %}
           <!--Slider Item{{ banners.count }}-->
-          <div class="item{% if forloop.first %} active{% endif%}">
-            {% thumbnail banner.imagen "1600x400" as img %}
-              <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
-            {% endthumbnail %}
+          <div class="item{% if forloop.first %} active{% endif%}" style="background-color: #{{ banner.color }}">
             <div class="container">
+              {% thumbnail banner.imagen "1170x500" crop='center' as img %}
+                <img src="{{ img.url }}" alt="{{ banner }}"/>
+              {% endthumbnail %}
               <div class="carousel-caption">
                 <h1>{{ banner.titulo }}</h1>
                 <p>{{ banner.descripcion }}</p>
@@ -33,56 +33,69 @@
 {% endblock %}
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
-    <div class="container">
-    <div class="row-fluid">
-        <div class="col-md-5">
+        <div class="container">
+            <div class="col-md-5">
             <h2>Antecedentes de las transferencias municipales</h2>
-              <button class="recuadro col-md-12 col-sm-12 col-xs-12 btn btn-primary">
-                <i class="fa fa-street-view fa-3x pull-left"></i>
-                <h4>Marco Legal</h4>
-                <span class="cifra">Municipal</span>
+              <button class="recuadro btn btn-primary">
+                <span class="recuadro-icon">
+                    <i class="fa fa-street-view fa-3x"></i>
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Marco Legal</h4>
+                    <span class="cifra">Municipal</span>
+                </div>
               </button>
               <button class="recuadro btn btn-success">
-                <i class="fa fa-building fa-3x pull-left"></i>
-                <h4>Ciclo Presupuestario</h4>
-                <span class="cifra">Municipal</span>
+                <span class="recuadro-icon">
+                    <i class="fa fa-building fa-3x"></i>
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Ciclo Presupuestario</h4>
+                    <span class="cifra">Municipal</span>
+                </div>
               </button>
-              <div class="clearfix"></div>
-              <br />
               <button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
-                <i class="fa fa-child fa-3x pull-left"></i>
-                <h4>Analisis Presupuestario</h4>
-                <span class="dolar"></span>
-                <span class="cifra">Municipal</span>
+                <span class="recuadro-icon">
+                    <i class="fa fa-child fa-3x"></i>
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Análisis Presupuestario</h4>
+                    <span class="dolar"></span>
+                    <span class="cifra">Municipal</span>
+                </div>
               </button>
               <button class="recuadro col-sm-4 col-xs-12 btn btn-info">
-                <i class="fa fa-child fa-3x pull-left"></i>
-                <h4>Participacion Ciudadana</h4>
-                <span class="dolar"></span>
-                <span class="cifra">Gestion Municipal</span>
+                <span class="recuadro-icon">
+                    <i class="fa fa-child fa-3x"></i>
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Participación Ciudadana</h4>
+                    <span class="dolar"></span>
+                    <span class="cifra">Gestion Municipal</span>
+                </div>
               </button>
         </div>
         <div class="col-md-7">
             <img src="/static/img/nicaragua.png" alt="" alt="img-responsive" width="600px"/>
         </div>
-      </div>
+    </div>
     </section>
 {% endblock %}
 
 {% block main_content %}
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
-            <h2>Cuánto ingresa?</h2>
+            <h2>&iquest;Cuánto ingresa?</h2>
           <div id='oim_ejecutado'>
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <h2>En qué se gasta?</h2>
+          <h2>&iquest;En qué se gasta?</h2>
           <div id='ogm_ejecutado'>
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <h2>Quién Financia?</h2>
+            <h2>&iquest;Quién financia?</h2>
           <div id='fuentes'>
           </div>
         </div>
