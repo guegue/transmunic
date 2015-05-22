@@ -925,7 +925,7 @@ def oim_chart(municipio=None, year=None):
 
         # obtiene datos para OIM comparativo de todos los años
         inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio=Sum('asignado')))
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio=Sum('ejecutado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio_final=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
         inicial_clase = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,\
@@ -933,8 +933,18 @@ def oim_chart(municipio=None, year=None):
                 values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('asignado'))
         final_clase = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,\
                 ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
-                values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('ejecutado'))
+                values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase_final=Sum('ejecutado'))
 
+
+        # FIXME, should we use this instead?
+        # http://youku.io/questions/308407/merge-join-lists-of-dictionaries-based-on-a-common-value-in-python
+        #from collections import defaultdict
+        #from itertools import chain
+        #
+        #collector = defaultdict(dict)
+        #for collectible in chain(inicial, inicial_clase):
+        #    collector[collectible['ingreso__year']].update(collectible.iteritems())
+        #inicial_merged = list(collector.itervalues())
 
         # FIXME user mi_clasificacion_count para el año en cuestión 
         for row in inicial:
@@ -944,14 +954,14 @@ def oim_chart(municipio=None, year=None):
         for row in final:
             for row2 in final_clase:
                 if row2['ingreso__year'] == row['ingreso__year']:
-                    row['clase'] = row2['clase'] / mi_clasificacion_count
+                    row['clase_final'] = row2['clase_final'] / mi_clasificacion_count
         for row in inicial:
             found = False
             for row2 in final:
                 if row2['ingreso__year'] == row['ingreso__year']:
                     found = True
-                    row['clase_final'] = row2['clase'] / mi_clasificacion_count
-                    row['municipio_final'] = row2['municipio']
+                    row['clase_final'] = row2['clase_final'] / mi_clasificacion_count
+                    row['municipio_final'] = row2['municipio_final']
                 if not found:
                     row['clase_final'] = 0
                     row['municipio_final'] = 0
@@ -1175,7 +1185,7 @@ def oim_chart(municipio=None, year=None):
             quesumar = 'ejecutado'
             value = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label, \
                     ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
-                    aggregate(total=Avg(quesumar))['total']
+                    aggregate(total=Sum(quesumar))['total'] / mi_clasificacion_count
             porano_table[label]['extra'] = value if value else '...'
 
     if municipio and not ChartError:

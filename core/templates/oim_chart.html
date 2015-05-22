@@ -26,7 +26,7 @@
         <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
         <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
     </ul>
-    {% if municipio %}
+    {% if municipio and charts.3 %}
         {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, asignado_barra, barra2" }}
     {% else %}
         {{ charts|load_charts:"ejecutado, asignado_barra, barra2" }}
@@ -59,7 +59,7 @@
               {% for year in year_list %}
                 <th>{{ year }}</th>
               {% endfor %}
-              <th>Promedio</th>
+              <th>Promedio {{ anio }}</th>
             </tr>
             {% for key, data in porano.items %}
              <tr>
