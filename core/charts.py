@@ -12,7 +12,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 from models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 #from models import Gasto_year_list, Gasto_periodos, Ingreso_year_list, Ingreso_periodos, Inversion_year_list, Inversion_periodos, InversionFuente_year_list, InversionFuente_periodos
 from models import Anio, getYears
-from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
+from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
 def inversion_minima_sector_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
@@ -748,7 +748,7 @@ def inversion_categoria_chart(request):
     mi_clasificacion = None
 
     return render_to_response('inversionpiechart.html',{'charts': (ejecutado, asignado, ultimos), \
-        'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, \
+        'clasificacion': mi_clasificacion, 'anio': year, 'porano': porano_table, 'totales': source, \
         'year_list': year_list, 'municipio_list': municipio_list},\
         context_instance=RequestContext(request))
 
@@ -894,7 +894,7 @@ def ogm_chart(municipio=None, year=None):
                     aggregate(total=Avg(quesumar))['total']
             porano_table[label]['extra'] = value if value else '...'
 
-    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
+    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clasificacion, 'anio': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
 
 
 def oim_chart(municipio=None, year=None):
@@ -909,17 +909,96 @@ def oim_chart(municipio=None, year=None):
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
+    ChartError = False
+
     if municipio:
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
         mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
+        mi_clasificacion_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clasificacion.clasificacion, anio=year).count()
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('ingreso__periodo').annotate(municipio=Sum('asignado')))
+        actualizado = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_ACTUALIZADO).values('ingreso__periodo').annotate(municipio=Sum('ejecutado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('ingreso__periodo').annotate(municipio=Sum('ejecutado')))
+
+        # FIXME: this DOES NOT work (screws up all numbers)
+        #comparativo = inicial | actualizado | final
+
+        inicial_clase = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_INICIAL,\
+                ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
+                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('asignado'))
+        actualizado_clase = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_ACTUALIZADO,\
+                ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
+                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('ejecutado'))
+        final_clase = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_FINAL,\
+                ingreso__municipio__clasificaciones__clasificacion=mi_clasificacion.clasificacion, ingreso__municipio__clase__anio=year).\
+                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('ejecutado'))
+
+        try:
+            inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clasificacion_count
+            if actualizado:
+                actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clasificacion_count * 10000 # FIXME: testing * 10000
+                actualizado[0]['municipio'] *= 10000 # FIXME: testing * 10000
+            final[0]['clase'] = final_clase[0]['clase'] / mi_clasificacion_count
+        except IndexError:
+            ChartError = True
+            pass
+        comparativo3 = list(chain(inicial, actualizado, final))
+        comparativo2 = list(chain(inicial, final, ))
+        for d in comparativo3:
+            d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "ingreso__periodo")
+        #print "inicial=%s actualizado=%s final=%s comparativo=%s" % (inicial, actualizado, final, comparativo3)
+        #print comparativo3
+
     else:
         mi_clasificacion = None
         municipio = ''
         source = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
+        comparativo = IngresoDetalle.objects.filter(ingreso__periodo='')
+
+    if municipio and not ChartError:
+        oim_comparativo2 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo2 },
+                'terms':  ['ingreso__periodo','municipio','clase'],
+                }],
+                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+                )
+        oim_comparativo3 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo3 },
+                'terms':  ['ingreso__periodo','municipio','clase'],
+                }],
+                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+                )
+        oim_comparativo2_column = Chart(
+                datasource = oim_comparativo2,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'ingreso__periodo': ['municipio', 'clase']
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
+                )
+        oim_comparativo3_column = Chart(
+                datasource = oim_comparativo3,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'ingreso__periodo': ['municipio','clase']
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
+                )
 
     oimdata_barra = PivotDataPool(
            series=
@@ -1041,4 +1120,11 @@ def oim_chart(municipio=None, year=None):
                     aggregate(total=Avg(quesumar))['total']
             porano_table[label]['extra'] = value if value else '...'
 
-    return {'charts': (ejecutado, asignado, asignado_barra, barra2), 'clasificacion': mi_clasificacion, 'ano': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
+    if municipio and not ChartError:
+        charts =  (ejecutado, oim_comparativo2_column, oim_comparativo3_column, asignado_barra, barra2, )
+    else:
+        charts =  (ejecutado, asignado_barra, barra2, )
+
+    return {'charts': charts, \
+            'clasificacion': mi_clasificacion, 'municipio': municipio, 'anio': year, 'porano': porano_table, 'totales': source, \
+            'year_list': year_list, 'municipio_list': municipio_list}

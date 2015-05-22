@@ -14,6 +14,12 @@ from lugar.models import *
 PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
 PERIODO_FINAL = 'F'
+PERIODO_VERBOSE = {'I': 'A) Inicial', 'F': 'B) Final', 'A': 'C) Avanzado'}
+PERIODO_CHOICES = (
+    (PERIODO_INICIAL, 'Inicial'),
+    (PERIODO_ACTUALIZADO, 'Actualizado'),
+    (PERIODO_FINAL, 'Final'),
+)
 
 class Anio(models.Model):
     anio = models.IntegerField()
