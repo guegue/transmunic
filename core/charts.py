@@ -917,14 +917,23 @@ def oim_chart(municipio=None, year=None):
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
+
         mi_clasificacion = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
         mi_clasificacion_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clasificacion.clasificacion, anio=year).count()
         # FIXME: sacar mi_clase para cada anio y proceder a contar (year_list?)
         #mi_clasificacion_count_anios = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clasificacion.clasificacion).annotate(count=Count('municipio'))
 
+        # obtiene datos para grafico comparativo de tipo de ingresos
+        tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('tipoingreso__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('tipoingreso__nombre').annotate(ejecutado=Sum('ejecutado')))
+        for row in tipo_inicial:
+            for row2 in tipo_final:
+                if row2['tipoingreso__nombre'] == row['tipoingreso__nombre']:
+                    row['ejecutado'] = row2['ejecutado']
+        tipo = tipo_inicial
 
         # obtiene datos para OIM comparativo de todos los años
-        inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio=Sum('asignado')))
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio_final=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
@@ -1006,6 +1015,19 @@ def oim_chart(municipio=None, year=None):
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
         comparativo = IngresoDetalle.objects.filter(ingreso__periodo='')
+        
+        # obtiene datos para grafico comparativo de tipo de ingresos
+        tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('tipoingreso__nombre').order_by('tipoingreso__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('tipoingreso__nombre').order_by('tipoingreso__nombre').annotate(ejecutado=Sum('ejecutado')))
+        for row in tipo_inicial:
+            found = False
+            for row2 in tipo_final:
+                if row2['tipoingreso__nombre'] == row['tipoingreso__nombre']:
+                    found = True
+                    row['ejecutado'] = row2['ejecutado']
+            if not found:
+                row['ejecutado'] = 0
+        tipo = tipo_inicial
 
     if municipio and not ChartError:
         oim_comparativo_anios = RawDataPool(
@@ -1068,6 +1090,25 @@ def oim_chart(municipio=None, year=None):
                 {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
                 )
 
+    oim_tipo = RawDataPool(
+        series=
+            [{'options': {'source': tipo },
+            'terms':  ['tipoingreso__nombre','ejecutado','asignado'],
+            }],
+        )
+    oim_tipo_column = Chart(
+            datasource = oim_tipo,
+            series_options =
+            [{'options':{
+                'type': 'column',
+                'stacking': False},
+                'terms':{
+                'tipoingreso__nombre': ['ejecutado', 'asignado'],
+                },
+                }],
+            chart_options =
+            {'title': { 'text': 'Ingresos por tipo %s %s' % (year, municipio,)}},
+            )
     oimdata_barra = PivotDataPool(
            series=
             [{'options': {'source': source_barra,
@@ -1189,9 +1230,9 @@ def oim_chart(municipio=None, year=None):
             porano_table[label]['extra'] = value if value else '...'
 
     if municipio and not ChartError:
-        charts =  (ejecutado, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, asignado_barra, barra2, )
+        charts =  (ejecutado, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra2, )
     else:
-        charts =  (ejecutado, asignado_barra, barra2, )
+        charts =  (ejecutado, oim_tipo_column, asignado_barra, barra2, )
 
     return {'charts': charts, \
             'clasificacion': mi_clasificacion, 'municipio': municipio, 'anio': year, 'porano': porano_table, 'totales': source, \

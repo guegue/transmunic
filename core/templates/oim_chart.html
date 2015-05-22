@@ -26,10 +26,10 @@
         <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
         <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
     </ul>
-    {% if municipio and charts.3 %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, asignado_barra, barra2" }}
+    {% if municipio and charts.4 %}
+        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra2" }}
     {% else %}
-        {{ charts|load_charts:"ejecutado, asignado_barra, barra2" }}
+        {{ charts|load_charts:"ejecutado, tipo, asignado_barra, barra2" }}
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
@@ -78,6 +78,9 @@
  
           </table>
          </div>
+          <div class="col-md-6">
+            <div id='tipo'> Chart will be rendered here </div>
+          </div>
           <div class="col-md-6">
             <div id='ejecutado'> Chart will be rendered here </div>
           </div>
