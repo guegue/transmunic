@@ -14,7 +14,7 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
+from core.models import GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import Anio, getYears
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
@@ -155,28 +155,28 @@ def ogm_chart(municipio=None, year=None, portada=False):
         tipo = tipo_inicial
 
     if municipio:
-        oim_comparativo_anios = RawDataPool(
+        ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
                 'terms':  ['gasto__year','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
-        oim_comparativo2 = RawDataPool(
+        ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
-        oim_comparativo3 = RawDataPool(
+        ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
-        oim_comparativo_anios_column = Chart(
-                datasource = oim_comparativo_anios,
+        ogm_comparativo_anios_column = Chart(
+                datasource = ogm_comparativo_anios,
                 series_options =
                 [{'options':{
                     'type': 'column',
@@ -188,8 +188,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': 'gastos %s' % (municipio,)}},
                 )
-        oim_comparativo2_column = Chart(
-                datasource = oim_comparativo2,
+        ogm_comparativo2_column = Chart(
+                datasource = ogm_comparativo2,
                 series_options =
                 [{'options':{
                     'type': 'column',
@@ -201,8 +201,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
                 )
-        oim_comparativo3_column = Chart(
-                datasource = oim_comparativo3,
+        ogm_comparativo3_column = Chart(
+                datasource = ogm_comparativo3,
                 series_options =
                 [{'options':{
                     'type': 'column',
@@ -215,6 +215,28 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
                 )
 
+    ogm_tipo = RawDataPool(
+        series=
+            [{'options': {'source': tipo },
+            'terms':  ['subsubtipogasto__origen__nombre','ejecutado','asignado'],
+            }],
+        )
+    ogm_tipo_column = Chart(
+            datasource = ogm_tipo,
+            series_options =
+            [{'options':{
+                'type': 'column',
+                'stacking': False},
+                'terms':{
+                'subsubtipogasto__origen__nombre': ['ejecutado', 'asignado'],
+                },
+                }],
+            chart_options =
+            {
+                'title': { 'text': 'Gastos por tipo origen %s %s' % (year, municipio,)},
+                'data': { 'table': 'datatable'},
+            },
+    )
     pivot_barra = PivotDataPool(
            series=
             [{'options': {'source': source_pivot,
@@ -312,27 +334,38 @@ def ogm_chart(municipio=None, year=None, portada=False):
     for row in source:
         row['percent'] = round(row['ejecutado'] / total * 100, 0)
 
-    # tabla: get ingresos por año
+    # tabla: get gastos por año
     if municipio:
         source_cuadro = GastoDetalle.objects.filter(gasto__municipio__slug=municipio)
     else:
         source_cuadro = GastoDetalle.objects.all()
     porano_table = {}
-    ys = source_cuadro.order_by('tipogasto__nombre').values('tipogasto__nombre').distinct()
+    ys = source_cuadro.order_by('subsubtipogasto__origen__nombre').values('subsubtipogasto__origen__nombre').distinct()
     for y in ys:
-        label = y['tipogasto__nombre']
+        label = y['subsubtipogasto__origen__nombre']
         porano_table[label] = {}
         for ayear in year_list:
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-            value = source_cuadro.filter(gasto__year=ayear, gasto__periodo=periodo, tipogasto__nombre=label).aggregate(total=Sum(quesumar))['total']
+            value = source_cuadro.filter(gasto__year=ayear, gasto__periodo=periodo, subsubtipogasto__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo, tipogasto__nombre=label, \
+            value = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo, subsubtipogasto__origen__nombre=label, \
                     gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                    aggregate(total=Avg(quesumar))['total']
+                    aggregate(total=Sum(quesumar))['total']
+            if value:
+                value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
 
-    return {'charts': (ejecutado, asignado, asignado_barra, barra), 'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source, 'year_list': year_list, 'municipio_list': municipio_list}
+    if portada:
+        charts =  (ejecutado, )
+    elif municipio:
+        charts =  (ejecutado, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
+    else:
+        charts =  (ejecutado, ogm_tipo_column, asignado_barra, barra, )
+
+    return {'charts': charts, \
+            'clasificacion': mi_clase, 'municipio': municipio, 'anio': year, 'porano': porano_table, 'totales': source, \
+            'year_list': year_list, 'municipio_list': municipio_list}
