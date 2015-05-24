@@ -27,7 +27,11 @@
         <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Asignacion de gasatos por tipo</a></li>
     </ul>
 
-    {{ charts|load_charts:"ejecutado,asignado,asignado_barra,barra" }}
+    {% if municipio and charts.4 %}
+        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
+    {% else %}
+        {{ charts|load_charts:"ejecutado, tipo, asignado_barra, barra" }}
+    {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <div class="col-md-6">
@@ -72,10 +76,19 @@
           </table>
         </div>
         <div class="col-md-6">
-            <div id='asignado'> Chart will be rendered here </div>
+            <div id='tipo'> Chart will be rendered here </div>
         </div>
         <div class="col-md-6">
             <div id='ejecutado'> Chart will be rendered here </div>
+        </div>
+        <div class="col-md-6">
+            <div id='comparativo_anios'> Chart will be rendered here </div>
+        </div>
+        <div class="col-md-6">
+            <div id='comparativo2'> Chart will be rendered here </div>
+        </div>
+        <div class="col-md-6">
+            <div id='comparativo3'> Chart will be rendered here </div>
         </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">

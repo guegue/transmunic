@@ -90,9 +90,9 @@ def ogm_view(request):
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = ogm_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'anio': data['anio'], \
-            'clasificacion': data['clasificacion'], 'porano': data['porano'], 'totales': data['totales'], \
-            'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+    return render_to_response(template_name, { \
+            'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
             context_instance=RequestContext(request))
 
 def oim_view(request):

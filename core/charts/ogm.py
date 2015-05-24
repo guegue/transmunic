@@ -30,7 +30,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     ChartError = False
 
     if municipio:
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('tipogasto__nombre').annotate(ejecutado=Sum(quesumar)).order_by('tipogasto__nombre')
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen__nombre')
         source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=periodo, gasto__year__gt=year_list[-3])
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__municipio__slug=municipio)
 
@@ -132,7 +132,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     else:
         mi_clase = None
         municipio = ''
-        source = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo).values('tipogasto__nombre').annotate(ejecutado=Sum(quesumar)).order_by('tipogasto__nombre')
+        source = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen__nombre')
         source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__year__gt=year_list[-3])
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo)
 
@@ -241,7 +241,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
            series=
             [{'options': {'source': source_pivot,
                         'categories': 'gasto__year',
-                        'legend_by': 'tipogasto__nombre', },
+                        'legend_by': 'subsubtipogasto__origen__nombre', },
               'terms': {
                   'ejecutado':Sum('ejecutado'),
                 }
@@ -288,7 +288,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
            series=
             [{'options': {'source': source },
               'terms': [
-                'tipogasto__nombre',
+                'subsubtipogasto__origen__nombre',
                 'ejecutado',
                 ]}
              ])
@@ -300,7 +300,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'type': 'pie',
                   'stacking': False},
                 'terms':{
-                  'tipogasto__nombre': [
+                  'subsubtipogasto__origen__nombre': [
                     'ejecutado']
                   }}],
             chart_options = {
@@ -318,7 +318,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'type': 'pie',
                   'stacking': False},
                 'terms':{
-                  'tipogasto__nombre': [
+                  'subsubtipogasto__origen__nombre': [
                     'ejecutado']
                   }}],
             chart_options =
