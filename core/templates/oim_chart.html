@@ -3,6 +3,7 @@
 {% load humanize %} 
 {% load core_extras %} 
 {% block titulo %}
+{{ request.GET.municipio|capfirst }}
 {% endblock %}
 
 {% block main_content %}
@@ -41,8 +42,8 @@
                     <img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
                     <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> 
                 </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                <div class="col-md-3">
+                    <span class="btn btn-info col-md-12">{{ total.percent }} %</span>
                     {% with ''|center:total.percent as range %}
                     {% for i in range %}
                     {% endfor %}
@@ -52,21 +53,17 @@
             {% endfor %}
           </div>
         <div class="col-md-7">
-          <h3>Ingresos Totales de los &uacute;ltimos a&ntilde;os</h3>
+           <h3>Ingresos Totales {{ anio }}</h3>
           <table class="table table-condensed">
             <tr class="info">
               <th></th>
-              {% for year in year_list %}
-                <th>{{ year }}</th>
-              {% endfor %}
+              <th>{{ anio }}</th>
               <th>Promedio {{ anio }}</th>
             </tr>
             {% for key, data in porano.items %}
              <tr>
                <td class="text-left">{{ key }}</td>
-               {% for year in year_list %}
-                 <td class="text-center">{{ data|keyvalue:year|intword }}</td>
-               {% endfor %}
+               <td class="text-center">{{ data|keyvalue:anio|intword }}</td>
                <td>{{ data.extra|intword }}</td>
                <!-- old-fashioned way:
                {% for subkey, subdata in data.items %}
@@ -77,28 +74,58 @@
            {% endfor %}
  
           </table>
-         </div>
-          <div class="col-md-6">
+        </div>
+        <div class="col-md-12 graficos-azul">
+          <div class="col-md-8">
+              <h3>Origen de los Ingresos {{ anio }}</h3>
             <div id='tipo'> Chart will be rendered here </div>
           </div>
-          <div class="col-md-6">
-            <div id='ejecutado'> Chart will be rendered here </div>
-          </div>
-          <div class="col-md-6">
-            <div id='comparativo_anios'> Chart will be rendered here </div>
-          </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
+              <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
             <div id='comparativo2'> Chart will be rendered here </div>
           </div>
-          <div class="col-md-6">
-            <div id='comparativo3'> Chart will be rendered here </div>
+          <div class="col-md-6 visible-xs">
+            <div id='ejecutado'> Chart will be rendered here </div>
           </div>
+        </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
-          <div id='barra2' class="col-md-11"> Chart will be rendered here </div>
+          <h3>Modificaciones de la Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
+          <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
+          <div id='comparativo3' class="col-md-7"> Chart will be rendered here </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
-          <div id='asignado_barra' class="col-md-11"> Chart will be rendered here </div>
+          <h3>Ingresos Totales</h3>
+          <table class="table table-condensed">
+            <tr class="info">
+              <th></th>
+              {% for year in year_list %}
+                <th class="text-center">{{ year }}</th>
+              {% endfor %}
+            </tr>
+            {% for key, data in porano.items %}
+             <tr>
+               <td class="text-left">{{ key }}</td>
+               {% for year in year_list %}
+                 <td class="text-right">{{ data|keyvalue:year|intcomma }}</td>
+               {% endfor %}
+               <!-- old-fashioned way:
+               {% for subkey, subdata in data.items %}
+               <td>{{ subkey }} = {{ subdata| intword}}</td>
+               {% endfor %}
+                -->
+             </tr>
+           {% endfor %}
+          </table>
+          <div class="col-md-12">
+            <h3>Ingresos del municipio en los últimos años</h3>
+            <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
+          </div>
+          <div class="clear"></div>
+          <hr />
+          <!--div class="col-md-12">
+            <div id='asignado_barra' class="col-md-10"> Chart will be rendered here </div>
+          </div-->
       </div>
     </div>
 </div>

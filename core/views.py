@@ -8,7 +8,9 @@ from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Proyecto, InversionFuente
 from models import getYears
-from charts import oim_chart, ogm_chart, inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
+from charts.charts import inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
+from charts.oim import oim_chart
+from charts.ogm import ogm_chart
 from website.models import Banner
 
 # Create your views here.
@@ -24,7 +26,7 @@ def home(request):
     year_list = getYears(Inversion)
     year = list(year_list)[-1]
 
-    data_oim = oim_chart(year=year)
+    data_oim = oim_chart(year=year, portada=True)
     data_ogm = ogm_chart(year=year)
     data_inversion = inversion_chart()
     data_inversion_area = inversion_area_chart()
@@ -38,7 +40,7 @@ def home(request):
 
     return render_to_response(template_name, { 'banners': banners,
         'charts':( 
-            data_oim['charts'][1], 
+            data_oim['charts'][0], 
             data_ogm['charts'][1], 
             #data_inversion['charts'][0], 
             data_inversion_minima_sector['charts'][0],

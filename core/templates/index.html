@@ -34,11 +34,14 @@
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
         <div class="container">
-            <div class="col-md-5">
-            <h2>Antecedentes de las transferencias municipales</h2>
+            <div class="col-md-4">
+              <h3>Antecedentes de las transferencias municipales</h3>
+              <p>La ley de  Transferencias municipales fue  aprobada el 03 de julio del 2003 y publicado en La Gaceta No. 157 del 20 de Agosto del 2003. Apartir de esa fecha las municipalidades reciben una partida presupuestaria, establecida en el  arto 5 de esta ley.</p>
+              <p>Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.</p>
+              <h4 class="text-info">Recursos</h4>
               <button class="recuadro btn btn-primary">
                 <span class="recuadro-icon">
-                    <i class="fa fa-street-view fa-3x"></i>
+                    <img src="{% static 'img/balanzab.png' %}" />
                 </span>
                 <div class="recuadro-text pull-left">
                     <h4>Marco Legal</h4>
@@ -47,7 +50,7 @@
               </button>
               <button class="recuadro btn btn-success">
                 <span class="recuadro-icon">
-                    <i class="fa fa-building fa-3x"></i>
+                    <img src="{% static 'img/ciclob.png' %}" />
                 </span>
                 <div class="recuadro-text pull-left">
                     <h4>Ciclo Presupuestario</h4>
@@ -56,7 +59,7 @@
               </button>
               <button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
                 <span class="recuadro-icon">
-                    <i class="fa fa-child fa-3x"></i>
+                    <img src="{% static 'img/analisis.png' %}" />
                 </span>
                 <div class="recuadro-text pull-left">
                     <h4>Análisis Presupuestario</h4>
@@ -66,7 +69,7 @@
               </button>
               <button class="recuadro col-sm-4 col-xs-12 btn btn-info">
                 <span class="recuadro-icon">
-                    <i class="fa fa-child fa-3x"></i>
+                    <img src="{% static 'img/participacionb.png' %}" />
                 </span>
                 <div class="recuadro-text pull-left">
                     <h4>Participación Ciudadana</h4>
@@ -75,8 +78,10 @@
                 </div>
               </button>
         </div>
-        <div class="col-md-7">
-            <img src="/static/img/nicaragua.png" alt="" alt="img-responsive" width="600px"/>
+        <div class="col-md-8">
+	        <h3>Distribución Territorial de Nicaragua</h3>
+            <img src="/static/img/nicaragua.png" alt="" alt="img-responsive" width="500px"/>
+            <p class="text-warning">Click en el departamento para acceder a sus municipios</p>
         </div>
     </div>
     </section>
@@ -107,12 +112,12 @@
             <div class="row">
                 <div class="col-md-2">
                     <div class="clearfix">
-                        <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
+                        <h4 class="pull-left">Inversiones ejecutadas</h4>
                         <div class="pull-right">
                             <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
                         </div>
                     </div>
-                    <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+                    <p> Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados: Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</p>
                 </div>
 		<div class="col-md-10">
     		    <div id="carousel-inv" class="carousel slide" data-ride="carousel">
@@ -152,62 +157,16 @@
             </div>
         </div>
     </section>
-    <section id="proyectos">
-    <div class="container">
-        <div class="text-center">
-            <h3>Proyectos relevantes ejecutados en 2012</h3>
-            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
-        </div>
-        <div class="row-fluid">
-          <div class="col-md-8">
-              <div class="col-md-6">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-globe icon-medium"></i>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Caminos, puentes y alcantarillados</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-                    </div>
-                </div>
-              </div>            
-              <div class="col-md-6">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-thumbs-up-alt icon-medium"></i>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Calles, aceras y andenes</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-                    </div>
-                </div>
-              </div>            
-	    </div>
-            <div class="col-md-4">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-leaf icon-medium icon-rounded"></i>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Fortalecimiento institucional</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-
     <section id="distribucion">
     <div class="container">
         <div class="text-center">
-            <h2>Distribuci&oacute;n territorial de la inversi&oacute;n</h2>
-            <p>En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
+            <h2>Distribuci&oacute;n de la inversi&oacute;n</h2>
+            <p></p>
         </div> 
 	<div class="col-md-12">
 	    <div class="col-md-6">
 		<div class="panel panel-primary">
-			<div class="panel-heading"><h3>Distribucion por &aacute;rea</h3></div>
+            <div class="panel-heading"><h3>Inversión mínima de los ingresos <br />corrientes por categoría</h3></div>
 			<div class="panel-body">
               <div id='inversion_area'>
               </div>
@@ -216,7 +175,7 @@
 	    </div>
 	    <div class="col-md-6">
 		<div class="panel panel-success">
-			<div class="panel-heading"><h3>Comportamiento del presupuesto</h3></div>
+			<div class="panel-heading"><h3>Inversión mínima por sector</h3></div>
 			<div class="panel-body">
               <div id='inversion'>
               </div>
