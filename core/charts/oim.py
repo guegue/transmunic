@@ -80,6 +80,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
                 values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase_final=Sum('ejecutado'))
 
+        # inserta datos para municipio de la misma clase
         for row in inicial:
             for row2 in inicial_clase:
                 if row2['ingreso__year'] == row['ingreso__year']:
