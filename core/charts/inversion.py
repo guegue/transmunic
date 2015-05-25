@@ -180,6 +180,38 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                     row['ejecutado'] = 0
             fuente = fuente_inicial
 
+        # obtiene datos para OIM comparativo de todos los años
+        inicial = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL).values('inversion__year', 'inversion__periodo').annotate(municipio_inicial=Sum('asignado')))
+        final = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_FINAL).values('inversion__year', 'inversion__periodo').annotate(municipio_final=Sum('ejecutado')))
+
+        # obtiene datos para municipio de la misma clase
+        inicial_clase = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL,\
+                inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
+                values('inversion__year', 'inversion__periodo').order_by('inversion__periodo').annotate(clase_inicial=Sum('asignado'))
+        final_clase = Proyecto.objects.filter(inversion__periodo=PERIODO_FINAL,\
+                inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
+                values('inversion__year', 'inversion__periodo').order_by('inversion__periodo').annotate(clase_final=Sum('ejecutado'))
+
+        for row in inicial:
+            for row2 in inicial_clase:
+                if row2['inversion__year'] == row['inversion__year']:
+                    row['clase_inicial'] = row2['clase_inicial'] / mi_clase_anios_count[row['inversion__year']]
+        for row in final:
+            for row2 in final_clase:
+                if row2['inversion__year'] == row['inversion__year']:
+                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['inversion__year']]
+        for row in inicial:
+            found = False
+            for row2 in final:
+                if row2['inversion__year'] == row['inversion__year']:
+                    found = True
+                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['inversion__year']]
+                    row['municipio_final'] = row2['municipio_final']
+                if not found:
+                    row['clase_final'] = 0
+                    row['municipio_final'] = 0
+        comparativo_anios = inicial
+
     else:
         municipio = ''
         source = Proyecto.objects.filter(inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
@@ -229,6 +261,26 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     for d in area:
         d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
 
+    if municipio:
+        inversion_comparativo_anios = RawDataPool(
+            series=
+                [{'options': {'source': comparativo_anios },
+                'terms':  ['inversion__year','inversion__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
+                }],
+            )
+        inversion_comparativo_anios_column = Chart(
+                datasource = inversion_comparativo_anios,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'inversion__year': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Inversiones %s' % (municipio,)}},
+                )
     inversion_fuente = RawDataPool(
         series=
             [{'options': {'source': fuente },
@@ -388,7 +440,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado, )
     elif municipio:
-        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, ejecutado, asignado, ultimos )
+        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_comparativo_anios_column, ejecutado, asignado, ultimos )
     else:
         charts =  (ejecutado, asignado, ultimos )
 
