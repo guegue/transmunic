@@ -8,6 +8,7 @@ environment.sh
 .zcompdump*
 */migrations/
 .z
+.z*
 .ipython
 
 #typical django gitignore
