@@ -20,6 +20,7 @@ PERIODO_CHOICES = (
     (PERIODO_ACTUALIZADO, 'Actualizado'),
     (PERIODO_FINAL, 'Final'),
 )
+AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio'}
 
 class Anio(models.Model):
     anio = models.IntegerField()

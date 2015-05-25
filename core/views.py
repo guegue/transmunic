@@ -8,7 +8,8 @@ from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Proyecto, InversionFuente
 from models import getYears
-from charts.charts import inversion_chart, inversion_area_chart, fuentes_chart, inversion_minima_sector_chart
+from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart
+from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
 from website.models import Banner
@@ -83,6 +84,16 @@ def inversion_minima_sector_view(request):
     year = request.GET.get('year','')
     data = inversion_minima_sector_chart(municipio=municipio, year=year)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'], 'year_list': data['year_list']},\
+            context_instance=RequestContext(request))
+
+def inversion_categoria_view(request):
+    template_name = 'inversionpiechart.html'
+    municipio = request.GET.get('municipio','')
+    year = request.GET.get('year','')
+    data = inversion_categoria_chart(municipio=municipio, year=year)
+    return render_to_response(template_name, { \
+            'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
             context_instance=RequestContext(request))
 
 def ogm_view(request):
