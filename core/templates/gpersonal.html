@@ -18,8 +18,18 @@
         </form>
     </div>
     <div class="clearfix"></div>
-    {{ charts|load_charts:"chart,chart_ejecutado,pie" }}
+    {% if municipio %}
+        {{ charts|load_charts:"tipo, gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
+    {% else %}
+        {{ charts|load_charts:"tipo, gfbar, barra, pie" }}
+    {% endif %}
     <div id='chart'></div>
     <div id='chart_ejecutado'></div>
     <div id='pie'></div>
+
+
+    <div id='tipo'></div>
+    <div id='comparativo2'></div>
+    <div id='comparativo3'></div>
+    <div id='comparativo_anios'></div>
 {% endblock %}

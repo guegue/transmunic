@@ -25,7 +25,7 @@
     </ul>
     <div class="clearfix"></div>
     {% if municipio %}
-        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo_anios, " }}
+        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% else %}
         {{ charts|load_charts:"gfbar, barra, pie" }}
     {% endif %}
@@ -35,6 +35,9 @@
       </div>
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <div id='comparativo2'></div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+        <div id='comparativo3'></div>
       </div>
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <div id='pie'></div>

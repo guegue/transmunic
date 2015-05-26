@@ -352,7 +352,7 @@ def ago_chart(request):
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
         context_instance=RequestContext(request))
 
-def gpersonal_chart(request):
+def old_gpersonal_chart(request):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
     municipio = request.GET.get('municipio','')
