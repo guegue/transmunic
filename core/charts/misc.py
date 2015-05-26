@@ -32,8 +32,14 @@ def inversion_minima_sector_chart(municipio=None, year=None):
         total_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))
 
     for record in source:
-        record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
-        record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
+        try:
+            record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado']
+        except IndexError:
+            record['ejecutado'] = 0
+        try:
+            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado']
+        except IndexError:
+            record['asignado'] = 0
         record['minimo'] = 0 if not total_asignado['total'] else total_asignado['total'] * (record['minimo']/100)
     data = RawDataPool(
            series=

@@ -62,7 +62,10 @@ def gf_chart(request):
         for row in final:
             for row2 in final_clase:
                 if row2['gasto__year'] == row['gasto__year']:
-                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['gasto__year']]
+                    try:
+                        row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['gasto__year']]
+                    except KeyError:
+                        row['clase_final'] = 0
         #for row in inicial:
         #    found = False
         #    for row2 in final:

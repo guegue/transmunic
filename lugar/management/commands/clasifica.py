@@ -11,32 +11,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         municipios = Municipio.objects.all()
-        montos = IngresoDetalle.objects.values('ingreso__year','ingreso__municipio').\
+        montos = IngresoDetalle.objects.values('ingreso__year','ingreso__municipio', 'ingreso__municipio__slug').\
             order_by('ingreso__year', 'ingreso__municipio').\
             filter(Q(tipoingreso__codigo=11000000) | Q(subtipoingreso__codigo=12010000)).\
             annotate(monto=Sum('ejecutado'))
 
-        for monto in montos:
-            print monto
-            year = monto['ingreso__year']
-            value = monto['monto']
-            municipio = monto['ingreso__municipio']
-            # FIXME: lte gte, ambos?
-            try:
-                clasificacion = ClasificacionMunic.objects.get(desde__lte=value, hasta__gt=value)
-            except ClasificacionMunic.DoesNotExist:
-                pass
+        for row in montos:
+            print row
+            year = row['ingreso__year'] + 2
+            monto = row['monto']
+            municipio = row['ingreso__municipio']
+            if row['ingreso__municipio__slug'] == 'managua':
+                #clasificacion = 'A'
+                clasificacion = ClasificacionMunic.objects.get(clasificacion='A')
+            else:
+                try:
+                    clasificacion = ClasificacionMunic.objects.exclude(clasificacion='A').get(desde__lte=monto, hasta__gt=monto)
+                except ClasificacionMunic.DoesNotExist:
+                    #clasificacion = 'X'
+                    clasificacion = ClasificacionMunic.objects.get(clasificacion='X')
 
-            print "%s Municipio %s Año %s Monto %s" % (clasificacion, municipio, year, value)
+            print "Clase: %s Municipio: %s Año: %s Monto: %s" % (clasificacion, municipio, year, monto)
 
             # looks up value in ClasificacionMunicAno
             try:
-                current = ClasificacionMunicAno.objects.get(municipio_id=municipio, year=year, clasificacion=clasificacion)
+                #current = ClasificacionMunicAno.objects.get(municipio_id=municipio, anio=year, clasificacion=clasificacion)
+                current = ClasificacionMunicAno.objects.get(municipio_id=municipio, anio=year)
             except ClasificacionMunicAno.DoesNotExist:
+                print "***NEW***"
                 current = ClasificacionMunicAno()
 
             current.municipio_id = municipio
             current.clasificacion = clasificacion
-            current.year = year
+            current.anio = year
 
             current.save()
