@@ -42,7 +42,7 @@ def home(request):
     return render_to_response(template_name, { 'banners': banners,
         'charts':( 
             data_oim['charts'][0], 
-            data_ogm['charts'][1], 
+            data_ogm['charts'][0], 
             #data_inversion['charts'][0], 
             data_inversion_minima_sector['charts'][0],
             data_inversion_area['charts'][0],

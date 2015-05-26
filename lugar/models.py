@@ -37,8 +37,8 @@ class Municipio(models.Model):
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
     clasificaciones = models.ManyToManyField(ClasificacionMunic, through='ClasificacionMunicAno')
 
-    #class Meta:
-    #    ordering = [u'nombre']
+    class Meta:
+        ordering = [u'nombre']
 
     def __unicode__(self):
         return self.nombre
