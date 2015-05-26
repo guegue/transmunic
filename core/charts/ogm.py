@@ -8,14 +8,15 @@
 from itertools import chain
 from datetime import datetime, time
 
-from django.shortcuts import render_to_response
+from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears
+from core.models import Anio, getYears, dictfetchall
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
 def ogm_chart(municipio=None, year=None, portada=False):
@@ -30,6 +31,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     ChartError = False
 
     if municipio:
+        municipio_id = Municipio.objects.get(slug=municipio).id
         source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen__nombre')
         source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=periodo, gasto__year__gt=year_list[-3])
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__municipio__slug=municipio)
@@ -72,14 +74,25 @@ def ogm_chart(municipio=None, year=None, portada=False):
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).values('gasto__year', 'gasto__periodo').annotate(municipio_inicial=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL).values('gasto__year', 'gasto__periodo').annotate(municipio_final=Sum('ejecutado')))
 
-        # obtiene datos para municipio de la misma clase
-        inicial_clase = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,\
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__year', 'gasto__periodo').order_by('gasto__periodo').annotate(clase_inicial=Sum('asignado'))
-        final_clase = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,\
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__year', 'gasto__periodo').order_by('gasto__periodo').annotate(clase_final=Sum('ejecutado'))
+        # obtiene datos para municipio de la misma clase de todos los años
+        inicial_clase_sql = "SELECT year AS gasto__year,SUM(asignado) AS clase_inicial FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
+        JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
+        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_ingreso.year) \
+        GROUP BY year"
+        cursor = connection.cursor()
+        cursor.execute(inicial_clase_sql, [PERIODO_INICIAL, municipio_id])
+        inicial_clase = dictfetchall(cursor)
+        final_clase_sql = "SELECT year AS gasto__year,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
+        JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
+        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_ingreso.year) \
+        GROUP BY year"
+        cursor = connection.cursor()
+        cursor.execute(final_clase_sql, [PERIODO_FINAL, municipio_id])
+        final_clase = dictfetchall(cursor)
 
+        # inserta datos para municipio de la misma clase
         for row in inicial:
             for row2 in inicial_clase:
                 if row2['gasto__year'] == row['gasto__year']:
@@ -93,7 +106,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             for row2 in final:
                 if row2['gasto__year'] == row['gasto__year']:
                     found = True
-                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['gasto__year']]
+                    row['clase_final'] = row2['clase_final']
                     row['municipio_final'] = row2['municipio_final']
                 if not found:
                     row['clase_final'] = 0

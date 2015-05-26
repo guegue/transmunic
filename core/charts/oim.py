@@ -16,16 +16,8 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears
+from core.models import Anio, getYears, dictfetchall
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-
-def dictfetchall(cursor):
-    "Returns all rows from a cursor as a dict"
-    desc = cursor.description
-    return [
-        dict(zip([col[0] for col in desc], row))
-        for row in cursor.fetchall()
-    ]
 
 def oim_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
@@ -85,28 +77,21 @@ def oim_chart(municipio=None, year=None, portada=False):
         final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio_final=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
-        inicial_clase = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,\
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion ).\
-                values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase_inicial=Sum('asignado'))
-        final_clase = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,\
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion ).\
-                values('ingreso__year', 'ingreso__periodo').order_by('ingreso__periodo').annotate(clase_final=Sum('ejecutado'))
-
         inicial_clase_sql = "SELECT year AS ingreso__year,SUM(asignado) AS clase_inicial FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
-        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo='%s' \
+        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo=%s \
         AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_ingreso.year) \
-        GROUP BY year" % ( PERIODO_INICIAL, municipio_id)
+        GROUP BY year"
         cursor = connection.cursor()
-        cursor.execute(inicial_clase_sql, [PERIODO_INICIAL, mi_clase.clasificacion_id])
+        cursor.execute(inicial_clase_sql, [PERIODO_INICIAL, municipio_id])
         inicial_clase = dictfetchall(cursor)
         final_clase_sql = "SELECT year AS ingreso__year,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
-        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo='%s' \
+        core_ingreso.year=lugar_clasificacionmunicano.anio WHERE core_ingreso.periodo=%s \
         AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_ingreso.year) \
-        GROUP BY year" % ( PERIODO_FINAL, municipio_id)
+        GROUP BY year"
         cursor = connection.cursor()
-        cursor.execute(final_clase_sql, [PERIODO_FINAL, mi_clase.clasificacion_id])
+        cursor.execute(final_clase_sql, [PERIODO_FINAL, municipio_id])
         final_clase = dictfetchall(cursor)
 
         # inserta datos para municipio de la misma clase
@@ -123,7 +108,6 @@ def oim_chart(municipio=None, year=None, portada=False):
             for row2 in final:
                 if row2['ingreso__year'] == row['ingreso__year']:
                     found = True
-                    #row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['ingreso__year']]
                     row['clase_final'] = row2['clase_final']
                     row['municipio_final'] = row2['municipio_final']
                 if not found:
