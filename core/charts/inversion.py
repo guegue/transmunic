@@ -3,14 +3,15 @@
 from itertools import chain
 from datetime import datetime, time
 
-from django.shortcuts import render_to_response
+from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, Proyecto, Inversion, Inversion, Proyecto, Municipio, TipoProyecto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears
+from core.models import Anio, getYears, dictfetchall
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
 
 def inversion_chart(municipio=None):
@@ -92,6 +93,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     ChartError = False
 
     if municipio:
+        municipio_id = Municipio.objects.get(slug=municipio).id
         source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
         source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year__gt=year_list[-3]). \
             values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
@@ -184,6 +186,24 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         inicial = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL).values('inversion__year', 'inversion__periodo').annotate(municipio_inicial=Sum('asignado')))
         final = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_FINAL).values('inversion__year', 'inversion__periodo').annotate(municipio_final=Sum('ejecutado')))
 
+        # obtiene datos para municipio de la misma clase de todos los años
+        inicial_clase_sql = "SELECT year AS inversion__year,SUM(asignado) AS clase_inicial FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
+        JOIN lugar_clasificacionmunicano ON core_inversion.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
+        core_inversion.year=lugar_clasificacionmunicano.anio WHERE core_inversion.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_inversion.year) \
+        GROUP BY year"
+        cursor = connection.cursor()
+        cursor.execute(inicial_clase_sql, [PERIODO_INICIAL, municipio_id])
+        inicial_clase = dictfetchall(cursor)
+        final_clase_sql = "SELECT year AS inversion__year,SUM(ejecutado) AS clase_final FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
+        JOIN lugar_clasificacionmunicano ON core_inversion.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
+        core_inversion.year=lugar_clasificacionmunicano.anio WHERE core_inversion.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_inversion.year) \
+        GROUP BY year"
+        cursor = connection.cursor()
+        cursor.execute(final_clase_sql, [PERIODO_FINAL, municipio_id])
+        final_clase = dictfetchall(cursor)
+
         # obtiene datos para municipio de la misma clase
         inicial_clase = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL,\
                 inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
@@ -199,13 +219,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         for row in final:
             for row2 in final_clase:
                 if row2['inversion__year'] == row['inversion__year']:
-                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['inversion__year']]
+                    try:
+                        row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['inversion__year']]
+                    except KeyError:
+                        row['clase_final'] = 0
         for row in inicial:
             found = False
             for row2 in final:
                 if row2['inversion__year'] == row['inversion__year']:
                     found = True
-                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['inversion__year']]
+                    row['clase_final'] = row2['clase_final']
                     row['municipio_final'] = row2['municipio_final']
                 if not found:
                     row['clase_final'] = 0
@@ -442,7 +465,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     elif municipio:
         charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_comparativo_anios_column, ejecutado, asignado, ultimos )
     else:
-        charts =  (ejecutado, asignado, ultimos )
+        charts =  (inversion_tipo_column, ejecutado, asignado, ultimos )
 
     return {'charts': charts, \
         'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source, \

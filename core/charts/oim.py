@@ -42,10 +42,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene clase y contador (otros en misma clase) para todos los años
         mi_clase_anios = list(ClasificacionMunicAno.objects.filter(municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
         mi_clase_anios_count = {}
-        mi_clase_anios_clase = {}
         for aclase in mi_clase_anios:
             mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
-            mi_clase_anios_clase[aclase['anio']] = aclase['clasificacion__clasificacion']
 
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
