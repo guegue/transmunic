@@ -11,7 +11,7 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, Proyecto, Inversion, Inversion, Proyecto, Municipio, TipoProyecto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall
+from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
 
 def inversion_chart(municipio=None):
@@ -94,9 +94,15 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     if municipio:
         municipio_id = Municipio.objects.get(slug=municipio).id
-        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
         source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year__gt=year_list[-3]). \
             values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+
+        # tabla2, tabla3
+        cat_inicial = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL, inversion__year=year).values('catinversion__nombre').annotate(asignado=Sum('asignado')).order_by('catinversion')
+        cat_actualizado = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_ACTUALIZADO, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat_final = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_FINAL, inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat2 = glue(inicial=cat_inicial, final=cat_final, periodo=periodo, campo='catinversion__nombre')
+        cat3 = glue(inicial=cat_inicial, final=cat_final, actualizado=cat_actualizado, periodo=periodo, campo='catinversion__nombre')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -107,80 +113,27 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         for aclase in mi_clase_anios:
             mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
+        # source base
+        source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=periodo).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar)).order_by('catinversion')
+        source_clase = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=periodo,\
+                inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
+                values('catinversion__nombre').annotate(clase=Sum(quesumar))
+
+
         # obtiene datos para grafico comparativo de tipo de inversions
         tipo_inicial= list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('catinversion__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_FINAL).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in tipo_final:
-                found = False
-                for row2 in tipo_inicial:
-                    if row2['catinversion__nombre'] == row['catinversion__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            tipo = tipo_final
-        else:
-            for row in tipo_inicial:
-                found = False
-                for row2 in tipo_final:
-                    if row2['catinversion__nombre'] == row['catinversion__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            tipo = tipo_inicial
+        tipo = glue(inicial=tipo_inicial, final=tipo_final, periodo=periodo, campo='catinversion__nombre')
 
         # obtiene datos para grafico comparativo por area
         area_inicial= list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('areageografica').annotate(asignado=Sum('asignado')))
         area_final = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_FINAL).values('areageografica').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in area_final:
-                found = False
-                for row2 in area_inicial:
-                    if row2['areageografica'] == row['areageografica']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            area = area_final
-        else:
-            for row in area_inicial:
-                found = False
-                for row2 in area_final:
-                    if row2['areageografica'] == row['areageografica']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            area = area_inicial
+        area = glue(area_inicial, area_final, periodo, 'areageografica')
 
         # obtiene datos para grafico comparativo por fuente
         fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').annotate(asignado=Sum('asignado')))
         fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in fuente_final:
-                found = False
-                for row2 in fuente_inicial:
-                    if row2['fuente__nombre'] == row['fuente__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            fuente = fuente_final
-        else:
-            for row in fuente_inicial:
-                found = False
-                for row2 in fuente_final:
-                    if row2['fuente__nombre'] == row['fuente__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            fuente = fuente_inicial
+        fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
 
         # obtiene datos para OIM comparativo de todos los años
         inicial = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL).values('inversion__year', 'inversion__periodo').annotate(municipio_inicial=Sum('asignado')))
@@ -237,53 +190,33 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     else:
         municipio = ''
-        source = Proyecto.objects.filter(inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        source = Proyecto.objects.filter(inversion__year=year).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar)).order_by('catinversion')
+        source_clase = None
         source_ultimos = Proyecto.objects.filter(inversion__year__gt=year_list[-3]). \
             values('inversion__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # obtiene datos para grafico comparativo de tipo de inversions
         tipo_inicial= list(Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('catinversion__nombre').order_by('catinversion__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL).values('catinversion__nombre').order_by('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
-        for row in tipo_inicial:
-            found = False
-            for row2 in tipo_final:
-                if row2['catinversion__nombre'] == row['catinversion__nombre']:
-                    found = True
-                    row['ejecutado'] = row2['ejecutado']
-            if not found:
-                row['ejecutado'] = 0
-        tipo = tipo_inicial
+        tipo = glue(inicial=tipo_inicial, final=tipo_final, periodo=periodo, campo='catinversion__nombre')
 
         # obtiene datos para grafico comparativo de area
         area_inicial= list(Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('areageografica').order_by('areageografica').annotate(asignado=Sum('asignado')))
         area_final = list(Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL).values('areageografica').order_by('areageografica').annotate(ejecutado=Sum('ejecutado')))
-        for row in area_inicial:
-            found = False
-            for row2 in area_final:
-                if row2['areageografica'] == row['areageografica']:
-                    found = True
-                    row['ejecutado'] = row2['ejecutado']
-            if not found:
-                row['ejecutado'] = 0
-        area = area_inicial
+        area = glue(area_inicial, area_final, periodo, 'areageografica')
 
         # obtiene datos para grafico comparativo de fuente
         fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').order_by('fuente__nombre').annotate(asignado=Sum('asignado')))
         fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
-        for row in fuente_inicial:
-            found = False
-            for row2 in fuente_final:
-                if row2['fuente__nombre'] == row['fuente__nombre']:
-                    found = True
-                    row['ejecutado'] = row2['ejecutado']
-            if not found:
-                row['ejecutado'] = 0
-        fuente = fuente_inicial
+        fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
 
     # conviert R en Rural, etc.
     for d in area:
         d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
 
+    #
+    # chartit!
+    #
     if municipio:
         inversion_comparativo_anios = RawDataPool(
             series=
@@ -437,9 +370,21 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
               })
 
     # tabla: get total and percent
-    total = source.aggregate(total=Sum('asignado'))['total']
+    source_list = list(source)
+    total = source.aggregate(total=Sum('ejecutado'))['total']
     for row in source:
-        row['percent'] = round(row['asignado'] / total * 100, 0)
+        row['percent'] = round(row['ejecutado'] / total * 100, 0)
+
+    if source_clase:
+        total_clase = source_clase.aggregate(total=Sum('clase'))['total']
+        for row in source_clase:
+            row['clase_percent'] = round(row['clase'] / total_clase * 100, 0)
+        for row in source_list:
+            for row2 in source_clase:
+                if row2['catinversion__nombre'] == row['catinversion__nombre']:
+                    row['clase'] = row2['clase']
+                    row['clase_percent'] = row2['clase_percent']
+    #print source_list
 
     # tabla: get inversions por año
     porano_table = {}
@@ -467,6 +412,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     else:
         charts =  (inversion_tipo_column, ejecutado, asignado, ultimos )
 
+    print cat3
     return {'charts': charts, \
-        'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source, \
+            'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source_list, 'cat': cat3,\
         'year_list': year_list, 'municipio_list': municipio_list, 'municipio': municipio}

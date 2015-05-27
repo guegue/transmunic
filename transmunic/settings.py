@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'pixelfields_smart_selects',
     'chartit',
+    'mathfilters',
 
     'lugar',
     'core',

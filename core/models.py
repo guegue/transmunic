@@ -20,7 +20,30 @@ PERIODO_CHOICES = (
     (PERIODO_ACTUALIZADO, 'Actualizado'),
     (PERIODO_FINAL, 'Final'),
 )
-AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio'}
+AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio', None: 'None'}
+
+def glue(inicial, final, periodo, campo, actualizado=None):
+    "Glues together two different lists of 'asignado' and 'ejecutado' of dictionaries using a chosen key"
+    if periodo == PERIODO_FINAL:
+        for row in final:
+            found = False
+            for row2 in inicial:
+                if row2[campo] == row[campo]:
+                    row['asignado'] = row2['asignado']
+                    found = True
+            if not found:
+                row['asignado'] = 0
+        return final
+    else:
+        for row in tipo_inicial:
+            found = False
+            for row2 in tipo_final:
+                if row2[campo] == row[campo]:
+                    row['ejecutado'] = row2['ejecutado']
+                    found = True
+            if not found:
+                row['ejecutado'] = 0
+        return inicial
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"

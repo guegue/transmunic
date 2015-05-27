@@ -93,6 +93,7 @@ def inversion_categoria_view(request):
     data = inversion_categoria_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
+            'cat': data['cat'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
             context_instance=RequestContext(request))
 
