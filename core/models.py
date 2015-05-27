@@ -35,9 +35,9 @@ def glue(inicial, final, periodo, campo, actualizado=None):
                 row['asignado'] = 0
         return final
     else:
-        for row in tipo_inicial:
+        for row in inicial:
             found = False
-            for row2 in tipo_final:
+            for row2 in final:
                 if row2[campo] == row[campo]:
                     row['ejecutado'] = row2['ejecutado']
                     found = True

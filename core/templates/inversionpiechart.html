@@ -7,7 +7,7 @@
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
-        <option value="{{year}}">{{year}}</option>
+        <option {% if year == request.GET.year|add:"0" %}selected{% endif %} value="{{year}}">{{year}}</option>
     {% endfor %}
     </select>
     <select name="municipio">

@@ -16,7 +16,7 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall
+from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
 
@@ -44,27 +44,7 @@ def gpersonal_chart(request):
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).values('subsubtipogasto__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL).values('subsubtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in tipo_final:
-                found = False
-                for row2 in tipo_inicial:
-                    if row2['subsubtipogasto__nombre'] == row['subsubtipogasto__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            tipo = tipo_final
-        else:
-            for row in tipo_inicial:
-                found = False
-                for row2 in tipo_final:
-                    if row2['subsubtipogasto__nombre'] == row['subsubtipogasto__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__nombre')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -203,27 +183,7 @@ def gpersonal_chart(request):
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in tipo_final:
-                found = False
-                for row2 in tipo_inicial:
-                    if row2['subsubtipogasto__nombre'] == row['subsubtipogasto__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            tipo = tipo_final
-        else:
-            for row in tipo_inicial:
-                found = False
-                for row2 in tipo_final:
-                    if row2['subsubtipogasto__nombre'] == row['subsubtipogasto__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__nombre')
 
         # FIXME. en el grafico de periodos...  de donde tomar los datos?
         source_barra_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
@@ -240,6 +200,9 @@ def gpersonal_chart(request):
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
 
+    #
+    # chartit!
+    #
     if municipio:
         gf_comparativo_anios = RawDataPool(
             series=

@@ -16,7 +16,7 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall
+from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
 def ogm_chart(municipio=None, year=None, portada=False):
@@ -48,27 +48,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in tipo_final:
-                found = False
-                for row2 in tipo_inicial:
-                    if row2['subsubtipogasto__origen__nombre'] == row['subsubtipogasto__origen__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            tipo = tipo_final
-        else:
-            for row in tipo_inicial:
-                found = False
-                for row2 in tipo_final:
-                    if row2['subsubtipogasto__origen__nombre'] == row['subsubtipogasto__origen__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
 
         # obtiene datos para OIM comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).values('gasto__year', 'gasto__periodo').annotate(municipio_inicial=Sum('asignado')))
@@ -152,21 +132,15 @@ def ogm_chart(municipio=None, year=None, portada=False):
         source = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen')
         source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo)
         source_barra2 = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__year__gt=year_list[-3])
-        comparativo = GastoDetalle.objects.filter(gasto__periodo='')
         
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        for row in tipo_inicial:
-            found = False
-            for row2 in tipo_final:
-                if row2['subsubtipogasto__origen__nombre'] == row['subsubtipogasto__origen__nombre']:
-                    found = True
-                    row['ejecutado'] = row2['ejecutado']
-            if not found:
-                row['ejecutado'] = 0
-        tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
 
+    #
+    # chartit!
+    #
     if municipio:
         ogm_comparativo_anios = RawDataPool(
             series=

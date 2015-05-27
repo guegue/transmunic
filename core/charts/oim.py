@@ -16,7 +16,7 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall
+from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
 def oim_chart(municipio=None, year=None, portada=False):
@@ -48,27 +48,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        # decide si agarra el final y le agrega los iniciales (o al revés)
-        if periodo == PERIODO_FINAL:
-            for row in tipo_final:
-                found = False
-                for row2 in tipo_inicial:
-                    if row2['subsubtipoingreso__origen__nombre'] == row['subsubtipoingreso__origen__nombre']:
-                        row['asignado'] = row2['asignado']
-                        found = True
-                if not found:
-                    row['asignado'] = 0
-            tipo = tipo_final
-        else:
-            for row in tipo_inicial:
-                found = False
-                for row2 in tipo_final:
-                    if row2['subsubtipoingreso__origen__nombre'] == row['subsubtipoingreso__origen__nombre']:
-                        row['ejecutado'] = row2['ejecutado']
-                        found = True
-                if not found:
-                    row['ejecutado'] = 0
-            tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipoingreso__origen__nombre')
 
         # obtiene datos para OIM comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__year', 'ingreso__periodo').annotate(municipio_inicial=Sum('asignado')))
@@ -149,21 +129,15 @@ def oim_chart(municipio=None, year=None, portada=False):
         source = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
-        comparativo = IngresoDetalle.objects.filter(ingreso__periodo='')
         
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        for row in tipo_inicial:
-            found = False
-            for row2 in tipo_final:
-                if row2['subsubtipoingreso__origen__nombre'] == row['subsubtipoingreso__origen__nombre']:
-                    found = True
-                    row['ejecutado'] = row2['ejecutado']
-            if not found:
-                row['ejecutado'] = 0
-        tipo = tipo_inicial
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipoingreso__origen__nombre')
 
+    #
+    # chartit!
+    #
     if municipio:
         oim_comparativo_anios = RawDataPool(
             series=

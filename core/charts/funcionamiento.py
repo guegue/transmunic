@@ -186,6 +186,9 @@ def gf_chart(request):
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
 
+    #
+    # chartit!
+    #
     if municipio:
         gf_comparativo_anios = RawDataPool(
             series=
