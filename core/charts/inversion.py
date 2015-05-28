@@ -129,8 +129,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos para grafico comparativo de tipo de inversions
         tipo_inicial= list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('catinversion__nombre').annotate(asignado=Sum('asignado')))
+        tipo_actualizado = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_ACTUALIZADO).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo_final = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_FINAL).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(inicial=tipo_inicial, final=tipo_final, periodo=periodo, campo='catinversion__nombre')
+        tipo = glue(inicial=tipo_inicial, final=tipo_final, periodo=periodo, campo='catinversion__nombre', actualizado=tipo_actualizado)
 
         # obtiene datos para grafico comparativo por area
         area_inicial= list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__year=year, inversion__periodo=PERIODO_INICIAL).values('areageografica').annotate(asignado=Sum('asignado')))
@@ -332,7 +333,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     inversion_tipo = RawDataPool(
         series=
             [{'options': {'source': tipo },
-            'terms':  ['catinversion__nombre','ejecutado','asignado'],
+            'terms':  ['catinversion__nombre','ejecutado','asignado','actualizado'],
             }],
         )
     inversion_tipo_column = Chart(
@@ -342,7 +343,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'type': 'column',
                 'stacking': False},
                 'terms':{
-                'catinversion__nombre': ['ejecutado', 'asignado'],
+                'catinversion__nombre': ['ejecutado', 'asignado','actualizado'],
                 },
                 }],
             chart_options =
