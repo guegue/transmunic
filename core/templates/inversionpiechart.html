@@ -21,10 +21,63 @@
     <div class="clearfix"></div>
 
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo,area,fuente,comparativo_anios,asignado" }}
+        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, asignado" }}
     {% else %}
-        {{ charts|load_charts:"tipo,area,fuente,asignado" }}
+        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado" }}
     {% endif %}
+    <!-- tabla4 -->
+    <div class="col-md-5">
+            <h3>Tabla4</h3>
+            {% for total in anuales %} 
+              <div class="row totales">
+                <div class="col-md-9 text-left">
+                    <h4>{{ total.inversion__year }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.actualizado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.actualizado|sub:total.asignado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}%</span>
+                </div>
+                {% if total.asignado %}
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
+                </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+    </div>
+    <!-- tabla3 -->
+    <div class="col-md-5">
+            <h3>Tabla3</h3>
+            {% for total in cat %}
+              <div class="row totales">
+                <div class="col-md-9 text-left">
+                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
+                    <h4>{{ total.catinversion__nombre }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.actualizado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.actualizado|sub:total.asignado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}</span>
+                </div>
+              </div>
+            {% endfor %}
+    </div>
+    <!-- tabla2 -->
     <div class="col-md-5">
             <h3>Tabla2</h3>
             {% for total in cat %}
@@ -41,12 +94,13 @@
                 </div>
                 {% if total.asignado %}
                 <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asginado }}</span>
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
                 </div>
                 {% endif %}
               </div>
             {% endfor %}
     </div>
+    <!-- tabla1 -->
     <div class="col-md-5">
             <h3>Ingresos Totales del A&ntilde;o</h3>
             {% for total in totales %}
@@ -97,6 +151,7 @@
     <div id='tipo'> Chart will be rendered here </div>
     <div id='area'> Chart will be rendered here </div>
     <div id='fuente'> Chart will be rendered here </div>
+    <div id='fuente_pie'> Chart will be rendered here </div>
     <div id='comparativo_anios'> Chart will be rendered here </div>
     <div id='asignado'> Chart will be rendered here </div>
     <div id='ejecutado'> Chart will be rendered here </div>

@@ -11,6 +11,7 @@ class ClasificacionMunic(models.Model):
     fecha_hasta = models.DateField(null=False)
     desde = models.DecimalField('Desde', max_digits=12, decimal_places=2, blank=True, null=True)
     hasta = models.DecimalField('Hasta', max_digits=12, decimal_places=2, blank=True, null=True)
+    minimo_inversion = models.IntegerField(null=True)
     color = models.CharField(max_length=30, null=True)
 
     class Meta:

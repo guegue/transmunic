@@ -125,5 +125,12 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     <script src="http://code.highcharts.com/highcharts-3d.js"></script>
+        <script>
+        $('a').tooltip();
+        </script>
+        <script>
+          var managua = '<img src="/static/img/managua.jpg">';
+            $('#popover').popover({placement: 'auto', content: managua, html: true});
+        </script>
   </body>
 </html>

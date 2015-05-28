@@ -33,7 +33,7 @@ def glue(inicial, final, periodo, campo, actualizado=None):
                     found = True
             if not found:
                 row['asignado'] = 0
-        return final
+        glued = final
     else:
         for row in inicial:
             found = False
@@ -43,7 +43,17 @@ def glue(inicial, final, periodo, campo, actualizado=None):
                     found = True
             if not found:
                 row['ejecutado'] = 0
-        return inicial
+        glued = inicial
+    if actualizado:
+        for row in glued:
+            found = False
+            for row2 in actualizado:
+                if row2[campo] == row[campo]:
+                    row['actualizado'] = row2['ejecutado']
+                    found = True
+            if not found:
+                row['actualizado'] = 0
+    return glued
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"

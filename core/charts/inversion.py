@@ -138,9 +138,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         area = glue(area_inicial, area_final, periodo, 'areageografica')
 
         # obtiene datos para grafico comparativo por fuente
-        fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').annotate(asignado=Sum('asignado')))
+        fuente_inicial = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').annotate(asignado=Sum('asignado')))
         fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
         fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
+        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year, inversionfuente__periodo=periodo).values('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
 
         # obtiene datos para OIM comparativo de todos los años
         inicial = list(Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL).values('inversion__year', 'inversion__periodo').annotate(municipio_inicial=Sum('asignado')))
@@ -231,6 +232,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').order_by('fuente__nombre').annotate(asignado=Sum('asignado')))
         fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
         fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
+        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=periodo).values('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
 
     # conviert R en Rural, etc.
     for d in area:
@@ -280,6 +282,30 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'title': { 'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
                 'data': { 'table': 'datatable'},
             },
+    )
+    inversion_fuente_actual = RawDataPool(
+        series=
+            [{'options': {'source': fuente_actual },
+            'terms':  ['fuente__nombre','ejecutado'],
+            }],
+        )
+    inversion_fuente_pie = Chart(
+            datasource = inversion_fuente_actual,
+            series_options =
+            [{'options':{
+                'type': 'pie',
+                'stacking': False},
+                'terms':{
+                'fuente__nombre': ['ejecutado'],
+                },
+                }],
+            chart_options =
+              {'title': {
+                  'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+              }
     )
     inversion_area = RawDataPool(
         series=
@@ -411,10 +437,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado, )
     elif municipio:
-        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_comparativo_anios_column, ejecutado, ultimos )
+        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, inversion_comparativo_anios_column, ejecutado, ultimos )
     else:
-        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, ejecutado, ultimos )
+        charts =  (inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, ejecutado, ultimos )
 
     return {'charts': charts, \
-            'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source_list, 'cat': cat3,\
-        'year_list': year_list, 'municipio_list': municipio_list, 'municipio': municipio}
+            'clasificacion': mi_clase, 'anio': year, 'porano': porano_table, 'totales': source_list, 'cat': cat3, 'anuales': anual3,\
+            'year_list': year_list, 'municipio_list': municipio_list, 'municipio': municipio}
