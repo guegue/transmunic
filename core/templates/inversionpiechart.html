@@ -47,80 +47,103 @@
     </div>
     <!-- tabla2 -->
     <div class="col-md-6">
-            <h3>Tabla2</h3>
+            <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Clasificaci&oacute;n de la Inversi&oacute;n</th>
+                    <th>Inicial</th>
+                    <th>Ejecutado</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for total in cat %}
-              <div class="row totales">
-                <div class="col-md-8 text-left">
-                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
-                    <h4>{{ total.catinversion__nombre }}</h4>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}</span>
-                </div>
+              <tr>
+                <td class="text-left">{{ total.catinversion__nombre }}</td>
+                <td>{{ total.asignado }}</td>
+                <td>{{ total.ejecutado }}</td>
+                <td>
                 {% if total.asignado %}
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
-                </div>
+                    <span class="text-success">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
                 {% endif %}
-              </div>
-            {% endfor %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            </table>
     </div>
+    <br clear="all"><br /><bt />
     <div class="col-md-5">
-            <h3>Tabla4</h3>
+            <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>A&ntilde;o</th>
+                    <th>Inicial</th>
+                    <th>Actualizado</th>
+                    <th>Modificado</th>
+                    <th>Ejecutado</th>
+                    <th>Ejecutado/Inicial</th>
+                </tr>
+            </thead>
             {% for total in anuales %} 
-              <div class="row totales">
-                <div class="col-md-9 text-left">
+              <tr>
+                <td class="text-left">
                     <h4>{{ total.inversion__year }}</h4>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.actualizado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.actualizado|sub:total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}%</span>
-                </div>
+                </td>
+                <td>{{ total.asignado }}</td>
+                <td>{{ total.actualizado }}</td>
+                <td>{{ total.actualizado|sub:total.asignado }}</td>
+                <td>{{ total.ejecutado }}%</td>
+                <td>
                 {% if total.asignado %}
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
+                    {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%
                 </div>
                 {% endif %}
-              </div>
+                </td>
+              </tr>
             {% endfor %}
+            </tbody>
+        </table>
     </div>
     <!-- tabla3 -->
-    <div class="col-md-5">
-            <h3>Tabla3</h3>
+    <br clear="all">
+    <div class="col-md-9">
+            <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Clasificaci&oacute;n de la Inversi&oacute;n</th>
+                    <th>Inicial</th>
+                    <th>Actualizado</th>
+                    <th>Ejecutado</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for total in cat %}
-              <div class="row totales">
-                <div class="col-md-9 text-left">
-                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
+              <tr>
+                <td class="text-left">
                     <h4>{{ total.catinversion__nombre }}</h4>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.actualizado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.actualizado|sub:total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}</span>
-                </div>
-              </div>
+                </td>
+                <td>
+                   {{ total.asignado }}</td>
+                </td>
+                <td>
+                    {{ total.actualizado }}
+                </td>
+                <td>
+                    {{ total.actualizado|sub:total.asignado }}
+                </td>
+                <td>
+                    {{ total.ejecutado }}
+                </td>
+              </td>
             {% endfor %}
+            </tbody>
+        </table>
     </div>
     <!-- tabla1 -->
-    <div class="col-md-7">
+    <br clear="all"> <br />
+    <div class="col-md-10">
           <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
           <table class="table table-condensed">
             <tr class="info">

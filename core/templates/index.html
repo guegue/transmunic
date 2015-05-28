@@ -39,7 +39,7 @@
               <p>La ley de  Transferencias municipales fue  aprobada el 03 de julio del 2003 y publicado en La Gaceta No. 157 del 20 de Agosto del 2003. Apartir de esa fecha las municipalidades reciben una partida presupuestaria, establecida en el  arto 5 de esta ley.</p>
               <p>Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.</p>
               <h4 class="text-info">Recursos</h4>
-              <button class="recuadro btn btn-primary">
+              <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/balanzab.png' %}" />
                 </span>
@@ -47,8 +47,8 @@
                     <h4>Marco Legal</h4>
                     <span class="cifra">Municipal</span>
                 </div>
-              </button>
-              <button class="recuadro btn btn-success">
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'circulo-presupuestario' %}"><button class="recuadro btn btn-success">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/ciclob.png' %}" />
                 </span>
@@ -56,8 +56,8 @@
                     <h4>Ciclo Presupuestario</h4>
                     <span class="cifra">Municipal</span>
                 </div>
-              </button>
-              <button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'analisis-presupuestario' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/analisis.png' %}" />
                 </span>
@@ -66,8 +66,8 @@
                     <span class="dolar"></span>
                     <span class="cifra">Municipal</span>
                 </div>
-              </button>
-              <button class="recuadro col-sm-4 col-xs-12 btn btn-info">
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'participacion-ciudadana' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-info">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/participacionb.png' %}" />
                 </span>
@@ -76,7 +76,7 @@
                     <span class="dolar"></span>
                     <span class="cifra">Gestion Municipal</span>
                 </div>
-              </button>
+              </button></a>
         </div>
         <div class="col-md-8">
             <!--div id="popover" class="btn" rel="popover" data-content=""

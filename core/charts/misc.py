@@ -16,7 +16,6 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 def inversion_minima_sector_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
-    print year_list
     if not year:
         year = list(year_list)[-1]
 
@@ -105,7 +104,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__tipofuente__nombre': ['asignado']}
               }],
             chart_options = {
-                'title': {'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'title': {'text': 'Financiamiento de la inversión %s' % (municipio, )},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
