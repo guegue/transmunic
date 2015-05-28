@@ -26,6 +26,48 @@
         {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado" }}
     {% endif %}
     <!-- tabla4 -->
+    <div class="col-md-6">
+            <h3>Ingresos Totales del A&ntilde;o</h3>
+            {% for total in totales %}
+              <div class="row totales">
+                <div class="col-md-8 text-left">
+                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
+                    <h4>{{ total.catinversion__nombre }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                </div>
+                {% if total.clase_percent %}
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.clase_percent }}</span>
+                </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+    </div>
+    <!-- tabla2 -->
+    <div class="col-md-6">
+            <h3>Tabla2</h3>
+            {% for total in cat %}
+              <div class="row totales">
+                <div class="col-md-8 text-left">
+                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
+                    <h4>{{ total.catinversion__nombre }}</h4>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}</span>
+                </div>
+                {% if total.asignado %}
+                <div class="col-md-2">
+                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
+                </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+    </div>
     <div class="col-md-5">
             <h3>Tabla4</h3>
             {% for total in anuales %} 
@@ -77,49 +119,7 @@
               </div>
             {% endfor %}
     </div>
-    <!-- tabla2 -->
-    <div class="col-md-5">
-            <h3>Tabla2</h3>
-            {% for total in cat %}
-              <div class="row totales">
-                <div class="col-md-9 text-left">
-                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
-                    <h4>{{ total.catinversion__nombre }}</h4>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.asignado }}</span>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado }}</span>
-                </div>
-                {% if total.asignado %}
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
-                </div>
-                {% endif %}
-              </div>
-            {% endfor %}
-    </div>
     <!-- tabla1 -->
-    <div class="col-md-5">
-            <h3>Ingresos Totales del A&ntilde;o</h3>
-            {% for total in totales %}
-              <div class="row totales">
-                <div class="col-md-9 text-left">
-                    <img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" />
-                    <h4>{{ total.catinversion__nombre }}</h4>
-                </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
-                </div>
-                {% if total.clase_percent %}
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.clase_percent }}</span>
-                </div>
-                {% endif %}
-              </div>
-            {% endfor %}
-    </div>
     <div class="col-md-7">
           <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
           <table class="table table-condensed">

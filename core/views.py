@@ -7,7 +7,8 @@ from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
 from models import Municipio, Inversion, Proyecto, InversionFuente
-from models import getYears
+from models import Anio, getYears
+from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
@@ -26,6 +27,8 @@ def home(request):
 
     year_list = getYears(Inversion)
     year = list(year_list)[-1]
+    periodo = Anio.objects.get(anio=year).periodo
+    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     data_oim = oim_chart(year=year, portada=True)
     data_ogm = ogm_chart(year=year)
@@ -33,11 +36,9 @@ def home(request):
     data_inversion_area = inversion_area_chart()
     data_inversion_minima_sector = inversion_minima_sector_chart()
 
-    periodo = Inversion.objects.filter(fecha__year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    total_inversion = Proyecto.objects.filter(inversion__fecha=periodo). \
-            aggregate(ejecutado=Sum('ejecutado'))
-    inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, ). \
-            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+    total_inversion = Proyecto.objects.filter(inversion__year=year).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__year=year, ). \
+            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,
         'charts':( 
