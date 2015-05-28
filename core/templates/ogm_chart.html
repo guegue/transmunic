@@ -38,12 +38,12 @@
             <h3>Gastos Totales del A&ntilde;o</h3>
             {% for total in totales %}
               <div class="row totales">
-                <div class="col-md-9 text-left">
+                <div class="col-md-8 text-left">
                 <img src="/static/img/Otros origenes.png" class="pull-left" height="40" alt="{{ total.tipogasto__nombre }}" />
                 <h4>{{ total.tipogasto__nombre }}</h4>
                 </div>
-                <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                <div class="col-md-3">
+                    <span class="btn btn-info col-md-7">{{ total.percent }}</span>
                 </div>
               </div>
             {% endfor %}

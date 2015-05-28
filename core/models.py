@@ -44,7 +44,7 @@ def glue(inicial, final, periodo, campo, actualizado=None):
             if not found:
                 row['ejecutado'] = 0
         glued = inicial
-    if actualizado:
+    if actualizado <> None:
         for row in glued:
             found = False
             for row2 in actualizado:

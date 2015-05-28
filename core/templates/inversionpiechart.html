@@ -21,7 +21,7 @@
     <div class="clearfix"></div>
 
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, asignado" }}
+        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, percapita_anios, asignado" }}
     {% else %}
         {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado" }}
     {% endif %}
@@ -153,6 +153,7 @@
     <div id='fuente'> Chart will be rendered here </div>
     <div id='fuente_pie'> Chart will be rendered here </div>
     <div id='comparativo_anios'> Chart will be rendered here </div>
+    <div id='percapita_anios'> Chart will be rendered here </div>
     <div id='asignado'> Chart will be rendered here </div>
     <div id='ejecutado'> Chart will be rendered here </div>
     <div id='ultimos'> Chart will be rendered here </div>
