@@ -3,15 +3,57 @@
 from itertools import chain
 from datetime import datetime, time
 
-from django.shortcuts import render_to_response
+from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears
+from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+
+def inversion_minima_porclase(year):
+    sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
+    (SELECT SUM(%s) FROM core_InversionFuenteDetalle JOIN core_InversionFuente on core_InversionFuenteDetalle.inversionfuente_id=core_InversionFuente.id JOIN lugar_clasificacionmunicano ON core_InversionFuente.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_InversionFuente.year=lugar_clasificacionmunicano.anio \
+    WHERE core_InversionFuente.year=%s AND fuente_id=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
+    (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso on core_IngresoDetalle.ingreso_id=core_Ingreso.id \
+    JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
+    WHERE %s > 0 AND core_Ingreso.year=%s AND (tipoingreso_id='1000000' OR subtipoingreso_id='12010000') AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+    AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
+    sql = sql_tpl % ('ejecutado', year, 2, 'ejecutado', 'ejecutado', year, 'ejecutado')
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    final = dictfetchall(cursor)
+    sql = sql_tpl % ('asignado', year, 2, 'asignado', 'asignado', year, 'asignado')
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    inicial = dictfetchall(cursor)
+    porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion')
+    data = RawDataPool(
+           series=
+            [{'options': {'source': porclase },
+              'terms': [
+                'clasificacion',
+                'minimo',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+
+    chart = Chart(
+            datasource = data,
+            series_options =
+              [{'options':{ 'type': 'column', },
+                'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+              }],
+            chart_options =
+              {
+                  'title': {'text': u'Inversion mínima por clase %s' % (year,)},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
+              })
+    return {'charts': (chart,), }
 
 def inversion_minima_sector_chart(municipio=None, year=None):
     municipio_list = Municipio.objects.all()

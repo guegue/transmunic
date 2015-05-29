@@ -129,11 +129,26 @@ def oim_chart(municipio=None, year=None, portada=False):
         source = IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipoingreso__origen')
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__year__gt=year_list[-3])
+
+        # obtiene datos para OIM comparativo de un año específico
+        inicial = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('ingreso__periodo').annotate(monto=Sum('asignado')).order_by('ingreso__periodo'))
+        actualizado = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_ACTUALIZADO).values('ingreso__periodo').annotate(monto=Sum('ejecutado')).order_by('ingreso__periodo'))
+        final = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('ingreso__periodo').annotate(monto=Sum('ejecutado')).order_by('ingreso__periodo'))
+        comparativo2 = list(chain(inicial, final, ))
+        comparativo3 = list(chain(inicial, final, actualizado))
+        for d in comparativo3:
+            d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "ingreso__periodo")
         
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(IngresoDetalle.objects.filter(ingreso__year=year, ingreso__periodo=PERIODO_FINAL).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipoingreso__origen__nombre')
+
+        # obtiene datos para OIM comparativo de todos los años
+        anios_inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL).values('ingreso__year', 'ingreso__periodo').order_by('ingreso__year', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
+        anios_final = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL).values('ingreso__year', 'ingreso__periodo').order_by('ingreso__year', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
+        comparativo_anios = glue(anios_inicial, anios_final, periodo, 'ingreso__year')
+
 
     #
     # chartit!
@@ -197,6 +212,65 @@ def oim_chart(municipio=None, year=None, portada=False):
                     }],
                 chart_options =
                 {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
+                )
+
+    else: # no municipio
+        oim_comparativo_anios = RawDataPool(
+            series=
+                [{'options': {'source': comparativo_anios },
+                'terms':  ['ingreso__year','ingreso__periodo','asignado','ejecutado',],
+                }],
+            )
+        oim_comparativo2 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo2 },
+                'terms':  ['ingreso__periodo', 'monto'],
+                }],
+                )
+        oim_comparativo3 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo3 },
+                'terms':  ['ingreso__periodo', 'monto'],
+                }],
+                )
+        oim_comparativo2_column = Chart(
+                datasource = oim_comparativo2,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'ingreso__periodo': ['monto',]
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Ingresos %s' % (year)}},
+                )
+        oim_comparativo3_column = Chart(
+                datasource = oim_comparativo3,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'ingreso__periodo': ['monto', ]
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Ingresos %s' % (year)}},
+                )
+        oim_comparativo_anios_column = Chart(
+                datasource = oim_comparativo_anios,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'ingreso__year': ['ejecutado', 'asignado'],
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'Ingresos %s' % (municipio,)}},
                 )
 
     oim_tipo = RawDataPool(
@@ -348,7 +422,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     elif municipio:
         charts =  (ejecutado, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra2, )
     else:
-        charts =  (ejecutado, oim_tipo_column, asignado_barra, barra2, )
+        charts =  (ejecutado, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra2, )
 
     return {'charts': charts, \
             'clasificacion': mi_clase, 'municipio': municipio, 'anio': year, 'porano': porano_table, 'totales': source, \

@@ -6,10 +6,10 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Municipio, Inversion, Proyecto, InversionFuente
+from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente
 from models import Anio, getYears
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
-from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart
+from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
@@ -19,6 +19,7 @@ from website.models import Banner
 def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
+    departamentos = Departamento.objects.all()
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
@@ -35,6 +36,7 @@ def home(request):
     data_inversion = inversion_chart()
     data_inversion_area = inversion_area_chart()
     data_inversion_minima_sector = inversion_minima_sector_chart()
+    data_inversion_minima_porclase = inversion_minima_porclase(year)
 
     total_inversion = Proyecto.objects.filter(inversion__year=year).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__year=year, ). \
@@ -46,11 +48,13 @@ def home(request):
             data_ogm['charts'][0], 
             #data_inversion['charts'][0], 
             data_inversion_minima_sector['charts'][0],
-            data_inversion_area['charts'][0],
+            #data_inversion_area['charts'][0],
+            data_inversion_minima_porclase['charts'][0],
             data_fuentes['charts'][1],
             ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
+        'departamentos': departamentos,
     }, context_instance=RequestContext(request))
 
 def municipio(request, slug):

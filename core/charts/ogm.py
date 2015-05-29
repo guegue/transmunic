@@ -50,7 +50,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
 
-        # obtiene datos para OIM comparativo de todos los años
+        # obtiene datos para OGM comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).values('gasto__year', 'gasto__periodo').annotate(municipio_inicial=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL).values('gasto__year', 'gasto__periodo').annotate(municipio_final=Sum('ejecutado')))
 
@@ -94,7 +94,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         comparativo_anios = inicial
         #FIXME: no longer? comparativo_anios = list(chain(inicial, final, ))
 
-        # obtiene datos para OIM comparativo de un año específico
+        # obtiene datos para OGM comparativo de un año específico
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('gasto__periodo').annotate(municipio=Sum('asignado')))
         actualizado = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_ACTUALIZADO).values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL).values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
@@ -137,6 +137,21 @@ def ogm_chart(municipio=None, year=None, portada=False):
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
+
+        # obtiene datos para OGM comparativo de un año específico
+        inicial = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('gasto__periodo').annotate(monto=Sum('asignado')).order_by('gasto__periodo'))
+        actualizado = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_ACTUALIZADO).values('gasto__periodo').annotate(monto=Sum('ejecutado')).order_by('gasto__periodo'))
+        final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('gasto__periodo').annotate(monto=Sum('ejecutado')).order_by('gasto__periodo'))
+        comparativo2 = list(chain(inicial, final, ))
+        comparativo3 = list(chain(inicial, final, actualizado))
+        for d in comparativo3:
+            d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "gasto__periodo")
+        
+        # obtiene datos para OGM comparativo de todos los años
+        anios_inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL).values('gasto__year', 'gasto__periodo').order_by('gasto__year', 'gasto__periodo').annotate(asignado=Sum('asignado')))
+        anios_final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL).values('gasto__year', 'gasto__periodo').order_by('gasto__year', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        comparativo_anios = glue(anios_inicial, anios_final, periodo, 'gasto__year')
+
 
     #
     # chartit!
@@ -201,6 +216,65 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
                 )
+    else: # no municipio
+        ogm_comparativo_anios = RawDataPool(
+            series=
+                [{'options': {'source': comparativo_anios },
+                'terms':  ['gasto__year','gasto__periodo','asignado','ejecutado',],
+                }],
+            )
+        ogm_comparativo2 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo2 },
+                'terms':  ['gasto__periodo', 'monto'],
+                }],
+                )
+        ogm_comparativo3 = RawDataPool(
+            series=
+                [{'options': {'source': comparativo3 },
+                'terms':  ['gasto__periodo', 'monto'],
+                }],
+                )
+        ogm_comparativo2_column = Chart(
+                datasource = ogm_comparativo2,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'gasto__periodo': ['monto',]
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'gastos %s' % (year)}},
+                )
+        ogm_comparativo3_column = Chart(
+                datasource = ogm_comparativo3,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'gasto__periodo': ['monto', ]
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'gastos %s' % (year)}},
+                )
+        ogm_comparativo_anios_column = Chart(
+                datasource = ogm_comparativo_anios,
+                series_options =
+                [{'options':{
+                    'type': 'column',
+                    'stacking': False},
+                    'terms':{
+                    'gasto__year': ['ejecutado', 'asignado'],
+                    },
+                    }],
+                chart_options =
+                {'title': { 'text': 'gastos %s' % (municipio,)}},
+                )
+
 
     ogm_tipo = RawDataPool(
         series=
@@ -351,7 +425,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     elif municipio:
         charts =  (ejecutado, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
     else:
-        charts =  (ejecutado, ogm_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
             'clasificacion': mi_clase, 'municipio': municipio, 'anio': year, 'porano': porano_table, 'totales': source, \
