@@ -42,9 +42,9 @@ def gpersonal_chart(request):
             values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # obtiene datos para grafico comparativo de tipo de gastos
-        tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).values('subsubtipogasto__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL).values('subsubtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__nombre')
+        tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__year=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subtipogasto__nombre')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -129,8 +129,7 @@ def gpersonal_chart(request):
         if inicial:
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
         if actualizado:
-            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count * 10000 # FIXME: testing * 10000
-            actualizado[0]['municipio'] *= 10000 # FIXME: testing * 10000
+            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
         comparativo3 = list(chain(inicial, actualizado, final))
@@ -181,9 +180,9 @@ def gpersonal_chart(request):
         source = source_inicial
 
         # obtiene datos para grafico comparativo de tipo de gastos
-        tipo_inicial= list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__nombre')
+        tipo_inicial= list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL).values('subtipogasto__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL).values('subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo = glue(tipo_inicial, tipo_final, periodo, 'subtipogasto__nombre')
 
         # FIXME. en el grafico de periodos...  de donde tomar los datos?
         source_barra_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
@@ -267,7 +266,7 @@ def gpersonal_chart(request):
     personal_tipo = RawDataPool(
         series=
             [{'options': {'source': tipo },
-            'terms':  ['subsubtipogasto__nombre','ejecutado','asignado'],
+            'terms':  ['subtipogasto__nombre','ejecutado','asignado'],
             }],
         )
     personal_tipo_column = Chart(
@@ -277,7 +276,7 @@ def gpersonal_chart(request):
                 'type': 'column',
                 'stacking': False},
                 'terms':{
-                'subsubtipogasto__nombre': ['ejecutado', 'asignado'],
+                'subtipogasto__nombre': ['ejecutado', 'asignado'],
                 },
                 }],
             chart_options =

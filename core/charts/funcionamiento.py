@@ -120,8 +120,7 @@ def gf_chart(request):
         if inicial:
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
         if actualizado:
-            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count * 10000 # FIXME: testing * 10000
-            actualizado[0]['municipio'] *= 10000 # FIXME: testing * 10000
+            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
         comparativo3 = list(chain(inicial, actualizado, final))

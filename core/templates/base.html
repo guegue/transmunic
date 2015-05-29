@@ -65,7 +65,6 @@
                     <li><a href="{%url 'peso_deuda'%}">Peso del servicio de la deuda</a></li>
                     <li class="divider"></li>
                     <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
-                    <li><a href="{%url 'inversion_area'%}">Distribuci&oacuteln de la inversión por área</a></li>
                     <li><a href="{%url 'inversion'%}">Inversión</a></li-->
                     <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
                   </ul>
@@ -111,9 +110,15 @@
 
       <!-- FOOTER -->
       <footer>
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-      </footer>
+        <p class="pull-right logos" style="margin-right: 25px;">
+        <a href="#"><img src="{% static 'img/aid.png' %}" alt="USAID"/ width="120" ></a>
+        <a href="#"><img src="{% static 'img/logoguegue.png' %}" alt="Guegue" width="140"/></a>
+        <a href="#"><img src="{% static 'img/gcom.png' %}" alt="Global communities" width="140" /></a>
+        </p>
+        <div class="col-md-10"> Las opiniones expresadas en este sitio web no reflejan necesariamente las de la Agencia de los Estados Unidos para el Desarrollo
+        
+        Internacional, USAID, o la del Gobierno de los Estados Unidos.</div>
+       </footer>
 
     </div><!-- /.container -->
 

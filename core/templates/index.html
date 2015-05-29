@@ -202,7 +202,7 @@
    <script type="text/javascript">
     var xref = {
         {% for d in departamentos %}
-        {{d.codigo}}: '<div id="area-click{{d.codigo}}" style="float:right">X</div> <h3 class="text-success">{{d.nombre}}</h3> </div><img src="/static/img/{{d.codigo}}.jpg" />',
+        {{d.codigo}}: '<span id="submapa"><div onclick="javascript:$(' + "'#submapa'" + ').fadeOut();" style="float:right">&#x274c;</div> <h3 class="text-success">{{d.nombre}}</h3> </div><img src="/static/img/{{d.codigo}}.jpg" /></span>',
         {% endfor %}
     };
     var defaultDipTooltip = 'I know you want the dip. But it\'s loaded with saturated fat, just skip it and enjoy as many delicious, crisp vegetables as you can eat.';
