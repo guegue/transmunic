@@ -17,16 +17,17 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 def inversion_minima_porclase(year):
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
     (SELECT SUM(%s) FROM core_InversionFuenteDetalle JOIN core_InversionFuente on core_InversionFuenteDetalle.inversionfuente_id=core_InversionFuente.id JOIN lugar_clasificacionmunicano ON core_InversionFuente.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_InversionFuente.year=lugar_clasificacionmunicano.anio \
-    WHERE core_InversionFuente.year=%s AND fuente_id=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
+    WHERE core_InversionFuente.year=%s AND tipofuente_id=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id AND core_InversionFuente.periodo='%s') /\
     (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso on core_IngresoDetalle.ingreso_id=core_Ingreso.id \
     JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
-    WHERE %s > 0 AND core_Ingreso.year=%s AND (tipoingreso_id='1000000' OR subtipoingreso_id='12010000') AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+    WHERE %s > 0 AND core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND (tipoingreso_id='1000000' OR subtipoingreso_id='12010000') AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
     AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
-    sql = sql_tpl % ('ejecutado', year, 2, 'ejecutado', 'ejecutado', year, 'ejecutado')
+    sql = sql_tpl % ('ejecutado', year, 2, PERIODO_FINAL, 'ejecutado', 'ejecutado', year, PERIODO_FINAL, 'ejecutado')
+    print sql
     cursor = connection.cursor()
     cursor.execute(sql)
     final = dictfetchall(cursor)
-    sql = sql_tpl % ('asignado', year, 2, 'asignado', 'asignado', year, 'asignado')
+    sql = sql_tpl % ('asignado', year, 2, PERIODO_INICIAL, 'asignado', 'asignado', year, PERIODO_INICIAL, 'asignado')
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)

@@ -21,10 +21,10 @@
               {% thumbnail banner.imagen "1170x500" crop='center' as img %}
                 <img src="{{ img.url }}" alt="{{ banner }}"/>
               {% endthumbnail %}
-              <div class="carousel-caption">
+              <!--div class="carousel-caption">
                 <h1>{{ banner.titulo }}</h1>
                 <p>{{ banner.descripcion }}</p>
-              </div>
+              </div-->
             </div>
           </div>        
         {% endfor %}
@@ -34,16 +34,16 @@
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
         <div class="container">
-            <div class="col-md-4">
+            <div class="col-md-5">
               <div style="background-color: #fff;clear: both; width: 500px; height: 50px;display:inline;" id="selections"></div>
+              {% load i18n flatpages %}
+              {% get_flatpages '/transferencias-presupuestarias/' as pages %}
               <h3>Importancia de las Transferencias</h3>
-              <p>La ley de  Transferencias municipales fue  aprobada el 03 de julio del 2003 y publicado en La Gaceta No. 157 del 20 de Agosto del 2003. Apartir de esa fecha las municipalidades reciben una partida presupuestaria, establecida en el  arto 5 de esta ley.</p>
-              <p>Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.</p>
+              {% for page in pages %}
+                <p>{{ page.content|safe|truncatewords:100 }}<a href="{{ page.url }}" class="text-primary"> leer m&aacute;s</a></p>
+              {% endfor %}
               <h4 class="text-info">Consulte</h4>
               <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
-                <span class="recuadro-icon">
-                    <img src="{% static 'img/balanzab.png' %}" />
-                </span>
                 <div class="recuadro-text pull-left">
                     <h4>Marco Legal</h4>
                     <span class="cifra">Municipal</span>
@@ -79,7 +79,7 @@
                 </div>
               </button></a>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h3>Informaci&oacute;n por Municipio</h3>
             <img src="/static/img/nicaragua.png" width="500" usemap="#nicaragua-image" >
             <map id="nicaragua-image" name="nicaragua-image">
