@@ -30,7 +30,7 @@
     {% if municipio and charts.4 %}
         {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra2" }}
     {% else %}
-        {{ charts|load_charts:"ejecutado, tipo, asignado_barra, barra2" }}
+        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra2" }}
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
@@ -118,7 +118,8 @@
            {% endfor %}
           </table>
           <div class="col-md-12">
-            <h3>Ingresos del municipio en los últimos años</h3>
+            <h3>Ingresos del municipio vs Promedio de la Categor&iacute;a</h3>
+            <h4 class="text-primary">Presupuesto Inicial y Final</h4>
             <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
           </div>
           <div class="clear"></div>

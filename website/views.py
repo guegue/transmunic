@@ -20,6 +20,7 @@ class DocumentoListView(ListView):
 class DocumentoTipoListView(DocumentoListView):
     model = Documento
     paginate_by = 10
+    order_by = '-fecha'
 
     def get_context_data(self, **kwargs):
         context = super(DocumentoTipoListView, self).get_context_data(**kwargs)

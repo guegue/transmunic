@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static thumbnail chartit %}
 {% block main_content %}
 <div class="row">
     <div class="col-md-9">
@@ -16,6 +17,9 @@
                     {{ documento }}
                   {% endif %}
                 </h4>
+                {% thumbnail documento.imagen "250x180" crop='top' as img %}
+                  <img src="{{ img.url }}" alt="{{ banner }}"/>
+                {% endthumbnail %}
                 <p class="fecha">{{ documento.tipo }}</p>
                 {% if documento.archivo %}<a class="verde" href="{{ documento.archivo.url }}" target="_blank"><i id="file" class="fa fa-file fa-1x"></i> Descargar &raquo;</a></p>{% endif %}
             </div>

@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Presupuesto Municipal en Nicaragua</title>
+    <title>Presupuestos Municipales en Nicaragua</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -29,6 +29,7 @@
     <link href="{% static 'css/custom.css' %}" rel="stylesheet">
     <script src="{% static 'jquery-1.11.2.min.js' %}"></script>
     <script src="{% static 'highcharts.js' %}"></script>
+    <script src="{% static 'js/jquery.imagemapster.js' %}"></script>
   </head>
 <!-- NAVBAR
 ================================================== -->
@@ -45,20 +46,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <h2 class="titular-header"><a href="/">Presupuesto Municipal {% block titulo %} {% endblock %}</a></h2>
+              <h2 class="titular-header"><a href="/">Presupuestos Municipales Abiertos {% block titulo %} {% endblock %}</a></h2>
             </div>
             <div id="navbar" class="navbar-collapse collapse pull-right">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'home' %}">INICIO</a></li>
-                <li><a href="#about">ACERCA DE</a></li>
+                <li><a href="#about">&iquest;QU&Eacute; SIGNIFICA?</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PRESUPUESTO <span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PRESUPUESTOS <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li><a href="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</a></li>
                    <li><a href="{%url 'origen_gastos'%}">Origen de gastos del municipio</a></li>
                     <li class="divider"></li>
                     <li><a href="{%url 'gastos_funcion'%}">Gastos de funcionamiento</a></li>
-                    <!--li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
+                    <li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
                     <li><a href="{%url 'autonomia_gastos'%}">Autonomía para asumir gastos operativos</a></li>
                     <li><a href="{%url 'ahorro_corriente'%}">Ahorro corriente para inversiones</a></li>
                     <li><a href="{%url 'peso_deuda'%}">Peso del servicio de la deuda</a></li>
@@ -69,7 +70,7 @@
                     <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
                   </ul>
                 </li>
-                <li><a href="/core/plan-de-inversion/?inversion__municipio__slug=managua&inversion__fecha_0=2014-01-01&inversion__fecha_1=2014-12-31">PAN DE INVERSIÓN</a></li>
+                <li><a href="/core/plan-de-inversion/?inversion__municipio__slug=managua&inversion__fecha_0=2014-01-01&inversion__fecha_1=2014-12-31">PLANES DE INVERSIÓN</a></li>
                 <li><a href="#contact">CONTÁCTENOS</a></li>
               </ul>
             </div>
@@ -122,15 +123,9 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/docs.min.js' %}"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     <script src="http://code.highcharts.com/highcharts-3d.js"></script>
-        <script>
-        $('a').tooltip();
-        </script>
-        <script>
-          var managua = '<img src="/static/img/managua.jpg">';
-            $('#popover').popover({placement: 'auto', content: managua, html: true});
-        </script>
   </body>
 </html>

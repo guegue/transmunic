@@ -22,6 +22,7 @@ class ClasificacionMunic(models.Model):
 class Departamento(models.Model):
     nombre = models.CharField(max_length=120)
     slug = AutoSlugField(populate_from='nombre')
+    codigo = models.CharField('Codigo',max_length=15,blank=True)
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=5, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=5, blank=True, null=True)
 
