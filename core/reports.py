@@ -9,7 +9,7 @@ class PlanInversionModelReport(ReportAdmin):
     title = u'Plan de inverisón'
     model = Proyecto
     fields = [
-        'inversion__fecha',
+        'inversion__year',
         'inversion__municipio__slug',
         'nombre',
         'catinversion__nombre',
@@ -24,7 +24,7 @@ class PlanInversionModelReport(ReportAdmin):
         'catinversion__nombre': u'Categoría',
         #'date__day': lambda x, y: _('Day'),
     }
-    list_filter = ('inversion__fecha','inversion__municipio__slug')
+    list_filter = ('inversion__year','inversion__municipio__slug')
     list_order_by = ('nombre',)
     type = 'report'
 

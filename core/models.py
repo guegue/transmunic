@@ -192,7 +192,7 @@ class SubSubTipoIngreso(models.Model):
 # Ingresos del municipio
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False)
+    year = models.IntegerField(null=False, verbose_name='Anio')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
@@ -223,7 +223,7 @@ class IngresoDetalle(models.Model):
 
 class Gasto(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False)
+    year = models.IntegerField(null=False, verbose_name='Anio')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
@@ -269,7 +269,7 @@ class Inversion(models.Model):
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     nombremunic = models.CharField(max_length=250)
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False)
+    year = models.IntegerField(null=False, verbose_name='Anio')
     periodo = models.CharField(max_length=1, null=False)
 
     class Meta:
@@ -295,7 +295,9 @@ class Proyecto(models.Model):
 
     @property
     def porcentaje_ejecutado(self):
-        if self.asignado <> 0:
+        print self.asignado
+        print self.ejecutado
+        if self.asignado > 0 and self.ejecutado > 0:
             return round(self.ejecutado / self.asignado * 100, 2)
         else:
             return None
@@ -333,7 +335,7 @@ class FuenteFmto(models.Model):
 # Ingresos del municipio
 class InversionFuente(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False)
+    year = models.IntegerField(null=False, verbose_name='Anio')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)

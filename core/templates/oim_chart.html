@@ -25,7 +25,7 @@
     <ul id="oimTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
         <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
-        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
+        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Informaci&oacute;n hist&oacute;rica</a></li>
     </ul>
     {% if municipio and charts.4 %}
         {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra2" }}
@@ -35,7 +35,7 @@
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
           <div class="col-md-5">
-              <h3>Ingresos Totales del A&ntilde;o</h3>
+              <h3>Ingresos totales</h3>
             {% for total in totales %}
               <div class="row totales">
                 <div class="col-md-9 text-left">
@@ -53,35 +53,33 @@
             {% endfor %}
           </div>
         <div class="col-md-7">
-           <h3>Ingresos Totales {{ anio }}</h3>
+           <h3>Ingresos totales</h3>
           <table class="table table-condensed">
             <tr class="info">
               <th></th>
               <th>{{ anio }}</th>
-              <th>Promedio {{ anio }}</th>
+              {% if municipio %}
+              <th>Promedio de categor&iacute;a</th>
+              {% endif %}
             </tr>
             {% for key, data in porano.items %}
              <tr>
                <td class="text-left">{{ key }}</td>
                <td class="text-center">{{ data|keyvalue:anio|intword }}</td>
+              {% if municipio %}
                <td>{{ data.extra|intword }}</td>
-               <!-- old-fashioned way:
-               {% for subkey, subdata in data.items %}
-               <td>{{ subkey }} = {{ subdata| intword}}</td>
-               {% endfor %}
-                -->
+              {% endif %}
              </tr>
            {% endfor %}
- 
           </table>
         </div>
         <div class="col-md-12 graficos-azul">
           <div class="col-md-8">
-              <h3>Origen de los Ingresos {{ anio }}</h3>
+              <h3>Origen de los Ingresos </h3>
             <div id='tipo'> Chart will be rendered here </div>
           </div>
           <div class="col-md-4">
-              <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
+              <h3>Ejecuci&oacute;n Presupuestaria</h3>
             <div id='comparativo2'> Chart will be rendered here </div>
           </div>
           <div class="col-md-6 visible-xs">
@@ -90,7 +88,7 @@
         </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
-          <h3>Modificaciones de la Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
+            <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
           <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
           <div id='comparativo3' class="col-md-7"> Chart will be rendered here </div>
       </div>
@@ -118,7 +116,7 @@
            {% endfor %}
           </table>
           <div class="col-md-12">
-            <h3>Ingresos del municipio vs Promedio de la Categor&iacute;a</h3>
+            <h3>Ingresos del municipio vs Promedio de la categor&iacute;a</h3>
             <h4 class="text-primary">Presupuesto Inicial y Final</h4>
             <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
           </div>

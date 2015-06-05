@@ -40,9 +40,9 @@
               {% get_flatpages '/transferencias-presupuestarias/' as pages %}
               <h3>Importancia de las Transferencias</h3>
               {% for page in pages %}
-                <p>{{ page.content|safe|truncatewords:100 }}<a href="{{ page.url }}" class="text-primary"> leer m&aacute;s</a></p>
+                <p class="text-justify col-md-11" style="margin-left:-15px;">{{ page.content|safe|truncatewords:100 }}<a href="{{ page.url }}" class="text-primary"> leer m&aacute;s</a></p>
               {% endfor %}
-              <h4 class="text-info">Consulte</h4>
+              <h4 class="text-info" style="margin-top:20px;">Consulte</h4>
               <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
                 <div class="recuadro-text pull-left">
                     <h4>Marco Legal</h4>
@@ -102,6 +102,7 @@
             <area shape="poly" coords="270,218,258,236,253,248,259,264,268,261,277,275,282,287,295,302,298,325,304,350,321,365,324,376,324,390,325,414,356,444,381,456,400,460,391,427,395,405,411,395,412,374,400,354,411,320,427,298,423,277,421,230,409,228,389,205,357,207,316,211,295,217,270,220,260,233" alt="Municipios de la RAAS" target="Municipios=RAAS" href="#RAAS" municipio="raas"/>
             </map>
             <p class="text-warning">Click en el departamento para acceder a sus municipios</p>
+            {%  include "mapas.html" %}
         </div>
     </div>
     </section>
@@ -121,7 +122,7 @@
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
-            <h2>&iquest;Quién financia?</h2>
+            <h2>&iquest;C&oacute;mo se financia?</h2>
           <div id='fuentes'>
           </div>
         </div>
@@ -134,7 +135,6 @@
             <div class="row">
                 <div class="col-md-2">
                     <div class="clearfix">
-                        <h4 class="pull-left">Inversiones ejecutadas</h4>
                         <div class="pull-right">
                             <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
                         </div>
@@ -190,7 +190,7 @@
 	    </div>
 	    <div class="col-md-6">
 		<div class="panel panel-success">
-			<div class="panel-heading"><h3>Inversión mínima por sector</h3></div>
+			<div class="panel-heading"><h3>Inversión mínima por sector priorizado</h3></div>
 			<div class="panel-body">
               <div id='inversion'>
               </div>
@@ -202,7 +202,7 @@
    <script type="text/javascript">
     var xref = {
         {% for d in departamentos %}
-        {{d.codigo}}: '<span id="submapa"><div onclick="javascript:$(' + "'#submapa'" + ').fadeOut();" style="float:right">&#x274c;</div> <h3 class="text-success">{{d.nombre}}</h3> </div><img src="/static/img/{{d.codigo}}.jpg" /></span>',
+        {{d.codigo}}: '<span id="submapa"><div onclick="javascript:$(' + "'#submapa'" + ').fadeOut();" style="float:right">&#x274c;</div> <h3 class="text-success">{{d.nombre}}</h3> </div><img src="/static/img/{{d.codigo}}.jpg" usemap="#{{d.codigo}}" /></span>',
         {% endfor %}
     };
     var defaultDipTooltip = 'I know you want the dip. But it\'s loaded with saturated fat, just skip it and enjoy as many delicious, crisp vegetables as you can eat.';

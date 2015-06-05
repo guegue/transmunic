@@ -51,7 +51,7 @@ def inversion_minima_porclase(year):
               }],
             chart_options =
               {
-                  'title': {'text': u'Inversion mínima por clase %s' % (year,)},
+                  'title': {'text': u'Arto 19 - Ley de régimen presupuestaria municipal'},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), }
@@ -87,23 +87,26 @@ def inversion_minima_sector_chart(municipio=None, year=None):
     data = RawDataPool(
            series=
             [{'options': {'source': source },
-              'terms': [
-                'nombre',
-                'minimo',
-                'ejecutado',
-                'asignado',
-                ]}
+              #'terms': {
+              #    'nombre':'nombre',
+              #    'minimo':'Minimo por ley',
+              #    'ejecutado':'Ejecutado',
+              #    'asignado':'Presupuestado',
+              #  }}
+              'terms': ['nombre','minimo','ejecutado','asignado']
+                }
              ])
 
     chart = Chart(
             datasource = data,
             series_options =
               [{'options':{ 'type': 'column', },
-                'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] }
+                  'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] },
+                  #'terms':{ 'nombre': [ {'asignado': {'name':'Test', 'legendIndex': '1'} }, 'ejecutado', 'minimo', ] },
               }],
             chart_options =
               {
-                  'title': {'text': u'Gasto mínimo por sector %s %s' % (municipio, year,)},
+                  'title': {'text': u'Arto 12 - Ley de transferencias presupuestarias'},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
@@ -147,7 +150,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__tipofuente__nombre': ['asignado']}
               }],
             chart_options = {
-                'title': {'text': 'Financiamiento de la inversión %s' % (municipio, )},
+                'title': {'text': 'Fuentes de financiamiento %s' % (municipio, )},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -228,12 +231,12 @@ def ep_chart(request):
     year_list = getYears(Ingreso)
     municipio = request.GET.get('municipio','')
     if municipio:
-        with open ("core/ep_municipio.sql", "r") as query_file:
+        with open ("core/charts/ep_municipio.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [municipio, municipio, year_list])
     else:
         municipio = ''
-        with open ("core/ep.sql", "r") as query_file:
+        with open ("core/charts/ep.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
@@ -269,12 +272,12 @@ def psd_chart(request):
     year_list = getYears(Ingreso)[:-1]
     municipio = request.GET.get('municipio','')
     if municipio:
-        with open ("core/psd_municipio.sql", "r") as query_file:
+        with open ("core/charts/psd_municipio.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, year_list])
     else:
         municipio = ''
-        with open ("core/psd.sql", "r") as query_file:
+        with open ("core/charts/psd.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
@@ -312,12 +315,12 @@ def aci_chart(request):
     year_list = getYears(Ingreso)
     municipio = request.GET.get('municipio','')
     if municipio:
-        with open ("core/aci_municipio.sql", "r") as query_file:
+        with open ("core/charts/aci_municipio.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, year_list])
     else:
         municipio = ''
-        with open ("core/aci.sql", "r") as query_file:
+        with open ("core/charts/aci.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [year_list])
     data = RawDataPool(
@@ -350,51 +353,6 @@ def aci_chart(request):
     return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
         context_instance=RequestContext(request))
 
-
-def ago_chart(request):
-    municipio_list = Municipio.objects.all()
-    year_list = getYears(Ingreso)[:-1]
-    municipio = request.GET.get('municipio','')
-
-    if municipio:
-        with open ("core/ago_municipio.sql", "r") as query_file:
-            sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, year_list])
-    else:
-        municipio = ''
-        with open ("core/ago.sql", "r") as query_file:
-            sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [year_list])
-
-    data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'year',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
-
-    bar = Chart(
-            datasource = data,
-            series_options =
-              [{'options':{
-                  'type': 'bar',},
-                'terms':{
-                  'year': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {
-                  'text': u'Autonomía %s ' % (municipio,)},
-                },
-                #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
-            )
-
-    return render_to_response('agochart.html',{'charts': (bar, ), 'municipio_list': municipio_list},\
-        context_instance=RequestContext(request))
 
 def old_gpersonal_chart(request):
     municipio_list = Municipio.objects.all()

@@ -197,7 +197,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
+                {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
                 )
         oim_comparativo3_column = Chart(
                 datasource = oim_comparativo3,
@@ -210,7 +210,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s %s' % (municipio, year)}},
+                {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
                 )
 
     else: # no municipio
@@ -290,7 +290,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 }],
             chart_options =
             {
-                'title': { 'text': 'Ingresos por tipo origen %s %s' % (year, municipio,)},
+                'title': { 'text': 'Ingresos totales %s %s' % (year, municipio,)},
                 'data': { 'table': 'datatable'},
             },
     )
@@ -380,7 +380,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             chart_options =
               {
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
+                  'title': {'text': 'Origen de los ingresos'},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               }

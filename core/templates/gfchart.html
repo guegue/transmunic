@@ -21,26 +21,30 @@
     <ul id="gfTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
         <li role="presentation"><a href="#gfmodificacion" aria-controls="gfmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
-        <li role="presentation"><a href="#gforigen" aria-controls="gforigen" role="tab" data-toggle="tab">Ingresos ejecutados por origen</a></li>
+        <li role="presentation"><a href="#gforigen" aria-controls="gforigen" role="tab" data-toggle="tab">Información histórica</a></li>
     </ul>
     <div class="clearfix"></div>
     {% if municipio %}
         {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie" }}
+        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
-        <div id='comparativo_anios'></div>
-        <div id='comparativo2'></div>
-        <div id='comparativo3'></div>
-        <div id='pie'></div>
+        <div class="col-md-6">
+            <div id='pie'></div>
+        </div>
+        <div class="col-md-6">
+            <div id='comparativo2'></div>
+        </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="gfmodificacion" aria-labelledby="gfmodificacion-tab">
-        <div id='barra' class="col-md-10"></div>
+        <div id='comparativo3' class="col-md-10"></div>
+        <div id='barra' class="visible-xs"></div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="gforigen" aria-labelledby="gforigen-tab">
-        <div id='gfbar' class="col-md-10"></div>
+          <div id='comparativo_anios' class="col-md-10"></div>
+        <div id='gfbar' class="visible-xs"></div>
       </div>
     </div>
 {% endblock %}

@@ -383,7 +383,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   }}],
             chart_options =
               {
-                  'title': {'text': 'Gastos %s %s %s' % (quesumar, municipio, year,)},
+                  'title': {'text': 'Destino del gasto'},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },

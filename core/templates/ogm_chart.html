@@ -6,7 +6,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
-    <h2 class="title">Destino de los gastos </h2>
+<h2 class="title">Destino de los gastos  {{ anio }} </h2>
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
@@ -24,7 +24,7 @@
     <ul id="oimTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
         <li role="presentation"><a href="#oimmodificacion" aria-controls="oimmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
-        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Asignacion de gasatos por tipo</a></li>
+        <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Informacion hist&oacute;rica</a></li>
     </ul>
 
     {% if municipio and charts.4 %}
@@ -34,8 +34,8 @@
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+          <h3>Gastos totales</h3><br />
         <div class="col-md-6">
-            <h3>Gastos Totales del A&ntilde;o</h3>
             {% for total in totales %}
               <div class="row totales">
                 <div class="col-md-8 text-left">
@@ -43,20 +43,64 @@
                 <h4>{{ total.subsubtipogasto__origen__nombre }}</h4>
                 </div>
                 <div class="col-md-3">
-                    <span class="btn btn-info col-md-7">{{ total.percent }}</span>
+                        <span class="btn btn-info col-md-7">{{ total.percent }}%</span>
                 </div>
               </div>
             {% endfor %}
         </div>
+        <!-- tabla solo un año -->
         <div class="col-md-6">
-        <h3>Gastos Totales de los &uacute;ltimos a&ntilde;os</h3>
+          <table class="table table-condensed">
+            <tr class="info">
+              <th></th>
+              <th>{{ anio }}</th>
+              {% if municipio %}
+              <th>Promedio de categor&iacute;a</th>
+              {% endif %}
+            </tr>
+            {% for key, data in porano.items %}
+             <tr>
+               <td class="text-left">{{ key }}</td>
+               <td class="text-center">{{ data|keyvalue:anio|intword }}</td>
+              {% if municipio %}
+               <td>{{ data.extra|intword }}</td>
+              {% endif %}
+             </tr>
+           {% endfor %}
+          </table>
+        </div>
+        <!-- tabla solo un año /-->
+        <br clear="all" />
+        <div class="col-md-12 graficos-azul">                                   
+            <div class="col-md-8">                                                
+                <h3>Destino del gastos</h3> 
+                <div class="col-md-12">
+                    <div id='tipo'> Chart will be rendered here </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+              <h3>Ejecuci&oacute;n Presupuestaria</h3>
+                <div class="col-md-12">
+                    <div id='comparativo2'> Chart will be rendered here </div>
+                    <div id='ejecutado' class="visible-xs"> Chart will be rendered here </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
+            <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
+        <div id='comparativo3' class="col-md-10"> Chart will be rendered here </div>
+        <div id='barra' class="col-md-10 visible-xs"> Chart will be rendered here </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
+        <div class="col-md-12">
+        <h3>Gastos totales de los &uacute;ltimos a&ntilde;os</h3>
           <table class="table table-condensed">
             <tr  class="info">
               <th></th>
               {% for year in year_list %}
                 <th>{{ year }}</th>
               {% endfor %}
-              <th>Promedio</th>
             </tr>
             {% for key, data in porano.items %}
              <tr>
@@ -75,27 +119,11 @@
  
           </table>
         </div>
-        <div class="col-md-6">
-            <div id='tipo'> Chart will be rendered here </div>
+        <div class="col-md-12">
+            <h3>Gastos del municipio vs Promedio de la categor&iacute;a</h3>
+            <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
         </div>
-        <div class="col-md-6">
-            <div id='ejecutado'> Chart will be rendered here </div>
-        </div>
-        <div class="col-md-6">
-            <div id='comparativo_anios'> Chart will be rendered here </div>
-        </div>
-        <div class="col-md-6">
-            <div id='comparativo2'> Chart will be rendered here </div>
-        </div>
-        <div class="col-md-6">
-            <div id='comparativo3'> Chart will be rendered here </div>
-        </div>
-      </div>
-      <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
-        <div id='barra' class="col-md-10"> Chart will be rendered here </div>
-      </div>
-      <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
-        <div id='asignado_barra' class="col-md-10"> Chart will be rendered here </div>
+        <div id='asignado_barra' class="visible-xs"> Chart will be rendered here </div>
       </div>
     </div>
 </div>

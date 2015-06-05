@@ -34,7 +34,7 @@ class Departamento(models.Model):
 class Municipio(models.Model):
     nombre = models.CharField(max_length=120)
     depto = models.ForeignKey(Departamento, related_name='departamento')
-    slug = AutoSlugField(populate_from='nombre')
+    slug = AutoSlugField(populate_from='nombre', verbose_name="municipio")
     latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
     clasificaciones = models.ManyToManyField(ClasificacionMunic, through='ClasificacionMunicAno')
