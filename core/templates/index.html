@@ -44,6 +44,9 @@
               {% endfor %}
               <h4 class="text-info" style="margin-top:20px;">Consulte</h4>
               <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
+                <span class="recuadro-icon">
+                    <img src="{% static 'img/balanzab.png' %}" />
+                </span>
                 <div class="recuadro-text pull-left">
                     <h4>Marco Legal</h4>
                     <span class="cifra">Municipal</span>
@@ -107,9 +110,11 @@
     </div>
     </section>
 {% endblock %}
-
 {% block main_content %}
-        <div class="text-center"><h2 class="text-primary" style="margin-top:-20px;margin-bottom:30px;">Presupuesto Municipal 2015</h2></div>
+        <div class="clear"></div>
+        <div class="text-center"><h2 class="titular">Presupuesto Municipal 2015</h2>
+            <hr />
+        </div>
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
             <h2>&iquest;Cuánto ingresa?</h2>
@@ -129,10 +134,10 @@
 {% endblock %}
 
 {% block inversiones_portada %}
-    <div class="text-center"><h3 class="text-primary">Inversi&oacute;n Municipal 2015</h3></div>
     <section id="inversiones" class="main">
         <div class="container">
             <div class="row">
+                <div class="text-center"><h2 class="titular" style="margin-bottom:40px;">Inversi&oacute;n Municipal 2015</h2></div>
                 <div class="col-md-2">
                     <div class="clearfix">
                         <div class="pull-right">
@@ -199,6 +204,7 @@
 	</div>
     </div>
    </section>
+    <div class="clear"></div>
    <script type="text/javascript">
     var xref = {
         {% for d in departamentos %}

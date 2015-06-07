@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block main_content %}
-    <h2 class="title">Origen de los ingresos {{ anio }}</h2>
+    <h2 class="titular">Origen de los ingresos {{ anio }}</h2>
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
@@ -43,7 +43,7 @@
                     <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> 
                 </div>
                 <div class="col-md-3">
-                    <span class="btn btn-info col-md-12">{{ total.percent }} %</span>
+                    <span class="btn btn-info col-md-12 cifra">{{ total.percent }} %</span>
                     {% with ''|center:total.percent as range %}
                     {% for i in range %}
                     {% endfor %}

@@ -19,6 +19,11 @@
     <input type="submit" value="Submit"/>
     </form>
     <div class="clearfix"></div>
+    <ul id="invTab" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
+        <li role="presentation"><a href="#invmodificacion" aria-controls="invmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
+        <li role="presentation"><a href="#invhistorico" aria-controls="invhistorico" role="tab" data-toggle="tab">Informaci&oacute;n hist&oacute;rica</a></li>
+    </ul>
 
     {% if municipio and charts.4 %}
         {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, percapita_anios, asignado" }}
@@ -26,7 +31,10 @@
         {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado" }}
     {% endif %}
     <!-- tabla4 -->
-    <div class="col-md-6">
+    <div id="invTabContent" class="tab-content">
+      <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+
+        <div class="col-md-6">
             <h3>Ingresos Totales del A&ntilde;o</h3>
             {% for total in totales %}
               <div class="row totales">
@@ -35,18 +43,18 @@
                     <h4>{{ total.catinversion__nombre }}</h4>
                 </div>
                 <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.percent }}</span>
+                    <span class="btn btn-info col-md-12 cifra">{{ total.percent }}%</span>
                 </div>
                 {% if total.clase_percent %}
                 <div class="col-md-2">
-                    <span class="btn btn-info col-md-12">{{ total.clase_percent }}</span>
+                    <span class="btn btn-info col-md-12 cifra">{{ total.clase_percent }}%</span>
                 </div>
                 {% endif %}
               </div>
             {% endfor %}
-    </div>
-    <!-- tabla2 -->
-    <div class="col-md-6">
+        </div>
+         <!-- tabla2 -->
+        <div class="col-md-6">
             <table class="table table-bordered">
             <thead>
                 <tr>
@@ -71,43 +79,12 @@
               {% endfor %}
             </tbody>
             </table>
+        </div>
     </div>
-    <br clear="all"><br /><bt />
-    <div class="col-md-5">
-            <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>A&ntilde;o</th>
-                    <th>Inicial</th>
-                    <th>Actualizado</th>
-                    <th>Modificado</th>
-                    <th>Ejecutado</th>
-                    <th>Ejecutado/Inicial</th>
-                </tr>
-            </thead>
-            {% for total in anuales %} 
-              <tr>
-                <td class="text-left">
-                    <h4>{{ total.inversion__year }}</h4>
-                </td>
-                <td>{{ total.asignado }}</td>
-                <td>{{ total.actualizado }}</td>
-                <td>{{ total.actualizado|sub:total.asignado }}</td>
-                <td>{{ total.ejecutado }}%</td>
-                <td>
-                {% if total.asignado %}
-                    {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%
-                </div>
-                {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <!-- tabla3 -->
-    <br clear="all">
-    <div class="col-md-9">
+    <div role="tabpanel" class="tab-pane fade" id="invmodificacion" aria-labelledby="invmodificacion-tab">
+
+        <div class="col-md-8">
+        <!-- tabla3 -->
             <table class="table table-bordered">
             <thead>
                 <tr>
@@ -139,8 +116,45 @@
               </td>
             {% endfor %}
             </tbody>
-        </table>
+            </table>
+        </div>
     </div>
+    <br clear="all">
+    <div role="tabpanel" class="tab-pane fade" id="invhistorico" aria-labelledby="invhistorico-tab">
+
+        <div class="col-md-9">
+            <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>A&ntilde;o</th>
+                    <th>Inicial</th>
+                    <th>Actualizado</th>
+                    <th>Modificado</th>
+                    <th>Ejecutado</th>
+                    <th>Ejecutado/Inicial</th>
+                </tr>
+            </thead>
+            {% for total in anuales %} 
+              <tr>
+                <td class="text-left">
+                    <h4>{{ total.inversion__year }}</h4>
+                </td>
+                <td>{{ total.asignado }}</td>
+                <td>{{ total.actualizado }}</td>
+                <td>{{ total.actualizado|sub:total.asignado }}</td>
+                <td>{{ total.ejecutado }}%</td>
+                <td>
+                {% if total.asignado %}
+                    {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%
+                </div>
+                {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+     </div>
     <!-- tabla1 -->
     <br clear="all"> <br />
     <div class="col-md-10">
