@@ -6,7 +6,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
-<h2 class="title">Destino de los gastos  {{ anio }} </h2>
+<h2 class="titular">Destino de los gastos  {{ anio }} </h2>
     <form method="GET">
     <select name="year">
     {% for year in year_list %}
@@ -43,7 +43,7 @@
                 <h4>{{ total.subsubtipogasto__origen__nombre }}</h4>
                 </div>
                 <div class="col-md-3">
-                        <span class="btn btn-info col-md-7">{{ total.percent }}%</span>
+                        <span class="btn btn-info col-md-87 cifra">{{ total.percent }}%</span>
                 </div>
               </div>
             {% endfor %}
@@ -108,7 +108,7 @@
                {% for year in year_list %}
                  <td>{{ data|keyvalue:year|intword }}</td>
                {% endfor %}
-               <td>{{ data.extra|intword }}</td>
+               <td>{{ data.extra }}</td>
                <!-- old-fashioned way:
                {% for subkey, subdata in data.items %}
                <td>{{ subkey }} = {{ subdata| intword}}</td>
