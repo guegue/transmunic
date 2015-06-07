@@ -65,7 +65,6 @@
                     <li><a href="{%url 'peso_deuda'%}">Peso del servicio de la deuda</a></li>
                     <li class="divider"></li>
                     <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
-                    <li><a href="{%url 'inversion'%}">Inversión</a></li-->
                     <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
                   </ul>
                 </li>
@@ -91,7 +90,7 @@
     <!--Fin de cajas de colores de portada -->
 
     <!--graficos-->
-    <section id="graficos" class="inside">
+    <section id="graficos" class="{% if home %}graficos-portada {% endif %}inside">
       <div class="container">
 	    <div class="row text-center">
             <div class="row-fluid">
@@ -109,7 +108,7 @@
 
 
       <!-- FOOTER -->
-      <footer>
+      <footer id="footer">
           <div class="row">
               <div class="container">
 

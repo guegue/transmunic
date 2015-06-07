@@ -55,6 +55,7 @@ def home(request):
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
         'departamentos': departamentos,
+        'home': 'home',
     }, context_instance=RequestContext(request))
 
 def municipio(request, slug):
