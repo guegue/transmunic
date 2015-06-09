@@ -16,18 +16,25 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 
 def inversion_minima_porclase(year):
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
-    (SELECT SUM(%s) FROM core_InversionFuenteDetalle JOIN core_InversionFuente on core_InversionFuenteDetalle.inversionfuente_id=core_InversionFuente.id JOIN lugar_clasificacionmunicano ON core_InversionFuente.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_InversionFuente.year=lugar_clasificacionmunicano.anio \
-    WHERE core_InversionFuente.year=%s AND tipofuente_id=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id AND core_InversionFuente.periodo='%s') /\
-    (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso on core_IngresoDetalle.ingreso_id=core_Ingreso.id \
-    JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
-    WHERE %s > 0 AND core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND (tipoingreso_id='1000000' OR subtipoingreso_id='12010000') AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
-    AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
-    sql = sql_tpl % ('ejecutado', year, 2, PERIODO_FINAL, 'ejecutado', 'ejecutado', year, PERIODO_FINAL, 'ejecutado')
+            ((SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
+            WHERE core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
+            (SELECT SUM(%s) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
+            JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.year=lugar_clasificacionmunicano.anio \
+            WHERE core_Gasto.year=%s AND core_Gasto.periodo='%s' AND core_tipogasto.clasificacion=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
+            (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
+            WHERE core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+            AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
+    sql = sql_tpl % ('ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado', year, PERIODO_FINAL, '0',\
+            'ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado')
     print sql
     cursor = connection.cursor()
     cursor.execute(sql)
     final = dictfetchall(cursor)
-    sql = sql_tpl % ('asignado', year, 2, PERIODO_INICIAL, 'asignado', 'asignado', year, PERIODO_INICIAL, 'asignado')
+    sql = sql_tpl % ('asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado', year, PERIODO_INICIAL, '0',\
+            'asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado')
+    print sql
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
@@ -47,7 +54,8 @@ def inversion_minima_porclase(year):
             datasource = data,
             series_options =
               [{'options':{ 'type': 'column', },
-                'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+                  #FIXME : temporal para demo en IEEP 'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+                'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
               }],
             chart_options =
               {
@@ -116,6 +124,8 @@ def inversion_minima_sector_chart(municipio=None, year=None):
 def fuentes_chart(municipio=None,year=None):
     municipio_list = Municipio.objects.all()
     year_list = getYears(InversionFuente)
+    periodo = Anio.objects.get(anio=year).periodo
+    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     if not year:
         year = year_list[-1]
     if municipio:
@@ -123,9 +133,9 @@ def fuentes_chart(municipio=None,year=None):
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
     else:
         municipio = ''
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
-        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=PERIODO_FINAL).\
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=periodo).\
                 values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
 
     data = DataPool(series = [{'options': {'source': source }, 'terms': ['fuente__nombre', 'ejecutado', 'asignado', ]}])
@@ -134,11 +144,11 @@ def fuentes_chart(municipio=None,year=None):
             datasource = data,
             series_options =
               [{'options':{'type': 'pie'},
-                'terms':{'fuente__nombre': ['asignado']}
+                'terms':{'fuente__nombre': [quesumar]}
               }],
             chart_options = {
                 'title': {'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
             }
@@ -147,11 +157,11 @@ def fuentes_chart(municipio=None,year=None):
             datasource = data_portada,
             series_options =
               [{'options':{'type': 'pie'},
-                'terms':{'fuente__tipofuente__nombre': ['asignado']}
+                'terms':{'fuente__tipofuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': 'Fuentes de financiamiento %s' % (municipio, )},
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'title': {'text': 'Fuentes financiamiento inversión%s' % (municipio, )},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
@@ -400,7 +410,7 @@ def old_gpersonal_chart(request):
             chart_options = {
                 'title': {'text': 'Gastos de personal %s %s ' % (municipio, year,)},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
             },
     )

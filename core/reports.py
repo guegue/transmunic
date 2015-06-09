@@ -6,7 +6,7 @@ from model_report.report import reports, ReportAdmin
 from model_report.utils import (usd_format, avg_column, sum_column, count_column)
 
 class PlanInversionModelReport(ReportAdmin):
-    title = u'Plan de inverisón'
+    title = u'Plan de inversión'
     model = Proyecto
     fields = [
         'inversion__year',

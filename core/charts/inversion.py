@@ -289,7 +289,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
               {'title': {
                   'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               }
     )
@@ -380,7 +380,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
               {'title': {
                   'text': 'Inversion %s %s %s' % (quesumar, municipio, year,)},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 

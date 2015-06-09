@@ -362,7 +362,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             chart_options =
               {
                   'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
@@ -381,7 +381,7 @@ def oim_chart(municipio=None, year=None, portada=False):
               {
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'title': {'text': 'Origen de los ingresos'},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35, }},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               }
     )

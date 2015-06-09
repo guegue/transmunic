@@ -366,7 +366,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             chart_options = {
                 'title': { 'text': 'Destino del gasto %s %s' % (municipio, year,)},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
             }
     )
@@ -385,7 +385,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
               {
                   'title': {'text': 'Destino del gasto'},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': False }, 'showInLegend': True, 'depth': 35}},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               })
 

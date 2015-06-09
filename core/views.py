@@ -27,7 +27,7 @@ def home(request):
     data_fuentes = fuentes_chart(year=year)
 
     year_list = getYears(Inversion)
-    year = list(year_list)[-1]
+    year = year_list[-1]
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
@@ -40,7 +40,7 @@ def home(request):
 
     total_inversion = Proyecto.objects.filter(inversion__year=year).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__year=year, ). \
-            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,
         'charts':( 
