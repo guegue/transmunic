@@ -36,12 +36,43 @@
     <!--TAB1-->
     <div role=i"tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
 
+    <!--Gastos de funcionamiento resumen -->
+    <div class="row" style="background-color: #0962B9;padding:20px;">
+        <div class="col-md-12 col-md-offset-2">
+            <div class="col-md-3">
+                <img src="{% static 'img/gfasignado.png' %}" class="img-responsive pull-left" alt="Gasto de funcionamiento asignado" />
+                <h3>Presupuestado </h3><span class="cifra text-primary">{{ asignado|intcomma }}</>
+            </div>
+            <div class="col-md-3 col-md-offset-1">
+                <img src="{% static 'img/gf.png' %}" class="img-responsive pull-left" alt="Gasto de funcionamiento asignado" />
+                <h3>Ejecutado </h3><span class="cifra text-warning">{{ ejecutado|intcomma }}</span>
+            </div>
+        </div>
+    </div>
+    <!--Fin de resumen-->
+    <div class="row separador">
+    {% if not municipio %}
+        <div class="col-md-5">
+    <!-- javier 11/junio gftabla1 nacional -->
+        <table class="table table-condensed">
+            <tr class="info"><th>Categoría</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+            {% for row in porclasep %}
+                <tr>
+                    <td>{{ row.clasificacion }}</td>
+                    <td>{{ row.asignado }}</td>
+                    <td>{{ row.ejecutado }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    <!-- /fin gftabla1 nacional-->
+        </div>
+    {% endif%}
+
+    {% if municipio %}
     <div class="col-md-5">
     <!-- javier 7/junio gftabla1 -->
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje destinado a gastos de funcionamiento </h4>
-    <p>Presupuesto a destinar {{ asignado|intcomma }}</p>
-    <p>Destinó realmente {{ ejecutado|intcomma }}</p>
     <table class="table table-condensed">
     <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
     {% for row in otros %}
@@ -54,12 +85,12 @@
     </table>
     <!-- /fin gftabla1 -->
     </div>
+    {% endif %}
+
     <div class="col-md-7">
     <!-- javier 7/junio gftabla2 -->
     <h3>Resultado presupuestario gastos de funcionamiento</h3>
     <h4 class="text-info">Millones de córdobas corrientes</h4>
-    <p>Presupuesto a destinar {{ asignado|intcomma }}</p>
-    <p>Destinó realmente {{ ejecutado|intcomma }}</p>
     <table class="table table-condensed">
         <tr class="info"><th>Código</th> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>%</th></tr>
     {% for row in rubros %}
@@ -68,13 +99,16 @@
         <td>{{ row.tipogasto__nombre }}</td>
         <td>{{ row.asignado }}</td>
         <td>{{ row.ejecutado }}</td>
-        <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        {% if row.asignado %}
+            <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        {% endif %}
     </tr>
     {% endfor %}
     </table>
     <!-- /fin gftabla2 -->
     <div id='pie'></div>
     <div id='comparativo2'></div>
+    </div>
     </div>
 
     </div> <!--END TAB1 -->
@@ -102,6 +136,25 @@
     </table>
     <br />
     <!-- /fin gftabla3 -->
+    <!-- javier 7/junio gftabla4 nacional -->
+    <h3>Modificacion al presupuesto municipios categoria</h3>
+    <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
+    <table  class="table table-condensed">
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+    {% for row in porclase %}
+    <tr>
+        <td>{{ row.clasificacion }}</td>
+        <td>{{ row.asignado }}</td>
+        <td>{{ row.actualizado }}</td>
+        <td>{{ row.actualizado|sub:row.actualizado }}</td>
+        <td>{{ row.ejecutado }}</td>
+        {% if row.actualizado %}
+        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </table>
+    <!-- /fin gftabla4 nacional -->
     <!-- javier 7/junio gftabla4 -->
     <h3>Modificacion al presupuesto municipios categoria 'B'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
