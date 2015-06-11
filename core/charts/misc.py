@@ -28,13 +28,11 @@ def inversion_minima_porclase(year):
             AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
     sql = sql_tpl % ('ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado', year, PERIODO_FINAL, '0',\
             'ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado')
-    print sql
     cursor = connection.cursor()
     cursor.execute(sql)
     final = dictfetchall(cursor)
     sql = sql_tpl % ('asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado', year, PERIODO_INICIAL, '0',\
             'asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado')
-    print sql
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
@@ -42,11 +40,12 @@ def inversion_minima_porclase(year):
     data = RawDataPool(
            series=
             [{'options': {'source': porclase },
+              'names': [u'Categoría de municipios', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
               'terms': [
-                'clasificacion',
-                'minimo',
-                'ejecutado',
-                'asignado',
+                  'clasificacion',
+                  'minimo',
+                  'ejecutado',
+                  'asignado',
                 ]}
              ])
 
@@ -95,12 +94,7 @@ def inversion_minima_sector_chart(municipio=None, year=None):
     data = RawDataPool(
            series=
             [{'options': {'source': source },
-              #'terms': {
-              #    'nombre':'nombre',
-              #    'minimo':'Minimo por ley',
-              #    'ejecutado':'Ejecutado',
-              #    'asignado':'Presupuestado',
-              #  }}
+              'names': [u'Sector priorizado', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
               'terms': ['nombre','minimo','ejecutado','asignado']
                 }
              ])

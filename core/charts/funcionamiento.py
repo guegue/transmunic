@@ -7,6 +7,7 @@
 
 from itertools import chain
 from datetime import datetime, time
+from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
@@ -37,6 +38,9 @@ def gf_chart(request):
         source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        # obtiene valores para este año de las listas
+        asignado = (item for item in source_inicial if item["gasto__year"] == int(year)).next()['asignado']
+        ejecutado = (item for item in source_final if item["gasto__year"] == int(year)).next()['ejecutado']
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -66,6 +70,7 @@ def gf_chart(request):
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
             row['asignado_percent'] = round(row['asignado'] / total_inicial * 100, 1)
             row['ejecutado_percent'] = round(row['ejecutado'] / total_final * 100, 1)
+        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__year=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
@@ -116,7 +121,7 @@ def gf_chart(request):
             gasto__year=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
 
-        # obtiene datos para municipio de la misma clase
+        # obtiene datos para municipios de la misma clase
         inicial_clase = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL,\
                 tipogasto__clasificacion=TipoGasto.CORRIENTE, \
                 gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
@@ -173,6 +178,8 @@ def gf_chart(request):
         otros = None
         rubros = None
         anual2 = None
+        ejecutado = None
+        asignado = None
         municipio = ''
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE).\
@@ -228,6 +235,7 @@ def gf_chart(request):
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  [u'Años',u'gasto__periodo',u'Asignado',u'Ejecutado',u'Categoría'],
                 'terms':  ['gasto__year','gasto__periodo','asignado','ejecutado','clase_final'],
                 }],
             )
@@ -247,6 +255,7 @@ def gf_chart(request):
         gf_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  [u'Gastos',u'Municipio',u'Categoría'],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -267,6 +276,7 @@ def gf_chart(request):
         gf_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names': [u'Gastos',u'Municipio',u'Categoría'],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -288,6 +298,7 @@ def gf_chart(request):
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names': [u'Año',u'Periodo',u'Ejecutado','Asignado'],
                 'terms':  ['gasto__year','gasto__periodo','ejecutado','asignado'],
                 }],
             )
@@ -413,5 +424,5 @@ def gf_chart(request):
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
     return render_to_response('gfchart.html',{'charts': charts, 'municipio': municipio, 'municipio_list': municipio_list, 'year_list': year_list, \
-            'otros': otros, 'rubros': rubros, 'anuales': anual2},
+            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, },
             context_instance=RequestContext(request))

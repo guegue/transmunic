@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit humanize%}
 {% load mathfilters %}
+{% load core_extras %} 
 {% block main_content %}
     <h2 class="title">Gastos de funcionamiento </h2>
     <div id="span12 search">
@@ -39,6 +40,8 @@
     <!-- javier 7/junio gftabla1 -->
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje destinado a gastos de funcionamiento </h4>
+    <p>Presupuesto a destinar {{ asignado|intcomma }}</p>
+    <p>Destinó realmente {{ ejecutado|intcomma }}</p>
     <table class="table table-condensed">
     <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
     {% for row in otros %}
@@ -55,6 +58,8 @@
     <!-- javier 7/junio gftabla2 -->
     <h3>Resultado presupuestario gastos de funcionamiento</h3>
     <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <p>Presupuesto a destinar {{ asignado|intcomma }}</p>
+    <p>Destinó realmente {{ ejecutado|intcomma }}</p>
     <table class="table table-condensed">
         <tr class="info"><th>Código</th> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>%</th></tr>
     {% for row in rubros %}
@@ -80,13 +85,14 @@
     <h3>Modificaciones al presupuesto municipal</h3>
     <h4 class="text-info">Gastos de funcionamiento</h4>
     <table class="table table-condensed">
-        <tr class="info"><th>Código</th> <th>Tipo</th> <th>Inicial</th> <th>Actualizado</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"><th>Código</th> <th>Tipo</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
     {% for row in rubros %}
     <tr>
         <td>{{ row.tipogasto__codigo }}</td>
         <td>{{ row.tipogasto__nombre }}</td>
         <td>{{ row.asignado }}</td>
         <td>{{ row.actualizado }}</td>
+        <td>{{ row.actualizado|sub:row.actualizado }}</td>
         <td>{{ row.ejecutado }}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
