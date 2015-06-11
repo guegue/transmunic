@@ -4,14 +4,14 @@
     <div id="span12 search">
         <form method="GET">
         <select name="year">
-        {% for year in year_list %}
-            <option {% if year == request.GET.year|add:"0" %}selected{% endif %} value="{{year}}">{{year}}</option>
+        {% for ayear in year_list %}
+            <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
         {% endfor %}
         </select>
         <select name="municipio">
         <option value="">--</option>
-        {% for municipio in municipio_list %}
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+        {% for amunicipio in municipio_list %}
+            <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
         {% endfor %}
         </select>
         <input type="submit" value="Submit"/>

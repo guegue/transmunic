@@ -19,13 +19,15 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.charts.misc import getVar
 
 
 def gf_chart(request):
+
     municipio_list = Municipio.objects.all()
-    municipio = request.GET.get('municipio', None)
+    municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
-    year = request.GET.get('year', None)
+    year = getVar('year', request)
     if not year:
         year = year_list[-1]
 
@@ -500,5 +502,5 @@ def gf_chart(request):
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
     return render_to_response('gfchart.html',{'charts': charts, 'municipio': municipio, 'municipio_list': municipio_list, 'year_list': year_list, \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'porclasep': porclasep, 'mi_clase': mi_clase},
+            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))

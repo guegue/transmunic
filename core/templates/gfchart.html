@@ -7,14 +7,14 @@
     <div id="span12 search">
     <form method="GET">
     <select name="year">
-    {% for year in year_list %}
-        <option {% if year == request.GET.year|add:"0" %}selected{% endif %} value="{{year}}">{{year}}</option>
+    {% for ayear in year_list %}
+        <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
     {% endfor %}
     </select>
     <select name="municipio">
     <option value="">--</option>
-    {% for municipio in municipio_list %}
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+    {% for amunicipio in municipio_list %}
+        <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
     </select>
     <input type="submit" value="Submit"/>
@@ -34,10 +34,12 @@
     <div id="gfTabContent" class="tab-content col-md-12">
 
     <!--TAB1-->
-    <div role=i"tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+
+    <div class="container">
+    <button type="button" class="btn btn-primary" data-toggle="popover" title="Popover title" data-content="Default popover">Popover</button>
 
     <!--Gastos de funcionamiento resumen -->
-    <div class="row" style="background-color: #0962B9;padding:20px;">
+    <div class="row">
         <div class="col-md-12 col-md-offset-2">
             <div class="col-md-3">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive pull-left" alt="Gasto de funcionamiento asignado" />
@@ -208,5 +210,5 @@
 $('#gfTab a').click(function (e) {
   e.preventDefault()
     $(this).tab('show')
-    })
+})
 </script>

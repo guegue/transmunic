@@ -9,7 +9,7 @@ from django.db.models import Sum, Max
 from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente
 from models import Anio, getYears
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
-from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase
+from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
@@ -94,47 +94,52 @@ def inversion_minima_sector_view(request):
 
 def inversion_categoria_view(request):
     template_name = 'inversionpiechart.html'
-    municipio = request.GET.get('municipio','')
-    year = request.GET.get('year','')
+    municipio = getVar('municipio', request)
+    year = getVar('year', request)
     data = inversion_categoria_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], \
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
+            'year': year,},\
             context_instance=RequestContext(request))
 
 def ogm_view(request):
     template_name = 'ogm_chart.html'
-    municipio = request.GET.get('municipio','')
-    year = request.GET.get('year','')
+    municipio = getVar('municipio', request)
+    year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
+            'year': year,},\
             context_instance=RequestContext(request))
 
 def oim_view(request):
     template_name = 'oim_chart.html'
-    municipio = request.GET.get('municipio','')
-    year = request.GET.get('year','')
+    municipio = getVar('municipio', request)
+    year = getVar('year', request)
     data = oim_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']}, \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
+            'year': year,},\
             context_instance=RequestContext(request))
 
 def inversion_view(request):
     template_name = 'inversion.html'
     municipio = request.GET.get('municipio','')
     data = inversion_chart(municipio=municipio)
-    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list']},\
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],\
+            'municipio': municipio, },\
             context_instance=RequestContext(request))
 
 def inversion_area_view(request):
     template_name = 'inversionarea.html'
     municipio = request.GET.get('municipio','')
     data = inversion_area_chart(municipio=municipio)
-    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list']},\
+    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list'],\
+            'municipio': municipio, },\
             context_instance=RequestContext(request))
 
 def fuentes_view(request):
@@ -142,5 +147,6 @@ def fuentes_view(request):
     municipio = request.GET.get('municipio','')
     year = request.GET.get('year','')
     data = fuentes_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list']},\
+    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],\
+            'municipio': municipio, 'year': year,},\
             context_instance=RequestContext(request))

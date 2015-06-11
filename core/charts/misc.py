@@ -14,6 +14,15 @@ from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion,
 from core.models import Anio, getYears, dictfetchall, glue
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 
+def getVar(var, request):
+    foo = None
+    if var in request.session:
+        foo = request.session[var]
+    if var in request.GET:
+        foo = request.GET[var]
+    request.session[var] = foo
+    return foo
+
 def inversion_minima_porclase(year):
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
             ((SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
