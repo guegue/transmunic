@@ -30,6 +30,9 @@
     <script src="{% static 'jquery-1.11.2.min.js' %}"></script>
     <script src="{% static 'highcharts.js' %}"></script>
     <script src="{% static 'js/jquery.imagemapster.js' %}"></script>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
   </head>
 <!-- NAVBAR
 ================================================== -->
@@ -92,7 +95,7 @@
     <!--graficos-->
     <section id="graficos" class="{% if home %}graficos-portada {% endif %}inside">
       <div class="container">
-	    <div class="row text-center">
+	    <div class="row">
             <div class="row-fluid">
               {% block content %}
               {% endblock %}
@@ -130,9 +133,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/docs.min.js' %}"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
+    <!-- script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script -->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     <script src="http://code.highcharts.com/highcharts-3d.js"></script>

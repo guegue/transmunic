@@ -67,13 +67,13 @@ def gf_chart(request):
         # obtiene datos de municipios de la misma clase
         municipios_inicial = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__clase__anio=year, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
         municipios_actualizado = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
         municipios_final = GastoDetalle.objects.filter(gasto__year=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__clase__anio=year, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
         otros = glue(municipios_inicial, municipios_final, PERIODO_FINAL, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de gastos
         for row in otros:
