@@ -97,8 +97,8 @@
             {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
-                    <td class="tex-center">{{ row.asignado|floatformat:2 }}</td>
-                    <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                    <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}</td>
+                    <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -138,8 +138,8 @@
     {% for row in rubros %}
     <tr>
         <td>{{ row.tipogasto__nombre }}</td>
-        <td>{{ row.asignado }}</td>
-        <td>{{ row.ejecutado }}</td>
+        <td>{{ row.asignado|intcomma }}</td>
+        <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.asignado %}
             <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
@@ -148,7 +148,9 @@
     </table>
     <!-- /fin gftabla2 -->
     <div id='pie'></div>
+    {% if show %}
     <div id='comparativo2'></div>
+    {% endif %}
     </div>
     </div>
 
@@ -164,12 +166,12 @@
     {% for row in rubros %}
     <tr>
         <td class="pull-left">{{ row.tipogasto__nombre }}</td>
-        <td>{{ row.asignado }}</td>
-        <td>{{ row.actualizado }}</td>
+        <td>{{ row.asignado|intcomma }}</td>
+        <td>{{ row.actualizado|intcomma }}</td>
         <td>{{ row.actualizado|sub:row.actualizado }}</td>
-        <td>{{ row.ejecutado }}</td>
+        <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.actualizado %}
-        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
+        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
@@ -186,10 +188,10 @@
     {% for row in porclase %}
     <tr>
         <td>{{ row.clasificacion }}</td>
-        <td>{% if row.asignado %} {{ row.asignado }}{% else %}0 {% endif %}</td>
-        <td>{% if row.actualizado %} {{ row.actualizado }}{% else %}0 {% endif %}</td>
+        <td>{% if row.asignado %} {{ row.asignado|intcomma }}{% else %}0 {% endif %}</td>
+        <td>{% if row.actualizado %} {{ row.actualizado|intcomma }}{% else %}0 {% endif %}</td>
         <td>{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado }}{% else %}0 {% endif %}</td>
-        <td>{% if row.ejecutadp %} {{ row.ejecutado }}{% else %}0 {% endif %}</td>
+        <td>{% if row.ejecutadp %} {{ row.ejecutado|intcomma }}{% else %}0 {% endif %}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
         {% endif %}
@@ -204,7 +206,7 @@
     <h3>Modificacion al presupuesto municipios categoria '{{ mi_clase.clasificacion }}'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
     <table  class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
     {% for row in otros %}
     <tr>
         <td>{{ row.gasto__municipio__nombre }}</td>
@@ -213,7 +215,7 @@
         <td>{{ row.actualizado|sub:row.actualizado }}</td>
         <td>{{ row.ejecutado }}</td>
         {% if row.actualizado %}
-        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
+        <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
@@ -231,12 +233,12 @@
         <h3>Ejecucion presupuetaria del gasto de funcionamiento</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
     <table class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
     {% for row in anuales %}
     <tr>
         <td>{{ row.gasto__year }}</td>
-        <td>{{ row.asignado|intword }}</td>
-        <td>{{ row.ejecutado|intword }}</td>
+        <td>{{ row.asignado|intcomma }}</td>
+        <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.asignado %}
         <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
