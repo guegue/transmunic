@@ -93,6 +93,8 @@ class OrigenGasto(models.Model):
 
 class TipoGasto(models.Model):
     PERSONAL = '1000000'
+    IMPREVISTOS = '9000000'
+    TRANSFERENCIAS_CAPITAL = '6000000'
     CORRIENTE = '0'
     CAPITAL = '1'
     CLASIFICACION_CHOICES = (

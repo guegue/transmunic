@@ -19,9 +19,10 @@ class PlanInversionModelReport(ReportAdmin):
         'ejecutado',
         'self.porcentaje_ejecutado',
     ]
-    #list_filter_widget = {
-     #   'inversion__anio': TextInput(),
-    #}
+    years = [(year, year) for year in range(2010, 2016)]
+    list_filter_widget = {
+        'inversion__anio': Select(choices=years),
+    }
     override_field_labels = {
         'inversion__anio': u'Año',
         'nombre': 'Proyecto',
