@@ -38,8 +38,8 @@ def home(request):
     data_inversion_minima_sector = inversion_minima_sector_chart()
     data_inversion_minima_porclase = inversion_minima_porclase(year)
 
-    total_inversion = Proyecto.objects.filter(inversion__year=year).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__year=year, ). \
+    total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,

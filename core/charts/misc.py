@@ -26,14 +26,14 @@ def getVar(var, request):
 def inversion_minima_porclase(year):
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
             ((SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
-            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
+            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
+            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
             (SELECT SUM(%s) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
-            JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.year=lugar_clasificacionmunicano.anio \
-            WHERE core_Gasto.year=%s AND core_Gasto.periodo='%s' AND core_tipogasto.clasificacion=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
+            JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
+            WHERE core_Gasto.anio=%s AND core_Gasto.periodo='%s' AND core_tipogasto.clasificacion=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
             (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
-            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.year=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.year=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+            JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
+            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
             AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
     sql = sql_tpl % ('ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado', year, PERIODO_FINAL, '0',\
             'ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado')
@@ -79,16 +79,16 @@ def inversion_minima_sector_chart(municipio=None, year=None):
         year = list(year_list)[-1]
 
     if municipio:
-        source_ejecutado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__year=year_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
+        total_asignado = Proyecto.objects.filter(inversion__anio=year_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
     else:
         municipio = ''
-        source_ejecutado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__year=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
+        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
 
     for record in source:
         try:
@@ -136,9 +136,9 @@ def fuentes_chart(municipio=None,year=None):
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
     else:
         municipio = ''
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=periodo).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
-        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__year=year, inversionfuente__periodo=periodo).\
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
 
     data = DataPool(series = [{'options': {'source': source }, 'terms': ['fuente__nombre', 'ejecutado', 'asignado', ]}])
@@ -179,21 +179,21 @@ def inversion_area_chart(municipio=None):
         source = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL)
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(inversion__year=y)
+            q |= Q(inversion__anio=y)
         source_barra = Proyecto.objects.filter(q, inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL)
     else:
         municipio = ''
         source = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL)
         q = Q()
         for y in list(year_list)[-3:]:
-            q |= Q(inversion__year=y)
+            q |= Q(inversion__anio=y)
         source_barra = Proyecto.objects.filter(q, inversion__periodo=PERIODO_INICIAL)
 
     data_barra = PivotDataPool(
            series=
             [{'options': {
                 'source': source_barra,
-                'categories': 'inversion__year',
+                'categories': 'inversion__anio',
                 'legend_by': ['areageografica'],
                 },
               'terms': {
@@ -217,7 +217,7 @@ def inversion_area_chart(municipio=None):
            series=
             [{'options': {
                 'source': source,
-                'categories': 'inversion__year',
+                'categories': 'inversion__anio',
                 'legend_by': ['areageografica'],
                 },
               'terms': {
@@ -256,7 +256,7 @@ def ep_chart(request):
            series=
             [{'options': {'source': source },
               'terms': [
-                'year',
+                'anio',
                 'ejecutado',
                 ]}
              ])
@@ -267,7 +267,7 @@ def ep_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'year': [
+                  'anio': [
                     'ejecutado']
                   }}],
             chart_options = {
@@ -297,7 +297,7 @@ def psd_chart(request):
            series=
             [{'options': {'source': source },
               'terms': [
-                'year',
+                'anio',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -309,7 +309,7 @@ def psd_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'year': [
+                  'anio': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -340,7 +340,7 @@ def aci_chart(request):
            series=
             [{'options': {'source': source },
               'terms': [
-                'year',
+                'anio',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -351,7 +351,7 @@ def aci_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'year': [
+                  'anio': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -421,7 +421,7 @@ def old_gpersonal_chart(request):
            series=
             [{'options': {
                 'source': source_ejecutado,
-                'categories': 'gasto__year',
+                'categories': 'gasto__anio',
                 'legend_by': 'subtipogasto__nombre',
                 },
               'terms': {
@@ -444,7 +444,7 @@ def old_gpersonal_chart(request):
            series=
             [{'options': {
                 'source': source_barra,
-                'categories': 'gasto__year',
+                'categories': 'gasto__anio',
                 'legend_by': 'subtipogasto__nombre',
                 },
               'terms': {

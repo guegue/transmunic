@@ -33,7 +33,7 @@ def ago_chart(request):
            series=
             [{'options': {'source': source },
               'terms': [
-                'year',
+                'anio',
                 'ejecutado',
                 'asignado',
                 ]}
@@ -45,7 +45,7 @@ def ago_chart(request):
               [{'options':{
                   'type': 'bar',},
                 'terms':{
-                  'year': [
+                  'anio': [
                     'asignado',
                     'ejecutado']
                   }}],

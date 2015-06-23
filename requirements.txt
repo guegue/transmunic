@@ -8,5 +8,5 @@ sorl-thumbnail
 pixelfields_smart_selects
 -e git://github.com/jakewins/django-money.git#egg=django-money
 -e git://github.com/javierwilson/django-chartit#egg=django-chartit
--e git://github.com/juanpex/django-model-report.git#egg=django-model-report
+-e git://github.com/javierwilson/django-model-report.git#egg=django-model-report
 django-mathfilters

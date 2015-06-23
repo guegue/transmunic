@@ -79,7 +79,7 @@ class CatInversion(models.Model):
         verbose_name = 'Categoria de inversion'
         ordering = ['nombre']
     def __unicode__(self):
-        return u'%s' % (self.nombre,)
+        return self.nombre
 
 class OrigenGasto(models.Model):
     nombre = models.CharField(max_length=200)
@@ -192,7 +192,7 @@ class SubSubTipoIngreso(models.Model):
 # Ingresos del municipio
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False, verbose_name='Anio')
+    anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
@@ -223,7 +223,7 @@ class IngresoDetalle(models.Model):
 
 class Gasto(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False, verbose_name='Anio')
+    anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
@@ -251,7 +251,7 @@ class GastoDetalle(models.Model):
         return self.codigo
 
 def getYears(model):
-    years = model.objects.values_list('year').order_by('year').distinct('year')
+    years = model.objects.values_list('anio').order_by('anio').distinct('anio')
     return [x[0] for x in years]
 
 class TipoProyecto(models.Model):
@@ -266,10 +266,11 @@ class TipoProyecto(models.Model):
 
 class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
-    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
+    #municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
     nombremunic = models.CharField(max_length=250)
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False, verbose_name='Anio')
+    anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
 
     class Meta:
@@ -295,8 +296,6 @@ class Proyecto(models.Model):
 
     @property
     def porcentaje_ejecutado(self):
-        print self.asignado
-        print self.ejecutado
         if self.asignado > 0 and self.ejecutado > 0:
             return round(self.ejecutado / self.asignado * 100, 2)
         else:
@@ -335,7 +334,7 @@ class FuenteFmto(models.Model):
 # Ingresos del municipio
 class InversionFuente(models.Model):
     fecha = models.DateField(null=False)
-    year = models.IntegerField(null=False, verbose_name='Anio')
+    anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
