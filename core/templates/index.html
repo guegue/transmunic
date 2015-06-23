@@ -165,8 +165,8 @@
                                 <li class="col-md-3 col-sm-3 col-xs-6">
                                   <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
-                                  <p class="cifra text-info">* {% widthratio i.ejecutado total_inversion.ejecutado 100 %}% <br />
-                                  <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo }}%{% endif %}</span>
+                                  <p class="cifra text-info">* {% widthratio i.ejecutado total_inversion.ejecutado 100|floatformat %}% <br />
+                                  <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
                                 </li>
                             {% if forloop.last or forloop.counter|divisibleby:4 %}
                                 </ul>
