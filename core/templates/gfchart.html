@@ -110,7 +110,7 @@
     <div class="col-md-5">
     <!-- javier 7/junio gftabla1 -->
     <h3>Ranquin de municipio de misma categoría municipal</h3>
-    <h4 class="text-info">Porcentaje destinado a gastos de funcionamiento </h4>
+    <h4 class="text-info">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
     <table class="table table-condensed">
     <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
     {% for row in otros %}
@@ -134,7 +134,7 @@
     <h3>Resultado presupuestario gastos de funcionamiento</h3>
     <h4 class="text-info">Millones de córdobas corrientes</h4>
     <table class="table table-condensed">
-        <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>%</th></tr>
+        <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
     {% for row in rubros %}
     <tr>
         <td>{{ row.tipogasto__nombre }}</td>
@@ -148,7 +148,7 @@
     </table>
     <!-- /fin gftabla2 -->
     <div id='pie'></div>
-    {% if show %}
+    {% if municipio %}
     <div id='comparativo2'></div>
     {% endif %}
     </div>

@@ -112,18 +112,18 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         anual3 = glue(inicial=anual_inicial, final=anual_final, actualizado=anual_actualizado, periodo=periodo, campo='inversion__anio')
 
         # obtiene datos percapita
-        percapita_inicial_sql = "SELECT year AS inversion__anio,SUM(asignado)/poblacion AS asignado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
-        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.year=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY year,poblacion"
+        percapita_inicial_sql = "SELECT core_inversion.anio AS inversion__anio,SUM(asignado)/poblacion AS asignado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
+        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.anio=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY core_inversion.anio,poblacion"
         cursor = connection.cursor()
         cursor.execute(percapita_inicial_sql, [municipio_id, PERIODO_INICIAL])
         percapita_inicial = dictfetchall(cursor)
-        percapita_actualizado_sql = "SELECT year AS inversion__anio,SUM(ejecutado)/poblacion AS ejecutado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
-        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.year=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY year,poblacion"
+        percapita_actualizado_sql = "SELECT core_inversion.anio AS inversion__anio,SUM(ejecutado)/poblacion AS ejecutado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
+        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.anio=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY core_inversion.anio,poblacion"
         cursor = connection.cursor()
         cursor.execute(percapita_actualizado_sql, [municipio_id, PERIODO_ACTUALIZADO])
         percapita_actualizado = dictfetchall(cursor)
-        percapita_final_sql = "SELECT year AS inversion__anio,SUM(ejecutado)/poblacion AS ejecutado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
-        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.year=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY year,poblacion"
+        percapita_final_sql = "SELECT core_inversion.anio AS inversion__anio,SUM(ejecutado)/poblacion AS ejecutado FROM core_proyecto JOIN core_inversion ON core_proyecto.inversion_id=core_inversion.id \
+        JOIN lugar_poblacion ON core_inversion.municipio_id=lugar_poblacion.municipio_id AND core_inversion.anio=lugar_poblacion.anio WHERE core_inversion.municipio_id=%s AND core_inversion.periodo=%s GROUP BY core_inversion.anio,poblacion"
         cursor = connection.cursor()
         cursor.execute(percapita_final_sql, [municipio_id, PERIODO_FINAL])
         percapita_final = dictfetchall(cursor)

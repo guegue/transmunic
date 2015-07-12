@@ -55,19 +55,19 @@ def ogm_chart(municipio=None, year=None, portada=False):
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL).values('gasto__anio', 'gasto__periodo').annotate(municipio_final=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase de todos los años
-        inicial_clase_sql = "SELECT year AS gasto__anio,SUM(asignado) AS clase_inicial FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
+        inicial_clase_sql = "SELECT core_gasto.anio AS gasto__anio,SUM(asignado) AS clase_inicial FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
-        core_gasto.year=lugar_clasificacionmunicano.anio WHERE core_gasto.periodo=%s \
-        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.year) \
-        GROUP BY year"
+        core_gasto.anio=lugar_clasificacionmunicano.anio WHERE core_gasto.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.anio) \
+        GROUP BY core_gasto.anio"
         cursor = connection.cursor()
         cursor.execute(inicial_clase_sql, [PERIODO_INICIAL, municipio_id])
         inicial_clase = dictfetchall(cursor)
-        final_clase_sql = "SELECT year AS gasto__anio,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
+        final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
-        core_gasto.year=lugar_clasificacionmunicano.anio WHERE core_gasto.periodo=%s \
-        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.year) \
-        GROUP BY year"
+        core_gasto.anio=lugar_clasificacionmunicano.anio WHERE core_gasto.periodo=%s \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.anio) \
+        GROUP BY core_gasto.anio"
         cursor = connection.cursor()
         cursor.execute(final_clase_sql, [PERIODO_FINAL, municipio_id])
         final_clase = dictfetchall(cursor)
