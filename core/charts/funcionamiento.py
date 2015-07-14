@@ -156,17 +156,41 @@ def gf_chart(request):
                 gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
                 values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
 
+        # obtiene totales
+        total_municipio_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__slug=municipio).\
+                aggregate(total=Sum('asignado'))['total']
+        total_municipio_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__slug=municipio).\
+                aggregate(total=Sum('ejecutado'))['total']
+        total_clase_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, \
+                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+                aggregate(total=Sum('asignado'))['total']
+        total_clase_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, \
+                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+                aggregate(total=Sum('ejecutado'))['total']
+
         # inserta datos para municipio de la misma clase
         if inicial:
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
+            inicial[0]['claseraw'] = inicial_clase[0]['clase']
+            inicial[0]['clasep'] = inicial_clase[0]['clase'] / total_clase_inicial * 100
+            inicial[0]['municipiop'] = inicial[0]['municipio'] / total_municipio_inicial * 100
         if actualizado:
             actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count
+            actualizado[0]['claseraw'] = actualizado_clase[0]['clase']
+            actualizado[0]['clasep'] = 0 # Does it need FIXME?
+            actualizado[0]['municipiop'] = 0 # Does it need FIXME?
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
+            final[0]['claseraw'] = final_clase[0]['clase']
+            final[0]['clasep'] = final_clase[0]['clase'] / total_clase_final * 100
+            final[0]['municipiop'] = final[0]['municipio'] / total_municipio_final * 100
         comparativo3 = list(chain(inicial, actualizado, final))
         comparativo2 = list(chain(inicial, final, ))
+        print comparativo2
+
         for d in comparativo3:
             d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "gasto__periodo")
+
 
         gasto_promedio = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, \
@@ -367,7 +391,7 @@ def gf_chart(request):
             series=
                 [{'options': {'source': comparativo2 },
                 'names': [u'Gastos',u'Municipio',u'Categoría %s' % (mi_clase.clasificacion,), ],
-                'terms':  ['gasto__periodo','municipio','clase'],
+                'terms':  ['gasto__periodo','municipiop','clasep'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
@@ -378,7 +402,7 @@ def gf_chart(request):
                     'type': 'column',
                     'stacking': False},
                     'terms':{
-                    'gasto__periodo': ['municipio', 'clase']
+                    'gasto__periodo': ['municipiop', 'clasep']
                     },
                     }],
                 chart_options = {
