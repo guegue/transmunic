@@ -14,7 +14,8 @@ from lugar.models import *
 PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
 PERIODO_FINAL = 'F'
-PERIODO_VERBOSE = {'I': 'Asignado', 'A': 'Actualizado', 'F': 'Ejecutado'}
+# FIXME : ' P. Inicial' (leading space needed to be first)
+PERIODO_VERBOSE = {'I': ' P. Inicial', 'A': 'Actualizado', 'F': 'Ejecutado'}
 PERIODO_CHOICES = (
     (PERIODO_INICIAL, 'Inicial'),
     (PERIODO_ACTUALIZADO, 'Actualizado'),

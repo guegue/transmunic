@@ -42,7 +42,7 @@
     <select name="municipio">
     <option value="">--</option>
     {% for amunicipio in municipio_list %}
-        <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
     </select>
     <input type="submit" value="Buscar" class="btn btn-primary"/>
@@ -101,6 +101,11 @@
                     <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
                 </tr>
             {% endfor %}
+            <tr>
+                <td>PROMEDIO</td>
+                <td>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</td>
+                <td>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</td>
+            </tr>
         </table>
     <!-- /fin gftabla1 nacional-->
         </div>
@@ -124,6 +129,11 @@
         <td>{{ row.ejecutado_percent }}%</td>
     </tr>
     {% endfor %}
+    <tr>
+        <td>PROMEDIO</td>
+        <td>{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
+        <td>{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+    </tr>
     </table>
     <!-- /fin gftabla1 -->
     </div>
@@ -145,6 +155,11 @@
         {% endif %}
     </tr>
     {% endfor %}
+    <tr>
+        <td>TOTAL</td>
+        <td>{{ asignado|intcomma }}</td>
+        <td>{{ ejecutado|intcomma }}</td>
+        <td>{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
     </table>
     <!-- /fin gftabla2 -->
     <div id='pie'></div>
@@ -168,13 +183,29 @@
         <td class="pull-left">{{ row.tipogasto__nombre }}</td>
         <td>{{ row.asignado|intcomma }}</td>
         <td>{{ row.actualizado|intcomma }}</td>
-        <td>{{ row.actualizado|sub:row.actualizado }}</td>
+        <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado }}{% else %}0{% endif %}</td>
         <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
+    <tr>
+        <td>TOTAL</td>
+        <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
+        <td>{{ rubros|total_sum:'actualizado'|intcomma }}</td>
+        {% with sum_asignado=rubros|total_sum:'asignado' %}
+        <td>
+        {% if rubros|total_sum:'actualizado' %}
+            {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+        {% else %}
+            0
+        {% endif %}
+        </td>
+        {% endwith %}
+        <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+        <td>FIXME</td>
+    </tr>
     </table>
     <br />
     <!-- /fin gftabla3 -->
@@ -197,6 +228,15 @@
         {% endif %}
     </tr>
     {% endfor %}
+    <tr>
+        <td>TOTAL</td>
+        <td>{{ porclase|total_sum:'asignado'|intcomma }}</td>
+        <td>{{ porclase|total_sum:'actualizado'|intcomma }}</td>
+        {% with sum_asignado=otros|total_sum:'asignado' %}
+        <td>{{ porclase|total_sum:'actualizado'|sub:sum_asignado|intcomma }}</td>
+        {% endwith %}
+        <td>{{ porclase|total_sum:'ejecutado'|intcomma }}</td>
+    </tr>
     </table>
     <!-- /fin gftabla4 nacional -->
 
@@ -212,13 +252,22 @@
         <td>{{ row.gasto__municipio__nombre }}</td>
         <td>{{ row.asignado }}</td>
         <td>{{ row.actualizado }}</td>
-        <td>{{ row.actualizado|sub:row.actualizado }}</td>
+        <td>{{ row.actualizado|sub:row.asignado }}</td>
         <td>{{ row.ejecutado }}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
+    <tr>
+        <td>TOTAL</td>
+        <td>{{ otros|total_sum:'asignado'|intcomma }}</td>
+        <td>{{ otros|total_sum:'actualizado'|intcomma }}</td>
+        {% with sum_asignado=otros|total_sum:'asignado' %}
+        <td>{{ otros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}</td>
+        {% endwith %}
+        <td>{{ otros|total_sum:'ejecutado'|intcomma }}</td>
+    </tr>
     </table>
     {% endif %}
     <!-- /fin gftabla4 -->
@@ -236,7 +285,7 @@
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
     {% for row in anuales %}
     <tr>
-        <td>{{ row.gasto__year }}</td>
+        <td>{{ row.gasto__anio }}</td>
         <td>{{ row.asignado|intcomma }}</td>
         <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.asignado %}
@@ -244,6 +293,14 @@
         {% endif %}
     </tr>
     {% endfor %}
+    <tr>
+        <td>TOTAL</td>
+        <td>{{ anuales|total_sum:'asignado'|intcomma }}</td>
+        <td>{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+        {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
+        <td>{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+        {% endwith %}
+    </tr>
     </table>
     <!-- /fin gftabla5 -->
     </div>

@@ -38,7 +38,9 @@ def gf_chart(request):
     if municipio:
         porclase = None
         porclasep = None
-        municipio_id = Municipio.objects.get(slug=municipio).id
+        municipio_row = Municipio.objects.get(slug=municipio)
+        municipio_id = municipio_row.id
+        municipio_nombre = municipio_row.nombre
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
@@ -320,7 +322,7 @@ def gf_chart(request):
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  [u'Años',u'gasto__periodo',u'Asignado',u'Ejecutado',u'Categoría'],
+                'names':  [u'Años',u'gasto__periodo',u'P. Inicial',u'Ejecutado',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado','clase_final'],
                 }],
             )
@@ -340,7 +342,7 @@ def gf_chart(request):
         gf_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  [u'Gastos',u'Municipio',u'Categoría'],
+                'names':  [u'Gastos',u'Municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -355,13 +357,15 @@ def gf_chart(request):
                     'gasto__periodo': ['municipio', 'clase']
                     },
                     }],
-                chart_options =
-                {'title': { 'text': 'Gastos %s %s' % (municipio, year)}},
+                chart_options = {
+                    'title': { 'text': 'GASTOS DE FUNCIONAMIENTO'},
+                    'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)}
+                    },
                 )
         gf_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
-                'names': [u'Gastos',u'Municipio',u'Categoría'],
+                'names': [u'Gastos',u'Municipio',u'Categoría %s' % (mi_clase.clasificacion,), ],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -376,14 +380,16 @@ def gf_chart(request):
                     'gasto__periodo': ['municipio', 'clase']
                     },
                     }],
-                chart_options =
-                {'title': { 'text': 'Gastos %s %s' % (municipio, year)}},
+                chart_options = {
+                    'title': { 'text': 'PORCENTAJE DEL GASTO TOTAL DESTINADO A GASTOS DE FUNCIONAMIENTO'},
+                    'subtitle': { 'text': u'Municipio de %s y Categoría %s %s' % (municipio_row.nombre, mi_clase.clasificacion, year)}
+                    },
                 )
     else: # no municipio
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names': [u'Año',u'Periodo',u'Ejecutado','Asignado'],
+                'names': [u'Año',u'Periodo',u'Ejecutado','P. Inicial'],
                 'terms':  ['gasto__anio','gasto__periodo','ejecutado','asignado'],
                 }],
             )
@@ -454,7 +460,7 @@ def gf_chart(request):
                 'terms': {'nombre': ['asignado']}
             }],
             chart_options = {
-                'title': {'text': 'Gastos de funcionamiento %s %s ' % (municipio, year,)},
+                'title': {'text': 'Porcentaje del gasto total' },
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -487,6 +493,7 @@ def gf_chart(request):
         terms = ['asignado', 'ejecutado', 'promedio',]
     else:
         municipio = ''
+        municipio_row = ''
         dataterms = ['gasto__anio', 'asignado', 'ejecutado']
         terms = ['asignado', 'ejecutado']
 
@@ -506,7 +513,8 @@ def gf_chart(request):
         charts =  (pie, )
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
-    return render_to_response('gfchart.html',{'charts': charts, 'municipio': municipio, 'municipio_list': municipio_list, 'year_list': year_list, \
+    return render_to_response('gfchart.html',
+            {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))
