@@ -359,7 +359,8 @@ def gf_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': 'GASTOS DE FUNCIONAMIENTO'},
-                    'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)}
+                    'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
+                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                     },
                 )
         gf_comparativo2 = RawDataPool(
