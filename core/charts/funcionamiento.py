@@ -186,7 +186,6 @@ def gf_chart(request):
             final[0]['municipiop'] = final[0]['municipio'] / total_municipio_final * 100
         comparativo3 = list(chain(inicial, actualizado, final))
         comparativo2 = list(chain(inicial, final, ))
-        print comparativo2
 
         for d in comparativo3:
             d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "gasto__periodo")
@@ -407,7 +406,8 @@ def gf_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': 'PORCENTAJE DEL GASTO TOTAL DESTINADO A GASTOS DE FUNCIONAMIENTO'},
-                    'subtitle': { 'text': u'Municipio de %s y Categoría %s %s' % (municipio_row.nombre, mi_clase.clasificacion, year)}
+                    'subtitle': { 'text': u'Municipio de %s y Categoría %s %s' % (municipio_row.nombre, mi_clase.clasificacion, year)},
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     },
                 )
     else: # no municipio
@@ -468,8 +468,10 @@ def gf_chart(request):
                     'gasto__periodo': ['municipio', ]
                     },
                     }],
-                chart_options =
-                {'title': { 'text': 'Gastos %s' % (year)}},
+                chart_options = {
+                    'title': { 'text': 'Gastos %s' % (year)},
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                }
                 )
 
     data_pgf = RawDataPool(
