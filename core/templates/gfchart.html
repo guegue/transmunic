@@ -204,7 +204,13 @@
         </td>
         {% endwith %}
         <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
-        <td>FIXME</td>
+        {% with sum_actualizado=rubros|total_sum:'actualizado' %}
+        <td>
+        {% if sum_actualizado %}
+        {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+        {% endif %}
+        </td>
+        {% endwith %}
     </tr>
     </table>
     <br />
@@ -232,10 +238,23 @@
         <td>TOTAL</td>
         <td>{{ porclase|total_sum:'asignado'|intcomma }}</td>
         <td>{{ porclase|total_sum:'actualizado'|intcomma }}</td>
-        {% with sum_asignado=otros|total_sum:'asignado' %}
-        <td>{{ porclase|total_sum:'actualizado'|sub:sum_asignado|intcomma }}</td>
+        {% with sum_asignado=porclase|total_sum:'asignado' %}
+        <td>
+        {% if porclase|total_sum:'actualizado' %}
+            {{ porclase|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+        {% else %}
+            0
+        {% endif %}
+        </td>
         {% endwith %}
         <td>{{ porclase|total_sum:'ejecutado'|intcomma }}</td>
+        {% with sum_actualizado=porclase|total_sum:'actualizado' %}
+        <td>
+        {% if sum_actualizado %}
+        {{ porclase|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+        {% endif %}
+        </td>
+        {% endwith %}
     </tr>
     </table>
     <!-- /fin gftabla4 nacional -->
@@ -252,7 +271,7 @@
         <td>{{ row.gasto__municipio__nombre }}</td>
         <td>{{ row.asignado }}</td>
         <td>{{ row.actualizado }}</td>
-        <td>{{ row.actualizado|sub:row.asignado }}</td>
+        <td>{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado }}{% else %}0 {% endif %}</td>
         <td>{{ row.ejecutado }}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
@@ -264,9 +283,22 @@
         <td>{{ otros|total_sum:'asignado'|intcomma }}</td>
         <td>{{ otros|total_sum:'actualizado'|intcomma }}</td>
         {% with sum_asignado=otros|total_sum:'asignado' %}
-        <td>{{ otros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}</td>
+        <td>
+        {% if otros|total_sum:'actualizado' %}
+            {{ otros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+        {% else %}
+            0
+        {% endif %}
+        </td>
         {% endwith %}
         <td>{{ otros|total_sum:'ejecutado'|intcomma }}</td>
+        {% with sum_actualizado=otros|total_sum:'actualizado' %}
+        <td>
+        {% if sum_actualizado %}
+        {{ otros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+        {% endif %}
+        </td>
+        {% endwith %}
     </tr>
     </table>
     {% endif %}
