@@ -227,8 +227,8 @@
         <td>{{ row.clasificacion }}</td>
         <td>{% if row.asignado %} {{ row.asignado|intcomma }}{% else %}0 {% endif %}</td>
         <td>{% if row.actualizado %} {{ row.actualizado|intcomma }}{% else %}0 {% endif %}</td>
-        <td>{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado }}{% else %}0 {% endif %}</td>
-        <td>{% if row.ejecutadp %} {{ row.ejecutado|intcomma }}{% else %}0 {% endif %}</td>
+        <td>{% if row.actualizado %} {{ row.actualizado|sub:row.asignado }}{% else %}0 {% endif %}</td>
+        <td>{% if row.ejecutado %} {{ row.ejecutado|intcomma }}{% else %}0 {% endif %}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
         {% endif %}
