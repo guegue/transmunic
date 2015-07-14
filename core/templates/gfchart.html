@@ -55,9 +55,10 @@
     </ul>
     <div class="clearfix"></div>
     {% if municipio %}
+    {{ municipio }}
         {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
+        {{ charts|load_charts:"gfbar, barra, pie, none, comparativo3, comparativo_anios, nivelejecucion" }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
 
@@ -338,6 +339,8 @@
     </div>
         <div id='comparativo_anios' class="col-md-10"></div>
         <div id='gfbar' class="visible-xs"></div>
+        <div id='none' style="display:none"></div>
+        <div id='nivelejecucion' class="col-md-10"></div>
      </div>
     </div>
 <script>

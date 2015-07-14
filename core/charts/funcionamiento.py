@@ -247,6 +247,11 @@ def gf_chart(request):
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
         porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
+        for d in porclase:
+            if d['actualizado']:
+                d['nivel'] = d['ejecutado'] / d['actualizado']
+            else:
+                d['nivel'] = 0
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         sql_tpl="SELECT clasificacion,\
@@ -410,7 +415,29 @@ def gf_chart(request):
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     },
                 )
+        gf_nivelejecucion_bar = gf_comparativo2_column # FIXME = None
     else: # no municipio
+        gf_nivelejecucion = RawDataPool(
+            series=
+                [{'options': {'source': porclase },
+                'terms':  ['clasificacion','ejecutado','actualizado','nivel'],
+                }],
+            )
+        gf_nivelejecucion_bar = Chart(
+                datasource = gf_nivelejecucion,
+                series_options =
+                [{'options':{
+                    'type': 'bar',
+                    'stacking': False},
+                    'terms':{
+                    'clasificacion': ['nivel' ],
+                    },
+                    }],
+                chart_options = {
+                    'title': { 'text': u'Nivel de ejecución %s' % (year,)},
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    }
+                )
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
@@ -539,7 +566,7 @@ def gf_chart(request):
     if portada:
         charts =  (pie, )
     else:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
+        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
     return render_to_response('gfchart.html',
             {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
