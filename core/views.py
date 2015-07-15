@@ -112,7 +112,8 @@ def ogm_view(request):
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year,},\
+            'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
 
 def oim_view(request):

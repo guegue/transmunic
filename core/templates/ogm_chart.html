@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
 {% load humanize %} 
+{% load mathfilters %}
 {% load core_extras %} 
 {% block titulo %}
 {{ obj.nombre }}
@@ -52,6 +53,29 @@
         </div>
         <!-- tabla solo un año -->
         <div class="col-md-6">
+            <h3>Resultado presupuestario gastos de funcionamiento</h3>                  
+            <h4 class="text-info">Millones de córdobas corrientes</h4>                  
+            <table class="table table-condensed">                                       
+                <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                {% for row in rubros %}                                                     
+                <tr>                                                                        
+                    <td>{{ row.tipogasto__nombre }}</td>                                    
+                    <td>{{ row.asignado|intcomma }}</td>                                    
+                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                    {% if row.asignado %}                                                   
+                        <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}                                                             
+                </tr>                                                                       
+                {% endfor %}                                                                
+                <tr class="success bold">                                                   
+                    <td>TOTAL</td>                                                          
+                    <td>{{ asignado|intcomma }}</td>                                        
+                    <td>{{ ejecutado|intcomma }}</td>                                       
+                    <td>{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>       
+            </table>                                                                    
+            <!-- /fin gftabla2 -->                                                      
+            <br />   
+
           <h3>Gastos del período</h3>
           <h4 class="text-info">Millones de c&oacute;rdoba corrientes</h4>
           <table class="table table-condensed">
@@ -75,6 +99,52 @@
         </div>
         <!-- tabla solo un año /-->
         <br clear="all" />
+    <!-- javier 15/julio gftabla1 nacional -->
+    {% if not municipio %}
+        <div class="col-md-5">
+        <h3>Porcentaje destinado a gastos (del total de gastos???)</h3>
+        <h4 class="text-info">por categoría de Municipios</h4>
+
+        <table class="table table-condensed">
+            <tr class="info"><th>Categoría</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+            {% for row in porclasep %}
+                <tr>
+                    <td>{{ row.clasificacion }}</td>
+                    <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}</td>
+                    <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
+                </tr>
+            {% endfor %}
+            <tr class="success">
+                <td><strong>PROMEDIO</strong></td>
+                <td><strong>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</strong></td>
+                <td><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
+            </tr>
+        </table>
+        </div>
+    {% endif%}
+    <!-- /fin gftabla1 nacional-->
+    <!-- javier 15/julio gftabla2 -->
+    <h3>Resultado presupuestario gastos de funcionamiento</h3>
+    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <table class="table table-condensed">
+        <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+    {% for row in rubros %}
+    <tr>
+        <td>{{ row.tipogasto__nombre }}</td>
+        <td>{{ row.asignado|intcomma }}</td>
+        <td>{{ row.ejecutado|intcomma }}</td>
+        {% if row.asignado %}
+            <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    <tr class="success bold">
+        <td>TOTAL</td>
+        <td>{{ asignado|intcomma }}</td>
+        <td>{{ ejecutado|intcomma }}</td>
+        <td>{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
+    </table>
+    <!-- /fin gftabla2 -->
         <div class="col-md-12 graficos-azul">                                   
             <div class="col-md-8">                                                
                 <h3>Destino del gastos</h3> 

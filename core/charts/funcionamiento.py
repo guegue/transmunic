@@ -219,6 +219,9 @@ def gf_chart(request):
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
     else:
+        #
+        # no municipio
+        #
         otros = None
         mi_clase = None
         municipio = ''
