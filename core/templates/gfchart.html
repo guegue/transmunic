@@ -48,6 +48,7 @@
     <input type="submit" value="Buscar" class="btn btn-primary"/>
     </form>
     </div>
+
     <ul id="gfTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
         <li role="presentation"><a href="#gfmodificacion" aria-controls="gfmodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
@@ -102,10 +103,10 @@
                     <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
                 </tr>
             {% endfor %}
-            <tr>
-                <td>PROMEDIO</td>
-                <td>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</td>
-                <td>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</td>
+            <tr class="success">
+                <td><strong>PROMEDIO</strong></td>
+                <td><strong>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</strong></td>
+                <td><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
             </tr>
         </table>
     <!-- /fin gftabla1 nacional-->
@@ -120,8 +121,8 @@
     <table class="table table-condensed">
     <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
     {% for row in otros %}
-        {% if municipio == row.gasto__municipio__slug%}
-            <tr class="danger">
+        {% if municipio.slug == row.gasto__municipio__slug%}
+            <tr class="info">
         {% else %}
             <tr>
         {% endif %}
@@ -130,7 +131,7 @@
         <td>{{ row.ejecutado_percent }}%</td>
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success">
         <td>PROMEDIO</td>
         <td>{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
         <td>{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
@@ -156,15 +157,19 @@
         {% endif %}
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success bold">
         <td>TOTAL</td>
         <td>{{ asignado|intcomma }}</td>
         <td>{{ ejecutado|intcomma }}</td>
         <td>{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
     </table>
     <!-- /fin gftabla2 -->
+    <br />
+    <h3>Gastos de funcionamiento {{ municipio }} {{ year }}</h3>
     <div id='pie'></div>
     {% if municipio %}
+    <br />
+    <br />
     <div id='comparativo2'></div>
     {% endif %}
     </div>
@@ -176,7 +181,7 @@
 
     <!-- javier 7/junio gftabla3 -->
     <h3>Modificaciones al presupuesto municipal</h3>
-    <h4 class="text-info">Gastos de funcionamiento</h4>
+    <h4 class="text-info">Millones de córdobas</h4>
     <table class="table table-condensed">
         <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
     {% for row in rubros %}
@@ -184,14 +189,14 @@
         <td class="pull-left">{{ row.tipogasto__nombre }}</td>
         <td>{{ row.asignado|intcomma }}</td>
         <td>{{ row.actualizado|intcomma }}</td>
-        <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado }}{% else %}0{% endif %}</td>
+        <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
         <td>{{ row.ejecutado|intcomma }}</td>
         {% if row.actualizado %}
         <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success bold">
         <td>TOTAL</td>
         <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
         <td>{{ rubros|total_sum:'actualizado'|intcomma }}</td>
@@ -219,8 +224,8 @@
     
     {% if not municipio %}
     <!-- javier 7/junio gftabla4 nacional -->
-    <h3>Modificacion al presupuesto municipios categoria</h3>
-    <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
+    <h3>Modificaciones al presupuesto municipal por categoría</h3>
+    <h4 class="text-info">Millones de córdobas</h4>
     <table  class="table table-condensed">
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
     {% for row in porclase %}
@@ -235,7 +240,7 @@
         {% endif %}
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success bold">
         <td>TOTAL</td>
         <td>{{ porclase|total_sum:'asignado'|intcomma }}</td>
         <td>{{ porclase|total_sum:'actualizado'|intcomma }}</td>
@@ -263,12 +268,16 @@
     {% else %}
     
     <!-- javier 7/junio gftabla4 -->
-    <h3>Modificacion al presupuesto municipios categoria '{{ mi_clase.clasificacion }}'</h3>
+    <h3>Modificación al presupuesto municipios categoría '{{ mi_clase.clasificacion }}'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
     <table  class="table table-condensed">
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
     {% for row in otros %}
-    <tr>
+        {% if municipio.slug == row.gasto__municipio__slug%}
+            <tr class="info">
+        {% else %}
+            <tr>
+        {% endif %}
         <td>{{ row.gasto__municipio__nombre }}</td>
         <td>{{ row.asignado }}</td>
         <td>{{ row.actualizado }}</td>
@@ -279,7 +288,7 @@
         {% endif %}
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success bold">
         <td>TOTAL</td>
         <td>{{ otros|total_sum:'asignado'|intcomma }}</td>
         <td>{{ otros|total_sum:'actualizado'|intcomma }}</td>
@@ -304,7 +313,8 @@
     </table>
     {% endif %}
     <!-- /fin gftabla4 -->
-        <div id='comparativo3' class="col-md-10"></div>
+        <div id='nivelejecucion' class="col-md-10"></div>
+        <div id='comparativo3' class="col-md-10 visible-xs"></div>
         <div id='barra' class="visible-xs"></div>
     </div> <!--END TAB2-->
 
@@ -312,7 +322,7 @@
     <div role="tabpanel" class="tab-pane fade" id="gforigen" aria-labelledby="gforigen-tab">
     <!-- javier 7/junio gftabla5 -->
     <div class="col-md-7">
-        <h3>Ejecucion presupuetaria del gasto de funcionamiento</h3>
+        <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
     <table class="table table-condensed">
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
@@ -326,7 +336,7 @@
         {% endif %}
     </tr>
     {% endfor %}
-    <tr>
+    <tr class="success bold">
         <td>TOTAL</td>
         <td>{{ anuales|total_sum:'asignado'|intcomma }}</td>
         <td>{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
@@ -337,10 +347,13 @@
     </table>
     <!-- /fin gftabla5 -->
     </div>
+    <br clear="all" />
+        <h3>Gastos de funcionamiento</h3>
+        <h4>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h4>
+        <h4 class="text-info">Millones de córdobas corrientes</h4>
         <div id='comparativo_anios' class="col-md-10"></div>
         <div id='gfbar' class="visible-xs"></div>
         <div id='none' style="display:none"></div>
-        <div id='nivelejecucion' class="col-md-10"></div>
      </div>
     </div>
 <script>

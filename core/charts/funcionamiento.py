@@ -249,7 +249,7 @@ def gf_chart(request):
         porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
         for d in porclase:
             if d['actualizado']:
-                d['nivel'] = d['ejecutado'] / d['actualizado']
+                d['nivel'] = d['ejecutado'] / d['actualizado'] * 100
             else:
                 d['nivel'] = 0
 
