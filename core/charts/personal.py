@@ -353,6 +353,6 @@ def gpersonal_chart(request):
         charts =  (personal_tipo_column, gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
     else:
         charts =  (personal_tipo_column, gfbar, barra, pie)
-    return render_to_response('gpersonal.html',{'charts': charts, 'municipio': municipio, 'municipio_list': municipio_list, 'year_list': year_list,\
+    return render_to_response('personal.html',{'charts': charts, 'municipio': municipio, 'municipio_list': municipio_list, 'year_list': year_list,\
         'year': year, }, \
         context_instance=RequestContext(request))
