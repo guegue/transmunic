@@ -418,7 +418,6 @@ def gf_chart(request):
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     },
                 )
-        gf_nivelejecucion_bar = gf_comparativo2_column # FIXME = None
     else: # no municipio
         gf_nivelejecucion = RawDataPool(
             series=
@@ -568,6 +567,8 @@ def gf_chart(request):
     portada = False #FIXME: convert to view
     if portada:
         charts =  (pie, )
+    elif municipio:
+        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column,)
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
     return render_to_response('gfchart.html',

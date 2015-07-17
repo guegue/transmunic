@@ -63,12 +63,12 @@ def gpersonal_chart(request):
         #inicial_clase = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, \
         #        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
         #        values('gasto__anio','gasto__periodo').order_by('gasto__periodo').annotate(clase_inicial=Sum('asignado'))
-        final_clase_sql = "SELECT year AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
+        final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
         core_gasto.anio=lugar_clasificacionmunicano.anio JOIN core_tipogasto ON core_gastodetalle.tipogasto_id=core_tipogasto.codigo \
         WHERE core_gasto.periodo=%s AND core_tipogasto.codigo=%s \
         AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.anio) \
-        GROUP BY year"
+        GROUP BY core_gasto.anio"
         cursor = connection.cursor()
         cursor.execute(final_clase_sql, [PERIODO_FINAL, TipoGasto.PERSONAL, municipio_id])
         final_clase = dictfetchall(cursor)
