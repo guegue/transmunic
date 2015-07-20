@@ -110,9 +110,10 @@ def ogm_view(request):
     year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
     return render_to_response(template_name, { \
-            'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
+            'municipio': data['municipio'], 'anio': data['anio'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
 

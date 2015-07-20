@@ -34,26 +34,46 @@
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+        <!--maribel 20/07 - ingresos resumen -->
+        <div class="row separador">
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuestado</h3>
+                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                </div>
+                <div class="col-md-4">
+                    <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                </div>
+                {% if municipio %}
+                    <div class="col-md-4">
+                    <img src="{% static 'img/categoria2.png' %}" class="img-responsive margen pull-left" alt="Categoria de municipio" />
+                    <h3>Categor&iacute;a de municipio </h3><span class="cifra text-success grande">{{ mi_clase.clasificacion }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    <!--Fin de resumen-->
+          <!--maribel 20/07 ogim-tabla1 -->
           <div class="col-md-5">
               <h3>Ingresos del período</h3>
               <h4 class="text-info">Porcentaje de los ingresos totales</h4>
               <hr />
-            {% for total in totales %}
-              <div class="row totales">
-                <div class="col-md-9 text-left">
-                    <img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
-                    <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> 
-                </div>
-                <div class="col-md-3">
-                    <span class="btn btn-info col-md-12 cifra">{{ total.percent }} %</span>
-                    {% with ''|center:total.percent as range %}
-                    {% for i in range %}
-                    {% endfor %}
-                    {% endwith %}
-                </div>
-              </div>
-            {% endfor %}
+              <table class="table">
+                  <tr class="info"> <th colspan="2">Rubros gastos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
+                  {% for total in totales %}
+                  <tr>
+                    <td><img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
+                    </td>
+                    <td> <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> </td>
+                    <td><span class="btn btn-info col-md-87 cifra">{{ total.percent_asignado }}%</span></td>
+                    <td><span class="btn btn-info col-md-87 cifra">{{ total.percent_ejecutado }}%</span></td>
+                  </tr>
+                {% endfor %}
+             </table>
           </div>
+
         <div class="col-md-7">
               <h3>Ingresos del período</h3>
               <h4 class="text-info">Millones de c&oacute;rdoba corrientes</h4>

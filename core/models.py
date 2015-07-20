@@ -94,6 +94,7 @@ class OrigenGasto(models.Model):
 
 class TipoGasto(models.Model):
     PERSONAL = '1000000'
+    PERSONAL_PERMANENTE = '1100000'
     IMPREVISTOS = '9000000'
     TRANSFERENCIAS_CAPITAL = '6000000'
     CORRIENTE = '0'

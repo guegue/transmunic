@@ -418,7 +418,7 @@ def gf_chart(request):
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     },
                 )
-    else: # no municipio
+    else: # chartit no municipio
         gf_nivelejecucion = RawDataPool(
             series=
                 [{'options': {'source': porclase },
