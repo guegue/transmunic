@@ -158,10 +158,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         area = glue(area_inicial, area_final, periodo, 'areageografica')
 
         # obtiene datos para grafico comparativo por fuente
-        fuente_inicial = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').annotate(asignado=Sum('asignado')))
-        fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
+        fuente_inicial = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').oder_by('fuente__nombre').annotate(asignado=Sum('asignado')))
+        fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
         fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
-        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).values('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
+        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
 
     else:
         municipio = ''
@@ -199,7 +199,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').order_by('fuente__nombre').annotate(asignado=Sum('asignado')))
         fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
         fuente = glue(fuente_inicial, fuente_final, periodo, 'fuente__nombre')
-        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).values('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
+        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
 
     # conviert R en Rural, etc.
     for d in area:
