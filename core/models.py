@@ -140,6 +140,8 @@ class SubSubTipoGasto(models.Model):
         return self.nombre
 
 class OrigenRecurso(models.Model):
+    # FIXME: id es auto!!! RECAUDACION puede no ser == 1
+    RECAUDACION = 1
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
 
