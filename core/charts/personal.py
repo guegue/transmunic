@@ -80,18 +80,13 @@ def gpersonal_chart(request):
         otros = glue(municipios_inicial, municipios_final, PERIODO_FINAL, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de gastos
         for row in otros:
-            total_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,\
+            total = {}
+            total['asignado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,\
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(asignado=Sum('asignado'))['asignado']
-            total_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,\
+            total['ejecutado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,\
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
-            try:
-                row['asignado_percent'] = round(row['asignado'] / total_inicial * 100, 1)
-            except TypeError:
-                row['asignado_percent'] = 0
-            try:
-                row['ejecutado_percent'] = round(row['ejecutado'] / total_final * 100, 1)
-            except TypeError:
-                row['ejecutado_percent'] = 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 0) if total['ejecutado'] > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 0) if total['asignado'] > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)

@@ -66,8 +66,8 @@
                 <tr>
                     <td><img src="/static/img/Otros origenes.png" class="pull-left" height="40" alt="{{ total.tipogasto__nombre }}" /></td>
                     <td><h4>{{ total.subsubtipogasto__origen__nombre }}</h4></td>
-                    <td><span class="btn btn-info col-md-87 cifra">{{ total.percent_asignado }}%</span></td>
-                    <td><span class="btn btn-info col-md-87 cifra">{{ total.percent_ejecutado }}%</span></td>
+                    <td><span class="btn btn-info col-md-87 cifra">{{ total.asignado_percent }}%</span></td>
+                    <td><span class="btn btn-info col-md-87 cifra">{{ total.ejecutado_percent }}%</span></td>
                 </tr>
             {% endfor %}
             </table>
