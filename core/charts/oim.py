@@ -119,7 +119,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, campo='ingreso__anio')
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
         final_clase_sql = "SELECT core_ingreso.anio AS ingreso__anio,'F' AS ingreso__periodo,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
         core_ingreso.anio=lugar_clasificacionmunicano.anio JOIN core_tipoingreso ON core_ingresodetalle.tipoingreso_id=core_tipoingreso.codigo \
@@ -226,7 +226,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).values('ingreso__anio', 'ingreso__periodo').order_by('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).values('ingreso__anio', 'ingreso__periodo').order_by('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, campo='ingreso__anio')
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
 
         source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum(quesumar))
         tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__nombre')

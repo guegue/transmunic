@@ -103,7 +103,7 @@ def gf_chart(request):
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, campo='gasto__anio')
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='gasto__anio')
         final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
         core_gasto.anio=lugar_clasificacionmunicano.anio JOIN core_tipogasto ON core_gastodetalle.tipogasto_id=core_tipogasto.codigo \
@@ -224,7 +224,7 @@ def gf_chart(request):
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, campo='gasto__anio')
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='gasto__anio')
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
         sql_tpl="SELECT clasificacion,\

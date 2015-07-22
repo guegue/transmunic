@@ -23,37 +23,35 @@ PERIODO_CHOICES = (
 )
 AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio', None: 'None'}
 
-def glue(inicial, final, periodo, campo, actualizado=None):
+def glue(inicial, final, periodo, key, actualizado=[]):
     "Glues together two different lists of 'asignado' and 'ejecutado' of dictionaries using a chosen key"
-    if periodo == PERIODO_FINAL:
-        for row in final:
-            found = False
-            for row2 in inicial:
-                if row2[campo] == row[campo]:
-                    row['asignado'] = row2['asignado']
-                    found = True
-            if not found:
-                row['asignado'] = 0
-        glued = final
-    else:
-        for row in inicial:
-            found = False
-            for row2 in final:
-                if row2[campo] == row[campo]:
-                    row['ejecutado'] = row2['ejecutado']
-                    found = True
-            if not found:
-                row['ejecutado'] = 0
-        glued = inicial
-    if actualizado <> None:
-        for row in glued:
-            found = False
-            for row2 in actualizado:
-                if row2[campo] == row[campo]:
-                    row['actualizado'] = row2['ejecutado']
-                    found = True
-            if not found:
-                row['actualizado'] = 0
+
+    merged = {}
+
+    # cast as lists
+    actualizado = list(actualizado)
+    inicial = list(inicial)
+    final = list(final)
+
+    # changes 'ejecutado' to 'actualizado' #FIXME why not fix this at origin?
+    for item in actualizado:
+        item['actualizado'] = item.pop('ejecutado')
+
+    # do glue
+    for item in inicial+final+actualizado:
+        if item[key] in merged:
+            merged[item[key]].update(item)
+        else:
+            merged[item[key]] = item
+    glued = [val for (_, val) in merged.items()]
+
+    # checks all required keys have a value (0 if none)
+    required = ('ejecutado', 'actualizado', 'asignado')
+    for item in glued:
+        for r in required:
+            if not r in item:
+                item[r] = 0
+
     return glued
 
 def dictfetchall(cursor):
