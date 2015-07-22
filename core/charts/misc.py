@@ -150,7 +150,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': 'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'title': {'text': u'Financiamiento de la inversión %s %s' % (municipio, year,)},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -163,7 +163,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__tipofuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': 'Fuentes financiamiento inversión%s' % (municipio, )},
+                'title': {'text': 'Fuentes financiamiento inversión %s' % (municipio, )},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },

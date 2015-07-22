@@ -346,7 +346,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
             ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
-        source = glue(source_inicial, source_final, periodo, 'gasto__anio')
+        # FIXME que es esto: ???
+        source_anios = glue(source_inicial, source_final, periodo, 'gasto__anio')
 
 
     #

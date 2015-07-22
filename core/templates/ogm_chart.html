@@ -7,7 +7,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
-    <h2 class="titular">Destino de los gastos   {{ request.GET.municipio|capfirst }} {{ anio }} </h2>
+    <h2 class="titular">Destino de los gastos  {{ municipio }} {{ year }} </h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -55,9 +55,10 @@
                 {% endif %}
             </div>
         </div>
-    <!--Fin de resumen-->
+        <!--Fin de resumen-->
         <div class="separador"></div> 
         <div class="col-md-6">
+            <!--maribel 21/07 inversion tabla1 -->
             <h3>Gastos del período</h3>
             <h4 class="text-info">Porcentaje del gasto total</h4>
             <table class="table">
@@ -71,9 +72,10 @@
                 </tr>
             {% endfor %}
             </table>
+            <!-- fin tabla1 -->
         </div>
-        <!-- tabla solo un año -->
         <div class="col-md-6">
+            <!-- maribel 21/07 tabla2 inversion -->
             <h3>Eficiencia en la ejecución del gasto municipal</h3>
             <h4>Gastos en millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
@@ -94,7 +96,7 @@
                     <td>{{ ejecutado|intcomma }}</td>                                       
                     <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>       
             </table>                                                                    
-            <!-- /fin gftabla2 -->                                                      
+            <!-- /fin tabla2 -->                                                      
             <br />   
         </div>
         <!-- tabla solo un año /-->

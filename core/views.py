@@ -97,11 +97,19 @@ def inversion_categoria_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = inversion_categoria_chart(municipio=municipio, year=year)
+
+    # InversionFuente tiene su propio último año
+    year_list = getYears(InversionFuente)
+    year = year_list[-1]
+    data_fuentes = fuentes_chart(year=year)
+    data['charts'].append( fuentes_chart(year=year)['charts'][1] )
+
     return render_to_response(template_name, { \
-            'municipio': data['municipio'], 'anio': data['anio'], 'clasificacion': data['clasificacion'], 'porano': data['porano'], \
-            'cat': data['cat'], 'anuales': data['anuales'], \
+            'municipio': data['municipio'], 'anio': data['anio'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
+            'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year,},\
+            'year': year, \
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
 
 def ogm_view(request):
@@ -132,10 +140,12 @@ def oim_view(request):
 
 def inversion_view(request):
     template_name = 'inversion.html'
-    municipio = request.GET.get('municipio','')
-    data = inversion_chart(municipio=municipio)
+    municipio = getVar('municipio', request)
+    year = getVar('year', request)
+    data = inversion_chart(municipio=municipio, year=year)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],\
-            'municipio': municipio, },\
+            'municipio': data['municipio'], 'anio': data['anio'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
+            'porclasep': data['porclasep']},\
             context_instance=RequestContext(request))
 
 def inversion_area_view(request):
