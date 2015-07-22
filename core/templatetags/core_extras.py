@@ -14,13 +14,13 @@ def keyvalue(dict, key):
 @register.filter
 def total_sum(dict, key):
     try:
-        return sum(d[key] for d in dict)
+        return sum(float(d[key] or 0) for d in dict)
     except TypeError:
         return 0
 
 @register.filter
 def total_avg(dict, key):
     try:
-        return sum(d[key] for d in dict) / len(dict)
+        return sum(float(d[key] or 0) for d in dict) / len(dict)
     except TypeError:
         return 0
