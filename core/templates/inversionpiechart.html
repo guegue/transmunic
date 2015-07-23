@@ -17,7 +17,7 @@
         <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
     </select>
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Buscar"/>
     </form>
     <div class="clearfix"></div>
     <ul id="invTab" class="nav nav-tabs" role="tablist">
@@ -239,10 +239,10 @@
                 <td class="text-left">
                     <h4>{{ total.inversion__anio }}</h4>
                 </td>
-                <td>{{ total.asignado }}</td>
+                <td>{% if total.asignado %}{{ total.asignado }}{% else %}No disponible {% endif %}</td>
                 <td>{{ total.actualizado }}</td>
-                <td>{{ total.actualizado|sub:total.asignado }}</td>
-                <td>{{ total.ejecutado }}%</td>
+                <td>{% if total.actualizado %}{{ total.actualizado|sub:total.asignado }}{% else %}0{% endif %}</td>
+                <td>{{ total.ejecutado }}</td>
                 <td>
                 {% if total.asignado %}
                     {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%

@@ -111,7 +111,7 @@
                     <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
                     {% for row in rubrosp %}                                                     
                     <tr>                                                                        
-                        <td>{{ row.subsubtipogasto__nombre }}</td>                                    
+                        <td class="capfirst">{{ row.subsubtipogasto__nombre }}</td>                                    
                         <td>{{ row.asignado|intcomma }}</td>                                    
                         <td>{{ row.ejecutado|intcomma }}</td>                                   
                         {% if row.asignado %}                                                   
