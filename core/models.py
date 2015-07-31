@@ -150,6 +150,7 @@ class OrigenRecurso(models.Model):
         return self.nombre
 
 class TipoIngreso(models.Model):
+    TRANSFERENCIAS_CORRIENTES = '15000000'
     CORRIENTE = 0
     CAPITAL = 1
     CLASIFICACION_CHOICES = (
