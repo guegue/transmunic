@@ -175,7 +175,7 @@ Ejecución presupuestaria municipal {{ municipio }}
             <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
             {% for row in rubros %}
                 <tr>
-                    <td class="pull-left">{{ row.tipoingreso__nombre}}</td>
+                    <td class="pull-left">{{ row.tipoingreso__clasificacion}}</td>
                     <td>{{ row.asignado|intcomma }}</td>
                     <td>{{ row.actualizado|intcomma }}</td>
                     <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
@@ -218,7 +218,7 @@ Ejecución presupuestaria municipal {{ municipio }}
             <tr class="info"> <th>Rubros del gastos corrientes</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
             {% for row in rubrosg %}
                 <tr>
-                    <td class="pull-left">{{ row.tipogasto__nombre}}</td>
+                    <td class="pull-left">{{ row.tipogasto__clasificacion}}</td>
                     <td>{{ row.asignado|intcomma }}</td>
                     <td>{{ row.actualizado|intcomma }}</td>
                     <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>

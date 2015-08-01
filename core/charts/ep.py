@@ -65,6 +65,16 @@ def ep_chart(request):
         for aclase in mi_clase_anios:
             mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
+        # obtiene datos comparativo de todos los años
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
+
+        # obtiene datos comparativo de todos los años
+        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
+        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        anual2g = glue(inicial=inicialg, final=finalg, periodo=PERIODO_INICIAL, key='gasto__anio')
+
         with open ("core/charts/ep_municipio.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [municipio, municipio, year_list])
@@ -117,6 +127,16 @@ def ep_chart(request):
         actualizado = dictfetchall(cursor)
         porclasep = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
 
+        # obtiene datos comparativo de todos los años
+        inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
+        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
+
+        # obtiene datos comparativo de todos los años
+        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
+        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        anual2g = glue(inicial=inicialg, final=finalg, periodo=PERIODO_INICIAL, key='gasto__anio')
+
         with open ("core/charts/ep.sql", "r") as query_file:
             sql=query_file.read()
         source = IngresoDetalle.objects.raw(sql, [year_list])
@@ -147,7 +167,7 @@ def ep_chart(request):
             )
 
     # FIXME BS
-    otros = ejecutado = asignado = anual2 = anual2g = porclase = None
+    otros = ejecutado = asignado = porclase = None
 
     return render_to_response('ep.html',{'charts': (bar, ), \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
