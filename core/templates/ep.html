@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %} 
+{% load mathfilters %}
+{% load core_extras %} 
+{% block titulo %}
+Ejecución presupuestaria municipal {{ municipio }} 
+{% endblock %}
+{% block main_content %}
+    <h2 class="titular">Ejecución presupuestaria municipal   {{ municipio }} {{ year }}</h2>
+
+    {{ charts|load_charts:"chart" }}
+
+    <form method="GET">
+    <select name="year">
+    {% for ayear in year_list %}
+        <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+    {% endfor %}
+    </select>
+    <select name="municipio">
+    <option value="">--</option>
+    {% for municipio in municipio_list %}
+        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="Submit"/>
+    </form>
+    <ul id="aciTab" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
+        <li role="presentation"><a href="#acimodificacion" aria-controls="acimodificacion" role="tab" data-toggle="tab">Modificaciones al presupuesto</a></li>
+        <li role="presentation"><a href="#aciorigen" aria-controls="aciorigen" role="tab" data-toggle="tab">Informaci&oacute;n hist&oacute;rica</a></li>
+    </ul>
+    <div id="aciTabContent" class="tab-content">
+      <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
+        <!--maribel 20/07 - ingresos resumen -->
+        <div class="row separador">
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuestado</h3>
+                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                </div>
+                <div class="col-md-4">
+                    <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                </div>
+                {% if municipio %}
+                    <div class="col-md-4">
+                    <img src="{% static 'img/categoria2.png' %}" class="img-responsive margen pull-left" alt="Categoria de municipio" />
+                    <h3>Categor&iacute;a de municipio </h3><span class="cifra text-success grande">{{ mi_clase.clasificacion }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- maribel 30/07 aci-tabla1 nacional -->
+        {% if not municipio %}
+                <div class="col-md-5">
+                    <h3>Ejecución presupuestaria municipal </h2>
+                    <h4 class="text-info">por categoría de Municipios</h4>
+                    <table class="table table-condensed">
+                        <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                        {% for row in porclasep %}
+                        <tr>
+                            <td>{{ row.clasificacion }}</td>
+                            <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
+                            <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="success">
+                            <td><strong>TOTAL</strong></td>
+                            <td><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
+                            <td><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+        {% endif%}
+        <!-- /fin aci-tabla1 nacional-->
+        <!-- maribel 30/07 aci-tabla4-municipal -->
+        {% if municipio %}
+            <div class="col-md-5">
+                <h3>Ejecución presupuestaria municipal</h3>
+                <h4 class="text-info">por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
+                <table class="table table-condensed">
+                    <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+                    {% for row in otros %}
+                        {% if municipio.slug == row.ingreso__municipio__slug%}
+                        <tr class="info">
+                        {% else %}
+                        <tr>
+                        {% endif %}
+                            <td>{{ row.nombre }}</td>
+                            <td>{{ row.asignado|floatformat:2 }}%</td>
+                            <td>{{ row.ejecutado|floatformat:2 }}%</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="success">
+                        <td>TOTAL</td>
+                        <td>{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
+                        <td>{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+        <!-- /fin oim-tabla4-municipal -->
+
+        <!-- maribel 30/07- aci-tabla2 -->
+        <div class="col-md-6">
+            <h3>Ejecución del presupuesto de ingresos</h3>
+            <h4>Millones de córdobas corrientes</h4>
+            <table class="table table-condensed">                                       
+                <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                {% for row in rubros %}                                                     
+                <tr>                                                                        
+                    <td>{{ row.tipoingreso__nombre}}</td>                                    
+                    <td>{{ row.asignado|intcomma }}</td>                                    
+                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                    {% if row.asignado %}                                                   
+                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}                                                             
+                </tr>                                                                       
+                {% endfor %}                                                                
+                <tr class="success bold">                                                   
+                    <td>TOTAL</td>                                                          
+                    <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
+                    <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                    {% with sum_asignado=rubros|total_sum:'asignado' %}
+                        <td>
+                            {% if sum_asignado %}
+                                {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
+                            {% endif %}
+                        </td>
+                    {% endwith %}
+                </tr>       
+            </table>                                                                    
+        </div>
+        <!-- /fin aci-tabla2 -->                                                      
+        <br clear="all" />
+        <!-- maribel 30/07- aci-tabla3 -->
+        <div class="col-md-6">
+            <h3>Ejecución del presupuesto de gastos</h3>
+            <h4>Millones de córdobas corrientes</h4>
+            <table class="table table-condensed">                                       
+                <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                {% for row in rubrosg %}                                                     
+                <tr>                                                                        
+                    <td>{{ row.tipogasto__nombre}}</td>                                    
+                    <td>{{ row.asignado|intcomma }}</td>                                    
+                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                    {% if row.asignado %}                                                   
+                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}                                                             
+                </tr>                                                                       
+                {% endfor %}                                                                
+                <tr class="success bold">                                                   
+                    <td>TOTAL</td>                                                          
+                    <td>{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
+                    <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                    {% with sum_asignado=rubrosg|total_sum:'asignado' %}
+                        <td>
+                            {% if sum_asignado %}
+                                {{ rubrosg|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
+                            {% endif %}
+                        </td>
+                    {% endwith %}
+                </tr>       
+            </table>                                                                    
+        </div>
+      </div>
+        <!-- /fin aci-tabla2 -->                                                      
+      <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
+        <!-- maribel 30/07 aci-tabla4 -->
+        <h3>Modificaciones al presupuesto - Ingresos corrientes propios</h3>
+        <h4 class="text-info">Millones de córdobas corrientes</h4>
+        <table class="table table-condensed">
+            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+            {% for row in rubros %}
+                <tr>
+                    <td class="pull-left">{{ row.tipoingreso__nombre}}</td>
+                    <td>{{ row.asignado|intcomma }}</td>
+                    <td>{{ row.actualizado|intcomma }}</td>
+                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
+                    <td>{{ row.ejecutado|intcomma }}</td>
+                    {% if row.actualizado %}
+                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            <tr class="success bold">
+                <td>TOTAL</td>
+                <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
+                <td>{{ rubros|total_sum:'actualizado'|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'asignado' %}
+                    <td class="montos">
+                    {% if rubros|total_sum:'actualizado' %}
+                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'actualizado' %}
+                    <td class="montos">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            </tr>
+        </table>
+        <br />
+
+        <!-- /fin aci-tabla4 -->
+        <!-- 30/07 aci-tabla5 -->
+        <h3>Modificaciones al presupuesto - Gastos corrientes totales</h3>
+        <h4 class="text-info">Millones de córdobas corrientes</h4>
+        <table class="table table-condensed">
+            <tr class="info"> <th>Rubros del gastos corrientes</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+            {% for row in rubrosg %}
+                <tr>
+                    <td class="pull-left">{{ row.tipogasto__nombre}}</td>
+                    <td>{{ row.asignado|intcomma }}</td>
+                    <td>{{ row.actualizado|intcomma }}</td>
+                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
+                    <td>{{ row.ejecutado|intcomma }}</td>
+                    {% if row.actualizado %}
+                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            <tr class="success bold">
+                <td>TOTAL</td>
+                <td>{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
+                <td>{{ rubrosg|total_sum:'actualizado'|intcomma }}</td>
+                {% with sum_asignado=rubrosg|total_sum:'asignado' %}
+                    <td class="montos">
+                    {% if rubrosg|total_sum:'actualizado' %}
+                        {{ rubrosg|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                {% with sum_actualizado=rubrosg|total_sum:'actualizado' %}
+                    <td class="montos">
+                        {% if sum_actualizado %}
+                        {{ rubrosg|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            </tr>
+        </table>
+        <br />
+
+        <!-- /fin aci-tabla4 -->
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
+        <!--maribel 20/07 oim-tabla 7 -->
+        <div class="col-md-6">
+            <h3>Ejecución presupuestaria del ingreso corrientes propios</h3>
+            <h4 class="text-info">Millones de córdobas corrientes</h4>
+            <table class="table table-condensed">
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+                {% for row in anuales %}
+                <tr>
+                    <td>{{ row.ingreso__anio }}</td>
+                    <td>{{ row.asignado|intcomma }}</td>
+                    <td>{{ row.ejecutado|intcomma }}</td>
+                    {% if row.asignado %}
+                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}
+                 </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
+                    <td>{{ anuales|total_sum:'asignado'|intcomma }}</td>
+                    <td>{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}
+                    {% if total_sum_asignado %}
+                        <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}
+                    {% endwith %}
+                </tr>
+            </table>
+        </div>
+        <!-- /fin acitabla6 -->
+        <!-- maribel 30/07 aci-tabla7 -->
+        <div class="col-md-6">
+            <h3>Ejecución presupuestaria - Gasto corrientes totales</h3>
+            <h4 class="text-info">Millones de córdobas corrientes</h4>
+            <table class="table table-condensed">
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+                {% for row in anualesg %}
+                <tr>
+                    <td>{{ row.gasto__anio }}</td>
+                    <td>{{ row.asignado|intcomma }}</td>
+                    <td>{{ row.ejecutado|intcomma }}</td>
+                    {% if row.asignado %}
+                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}
+                 </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
+                    <td>{{ anualesg|total_sum:'asignado'|intcomma }}</td>
+                    <td>{{ anualesg|total_sum:'ejecutado'|intcomma }}</td>
+                    {% with total_sum_asignado=anualesg|total_sum:'asignado' %}
+                    {% if total_sum_asignado %}
+                        <td class="montos">{{ anualesg|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}
+                    {% endwith %}
+                </tr>
+            </table>
+        </div>
+        <!-- /fin acitabla7 -->
+        <br clear="all" >
+        <div id='chart' class="col-md-10"> Chart will be rendered here </div>
+    </div>
+{% endblock %}
