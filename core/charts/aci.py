@@ -32,7 +32,6 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         municipio_row = Municipio.objects.get(slug=municipio)
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
-        rubrosg = None
         porclasep = None
 
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \

@@ -22,6 +22,7 @@ PERIODO_CHOICES = (
     (PERIODO_FINAL, 'Final'),
 )
 AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio', None: 'None'}
+CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
 
 def glue(inicial, final, periodo, key, actualizado=[]):
     "Glues together two different lists of 'asignado' and 'ejecutado' of dictionaries using a chosen key"

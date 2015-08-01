@@ -111,7 +111,7 @@ Ejecución presupuestaria municipal {{ municipio }}
                 <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
-                    <td>{{ row.tipoingreso__nombre}}</td>                                    
+                    <td>{{ row.tipoingreso__clasificacion }}</td>                                    
                     <td>{{ row.asignado|intcomma }}</td>                                    
                     <td>{{ row.ejecutado|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
@@ -143,7 +143,7 @@ Ejecución presupuestaria municipal {{ municipio }}
                 <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
                 {% for row in rubrosg %}                                                     
                 <tr>                                                                        
-                    <td>{{ row.tipogasto__nombre}}</td>                                    
+                    <td>{{ row.tipogasto__clasificacion}}</td>                                    
                     <td>{{ row.asignado|intcomma }}</td>                                    
                     <td>{{ row.ejecutado|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
@@ -169,7 +169,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- /fin aci-tabla2 -->                                                      
       <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
         <!-- maribel 30/07 aci-tabla4 -->
-        <h3>Modificaciones al presupuesto - Ingresos corrientes propios</h3>
+        <h3>Modificaciones al presupuesto - Ingresos totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
             <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
@@ -212,7 +212,7 @@ Ejecución presupuestaria municipal {{ municipio }}
 
         <!-- /fin aci-tabla4 -->
         <!-- 30/07 aci-tabla5 -->
-        <h3>Modificaciones al presupuesto - Gastos corrientes totales</h3>
+        <h3>Modificaciones al presupuesto - Gastos totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
             <tr class="info"> <th>Rubros del gastos corrientes</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
@@ -258,7 +258,7 @@ Ejecución presupuestaria municipal {{ municipio }}
       <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
-            <h3>Ejecución presupuestaria del ingreso corrientes propios</h3>
+            <h3>Ejecución presupuestaria ingreso totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
                 <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
@@ -287,7 +287,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- /fin acitabla6 -->
         <!-- maribel 30/07 aci-tabla7 -->
         <div class="col-md-6">
-            <h3>Ejecución presupuestaria - Gasto corrientes totales</h3>
+            <h3>Ejecución presupuestaria gasto totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
                 <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>

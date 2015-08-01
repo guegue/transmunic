@@ -12,7 +12,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import Anio, getYears, dictfetchall, glue
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
 from core.charts.misc import getVar
 
 
@@ -32,7 +32,6 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         municipio_row = Municipio.objects.get(slug=municipio)
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
-        rubrosg = None
         porclasep = None
 
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \
