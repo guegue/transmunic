@@ -628,6 +628,6 @@ def ogm_chart(municipio=None, year=None, portada=False):
         charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'anio': year, 'porano': porano_table, 'totales': sources, \
+            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}
