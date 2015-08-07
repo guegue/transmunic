@@ -21,7 +21,7 @@
         <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
     </select>
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Buscar"/>
     </form>
     <ul id="oimTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">Asignado y ejecutado anual</a></li>
@@ -55,13 +55,17 @@
                 {% endif %}
             </div>
         </div>
+        <div class="separador"></div>
     <!--Fin de resumen-->
           <!--maribel 20/07 ogim-tabla1 -->
           <div class="col-md-5">
               <h3>Ingresos del período</h3>
               <h4 class="text-info">Porcentaje del ingreso total</h4>
+              <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#eficiencia-recaudacion">
+                  Ver gráfico 
+              </button>    
               <hr />
-              <table class="table">
+                <table class="table">
                   <tr class="info"> <th colspan="2">Rubros ingresos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
                   {% for total in totales %}
                   <tr>
@@ -99,37 +103,67 @@
             </table>                                                                    
         </div>
         <!-- /fin oim-tabla2 -->                                                      
+        <hr />
+        <div class="col-md-12 alert alert-success"  role="alert">
+            <center><h2>Eficiencia en recaudación municipal</h2></center>
+            <div class="col-md-6">
+                    <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuestado</h3>
+                    <span class="cifra grande text-primary">{{ rubrosp|total_sum:'asignado'|floatformat:2|intcomma }}</span>
+            </div>
+            <div class="col-md-6">
+                    <img src="{% static 'img/oim-ejecutadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</span>
+            </div>
+            <center>
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#eficiencia-recaudacion">
+                  Consultar más detalles
+                </button>
+            </center>
+        </div>
         <br clear="all" />
         <hr />
         <div class="col-md-12">
             <!--maribel: oim-tabla3 -->
-            <div class="col-md-7">
-                <h3>Eficiencia en recaudación municipal</h3>
-                <h4>Recaudación en millones de córdobas corrientes</h3>
-                <table class="table table-condensed">                                       
-                    <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
-                    {% for row in rubrosp %}                                                     
-                    <tr>                                                                        
-                        <td>{{ row.subtipoingreso__nombre }}</td>                                    
-                        <td>{{ row.asignado|intcomma }}</td>                                    
-                        <td>{{ row.ejecutado|intcomma }}</td>                                   
-                        {% if row.asignado %}                                                   
-                            <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
-                        {% endif %}                                                             
-                    </tr>                                                                       
-                    {% endfor %}                                                                
-                    <tr class="success bold">                                                   
-                        <td>TOTAL</td>                                                          
-                        <td>{{ asignado|intcomma }}</td>                                        
-                        <td>{{ ejecutado|intcomma }}</td>                                       
-                        <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td>
-                    </tr>       
-                </table>                                                                    
-                <!-- /fin oim-tabla3 -->                                                      
+            <div class="modal fade" id="eficiencia-recaudacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"> Cerrar &times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Eficiencia en recaudación municipal</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Recaudación en millones de córdobas corrientes</h3>
+                            <table class="table table-condensed">                                       
+                                <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                                {% for row in rubrosp %}                                                     
+                                <tr>                                                                        
+                                    <td>{{ row.subtipoingreso__nombre }}</td>                                    
+                                    <td>{{ row.asignado|intcomma }}</td>                                    
+                                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                                    {% if row.asignado %}                                                   
+                                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                                    {% endif %}                                                             
+                                </tr>                                                                       
+                                {% endfor %}                                                                
+                                <tr class="success bold">                                                   
+                                    <td>TOTAL</td>                                                          
+                                    <td>{{ rubrosp|total_sum:'asignado'|floatformat:2|intcomma }}</td>                                        
+                                    <td>{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</td>                                        
+                                    <td class="montos">{{ rubrosp|div:asignado|mul:100|floatformat:1 }}%</td>
+                                </tr>       
+                            </table>                                                                    
+                           <!-- /fin oim-tabla3 -->                                                      
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- maribel 06/07 oimtabla4 nacional -->
             {% if not municipio %}
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <h3> Recaudación por habitante en cada categoría municipal</h3>
                     <h4 class="text-info">Córdobas Corrientes</h4>
                     <table class="table table-condensed">
@@ -187,7 +221,7 @@
               <h3>Ejecuci&oacute;n Presupuestaria</h3>
             <div id='comparativo2'> Chart will be rendered here </div>
           </div>
-          <div class="col-md-6 visible-xs">
+          <div class="col-md-6">
             <div id='ejecutado'> Chart will be rendered here </div>
           </div>
         </div>

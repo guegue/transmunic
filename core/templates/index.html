@@ -112,24 +112,82 @@
 {% endblock %}
 {% block main_content %}
         <div class="clear"></div>
-        <div class="text-center"><h2 class="titular">Presupuesto Sector Municipal 2015</h2>
+        <div class="text-center">
+            <h2 class="titular">Presupuesto Sector Municipal 2015</h2>
             <hr />
         </div>
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
             <h2>&iquest;Cuánto ingresa?</h2>
-          <div id='oim_ejecutado'>
-          </div>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#oim-desc">
+             ?
+            </button>
+            <div id='oim_ejecutado'></div>
+            <!-- OIM modal -->
+            <div class="modal fade" id="oim-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_oim_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_oim_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <h2>&iquest;En qué se gasta?</h2>
-          <div id='ogm_ejecutado'>
-          </div>
+            <h2>&iquest;En qué se gasta?</h2>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#ogm-desc">
+             ?
+            </button>
+            <div id='ogm_ejecutado'></div>
+            <!-- OGM modal -->
+            <div class="modal fade" id="ogm-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_ogm_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_ogm_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4 col-sm-4">
             <h2>&iquest;C&oacute;mo se financia?</h2>
-          <div id='fuentes'>
-          </div>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-fuentes-desc">
+             ?
+            </button>
+            <div id='fuentes'></div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-fuentes-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_invfuentes_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_invfuentes_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
 {% endblock %}
 

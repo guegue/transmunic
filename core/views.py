@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente
+from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
 from models import Anio, getYears
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
@@ -19,6 +19,11 @@ from website.models import Banner
 def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
+    #descripcion de graficos de portada 
+    desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
+    desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
+    desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
+    #fin de descripcion de graficos de portada
     departamentos = Departamento.objects.all()
 
     # InversionFuente tiene su propio último año
@@ -42,7 +47,7 @@ def home(request):
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'banners': banners,
+    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,
         'charts':( 
             data_oim['charts'][0], 
             data_ogm['charts'][0], 
