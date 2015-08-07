@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Sum, Max, Min
 
 from autoslug import AutoSlugField
+from sorl.thumbnail import ImageField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 from lugar.models import *
@@ -62,6 +63,20 @@ def dictfetchall(cursor):
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
     ]
+
+class Grafico(models.Model):
+    id = models.CharField(max_length=25,  primary_key=True)
+    nombre = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True,null=True)
+    notas = models.TextField(blank=True,null=True)
+    imagen_objetivo = ImageField(upload_to='grafico',null=True,blank=True)
+    imagen_actual = ImageField(upload_to='grafico',null=True,blank=True)
+ 
+    class Meta:
+        verbose_name_plural = 'Graficos'
+        ordering = ['nombre']
+    def __unicode__(self):
+        return self.nombre
 
 class Anio(models.Model):
     anio = models.IntegerField()
