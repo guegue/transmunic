@@ -124,7 +124,7 @@ class TipoGasto(models.Model):
  
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
-        ordering = ['nombre']
+        ordering = ['codigo']
     def __unicode__(self):
         return self.nombre
 
@@ -181,7 +181,7 @@ class TipoIngreso(models.Model):
  
     class Meta:
         verbose_name_plural = 'Tipo de ingreso'
-        ordering = ['nombre']
+        ordering = ['codigo']
     def __unicode__(self):
         return self.nombre
 
