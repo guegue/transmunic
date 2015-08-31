@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block main_content %}
-    <h2 class="titular">Origen de los ingresos  {{ municipio }} {{ year }}</h2>
+    <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% endif %}</h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -31,7 +31,7 @@
     {% if municipio and charts.4 %}
         {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
-        {{ charts|load_charts:"ejecutado, " }}
+        {{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo_anios" }}
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
@@ -60,11 +60,15 @@
           <!--maribel 20/07 ogim-tabla1 -->
           <div class="col-md-5">
               <h3>Ingresos del período</h3>
-              <h4 class="text-info">Porcentaje del ingreso total</h4>
-              <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#eficiencia-recaudacion">
-                  Ver gráfico 
-              </button>    
+              <h4 class="text-info">Porcentaje del ingreso total
+              <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapsepastel"  aria-expanded="false" aria-controls="collapseExample">Ver gráfico </a>
+              </h4>
               <hr />
+              <div class="collapse col-md-4" id="collapsepastel">
+                <div class="well">
+                <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
+                </div>
+              </div>
                 <table class="table">
                   <tr class="info"> <th colspan="2">Rubros ingresos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
                   {% for total in totales %}
@@ -82,7 +86,15 @@
         <!-- maribel 20/07- oim-tabla2 -->
         <div class="col-md-6">
             <h3>Ingresos del periodo</h3>
-            <h4>Ingresos en millones de córdobas corrientes</h4>
+            <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                ver grafico
+            </a>
+            </h4>
+            <div class="collapse" id="collapseExample">
+                <div class="well">
+                      <div id='tipo'> Chart will be rendered here </div>
+                </div>
+            </div>
             <table class="table table-condensed">                                       
                 <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
                 {% for row in rubros %}                                                     
@@ -112,27 +124,15 @@
                     <span class="cifra grande text-primary">{{ rubrosp|total_sum:'asignado'|floatformat:2|intcomma }}</span>
             </div>
             <div class="col-md-6">
-                    <img src="{% static 'img/oim-ejecutadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
+                    <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
                     <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</span>
             </div>
             <center>
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#eficiencia-recaudacion">
-                  Consultar más detalles
-                </button>
-            </center>
-        </div>
-        <br clear="all" />
-        <hr />
-        <div class="col-md-12">
-            <!--maribel: oim-tabla3 -->
-            <div class="modal fade" id="eficiencia-recaudacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"> Cerrar &times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Eficiencia en recaudación municipal</h4>
-                        </div>
-                        <div class="modal-body">
+              <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseeficiencia"  aria-expanded="false" aria-                     controls="collapseExample">Consultar detalles </a>
+              </h4>
+              <hr />
+              <div class="collapse col-md-8" id="collapseeficiencia">
+                <div class="well">
                             <h4>Recaudación en millones de córdobas corrientes</h3>
                             <table class="table table-condensed">                                       
                                 <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
@@ -154,13 +154,13 @@
                                 </tr>       
                             </table>                                                                    
                            <!-- /fin oim-tabla3 -->                                                      
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
                 </div>
-            </div>
+              </div>
+            </center>
+        </div>
+        <br clear="all" />
+        <hr />
+        <div class="col-md-12">
             <!-- maribel 06/07 oimtabla4 nacional -->
             {% if not municipio %}
                 <div class="col-md-6">
@@ -187,19 +187,20 @@
             <!-- maribel 20/07 oim-tabla4-municipal -->
             {% if municipio %}
                 <div class="col-md-5">
-                <h3>Ranking de recaudación por habitante categoría municipal</h3>
+                    <h3>Ranquin de recaudación por habitante categoría municipal "{{ mi_clase.clasificacion }}"</h3>
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
-                    <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+                    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
                     {% for row in otros %}
                         {% if municipio.slug == row.ingreso__municipio__slug%}
                         <tr class="info">
                         {% else %}
                         <tr>
                         {% endif %}
+                            <td> {{forloop.counter}} </td>
                             <td>{{ row.ingreso__municipio__nombre }}</td>
                             <td>{{ row.asignado_percent }}</td>
-                            <td>{{ row.ejecutado_percent }}</td>
+                            <td class="info">{{ row.ejecutado_percent }}</td>
                         </tr>
                     {% endfor %}
                     <tr class="success">
@@ -213,16 +214,9 @@
             <!-- /fin oim-tabla4-municipal -->
         </div>
         <div class="col-md-12 graficos-azul">
-          <div class="col-md-8">
-              <h3>Origen de los Ingresos </h3>
-            <div id='tipo'> Chart will be rendered here </div>
-          </div>
           <div class="col-md-4">
-              <h3>Ejecuci&oacute;n Presupuestaria</h3>
-            <div id='comparativo2'> Chart will be rendered here </div>
           </div>
           <div class="col-md-6">
-            <div id='ejecutado'> Chart will be rendered here </div>
           </div>
         </div>
       </div>
@@ -230,6 +224,14 @@
         <!-- maribel 20/07 oim-tabla5 -->
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">ver grafico</a>
+
+         <div class="collapse" id="collapsemodificacion">
+            <div class="well">
+                <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
+                <div class="col-md-7"><div id='comparativo_anios'> Chart will be rendered here </div></div>
+            </div>
+        </div>
         <table class="table table-condensed">
             <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
             {% for row in rubros %}
@@ -311,14 +313,21 @@
             </tr>
         </table>
         <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
-        <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
-        <div id='comparativo3' class="col-md-7"> Chart will be rendered here </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
             <h3>Ejecución presupuestaria del ingreso sector municipal</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">ver grafico</a>
+
+         <div class="collapse" id="collapsehistorico">
+            <div class="well">
+                <h4 class="text-primary">Presupuesto Inicial y Final</h4>
+                <div id='comparativo2' class="col-md-8"> Chart will be rendered here </div>
+            </div>
+        </div>
+        <table class="table table-condensed">
             <table class="table table-condensed">
                 <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
                 {% for row in anuales %}
@@ -367,9 +376,6 @@
            {% endfor %}
           </table>
           <div class="col-md-12">
-            <h3>Ingresos del municipio vs Promedio de la categor&iacute;a</h3>
-            <h4 class="text-primary">Presupuesto Inicial y Final</h4>
-            <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
           </div>
           <div class="clear"></div>
           <hr />
