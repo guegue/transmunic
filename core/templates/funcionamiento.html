@@ -119,16 +119,17 @@
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
     <table class="table table-condensed">
-    <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
     {% for row in otros %}
         {% if municipio.slug == row.gasto__municipio__slug%}
             <tr class="info">
         {% else %}
             <tr>
         {% endif %}
+        <td> {{forloop.counter}} </td>
         <td>{{ row.gasto__municipio__nombre }}</td>
         <td>{{ row.asignado_percent }}%</td>
-        <td>{{ row.ejecutado_percent }}%</td>
+        <td class="info">{{ row.ejecutado_percent }}%</td>
     </tr>
     {% endfor %}
     <tr class="success">
