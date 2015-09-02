@@ -161,8 +161,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # source base
@@ -490,19 +490,19 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 0) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 0) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     # tabla: get total and percent
     #source_list = list(source)
     #total = source.aggregate(total=Sum('ejecutado'))['total']
     #for row in source:
-    #    row['percent'] = round(row['ejecutado'] / total * 100, 0)
+    #    row['percent'] = round(row['ejecutado'] / total * 100, 1)
 
     if source_clase:
         total_clase = source_clase.aggregate(total=Sum('clase'))['total']
         for row in source_clase:
-            row['clase_percent'] = round(row['clase'] / total_clase * 100, 0)
+            row['clase_percent'] = round(row['clase'] / total_clase * 100, 1)
         for row in sources:
             for row2 in source_clase:
                 if row2['catinversion__nombre'] == row['catinversion__nombre']:
@@ -536,6 +536,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         charts =  [inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, ejecutado_pie, ultimos ]
 
     return {'charts': charts, \
-            'mi_clase': mi_clase, 'anio': year, 'porano': porano_table, 'totales': sources, 'cat': cat3, 'anuales': anual3,\
+            'mi_clase': mi_clase, 'year': year, 'porano': porano_table, 'totales': sources, 'cat': cat3, 'anuales': anual3,\
             'ejecutado': ejecutado, 'asignado': asignado, 'porclasep': porclasep, 'otros': otros,\
             'year_list': year_list, 'municipio_list': municipio_list, 'municipio': municipio_row}

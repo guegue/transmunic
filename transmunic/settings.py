@@ -112,10 +112,11 @@ MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(SITE_ROOT, 'media'))
 STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(SITE_ROOT, 'static'))
 
 try:
-   LOCAL_SETTINGS
+    LOCAL_SETTINGS
 except NameError:
     try:
-       from local_settings import *
+        from local_settings import *
     except ImportError:
         pass
 
+       

@@ -107,8 +107,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de gastos
@@ -357,12 +357,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Gastos del municipio comparado con la categoria','Periodo','Mi Municipio Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  ['Eficiencia en la ejecucion',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -370,6 +372,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -380,6 +383,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  [u'Municipio Inicial',u'Categoria Inicial',u'Municipio Final',u'Categoria Final'],
                     'terms':{
                     'gasto__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
                     },
@@ -423,12 +427,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  ['Eficiencia en la ejecucion','Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto','Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
@@ -592,8 +598,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 0) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 0) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     # tabla: get gastos por año
     if municipio:

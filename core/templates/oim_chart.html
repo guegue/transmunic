@@ -36,7 +36,7 @@
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <!--maribel 20/07 - ingresos resumen -->
-        <div class="row separador">
+        <div class="row alert alert-success">
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
@@ -87,7 +87,7 @@
         <div class="col-md-6">
             <h3>Ingresos del periodo</h3>
             <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                ver grafico
+                ver gráfico
             </a>
             </h4>
             <div class="collapse" id="collapseExample">
@@ -109,8 +109,8 @@
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.subsubtipoingreso__origen__nombre}}</td>                                    
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
+                    <td class="text-right">{{ row.asignado|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
                     {% if row.asignado %}                                                   
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
@@ -179,7 +179,7 @@
                     <h3> Recaudación por habitante en cada categoría municipal</h3>
                     <h4 class="text-info">Córdobas Corrientes</h4>
                     <table class="table table-condensed col-md-3">
-                        <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                        <tr class="info"><th>Categoría de municipio</th> <th>Presupuestado</th> <th>Ejecutado</th></tr>
                         {% for row in porclasep %}
                         <tr>
                             <td class="text-center">{{ row.clasificacion }}</td>
@@ -188,7 +188,7 @@
                         </tr>
                         {% endfor %}
                         <tr class="success">
-                            <td><strong>TOTAL</strong></td>
+                            <td><strong>MEDIA NACIONAL</strong></td>
                             <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
                             <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
                         </tr>
@@ -237,7 +237,7 @@
         <!-- maribel 20/07 oim-tabla5 -->
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
-            <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">ver grafico</a>
+            <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a>
 
          <div class="collapse" id="collapsemodificacion">
             <div class="well">
@@ -246,7 +246,7 @@
             </div>
         </div>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.subsubtipoingreso__origen__nombre}}</td>
@@ -345,7 +345,7 @@
         </div>
         <table class="table table-condensed">
             <table class="table table-condensed">
-                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.ingreso__anio }}</td>

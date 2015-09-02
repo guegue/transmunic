@@ -107,8 +107,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de ingresos
@@ -349,12 +349,14 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Ejecucion presupuestaria','Periodo','Mi Municipio P.Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria P. Final'],
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  [u'Ingreso',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['ingreso__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -362,6 +364,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['ingreso__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -372,6 +375,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  ['Mi Municipio Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria %s' % (mi_clase.clasificacion,)],
                     'terms':{
                     'ingreso__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
                     },
@@ -398,10 +402,11 @@ def oim_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  [u'Municipio',u'Categoria'],
                     'terms':{
                     'ingreso__periodo': ['municipio','clase']
                     },
-                    }],
+                }],
                 chart_options =
                 {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
                 )
@@ -410,18 +415,21 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Ejecucion presupuestaria','Periodo','Asignado',u'Ejecutado'],
                 'terms':  ['ingreso__anio','ingreso__periodo','asignado','ejecutado',],
                 }],
             )
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  [u'Ingreso',u'Ingresos del periodo'],
                 'terms':  ['ingreso__periodo', 'monto'],
                 }],
                 )
         oim_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto','Totales'],
                 'terms':  ['ingreso__periodo', 'monto'],
                 }],
                 )
@@ -584,8 +592,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 0) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 0) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     # tabla: get ingresos por año
     if municipio:
