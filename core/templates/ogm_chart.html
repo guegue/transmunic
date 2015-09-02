@@ -7,7 +7,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
-    <h2 class="titular">Destino de los gastos  {{ municipio }} {{ year }} </h2>
+<h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% endif %}</h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -29,14 +29,14 @@
     </ul>
 
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
+        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, barra" }}
     {% else %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
+       {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo" }}
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <!--Gastos resumen -->
-        <div class="row separador">
+        <div class="row alert alert-success">
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
@@ -206,11 +206,11 @@
                             <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
                         </tr>
                     {% endfor %}
-                    <tr class="success">
+                    <!--tr class="success">
                         <td colspan="2">TOTAL</td>
                         <td class="text-right">{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
                         <td class="text-right">{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
-                    </tr>
+                    </tr-->
                 </table>
                 </div>
             {% endif %}
@@ -222,6 +222,13 @@
         <!-- maribel 20/07 ogm-tabla5 -->
         <h3>Modificaciones al presupuesto municipal de gastos</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseModificacion"  aria-expanded="false" aria-controls="collapseModificacion">Ver gráfico</a>
+        <div class="collapse" id="collapseModificacion">               
+            <div class="well">                                              
+                <h3>Destino del gastos</h3> 
+                <div id='comparativo3' class="col-md-10"> Chart will be rendered here </div>
+            </div>                                           
+        </div> 
         <table class="table table-condensed">
             <tr class="info"> <th>Rubros del gasto</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
             {% for row in rubros %}
@@ -274,7 +281,7 @@
                     <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
                     <td class="text-right">{{ row.ejecutado|intcomma }}</td>
                     {% if row.actualizado %}
-                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                        <td class="montos text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -301,10 +308,6 @@
                 {% endwith %}
             </tr>
         </table>
-
-        <h3>Ejecuci&oacute;n Presupuestaria {{ anio }}</h3>
-        <div id='comparativo3' class="col-md-10"> Chart will be rendered here </div>
-        <div id='barra' class="col-md-10 visible-xs"> Chart will be rendered here </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 ogm-tabla 7 -->
@@ -371,9 +374,8 @@
         <hr />
         <div class="col-md-12">
             <h3>Gastos del municipio vs Promedio de la categor&iacute;a</h3>
-            <div id='comparativo_anios' class="col-md-10"> Chart will be rendered here </div>
         </div>
-        <div id='asignado_barra' class="visible-xs"> Chart will be rendered here </div>
+        <div id='asignado_barra' class=""> Chart will be rendered here </div>
       </div>
     </div>
 </div>

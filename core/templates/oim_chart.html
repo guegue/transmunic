@@ -109,8 +109,8 @@
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.subsubtipoingreso__origen__nombre}}</td>                                    
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
+                    <td class="text-right">{{ row.asignado|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
                     {% if row.asignado %}                                                   
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
