@@ -107,8 +107,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 0) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de ingresos
@@ -355,6 +355,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  [u'Ingreso',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['ingreso__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -416,6 +417,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  [u'Ingreso',u'Ingresos del periodo'],
                 'terms':  ['ingreso__periodo', 'monto'],
                 }],
                 )
@@ -584,8 +586,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 0) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 0) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     # tabla: get ingresos por año
     if municipio:
