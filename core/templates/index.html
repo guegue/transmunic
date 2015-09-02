@@ -250,20 +250,67 @@
             <hr />
 	    <div class="col-md-12">
 		    <div class="panel panel-primary">
-                <div class="panel-heading"><h3>Inversión mínima de los ingresos  corrientes por categoría de municipio</h3></div>
+                <div class="panel-heading">
+                    <h3>Inversión mínima de los ingresos  corrientes por categoría de municipio
+                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#inversion-minima">
+                        ?
+                    </button>
+                    </h3>
+                </div>
 			    <div class="panel-body">
                     <div id='inversion_area'>
                     </div>
 		    	</div>
 		    </div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-minima" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionminima.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_inversionminima.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
 		</div>
 	    <div class="col-md-12">
 		    <div class="panel panel-success">
-			    <div class="panel-heading"><h3>Inversión mínima por sector priorizado</h3></div>
+			    <div class="panel-heading">
+                    <h3>Inversión mínima por sector priorizado
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-minima">
+                     ?
+                   </button>
+                   </h3>    
+                </div>
+
 			    <div class="panel-body">
                     <div id='inversion'>
                 </div>
 			</div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-sector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionisector.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_inversionisector.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
 	    </div>	
 	</div>
    </section>
