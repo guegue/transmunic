@@ -36,7 +36,7 @@
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <!--maribel 20/07 - ingresos resumen -->
-        <div class="row separador">
+        <div class="row alert alert-success">
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
@@ -87,7 +87,7 @@
         <div class="col-md-6">
             <h3>Ingresos del periodo</h3>
             <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                ver grafico
+                ver gráfico
             </a>
             </h4>
             <div class="collapse" id="collapseExample">
@@ -246,7 +246,7 @@
             </div>
         </div>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.subsubtipoingreso__origen__nombre}}</td>
@@ -345,7 +345,7 @@
         </div>
         <table class="table table-condensed">
             <table class="table table-condensed">
-                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.ingreso__anio }}</td>
