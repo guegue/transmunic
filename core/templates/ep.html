@@ -35,14 +35,12 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!--maribel 20/07 - ingresos resumen -->
         <div class="row separador">
             <div class="col-md-12">
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuestado</h3>
-                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
-                </div>
-                <div class="col-md-4">
-                    <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica la proporción en que se ejecutaron los ingresos y gastos totales . Nos sirve para evaluar la eficiencia en la presupuestación al inicio del año, sin modificaciones y el desempeño en la ejecución">La Ejecución presupuestaria alcanzó el: </h3>
+                    <span class="cifra grande text-primary">
+                        {{ ep }}%
+                    </span>
                 </div>
                 {% if municipio %}
                     <div class="col-md-4">
