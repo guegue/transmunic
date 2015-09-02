@@ -179,7 +179,7 @@
                     <h3> Recaudación por habitante en cada categoría municipal</h3>
                     <h4 class="text-info">Córdobas Corrientes</h4>
                     <table class="table table-condensed col-md-3">
-                        <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                        <tr class="info"><th>Categoría de municipio</th> <th>Presupuestado</th> <th>Ejecutado</th></tr>
                         {% for row in porclasep %}
                         <tr>
                             <td class="text-center">{{ row.clasificacion }}</td>
@@ -188,7 +188,7 @@
                         </tr>
                         {% endfor %}
                         <tr class="success">
-                            <td><strong>TOTAL</strong></td>
+                            <td><strong>MEDIA NACIONAL</strong></td>
                             <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
                             <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
                         </tr>
@@ -237,7 +237,7 @@
         <!-- maribel 20/07 oim-tabla5 -->
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
-            <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">ver grafico</a>
+            <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a>
 
          <div class="collapse" id="collapsemodificacion">
             <div class="well">

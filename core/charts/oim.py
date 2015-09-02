@@ -349,6 +349,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Ejecucion presupuestaria','Periodo','Mi Municipio P.Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria P. Final'],
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
@@ -363,6 +364,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['ingreso__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -373,6 +375,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  ['Mi Municipio Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria %s' % (mi_clase.clasificacion,)],
                     'terms':{
                     'ingreso__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
                     },
@@ -399,10 +402,11 @@ def oim_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  [u'Municipio',u'Categoria'],
                     'terms':{
                     'ingreso__periodo': ['municipio','clase']
                     },
-                    }],
+                }],
                 chart_options =
                 {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
                 )
@@ -411,6 +415,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Ejecucion presupuestaria','Periodo','Asignado',u'Ejecutado'],
                 'terms':  ['ingreso__anio','ingreso__periodo','asignado','ejecutado',],
                 }],
             )
@@ -424,6 +429,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto','Totales'],
                 'terms':  ['ingreso__periodo', 'monto'],
                 }],
                 )

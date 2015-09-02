@@ -357,12 +357,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Gastos del municipio comparado con la categoria','Periodo','Mi Municipio Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  ['Eficiencia en la ejecucion',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -370,6 +372,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -380,6 +383,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 [{'options':{
                     'type': 'column',
                     'stacking': False},
+                    'names':  [u'Municipio Inicial',u'Categoria Inicial',u'Municipio Final',u'Categoria Final'],
                     'terms':{
                     'gasto__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
                     },
@@ -423,12 +427,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  ['Eficiencia en la ejecucion','Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  ['Modificaciones al presupuesto','Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
