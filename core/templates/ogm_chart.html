@@ -148,6 +148,14 @@
               <hr />
               <div class="collapse col-md-9" id="collapseejecucion">
                 <div class="well">
+			<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
+			    {% csrf_token %}
+			    <input type="hidden" name="reporte" value="ogm2"></button>			                      
+			    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
+			      <span class="glyphicon glyphicon-download-alt"></span>
+			      <span class="text">Excel</span>
+			    </button>
+			</form>                    
                     <h4>Gastos en millones de córdobas corrientes</h3>
                     <table class="table table-condensed">                                       
                         <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
