@@ -55,6 +55,11 @@ def ep_chart(request):
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
+        # calculo de La Ejecución presupuestaria alcanzó el: 
+        ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
+        ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
+        ep = round(ep_gastos / ep_ingresos * 100, 1)
+
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
         mi_clase_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
@@ -108,6 +113,11 @@ def ep_chart(request):
         rubros = glue(rubros_inicial, rubros_final, periodo, 'tipoingreso__clasificacion', actualizado=rubros_actualizado)
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
+
+        # calculo de La Ejecución presupuestaria alcanzó el: 
+        ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
+        ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
+        ep = round(ep_gastos / ep_ingresos * 100, 1)
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         with open ("core/charts/ep_porclasep.sql", "r") as query_file:
@@ -167,10 +177,10 @@ def ep_chart(request):
             )
 
     # FIXME BS
-    otros = ejecutado = asignado = porclase = None
+    asignado = ejecutado = otros = porclase = None
 
     return render_to_response('ep.html',{'charts': (bar, ), \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
+            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
             context_instance=RequestContext(request))
