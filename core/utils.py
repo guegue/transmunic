@@ -23,18 +23,31 @@ COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf('font: bold on; align: wrap on, v
 
 def obtener_valor(instance, name, es_diccionario=False):
     try:
-        if "/" in name:
-            atributos = name.split("/")
+        if "/" in name or "-" in name:
+            if "/" in name:
+                operador = "/"
+            elif "-" in name:
+                operador = "-"                
+                
+            atributos = name.split(operador)                        
             if es_diccionario:
                 value1 = instance[atributos[0]]
                 value2 = instance[atributos[1]]
             else:
                 value1 = getattr(instance, atributos[0])
                 value2 = getattr(instance, atributos[1])
-            if value2 == 0:
-                return Decimal("0")             
-            return ((value1 / value2) / Decimal("100.0")).quantize(*QUANTIZE_VALUES)
-        return instance[name] if es_diccionario else getattr(instance, name)
+                
+            if operador == "/":
+                if value2 == 0:
+                    value = Decimal("0")             
+                else:
+                    value = ((value1 / value2) / Decimal("100.0")).quantize(*QUANTIZE_VALUES)
+            elif operador == "-":
+                value = (value1 - value2) if value1 <> 0 else Decimal("0") 
+        else:       
+            value = instance[name] if es_diccionario else getattr(instance, name)
+        
+        return value or Decimal("0")
     except AttributeError:
         return obtener_valor(instance, name, es_diccionario=True)
         
@@ -94,17 +107,43 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
         
     return hoja
 
-def obtener_excel_response(reporte,queryset,sheet_name="hoja1"):
-    print queryset
+def obtener_excel_response(reporte,data,sheet_name="hoja1"):    
     response = HttpResponse(content_type='application/vnd-ms-excel')
     libro = xlwt.Workbook(encoding='utf8')
-    titulo = "reporte"                          
+    titulo = "reporte"                            
     if reporte == "ogm":
         titulo = u"Eficiencia en la ejecución del gasto municipal"
         subtitulo = u"Gastos en millones de córdobas corrientes"
-        encabezados = ["Rubro","Inicial","Ejecutado"]
+        encabezados = ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"]
         celdas = ["tipogasto__nombre","asignado","ejecutado","ejecutado/asignado"]
+        queryset = data["rubros"]
         crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+        
+    elif reporte == "ogm2":
+        titulo = u"Eficiencia en la ejecución del gasto de personal permanente"
+        subtitulo = u"Gastos en millones de córdobas corrientes"
+        encabezados = ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"]
+        celdas = ["subsubtipogasto__nombre","asignado","ejecutado","ejecutado/asignado"]
+        queryset = data["rubrosp"]
+        crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+        
+    elif reporte == "ogm3":
+        titulo = u"Gastos de personal por habitante en cada categoría municipal"
+        subtitulo = u"Córdobas Corrientes"
+        encabezados = [u"Categoría de municipio","Inicial","Ejecutado"]
+        celdas = ["clasificacion","asignado","ejecutado"]
+        queryset = data["porclasep"]
+        crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+    elif reporte == "ogm4":
+        titulo = u"Modificaciones al presupuesto municipal de gastos"
+        subtitulo = u"Millones de córdobas corrientes"
+        encabezados = [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"]
+        celdas = ["tipogasto__nombre","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"]
+        queryset = data["rubros"]
+        crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)        
+    else:
+        libro.add_sheet(sheet_name)
+        
         
     file_name = titulo
     response['Content-Disposition'] = u'attachment; filename="{0}.xls"'.format(file_name)            
