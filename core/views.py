@@ -122,6 +122,11 @@ def ogm_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
+    
+    if "excel" in request.POST.keys():
+        from core.utils import obtener_excel_response                                 
+        return obtener_excel_response(reporte="ogm", queryset=data["rubros"])
+    
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
