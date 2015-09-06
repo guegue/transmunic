@@ -14,7 +14,7 @@ TOTAL_ROW_FORMAT =xlwt.easyxf('font: bold on, height 200, name Arial',num_format
 CENTER= xlwt.easyxf('align: wrap on, vert centre, horiz center')
 
 PERCENTAGE_FORMAT =xlwt.easyxf(num_format_str='0.0%')
-TOTAL_PERCENTAGE_FORMAT =xlwt.easyxf('font: bold on, height 200, name Arial',num_format_str='0.00%')
+TOTAL_PERCENTAGE_FORMAT =xlwt.easyxf('font: bold on, height 200, name Arial',num_format_str='0.0%')
 NUMBER_FORMAT =xlwt.easyxf(num_format_str='##,##0.00')
 LEFT_FORMAT =xlwt.easyxf('align: wrap on, vert centre, horiz left; font: name Arial')
 DATE_FORMAT = xlwt.easyxf(num_format_str='DD/MM/YYYY')
@@ -37,7 +37,10 @@ def obtener_valor(instance, name, es_diccionario=False):
             else:
                 value1 = getattr(instance, atributos[0])
                 value2 = getattr(instance, atributos[1])
-                
+            
+            value1 = value1 or Decimal("0")
+            value2 = value2 or Decimal("0")
+            
             if operador == "/":
                 if value2 == 0:
                     value = Decimal("0")             
@@ -278,6 +281,63 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         else:
             libro.add_sheet(sheet_name)
 
+    elif "gf" in reporte:             
+        if reporte == "gf1":
+            titulo = u"Resultado presupuestario gastos de funcionamiento"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = [u"Tipo","Inicial","Ejecutado", "% (ejecutado/inicial)"]
+            celdas = [
+                      "tipogasto__nombre"
+                      ,"asignado"
+                      ,"ejecutado"
+                      ,"ejecutado/asignado"
+                      ]
+            queryset = data["rubros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gf2":
+            titulo = u"Modificaciones al presupuesto municipal"
+            subtitulo = u"Millones de córdobas"
+            encabezados = ["Tipo","Inicial","Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]
+            celdas = ["tipogasto__nombre","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["rubros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gf3":
+            titulo = u"Modificaciones al presupuesto municipal por categoría"
+            subtitulo = u"Millones de córdobas"
+            encabezados = ["Municipio","Inicial","Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]
+            celdas = ["clasificacion","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["porclase"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gf4":
+            titulo = u"Ejecución presupuestaria del gasto de funcionamiento"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = ["Municipio","Inicial","Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]            
+            celdas = ["gasto__municipio__nombre","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["otros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas) 
+    
+        elif reporte == "gf5":
+            titulo = u"Ejecución presupuestaria del gasto de funcionamiento"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = [u"Municipio","Inicial","Ejecutado", "% (ejecutado/inicial)"]
+            celdas = ["gasto__anio","asignado","ejecutado","ejecutado/asignado"]
+            queryset = data["anuales"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)    
+                
+        else:
+            libro.add_sheet(sheet_name)
 
         
         
