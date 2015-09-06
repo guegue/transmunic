@@ -24,3 +24,7 @@ def total_avg(dict, key):
         return sum(float(d[key] or 0) for d in dict) / len(dict)
     except TypeError:
         return 0
+
+@register.inclusion_tag('descargar_excel.html')
+def descargar_excel(reporte):
+    return {'reporte': reporte}
