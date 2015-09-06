@@ -318,7 +318,7 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
             crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
             
         elif reporte == "gf4":
-            titulo = u"Ejecución presupuestaria del gasto de funcionamiento"
+            titulo = u"Modificaciones al presupuesto municipal por categoría"
             subtitulo = u"Millones de córdobas corrientes"
             encabezados = ["Municipio","Inicial","Actualizado",u"Modificación"
                            ,"Ejecutado","% Ejecutado/Actualizado"]            
@@ -330,6 +330,66 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
     
         elif reporte == "gf5":
             titulo = u"Ejecución presupuestaria del gasto de funcionamiento"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = [u"Municipio","Inicial","Ejecutado", "% (ejecutado/inicial)"]
+            celdas = ["gasto__anio","asignado","ejecutado","ejecutado/asignado"]
+            queryset = data["anuales"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)    
+                
+        else:
+            libro.add_sheet(sheet_name)
+
+
+    else:             
+        if reporte == "gp1":
+            titulo = u"Resultado presupuestario gastos de personal"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = [u"Rubros gastos de personal","Inicial","Ejecutado", "% (ejecutado/inicial)"]
+            celdas = [
+                      "subtipogasto__nombre"
+                      ,"asignado"
+                      ,"ejecutado"
+                      ,"ejecutado/asignado"
+                      ]
+            queryset = data["rubros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gp2":
+            titulo = u"Modificaciones al presupuesto municipal"
+            subtitulo = u"Millones de córdobas"
+            encabezados = ["Rubros gasto de personal","Inicial"
+                           ,"Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]
+            celdas = ["subtipogasto__nombre","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["rubros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gp3":
+            titulo = u"Modificaciones al presupuesto municipal por categoría"
+            subtitulo = u"Millones de córdobas"
+            encabezados = ["Municipio","Inicial","Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]
+            celdas = ["clasificacion","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["porclase"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            
+        elif reporte == "gp4":
+            titulo = u"Modificaciones al presupuesto municipal por categoría"
+            subtitulo = u"Millones de córdobas corrientes"
+            encabezados = ["Municipio","Inicial","Actualizado",u"Modificación"
+                           ,"Ejecutado","% Ejecutado/Actualizado"]            
+            celdas = ["gasto__municipio__nombre","asignado"
+                      ,"actualizado","actualizado-asignado"
+                      ,"ejecutado","ejecutado/actualizado"]
+            queryset = data["otros"]
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas) 
+    
+        elif reporte == "gp5":
+            titulo = u"Ejecución presupuestaria del gasto de personal"
             subtitulo = u"Millones de córdobas corrientes"
             encabezados = [u"Municipio","Inicial","Ejecutado", "% (ejecutado/inicial)"]
             celdas = ["gasto__anio","asignado","ejecutado","ejecutado/asignado"]
