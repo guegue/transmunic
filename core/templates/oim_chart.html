@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block main_content %}
+	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% endif %}</h2>
     <form method="GET">
     <select name="year">

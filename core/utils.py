@@ -299,30 +299,50 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
     response = HttpResponse(content_type='application/vnd-ms-excel')
     libro = xlwt.Workbook(encoding='utf8')
     titulo = "reporte"
-    
-    report_config = CONFIGURACION_TABLAS_EXCEL[reporte]
-    titulo = report_config["titulo"]
-    subtitulo = report_config["subtitulo"]
-    encabezados = report_config["encabezados"]
-    celdas = report_config["celdas"]
-    if report_config["qs"] is not None:
-        queryset = data[report_config["qs"]]
+    if "all" in reporte:
+        if reporte  == "ogm-all":
+            reportes = ["ogm{0}".format(i) for i in range(1,8)]
+            file_name = "Resumen de Gastos Municipales"
+        elif reporte == "oim-all":
+            reportes = ["oim{0}".format(i) for i in range(1,8)]
+            file_name = "Resumen de Ingresos Municipales"
+        elif reporte == "gf-all":
+            reportes = ["gf{0}".format(i) for i in range(1,6)]
+            file_name = "Resumen Gastos de Funcionamiento"
+        else:
+            reportes = ["gp{0}".format(i) for i in range(1,6)]
+            file_name = "Resumen Gastos de Personal"                
     else:
-        for year in data["year_list"]:
-            nombre = unicode(year)
-            encabezados.append(nombre)
-            celdas.append(nombre)                                    
-        queryset = []
-        for key, datos in data["porano"].items():
-            row = {}            
-            row["descripcion"] = key            
-            for anyo, valor in datos.items():
-                row[unicode(anyo)] = valor            
-            queryset.append(row)        
-    
-    crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)        
+        reportes = [reporte]
+        file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
         
-    file_name = titulo
+    for report_name in reportes:
+        report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
+        titulo = report_config["titulo"]
+        sheet_name = report_name
+        subtitulo = report_config["subtitulo"]
+        encabezados = report_config["encabezados"]
+        celdas = report_config["celdas"]
+        if report_config["qs"] is not None:
+            queryset = data[report_config["qs"]]
+        else:
+            for year in data["year_list"]:
+                nombre = unicode(year)
+                encabezados.append(nombre)
+                celdas.append(nombre)                                    
+            queryset = []
+            for key, datos in data["porano"].items():
+                row = {}            
+                row["descripcion"] = key            
+                for anyo, valor in datos.items():
+                    row[unicode(anyo)] = valor            
+                queryset.append(row)        
+        if queryset is not None:
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+        elif len(reportes)==1:
+            libro.add_sheet("{0} vacio".format(sheet_name))        
+        
+    
     response['Content-Disposition'] = u'attachment; filename="{0}.xls"'.format(file_name)            
     libro.save(response)
     return response

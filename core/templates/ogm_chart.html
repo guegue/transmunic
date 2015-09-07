@@ -7,6 +7,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
+{% descargar_excel "ogm-all" %}
 <h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% endif %}</h2>
     <form method="GET">
     <select name="year">
