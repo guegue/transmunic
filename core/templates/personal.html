@@ -5,6 +5,7 @@
 {% block main_content %}
     <div class="col-md-12 text-centered">
         <div class="pull-left">
+        	{% descargar_excel "gp-all" %}
             <h2 class="title">Gastos de personal {{ municipio }} {{ year }} </h2>
         </div>
         <div class="pull-left">
@@ -145,6 +146,7 @@
 
     <div class="col-md-7">
     <!-- javier 7/junio gftabla2 -->
+    {% descargar_excel "gp1" %}
     <h3>Resultado presupuestario gastos de personal</h3>
     <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseComparativo"  aria-expanded="false" aria-controls="collapseComparativo">Ver gráfico </a> </h4>
     <hr />
@@ -190,6 +192,7 @@
     <div role="tabpanel" class="tab-pane fade" id="modificacion" aria-labelledby="modificacion-tab">
 
     <!-- javier 7/junio gftabla3 -->
+    {% descargar_excel "gp2" %}
     <h3>Modificaciones al presupuesto municipal</h3>
     <h4 class="text-info">Gasto de personal - millones de córdobas</h4>
     <table class="table table-condensed">
@@ -234,6 +237,7 @@
     
     {% if not municipio %}
     <!-- javier 7/junio gftabla4 nacional -->
+    {% descargar_excel "gp3" %}
     <h3>Modificaciones al presupuesto municipal por categoría</h3>
     <h4 class="text-info">Millones de córdobas</h4>
     <table  class="table table-condensed">
@@ -278,6 +282,7 @@
     {% else %}
     
     <!-- javier 7/junio gftabla4 -->
+    {% descargar_excel "gp4" %}
     <h3>Modificación al presupuesto municipios categoría '{{ mi_clase.clasificacion }}'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
     <table  class="table table-condensed">
@@ -332,7 +337,8 @@
     <div role="tabpanel" class="tab-pane fade" id="cierre" aria-labelledby="cierre-tab">
     <!-- javier 7/junio gftabla5 -->
     <div class="col-md-7">
-        <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
+    	{% descargar_excel "gp5" %}
+        <h3>Ejecución presupuestaria del gasto de personal</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
     <table class="table table-condensed">
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>

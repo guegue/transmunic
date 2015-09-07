@@ -7,6 +7,7 @@
 {{ obj.nombre }}
 {% endblock %}
 {% block main_content %}
+{% descargar_excel "ogm-all" %}
 <h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% endif %}</h2>
     <form method="GET">
     <select name="year">
@@ -90,14 +91,7 @@
         </div>
         <div class="col-md-6">
             <!-- maribel 21/07 tabla2 inversion -->
-			<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
-			    {% csrf_token %}
-			    <input type="hidden" name="reporte" value="ogm"></button>
-			    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
-			      <span class="glyphicon glyphicon-download-alt"></span>
-			      <span class="text">Excel</span>
-			    </button>
-			</form>            
+			{% descargar_excel "ogm1" %}           
             <h3>Eficiencia en la ejecución del gasto municipal</h3>
             <h4>Gastos en millones de córdobas corrientes
               <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseeficiencia"  aria-expanded="false" aria-controls="collapseEficiencia">Ver gráfico </a>
@@ -148,14 +142,7 @@
               <hr />
               <div class="collapse col-md-9" id="collapseejecucion">
                 <div class="well">
-			<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
-			    {% csrf_token %}
-			    <input type="hidden" name="reporte" value="ogm2"></button>			                      
-			    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
-			      <span class="glyphicon glyphicon-download-alt"></span>
-			      <span class="text">Excel</span>
-			    </button>
-			</form>                    
+					{% descargar_excel "ogm2" %}                    
                     <h4>Gastos en millones de córdobas corrientes</h3>
                     <table class="table table-condensed">                                       
                         <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
@@ -184,14 +171,7 @@
             <!-- maribel 06/07 gftabla4 nacional -->
             {% if not municipio %}
                 <div class="col-md-5">
-			<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
-			    {% csrf_token %}
-			    <input type="hidden" name="reporte" value="ogm3"></button>			                      
-			    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
-			      <span class="glyphicon glyphicon-download-alt"></span>
-			      <span class="text">Excel</span>
-			    </button>
-			</form>                  
+				{% descargar_excel "ogm3" %}                
                 <h3>Gastos de personal por habitante en cada categoría municipal</h3>
                 <h4 class="text-info">Córdobas Corrientes</h4>
                 <table class="table table-condensed">
@@ -245,14 +225,7 @@
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
         <!-- maribel 20/07 ogm-tabla5 -->
-			<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
-			    {% csrf_token %}
-			    <input type="hidden" name="reporte" value="ogm4"></button>			                      
-			    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
-			      <span class="glyphicon glyphicon-download-alt"></span>
-			      <span class="text">Excel</span>
-			    </button>
-			</form>         
+		{% descargar_excel "ogm4" %}      
         <h3>Modificaciones al presupuesto municipal de gastos</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseModificacion"  aria-expanded="false" aria-controls="collapseModificacion">Ver gráfico</a>
@@ -302,6 +275,7 @@
         <br />
         <!-- /fin ogm-tabla5 -->
         <!-- maribeli 20/07 ogm-tabla6 -->
+        {% descargar_excel "ogm5" %}
         <h3>Modificacion al presupuesto municipal del gasto de personal permanente</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -345,6 +319,7 @@
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 ogm-tabla 7 -->
         <div class="col-md-6">
+        {% descargar_excel "ogm6" %}
             <h3>Ejecución presupuestaria del gasto sector municipal</h3>
             <h4 class="text-info">Millones de córdobas corrientes
                 <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsecomparativo_anios"  aria-expanded="false" aria-controls="collapsePastel">Ver gráfico</a>
@@ -382,6 +357,7 @@
         <!-- /fin gftabla7 -->
         <!--maribel 20/07 ogm-tabla 8 -->
         <div class="col-md-10">
+        	{% descargar_excel "ogm7" %}
             <h3>Gastos por períodos</h3>
             <h4 class="text-info">Millones de c&oacute;rdoba corrientes</h4>
             <table class="table table-condensed">

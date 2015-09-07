@@ -1,0 +1,8 @@
+<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
+    {% csrf_token %}
+    <input type="hidden" name="reporte" value="{{ reporte }}"></button>
+    <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">
+      <span class="glyphicon glyphicon-download-alt"></span>
+      <span class="text">Excel</span>
+    </button>
+</form> 
