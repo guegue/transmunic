@@ -13,9 +13,9 @@
     </select>
     <select name="municipio">
     <option value="">--</option>
-    {% for amunicipio in municipio_list %}
-        <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-    {% endfor %}
+    {% for municipio in municipio_list %}                                       
+        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+    {% endfor %} 
     </select>
     <input type="submit" value="Buscar"/>
     </form>
@@ -27,7 +27,7 @@
     </ul>
 
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, percapita_anios, asignado" }}
+        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, none, asignado" }}
     {% else %}
         {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado, ultimos, fuentes" }}
     {% endif %}
@@ -36,7 +36,7 @@
     <div id="invTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <!--maribel 21/07 - ingresos resumen -->
-        <div class="row separador">
+        <div class="row alert alert-success">
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="inversion monto asignado" />
@@ -59,8 +59,33 @@
 
         <div class="col-md-5">
             <!--maribel 21/07- tabla1 inversion municipal -->
-            <h2>Inversión municipal</h2>
-            <h3>Porcentaje por clasificación</h3>
+            <h3>Inversión municipal</h3>
+            <h4 class="text-info">Porcentaje por clasificación
+              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsepastel2"  aria-expanded="false" aria-controls="collapsePastel2">Ver gráfico</a>
+            </h4>
+            <div class="collapse" id="collapsepastel1">               
+                <div class="well col-md-8">                                              
+                    <h3>Destino del gastos</h3> 
+                    <div id='fuente_pie' class="col-md-8"> Chart will be rendered here </div>
+                    <br clear="all" />
+                </div>                                           
+            </div> 
+            <div class="collapse" id="collapsepastel2">               
+                <div class="well">                                              
+                    <div id='asignado' class="col-md-4"> Chart will be rendered here </div>
+                </div>                                           
+            </div> 
+            <div class="collapse" id="collapsepastel">               
+                <div class="well">                                              
+                    <h3>Destino del gastos</h3> 
+                    <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
+                </div>                                           
+            </div> 
+            <div class="collapse" id="collapsebarra">               
+                <div class="well">                                              
+                    <div id='tipo' class="col-md-5"> Chart will be rendered here </div>
+                </div>                                           
+            </div> 
             <table class="table">
             <tr class="info"><th colspan="2">Clasificación</th><th>Inicial</th><th>Ejecutado</th></tr>
             {% for total in totales %}
@@ -77,7 +102,7 @@
         <div class="col-md-7">
             <!--maribel 21/07 tabla2 inverson -->
             <h3>Inversión municipal</h3>
-            <h4>Millones de córdobas corrientes</h4>
+            <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-bordered">
             <thead>
                 <tr class="info">
@@ -91,8 +116,8 @@
             {% for total in cat %}
               <tr>
                 <td class="text-left">{{ total.catinversion__nombre }}</td>
-                <td>{{ total.asignado|intcomma }}</td>
-                <td>{{ total.ejecutado|intcomma }}</td>
+                <td class="text-right">{{ total.asignado|intcomma }}</td>
+                <td class="text-right">{{ total.ejecutado|intcomma }}</td>
                 <td>
                 {% if total.asignado %}
                     <span class="text-success">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
@@ -102,9 +127,9 @@
               {% endfor %}
               <tr class="success bold">                                       
                 <td>TOTAL</td>                                              
-                <td>{{ asignado|intcomma }}</td>                            
-                <td>{{ ejecutado|intcomma }}</td>                           
-                <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                <td class="text-right">{{ asignado|intcomma }}</td>                            
+                <td class="text-right">{{ ejecutado|intcomma }}</td>                           
+                <td class="montos text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
               </tr>
             </tbody>
             </table>
@@ -113,20 +138,20 @@
         <!--maribel 21/07 tabla3 inversion - nacional -->
         <div class="col-md-7">
             <h3>Inversión municipal por población</h3>
-            <h4>por categoría de municipios en córdobas corrientes</h3>
+            <h4 class="text-info">por categoría de municipios en córdobas corrientes</h3>
             <table class="table table-condensed">
                 <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
                 {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
                     <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
-                    <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                    <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
                 </tr>
                 {% endfor %}
                 <tr class="success">
                     <td><strong>TOTAL</strong></td>
-                    <td><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                    <td><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
+                    <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
+                    <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
                 </tr>
             </table>
         </div>
@@ -147,14 +172,14 @@
                         {% endif %}
                             <td> {{forloop.counter}} </td>
                             <td>{{ row.inversion__municipio__nombre }}</td>
-                            <td>{{ row.asignado_percent }}</td>
-                            <td class="info">{{ row.ejecutado_percent }}</td>
+                            <td class="text-right">{{ row.asignado_percent }}</td>
+                            <td class="info text-right">{{ row.ejecutado_percent }}</td>
                         </tr>
                     {% endfor %}
                     <tr class="success">
                         <td>TOTAL</td>
-                        <td>{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
-                        <td>{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                        <td class="text-right">{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
+                        <td class="text-right">{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
                     </tr>
                 </table>
             </div>
@@ -187,26 +212,26 @@
                 <td class="text-left">
                     {{ total.catinversion__nombre }}
                 </td>
-                <td>
+                <td class="text-right">
                    {{ total.asignado }}</td>
                 </td>
-                <td>
+                <td class="text-right">
                     {{ total.actualizado }}
                 </td>
-                <td>
+                <td class="text-right">
                     {% if total.actualizado %}{{ total.actualizado|sub:total.asignado|intcomma }}{% else %}0{% endif %} 
                 </td>
-                <td>
+                <td class="text-right">
                     {{ total.ejecutado }}
                 </td>
-                <td>
+                <td class="text-right">
                     {% if total.actualizado %}                                    
                       {{ total.ejecutado|div:total.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
                         0
                     {% endif %}     
                 </td>
-                <td>
+                <td class="text-right">
                     {% if total.actualizado %}                                    
                       {{ total.ejecutado|div:total.asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
@@ -222,7 +247,14 @@
     <br clear="all">
     <div role="tabpanel" class="tab-pane fade" id="invhistorico" aria-labelledby="invhistorico-tab">
         <h3>Comportamiento histórico de las inversiones anuales</h3>
-        <h4>En millones de córdobas corrientes</h4>
+        <h4 class="text-info">En millones de córdobas corrientes
+              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">Ver gráfico</a>
+        </h4>
+        <div class="collapse" id="collapsehistorico">               
+           <div class="well col-md-8">                                              
+                <div id='comparativo_anios' class="col-md-8"> Chart will be rendered here </div>
+           </div>                                           
+        </div> 
         <div class="col-md-9">
             <table class="table table-bordered">
             <thead>
@@ -241,10 +273,10 @@
                     <h4>{{ total.inversion__anio }}</h4>
                 </td>
                 <td>{% if total.asignado %}{{ total.asignado }}{% else %}No disponible {% endif %}</td>
-                <td>{{ total.actualizado }}</td>
-                <td>{% if total.actualizado %}{{ total.actualizado|sub:total.asignado }}{% else %}0{% endif %}</td>
-                <td>{{ total.ejecutado }}</td>
-                <td>
+                <td class="text-right">{{ total.actualizado }}</td>
+                <td class="text-right">{% if total.actualizado %}{{ total.actualizado|sub:total.asignado }}{% else %}0{% endif %}</td>
+                <td class="text-right">{{ total.ejecutado }}</td>
+                <td class="text-right">
                 {% if total.asignado %}
                     {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%
                 </div>
@@ -255,10 +287,7 @@
             </tbody>
             </table>
         </div>
-     </div>
-    <!-- tabla1 -->
-    <br clear="all"> <br />
-    <div class="col-md-10">
+        <div class="col-md-10">
           <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
           <table class="table table-condensed">
             <tr class="info">
@@ -284,15 +313,15 @@
            {% endfor %}
  
           </table>
-    </div>
+        </div>
+     </div>
+    <!-- tabla1 -->
+    <br clear="all"> <br />
     <div class="clearfix"></div>
     <div id='tipo' style="display:none;"> Chart will be rendered here </div>
     <div id='area'  style="display:none;"> Chart will be rendered here </div>
     <div id='fuente' style="display:none;"> Chart will be rendered here </div>
-    <div id='fuente_pie'> Fuentes de financiamiento? </div>
-    <div id='comparativo_anios'> Compartativo anual </div>
-    <div id='percapita_anios'> Inversion percapita  </div>
-    <div id='asignado'> Inversion asignados </div>
-    <div id='ejecutado'>Inversion ejecutada </div>
-    <div id='ultimos'>Ultimos anios </div>
+    <!--div id='percapita_anios'> Inversion percapita  </div-->
+    <div id='ejecutado' style="display:none;">Inversion ejecutada </div>
+    <div id='ultimos' style="display:none;">Ultimos anios </div>
 {% endblock %}

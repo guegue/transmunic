@@ -401,6 +401,7 @@ def gpersonal_chart(request):
         gf_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
+                'names':  [u'Gastos',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -421,6 +422,7 @@ def gpersonal_chart(request):
         gf_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
+                'names':  [u'Gastos',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)

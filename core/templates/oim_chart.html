@@ -236,15 +236,16 @@
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
         <!-- maribel 20/07 oim-tabla5 -->
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
+        <h4 class="text-info">Millones de córdobas corrientes
             <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a>
-
+        </h4>
          <div class="collapse" id="collapsemodificacion">
             <div class="well">
                 <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
                 <div class="col-md-7"><div id='comparativo3'> Chart will be rendered here </div></div>
             </div>
         </div>
+        <div class="col-md-8">
         <table class="table table-condensed">
             <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
             {% for row in rubros %}
@@ -289,7 +290,8 @@
         <h3>Modificacion al presupuesto municipal del ingreso de personal permanente</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>
+                    <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
             {% for row in rubrosp %}
                 <tr>
                     <td class="pull-left">{{ row.subtipoingreso__nombre }}</td>
@@ -325,6 +327,7 @@
                 {% endwith %}
             </tr>
         </table>
+        </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->

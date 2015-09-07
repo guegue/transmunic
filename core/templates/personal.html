@@ -40,10 +40,10 @@
         {% endfor %}
         </select>
         <select name="municipio">
-        <option value="">--</option>
-        {% for amunicipio in municipio_list %}
-            <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-        {% endfor %}
+            <option value="">--</option>
+            {% for municipio in municipio_list %}
+                <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+            {% endfor %}
         </select>
         <input type="submit" value="Buscar" class="btn btn-primary"/>
         </form>
@@ -58,7 +58,7 @@
     {% if municipio %}
         {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios," }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie, none, comparativo3, comparativo_anios, nivelejecucion" }}
+        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, nivelejecucion" }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
 
@@ -66,7 +66,7 @@
     <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
 
     <!--Gastos de personal resumen -->
-    <div class="row separador">
+    <div class="row alert alert-success">
         <div class="col-md-12">
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de personal asignado" />
@@ -146,9 +146,17 @@
     <div class="col-md-7">
     <!-- javier 7/junio gftabla2 -->
     <h3>Resultado presupuestario gastos de personal</h3>
-    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <h4 class="text-info">Millones de córdobas corrientes
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsegrafico1"  aria-expanded="false" aria-controls="collapseGrafico1">Ver gráfico </a>
+    </h4>
+    <hr />
+    <div class="collapse col-md-4" id="collapsegrafico1">
+        <div class="well">
+            <div id='comparativo2' class="col-md-6"> Chart will be rendered here </div>
+        </div>
+    </div>
     <table class="table table-condensed">
-        <tr class="info"> <th>Rubros gastos de personal</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+        <tr class="info"> <th>Rubros gastos de personal</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in rubros %}
     <tr>
         <td>{{ row.subtipogasto__nombre }}</td>
@@ -171,14 +179,10 @@
     <div id='pie'>chart</div>
     
     <!--maribel - FIXME: del funcionamiento antrior -->
-    <div id='chart' style="display:none;">chart</div>
     <div id='chart_ejecutado' style="display:none;">chart</div>
 
     <!-- FIXME: copiados de gf -->
-    <div id='gfbar'>gfbar</div>
     <div id='tipo'>chart</div>
-    <div id='comparativo2'>chart</div>
-    <div id='comparativo3'>chart</div>
 
     </div>
     </div>
@@ -189,9 +193,17 @@
 
     <!-- javier 7/junio gftabla3 -->
     <h3>Modificaciones al presupuesto municipal</h3>
-    <h4 class="text-info">Gasto de personal - millones de córdobas</h4>
+    <h4 class="text-info">Gasto de personal - millones de córdobas
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsegraficomod1"  aria-expanded="false" aria-controls="collapseGraficomod1">Ver gráfico </a>
+    </h4>
+    <hr />
+    <div class="collapse col-md-4" id="collapsegraficomod1">
+        <div class="well">
+            <div id='comparativo3' class="col-md-6"> Chart will be rendered here </div>
+        </div>
+    </div>
     <table class="table table-condensed">
-        <tr class="info"> <th>Rubros gasto de personal</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"> <th>Rubros gasto de personal</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
     {% for row in rubros %}
     <tr>
         <td class="pull-left">{{ row.subtipogasto__nombre }}</td>
@@ -235,7 +247,7 @@
     <h3>Modificaciones al presupuesto municipal por categoría</h3>
     <h4 class="text-info">Millones de córdobas</h4>
     <table  class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actializado" class="link-info">%</a></th></tr>
     {% for row in porclase %}
     <tr>
         <td>{{ row.clasificacion }}</td>
@@ -279,7 +291,7 @@
     <h3>Modificación al presupuesto municipios categoría '{{ mi_clase.clasificacion }}'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
     <table  class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in otros %}
         {% if municipio.slug == row.gasto__municipio__slug%}
             <tr class="info">
@@ -332,8 +344,20 @@
     <div class="col-md-7">
         <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
+            <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsegraficoanios"  aria-expanded="false" aria-controls="collapseGraficioanio">Ver gráfico </a>
+        </h4>
+    <hr />
+    <div class="collapse col-md-7" id="collapsegraficoanios">
+        <div class="well">
+            {% if municipio %}
+                <div id='comparativo_anios' class="col-md-10"></div>                    
+            {% else %}
+                <div id='gfbar' class="col-md-7">gfbar</div>
+            {% endif %}
+        </div>
+    </div>
     <table class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in anuales %}
     <tr>
         <td>{{ row.gasto__anio }}</td>
@@ -357,13 +381,7 @@
     </table>
     <!-- /fin gftabla5 -->
     </div>
-    <br clear="all" />
-        <h3>Gastos de personal</h3>
-        <h4>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h4>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
-        <div id='comparativo_anios' class="col-md-10"></div>                    
-        <!--maribel - FIXME: Utiles? -->
-        <div id='barra'  style="display:none;">barra</div>
+        <div id='barra'  style="display:none;"></div>
         <div id='gfbar' style="display:none;"></div>
         <div id='none' style="display:none"></div>
      </div>
