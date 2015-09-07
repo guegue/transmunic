@@ -39,14 +39,14 @@
             <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
         {% endfor %}
         </select>
-        <select name="municipio">
-        <option value="">--</option>
-        {% for amunicipio in municipio_list %}
-            <option {% if amunicipio.slug == municipio %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-        {% endfor %}
-        </select>
-        <input type="submit" value="Buscar" class="btn btn-primary"/>
-        </form>
+       <select name="municipio">
+          <option value="">--</option>
+          {% for municipio in municipio_list %}
+            <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+          {% endfor %}
+       </select>
+       <input type="submit" value="Buscar" class="btn btn-primary"/>
+       </form>
     </div>
     <ul id="gfTab" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#asignados" aria-controls="asignados" role="tab" data-toggle="tab">P. Inicial y ejecutado anual</a></li>
@@ -58,7 +58,7 @@
     {% if municipio %}
         {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios," }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie, none, comparativo3, comparativo_anios, nivelejecucion" }}
+        {{ charts|load_charts:"barra, pie, none, comparativo3, comparativo_anios, nivelejecucion" }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
 
@@ -66,7 +66,7 @@
     <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
 
     <!--Gastos de personal resumen -->
-    <div class="row separador">
+    <div class="row  alert alert-success">
         <div class="col-md-12">
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de personal asignado" />
@@ -129,8 +129,8 @@
         {% endif %}
         <td> {{forloop.counter}} </td>
         <td>{{ row.gasto__municipio__nombre }}</td>
-        <td>{{ row.asignado_percent }}%</td>
-        <td class="info">{{ row.ejecutado_percent }}%</td>
+        <td class="text-right">{{ row.asignado_percent }}%</td>
+        <td class="text-right info">{{ row.ejecutado_percent }}%</td>
     </tr>
     {% endfor %}
     <tr class="success">
@@ -146,7 +146,13 @@
     <div class="col-md-7">
     <!-- javier 7/junio gftabla2 -->
     <h3>Resultado presupuestario gastos de personal</h3>
-    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseComparativo"  aria-expanded="false" aria-controls="collapseComparativo">Ver gráfico </a> </h4>
+    <hr />
+    <div class="collapse col-md-4" id="collapseComparativo">
+       <div class="well">
+            <div id='comparativo2' class="col-md-6">chart</div>
+       </div>
+    </div>
     <table class="table table-condensed">
         <tr class="info"> <th>Rubros gastos de personal</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
     {% for row in rubros %}
@@ -174,10 +180,6 @@
     <div id='chart' style="display:none;">chart</div>
     <div id='chart_ejecutado' style="display:none;">chart</div>
 
-    <!-- FIXME: copiados de gf -->
-    <div id='gfbar'>gfbar</div>
-    <div id='tipo'>chart</div>
-    <div id='comparativo2'>chart</div>
     <div id='comparativo3'>chart</div>
 
     </div>

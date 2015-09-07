@@ -5,7 +5,7 @@
 {% block main_content %}
     <div class="col-md-12 text-centered">
         <div class="pull-left">
-            <h2 class="title">Gastos de funcionamiento {{ municipio }} {{ year }} </h2>
+            <h2 class="titular">Gastos de funcionamiento {{ municipio }} {{ year }} </h2>
         </div>
         <div class="pull-left">
             <button type="button" class="btn btn-danger btn-xs" data-toggle="popover" data-trigger="hover" title="&iquest;Qué significa?" data-content="Indica el porcentaje que los municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">?</button>
@@ -56,10 +56,9 @@
     </ul>
     <div class="clearfix"></div>
     {% if municipio %}
-    {{ municipio }}
         {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie, none, comparativo3, comparativo_anios, nivelejecucion" }}
+        {{ charts|load_charts:"gfbar, barra, pie,comparativo2, comparativo3, comparativo_anios, nivelejecucion" }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
 
@@ -67,7 +66,7 @@
     <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
 
     <!--Gastos de funcionamiento resumen -->
-    <div class="row separador">
+    <div class="row alert alert-success">
         <div class="col-md-12">
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
@@ -145,7 +144,12 @@
     <div class="col-md-7">
     <!-- javier 7/junio gftabla2 -->
     <h3>Resultado presupuestario gastos de funcionamiento</h3>
-    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseporcentaje_gasto"  aria-expanded="false" aria-controls="collapseporcentaje_gasto">Ver gráfico</a></h4>
+    <div class="collapse" id="collapseporcentaje_gasto">
+            <div class="well">
+                <div class="col-md-7"><div id='comparativo2'> Chart will be rendered here </div></div>
+            </div>
+    </div>
     <table class="table table-condensed">
         <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
     {% for row in rubros %}
@@ -182,7 +186,12 @@
 
     <!-- javier 7/junio gftabla3 -->
     <h3>Modificaciones al presupuesto municipal</h3>
-    <h4 class="text-info">Millones de córdobas</h4>
+    <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a></h4>
+    <div class="collapse" id="collapsemodificacion">
+            <div class="well">
+                <div class="col-md-9"><div id='comparativo3'> Chart will be rendered here </div></div>
+            </div>
+    </div>
     <table class="table table-condensed">
         <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
     {% for row in rubros %}
