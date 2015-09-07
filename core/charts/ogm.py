@@ -357,7 +357,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  ['Gastos del municipio comparado con la categoria','Periodo','Mi Municipio Inicial',u'Categoria P. Inicial',u'Mi Municipio P.Final',u'Categoria %s' % (mi_clase.clasificacion,)],
+                'names':  ['Gastos del municipio comparado con la categoria','Periodo',u'P.Inicial',u'Categoria P. Inicial',u'P.Final',u'Categoria P.Final'],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )

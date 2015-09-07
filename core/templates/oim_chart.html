@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block main_content %}
+	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% endif %}</h2>
     <form method="GET">
     <select name="year">
@@ -85,6 +86,7 @@
           
         <!-- maribel 20/07- oim-tabla2 -->
         <div class="col-md-6">
+        	{% descargar_excel "oim1" %}
             <h3>Ingresos del periodo</h3>
             <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 ver gráfico
@@ -141,6 +143,7 @@
               <hr />
               <div class="collapse col-md-9" id="collapseeficiencia">
                 <div class="well">
+                			{% descargar_excel "oim2" %}
                             <h4>Recaudación en millones de córdobas corrientes</h3>
                             <table class="table table-condensed">                                       
                                 <tr class="info"> 
@@ -176,6 +179,7 @@
             <!-- maribel 06/07 oimtabla4 nacional -->
             {% if not municipio %}
                 <div class="col-md-6">
+                	{% descargar_excel "oim3" %}
                     <h3> Recaudación por habitante en cada categoría municipal</h3>
                     <h4 class="text-info">Córdobas Corrientes</h4>
                     <table class="table table-condensed col-md-3">
@@ -235,6 +239,7 @@
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
         <!-- maribel 20/07 oim-tabla5 -->
+        {% descargar_excel "oim4" %}
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
         <h4 class="text-info">Millones de córdobas corrientes
             <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a>
@@ -287,6 +292,7 @@
 
         <!-- /fin oim-tabla5 -->
         <!-- maribeli 20/07 oim-tabla6 -->
+        {% descargar_excel "oim5" %}
         <h3>Modificacion al presupuesto municipal del ingreso de personal permanente</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -332,6 +338,7 @@
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
+        	{% descargar_excel "oim6" %}
             <h3>Ejecución presupuestaria del ingreso sector municipal</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">ver gráfico</a>
@@ -371,6 +378,7 @@
         </div>
         <!-- /fin oimtabla7 -->
         <br clear="all" >
+        	{% descargar_excel "oim7" %}
           <h3>Ingresos por períodos</h3>
           <h4 class="text-info">Millones de c&oacute;rdoba corrientes</h4>
           <table class="table table-condensed">

@@ -382,6 +382,7 @@ def gpersonal_chart(request):
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  ['Anios',u'Periodo',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_final','clase_final'],
                 }],
             )
@@ -615,6 +616,18 @@ def gpersonal_chart(request):
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
+        
+    #Descarga en Excel
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response
+        
+        data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
+            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
+            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+                 
+        return obtener_excel_response(reporte=reporte, data=data)
+            
     return render_to_response('personal.html',{'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},

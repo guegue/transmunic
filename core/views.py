@@ -142,6 +142,12 @@ def oim_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = oim_chart(municipio=municipio, year=year)
+    
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response            
+        return obtener_excel_response(reporte=reporte, data=data)
+        
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
