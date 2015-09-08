@@ -17,7 +17,7 @@
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
+    <option value="">Consolidado Municipal</option>
     {% for municipio in municipio_list %}
         <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
     {% endfor %}
@@ -87,7 +87,7 @@
         <!-- maribel 20/07- oim-tabla2 -->
         <div class="col-md-6">
         	{% descargar_excel "oim1" %}
-            <h3>Ingresos del periodo</h3>
+            <h3>Ingresos del período</h3>
             <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 ver gráfico
             </a>
@@ -122,7 +122,7 @@
                     <td>TOTAL</td>                                                          
                     <td>{{ asignado|intcomma }}</td>                                        
                     <td>{{ ejecutado|intcomma }}</td>                                       
-                    <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>       
+                    {% if asignado %}<td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>{% endif %}
             </table>                                                                    
         </div>
         <!-- /fin oim-tabla2 -->                                                      
@@ -239,6 +239,8 @@
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimmodificacion" aria-labelledby="oimmodificacion-tab">
         <!-- maribel 20/07 oim-tabla5 -->
+        {% if rubros|total_sum:'actualizado' > 0 %} <!--No mostramos tablas si no hay actualizacion --!>
+
         {% descargar_excel "oim4" %}
         <h3>Modificaciones al presupuesto municipal de ingresos</h3>
         <h4 class="text-info">Millones de córdobas corrientes
@@ -334,6 +336,9 @@
             </tr>
         </table>
         </div>
+        {% else %}
+            <div class="intro text-center">No hay modificaciones disponibles para este año</div>
+        {% endif %}
       </div>
       <div role="tabpanel" class="tab-pane fade" id="oimorigen" aria-labelledby="oimorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->

@@ -349,7 +349,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  ['Ejecucion presupuestaria','Periodo','P.Inicial',u'Categoria P. Inicial',u'P.Final',u'Categoria P. Final'],
+                'names':  ['Ejecucion presupuestaria','Periodo','P.Inicial',u'Municipio P. Final',u'Categoria P.Final',u'Categoria P. Final'],
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
