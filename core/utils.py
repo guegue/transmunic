@@ -23,7 +23,7 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "subtitulo":u"Gastos en millones de córdobas corrientes",
                                     "encabezados" : ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"],
                                     "celdas" : ["tipogasto__nombre","asignado","ejecutado","ejecutado/asignado"],
-                                    "qs" : "rubros"                                  
+                                    "qs" : "rubros"                             
                                   },
                         "ogm2": {
                                     "titulo" : u"Eficiencia en la ejecución del gasto de personal permanente",
@@ -67,6 +67,13 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "celdas"  :  ["descripcion"],
                                     "qs"  :  None                                  
                                 },
+                        "ogm8": {
+                                    "titulo"  :  u"Ranquin de municipio de misma categoría municipal",
+                                    "subtitulo"  :  u"Córdobas corrientes por habitante",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["gasto__municipio__nombre","asignado_percent","ejecutado_percent"],
+                                    "qs" : "otros"
+                                },                                 
                         "oim1": {
                                     "titulo"  :  u"Ingresos del periodo",
                                     "subtitulo"  :  u"Ingresos en millones de córdobas corrientes",
@@ -116,6 +123,13 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "celdas"  :  ["descripcion"],
                                     "qs" : None
                                 },
+                        "oim8": {
+                                    "titulo"  :  u"Ranquin de recaudación por habitante categoría municipal ""E""",
+                                    "subtitulo"  :  u"Córdobas corrientes por habitante",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["ingreso__municipio__nombre","asignado_percent","ejecutado_percent"],
+                                    "qs" : "otros"
+                                },                              
                         "gf1": {
                                     "titulo"  :  u"Resultado presupuestario gastos de funcionamiento",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
@@ -151,6 +165,14 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
                                     "qs"  : "anuales"
                                 },
+                        "gf6": {
+                                    "titulo"  :  u"Ranquin de municipio de misma categoría municipal",
+                                    "subtitulo"  :  u"Porcentaje del gasto total destinado a gastos de funcionamiento",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["gasto__municipio__nombre","asignado_percent","ejecutado_percent"],
+                                    "qs" : "otros",
+                                    "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
+                                },                                  
                         "gp1": {
                                     "titulo"  :  u"Resultado presupuestario gastos de personal",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
@@ -223,7 +245,7 @@ def obtener_valor(instance, name, es_diccionario=False):
         return obtener_valor(instance, name, es_diccionario=True)
         
 
-def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezados,celdas):
+def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezados,celdas, tipo_totales):
     hoja = libro.add_sheet(sheet_name) 
     indice_fila, indice_columna = 0,0     
     columns_number = len(encabezados)+1
@@ -258,8 +280,9 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
         indice_fila +=1        
         for c, atributo in enumerate(celdas):
             value = 0
-            value = obtener_valor(row,atributo)
+            value = obtener_valor(row,atributo)            
             if c > 0:
+                value = value if isinstance(value, Decimal) else Decimal("{0}".format(value))
                 valor_anterior = totales.get(atributo,Decimal("0"))
                 totales[atributo] = valor_anterior + value
                 formato = PERCENTAGE_FORMAT if "/" in atributo else NUMBER_FORMAT                       
@@ -274,24 +297,19 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
                 
     #ESCRIBIR FILA DE TOTALES
     indice_fila +=1
-    hoja.write(indice_fila, indice_columna, "TOTAL"
-                        , TOTAL_ROW_FORMAT                                
-                        )
     for c, atributo in enumerate(celdas):
         if c > 0:
-            if "/" in atributo:
-                atributos = atributo.split("/")
-                try:                    
-                    total = totales[atributos[0]] / totales[atributos[1]] if  atributos[1] != 0 else Decimal("0")
-                except:
-                    total =  Decimal("0")
-                hoja.write(indice_fila, indice_columna + c , total
-                        , TOTAL_PERCENTAGE_FORMAT                                
-                        )                 
-            else :
-                hoja.write(indice_fila, indice_columna + c , totales[atributo]
-                        , TOTAL_ROW_FORMAT                                
+            print indice_fila, indice_columna + c
+            formula = '{0}({1}:{2})'.format( tipo_totales[c],
+            xlwt.Utils.rowcol_to_cell( 4, indice_columna + c),
+            xlwt.Utils.rowcol_to_cell(indice_fila -1, indice_columna + c ))
+            hoja.write(indice_fila, indice_columna + c ,xlwt.Formula(formula),
+                       TOTAL_PERCENTAGE_FORMAT if "/" in atributo else TOTAL_ROW_FORMAT 
+                       )
+        else:
+            hoja.write(indice_fila, indice_columna, tipo_totales[c] , TOTAL_ROW_FORMAT                                
                         )
+            
         
     return hoja
 
@@ -323,6 +341,13 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         subtitulo = report_config["subtitulo"]
         encabezados = report_config["encabezados"]
         celdas = report_config["celdas"]
+        tipo_totales = report_config.get("tipo_totales",[])
+        if not tipo_totales:
+            tipo_totales.append("TOTALES")
+            for c, celda in enumerate(celdas):
+                if c >0:
+                    tipo_totales.append("SUM" if "/" not in celda else "AVERAGE")
+        
         if report_config["qs"] is not None:
             queryset = data[report_config["qs"]]
         else:
@@ -338,7 +363,7 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
                     row[unicode(anyo)] = valor            
                 queryset.append(row)        
         if queryset is not None:
-            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas)
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
         elif len(reportes)==1:
             libro.add_sheet("{0} vacio".format(sheet_name))        
         
