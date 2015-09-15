@@ -213,16 +213,15 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "subtitulo"  :  u"por Categoría de Municipios",
                                     "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
                                     "celdas"  :  ["clasificacion","asignado","ejecutado"],
-                                    "qs" : "porclasep",
-                                    "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
+                                    "qs" : "porclasep"
                                 },
                         "ago2": {
                                     "titulo"  :  u"Ahorro Corriente para Inversiones",
                                     "subtitulo"  :  u"por Municipios de Categoría",
                                     "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
                                     "celdas"  :  ["nombre","asignado","ejecutado"],
-                                    "qs" : "otros",
-                                    "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
+                                    "qs" : "otros"
+#                                     "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
                                 },
                         "ago3": {
                                     "titulo"  :  u"Ahorro Corriente para Inversiones",
@@ -271,7 +270,69 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
                                     "qs" : "anualesg",
                                     "tipo_totales": ["TOTALES","SUM","SUM","/"]
-                                },                                                                                                                                                                                                                                              
+                                },
+                        "aci1": {
+                                    "titulo"  :  u"Ahorro Corriente para Inversiones",
+                                    "subtitulo"  :  u"por Municipios de Categoría",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["clasificacion","asignado","ejecutado"],
+                                    "qs" : "porclasep"
+                                },
+                        "aci2": {
+                                    "titulo"  :  u"Ahorro Corriente para Inversiones",
+                                    "subtitulo"  :  u"por Municipios de Categoría",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["nombre","asignado","ejecutado"],
+                                    "qs" : "otros"
+                                },
+                        "aci3": {
+                                    "titulo"  :  u"Resultado presupuestario ingresos corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros de ingresos","Inicial", "Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["tipoingreso__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "rubros",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "aci4": {
+                                    "titulo"  :  u"Resultado presupuestario gastos corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros de gastos","Inicial", "Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["tipogasto__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "rubrosg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },                                
+                        "aci5": {
+                                    "titulo"  :  u"Modificaciones al presupuesto - Ingresos corrientes propios",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros del ingreso","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/actualizado)" ],
+                                    "celdas"  :  ["tipoingreso__nombre","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/actualizado"],
+                                    "qs" : "rubros",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/"]
+                                },
+                        "aci6": {
+                                    "titulo"  :  u"Modificaciones al presupuesto - Gastos corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros del gastos corrientes","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/actualizado)" ],
+                                    "celdas"  :  ["tipogasto__nombre","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/actualizado"],
+                                    "qs" : "rubrosg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/"]
+                                },
+                        "aci7": {
+                                    "titulo"  :  u"Ejecución presupuestaria del ingreso corrientes propios",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["ingreso__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "anuales",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "aci8": {
+                                    "titulo"  :  u"Ejecución presupuestaria - Gasto corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "anualesg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
                               }
 
 
@@ -389,21 +450,35 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
     libro = xlwt.Workbook(encoding='utf8')
     titulo = "reporte"
     if "all" in reporte:
+        
+        municipio = data.get("municipio","")
+        year = data.get("year","")
+        
         if reporte  == "ogm-all":
             reportes = ["ogm{0}".format(i) for i in range(1,8)]
-            file_name = "Resumen de Gastos Municipales"
+            file_name = u"Resumen de Gastos Municipales"
         elif reporte == "oim-all":
             reportes = ["oim{0}".format(i) for i in range(1,8)]
-            file_name = "Resumen de Ingresos Municipales"
+            file_name = u"Resumen de Ingresos Municipales"
         elif reporte == "gf-all":
             reportes = ["gf{0}".format(i) for i in range(1,6)]
-            file_name = "Resumen Gastos de Funcionamiento"
+            file_name = u"Resumen Gastos de Funcionamiento"
         elif reporte == "gp-all":
             reportes = ["gp{0}".format(i) for i in range(1,6)]
-            file_name = "Resumen Gastos de Personal"
+            file_name = u"Resumen Gastos de Personal"
         elif reporte == "ago-all":
             reportes = ["ago{0}".format(i) for i in range(1,9)]
-            file_name = u"Resumen Autonomía para asumir el gasto corriente"                
+            file_name = u"Resumen Autonomía para asumir el gasto corriente"
+        elif reporte == "aci-all":
+            reportes = ["aci{0}".format(i) for i in range(1,9)]
+            file_name = u"Resumen Ahorro corriente de inversión"
+            
+        file_name = u"{0} {1} {2}".format(
+                                         file_name,
+                                         municipio,
+                                         year
+                                         )
+                                                
     else:
         reportes = [reporte]
         file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]

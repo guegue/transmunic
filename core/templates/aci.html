@@ -7,8 +7,8 @@
 Ahorro corriente de inversion  {{ municipio }} 
 {% endblock %}
 {% block main_content %}
+	{% descargar_excel "aci-all" %}
     <h2 class="titular">Ahorro corriente de inversión  {{ municipio }} {{ year }}</h2>
-
     {{ charts|load_charts:"chart" }}
 
     <form method="GET">
@@ -55,6 +55,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- maribel 30/07 aci-tabla1 nacional -->
         {% if not municipio %}
                 <div class="col-md-5">
+                	{% descargar_excel "aci1" %}
                     <h3>Ahorro Corriente para Inversiones </h3>
                     <h4 class="text-info">por categoría de Municipios</h4>
                     <table class="table table-condensed">
@@ -78,6 +79,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- maribel 30/07 aci-tabla4-municipal -->
         {% if municipio %}
             <div class="col-md-5">
+            {% descargar_excel "aci2" %}
                 <h3>Ahorro Corriente para Inversiones</h3>
                 <h4 class="text-info">por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
                 <table class="table table-condensed">
@@ -105,6 +107,7 @@ Ahorro corriente de inversion  {{ municipio }}
 
         <!-- maribel 30/07- aci-tabla2 -->
         <div class="col-md-6">
+        	{% descargar_excel "aci3" %}
             <h3>Resultado presupuestario ingresos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
@@ -137,6 +140,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <br clear="all" />
         <!-- maribel 30/07- aci-tabla3 -->
         <div class="col-md-6">
+            {% descargar_excel "aci4" %}
             <h3>Resultado presupuestario gastos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
@@ -169,6 +173,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- /fin aci-tabla2 -->                                                      
       <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
         <!-- maribel 30/07 aci-tabla4 -->
+        {% descargar_excel "aci5" %}
         <h3>Modificaciones al presupuesto - Ingresos corrientes totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -212,6 +217,7 @@ Ahorro corriente de inversion  {{ municipio }}
 
         <!-- /fin aci-tabla4 -->
         <!-- 30/07 aci-tabla5 -->
+        {% descargar_excel "aci6" %}
         <h3>Modificaciones al presupuesto - Gastos corrientes totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -258,6 +264,7 @@ Ahorro corriente de inversion  {{ municipio }}
       <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
+        	{% descargar_excel "aci7" %}
             <h3>Ejecución presupuestaria del ingreso corrientes totalesl</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
@@ -287,6 +294,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- /fin acitabla6 -->
         <!-- maribel 30/07 aci-tabla7 -->
         <div class="col-md-6">
+        	{% descargar_excel "aci8" %}
             <h3>Ejecución presupuestaria - Gasto corrientes totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
