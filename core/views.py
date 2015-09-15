@@ -111,6 +111,17 @@ def inversion_categoria_view(request):
     data_fuentes = fuentes_chart(year=year)
     data['charts'].append( fuentes_chart(year=year)['charts'][1] )
 
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response
+        data = { \
+            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
+            'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
+            'year': year, \
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}          
+        return obtener_excel_response(reporte=reporte, data=data)
+
     return render_to_response(template_name, { \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \

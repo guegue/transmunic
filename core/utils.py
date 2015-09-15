@@ -333,6 +333,58 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "qs" : "anualesg",
                                     "tipo_totales": ["TOTALES","SUM","SUM","/"]
                                 },
+                        "icat1": {
+                                    "titulo"  :  u"Inversión municipal",
+                                    "subtitulo"  :  u"Porcentaje por clasificación",
+                                    "encabezados"  :  [u"Clasificación","Inicial", "Ejecutado"],
+                                    "celdas"  :  ["catinversion__nombre","asignado_percent","ejecutado_percent"],
+                                    "qs" : "totales"
+                                },
+                        "icat2": {
+                                    "titulo"  :  u"Inversión municipal",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Clasificación de la inversión","Inicial", "Ejecutado", "% Ejecutado"],
+                                    "celdas"  :  ["catinversion__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "cat",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "icat3": {
+                                    "titulo"  :  u"Inversión municipal",
+                                    "subtitulo"  :  u" por categoría de municipios en Córdobas córdobas corrientes",
+                                    "encabezados"  :  [u"Clasificación de Municipio","Asignado", "Ejecutado", "% Ejecutado"],
+                                    "celdas"  :  ["clasificacion","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "porclasep"
+                                },
+                        "icat4": {
+                                    "titulo"  :  u"Ranquin de municipio de misma categoría municipal",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes por habitante",
+                                    "encabezados"  :  ["Municipio","P. Inicial", "Ejecutado"],
+                                    "celdas"  :  ["inversion__municipio__nombre","asignado_percent","ejecutado_percent"],
+                                    "qs" : "otros"
+                                },                                
+                        "icat5": {
+                                    "titulo"  :  u"Modificaciones al presupuesto municipal",
+                                    "subtitulo"  :  u"Inversiones en millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Clasificación de la inversión","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/actualizado)", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["catinversion__nombre","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/actualizado","ejecutado/asignado"],
+                                    "qs" : "cat",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/","/"]
+                                },
+                        "icat6": {
+                                    "titulo"  :  u"Comportamiento histórico de las inversiones anuales",
+                                    "subtitulo"  :  u"Inversiones en millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Año","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["inversion__anio","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/asignado"],
+                                    "qs" : "anuales",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/"]
+                                },
+                        "icat7" : {
+                                    "titulo"  :  u"Inversiones Ejecutadas en los últimos años",
+                                    "subtitulo"  :  u"",
+                                    "encabezados"  :  [u"Descripción"],
+                                    "celdas"  :  ["descripcion"],
+                                    "qs"  :  None                                  
+                                }                             
                               }
 
 
@@ -472,6 +524,9 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         elif reporte == "aci-all":
             reportes = ["aci{0}".format(i) for i in range(1,9)]
             file_name = u"Resumen Ahorro corriente de inversión"
+        elif reporte == "icat-all":
+            reportes = ["icat{0}".format(i) for i in range(1,8)]
+            file_name = u"Resumen Inversión Municipal"
             
         file_name = u"{0} {1} {2}".format(
                                          file_name,
@@ -491,12 +546,7 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         encabezados = report_config["encabezados"]
         celdas = report_config["celdas"]
         tipo_totales = report_config.get("tipo_totales",[])
-        if not tipo_totales:
-            tipo_totales.append("TOTALES")
-            for c, celda in enumerate(celdas):
-                if c >0:
-                    tipo_totales.append("SUM" if "/" not in celda else "AVERAGE")
-        
+
         if report_config["qs"] is not None:
             queryset = data[report_config["qs"]]
         else:
@@ -510,7 +560,15 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
                 row["descripcion"] = key            
                 for anyo, valor in datos.items():
                     row[unicode(anyo)] = valor            
-                queryset.append(row)        
+                queryset.append(row)
+                
+        if not tipo_totales:
+            tipo_totales.append("TOTALES")
+            for c, celda in enumerate(celdas):
+                if c >0:
+                    tipo_totales.append("SUM" if "/" not in celda else "AVERAGE")
+                        
+            
         if queryset is not None:
             crear_hoja_excel(libro, sheet_name, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
         elif len(reportes)==1:
