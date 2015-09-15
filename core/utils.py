@@ -208,6 +208,70 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
                                     "qs"  : "anuales"
                                 },
+                        "ago1": {
+                                    "titulo"  :  u"Autonomía para asumir el gasto corriente con ingresos corrientes propios",
+                                    "subtitulo"  :  u"por Categoría de Municipios",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["clasificacion","asignado","ejecutado"],
+                                    "qs" : "porclasep",
+                                    "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
+                                },
+                        "ago2": {
+                                    "titulo"  :  u"Ahorro Corriente para Inversiones",
+                                    "subtitulo"  :  u"por Municipios de Categoría",
+                                    "encabezados"  :  ["Municipios","P. Inicial", "Ejecucion"],
+                                    "celdas"  :  ["nombre","asignado","ejecutado"],
+                                    "qs" : "otros",
+                                    "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
+                                },
+                        "ago3": {
+                                    "titulo"  :  u"Ahorro Corriente para Inversiones",
+                                    "subtitulo"  :  u"por Municipios de Categoría",
+                                    "encabezados"  :  ["Rubros de ingresos","Inicial", "Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["tipoingreso__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "rubros",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "ago4": {
+                                    "titulo"  :  u"Resultado presupuestario gastos corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros de gastos","Inicial", "Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["tipogasto__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "rubrosg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "ago5": {
+                                    "titulo"  :  u"Modificaciones al presupuesto - Ingresos corrientes propios",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros del ingreso","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/actualizado)" ],
+                                    "celdas"  :  ["tipoingreso__nombre","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/actualizado"],
+                                    "qs" : "rubros",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/"]
+                                },
+                        "ago6": {
+                                    "titulo"  :  u"Modificaciones al presupuesto - Gastos corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  ["Rubros del gastos corrientes","Inicial","Actualizado", "Modificado", "Ejecutado", "% (ejecutado/actualizado)" ],
+                                    "celdas"  :  ["tipogasto__nombre","asignado","actualizado", "actualizado-asignado", "ejecutado","ejecutado/actualizado"],
+                                    "qs" : "rubrosg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","SUM","SUM","/"]
+                                },
+                        "ago7": {
+                                    "titulo"  :  u"Ejecución presupuestaria del ingreso corrientes propios",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["ingreso__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "anuales",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "ago8": {
+                                    "titulo"  :  u"Ejecución presupuestaria - Gasto corrientes totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado", "% (ejecutado/inicial)" ],
+                                    "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs" : "anualesg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },                                                                                                                                                                                                                                              
                               }
 
 
@@ -296,15 +360,22 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
                         )                
                 
     #ESCRIBIR FILA DE TOTALES
-    indice_fila +=1
+    indice_fila +=1    
     for c, atributo in enumerate(celdas):
         if c > 0:
-            print indice_fila, indice_columna + c
-            formula = '{0}({1}:{2})'.format( tipo_totales[c],
-            xlwt.Utils.rowcol_to_cell( 4, indice_columna + c),
-            xlwt.Utils.rowcol_to_cell(indice_fila -1, indice_columna + c ))
+            if tipo_totales[c] == "/":
+                formula = 'IF({2}<>0;{0}{1}{2};0)'.format( 
+                xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 1),                                                
+                tipo_totales[c],                
+                xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 2))
+                formato = TOTAL_PERCENTAGE_FORMAT           
+            else:
+                formula = '{0}({1}:{2})'.format( tipo_totales[c],
+                xlwt.Utils.rowcol_to_cell( 4, indice_columna + c),
+                xlwt.Utils.rowcol_to_cell(indice_fila -1, indice_columna + c ))
+                formato = TOTAL_ROW_FORMAT
             hoja.write(indice_fila, indice_columna + c ,xlwt.Formula(formula),
-                       TOTAL_PERCENTAGE_FORMAT if "/" in atributo else TOTAL_ROW_FORMAT 
+                        formato 
                        )
         else:
             hoja.write(indice_fila, indice_columna, tipo_totales[c] , TOTAL_ROW_FORMAT                                
@@ -327,9 +398,12 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         elif reporte == "gf-all":
             reportes = ["gf{0}".format(i) for i in range(1,6)]
             file_name = "Resumen Gastos de Funcionamiento"
-        else:
+        elif reporte == "gp-all":
             reportes = ["gp{0}".format(i) for i in range(1,6)]
-            file_name = "Resumen Gastos de Personal"                
+            file_name = "Resumen Gastos de Personal"
+        elif reporte == "ago-all":
+            reportes = ["ago{0}".format(i) for i in range(1,9)]
+            file_name = u"Resumen Autonomía para asumir el gasto corriente"                
     else:
         reportes = [reporte]
         file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]

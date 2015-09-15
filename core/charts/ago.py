@@ -213,6 +213,16 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     # FIXME BS
     porclase = None
 
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response
+        data = {'charts': (bar, ), \
+            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
+            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}          
+        return obtener_excel_response(reporte=reporte, data=data)
+
+
     return render_to_response('ago.html',{'charts': (bar, ), \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
