@@ -179,6 +179,15 @@ def ep_chart(request):
     # FIXME BS
     asignado = ejecutado = otros = porclase = None
 
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response
+        data = {'charts': (bar, ), \
+            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
+            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}          
+        return obtener_excel_response(reporte=reporte, data=data)
+
     return render_to_response('ep.html',{'charts': (bar, ), \
             'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \

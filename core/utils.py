@@ -384,7 +384,65 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "encabezados"  :  [u"Descripción"],
                                     "celdas"  :  ["descripcion"],
                                     "qs"  :  None                                  
-                                }                             
+                                },
+                        "ep1": {
+                                    "titulo"  :  u"Ejecución presupuestaria municipal",
+                                    "subtitulo"  :  u"por categoría de municipios",
+                                    "encabezados"  :  [u"Categoría de municipio","Presupuestado","Ejecutado"],
+                                    "celdas"  :  ["clasificacion","asignado","ejecutado"],
+                                    "qs"  :  "porclasep"
+                                },
+                        "ep2": {
+                                    "titulo"  :  u"Ejecución presupuestaria municipal",
+                                    "subtitulo"  :  u"por municipios de categoría ",
+                                    "encabezados"  :  [u"Municipio","P. Inicial","Ejecución"],
+                                    "celdas"  :  ["nombre","asignado","ejecutado"],
+                                    "qs"  :  "otros"
+                                },
+                        "ep3":{
+                                    "titulo"  :  u"Ejecución del presupuesto de ingresos",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Ejecutado","% Ejecutado/Inicial"],
+                                    "celdas"  :  ["tipoingreso__clasificacion","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs"  :  "rubros"
+                                },
+                        "ep4":{
+                                    "titulo"  :  u"Ejecución del presupuesto de gastos",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Rubros de gastos","Inicial","Ejecutado","% Ejecutado/Inicial"],
+                                    "celdas"  :  ["tipogasto__clasificacion","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs"  :  "rubrosg"
+                                },
+                        "ep5":{
+                                    "titulo"  :  u"Modificaciones al presupuesto - Ingresos Totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["tipoingreso__clasificacion","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "qs"  :  "rubros"
+                                },
+                        "ep6":{
+                                    "titulo"  :  u"Modificaciones al presupuesto - Gastos Totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Rubros del gastos corrientes","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["tipogasto__clasificacion","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "qs"  :  "rubrosg"
+                                },
+                        "ep7": {
+                                    "titulo"  :  u"Ejecución presupuestaria - Ingresos Totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado","% Ejecutado/Inicial"],
+                                    "celdas"  :  ["ingreso__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs"  : "anuales",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },
+                        "ep8": {
+                                    "titulo"  :  u"Ejecución presupuestaria - Gastos Totales",
+                                    "subtitulo"  :  u"Millones de córdobas corrientes",
+                                    "encabezados"  :  [u"Años","Inicial","Ejecutado","% Ejecutado/Inicial"],
+                                    "celdas"  :  ["gasto__anio","asignado","ejecutado","ejecutado/asignado"],
+                                    "qs"  : "anualesg",
+                                    "tipo_totales": ["TOTALES","SUM","SUM","/"]
+                                },                                                              
                               }
 
 
@@ -527,6 +585,9 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         elif reporte == "icat-all":
             reportes = ["icat{0}".format(i) for i in range(1,8)]
             file_name = u"Resumen Inversión Municipal"
+        elif reporte == "ep-all":
+            reportes = ["ep{0}".format(i) for i in range(1,8)]
+            file_name = u"Resumen Ejecución presupuestaria municipal"            
             
         file_name = u"{0} {1} {2}".format(
                                          file_name,

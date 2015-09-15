@@ -7,6 +7,7 @@
 Ejecución presupuestaria municipal {{ municipio }} 
 {% endblock %}
 {% block main_content %}
+	{% descargar_excel "ep-all" %}
     <h2 class="titular">Ejecución presupuestaria municipal   {{ municipio }} {{ year }}</h2>
 
     {{ charts|load_charts:"chart" }}
@@ -53,6 +54,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- maribel 30/07 aci-tabla1 nacional -->
         {% if not municipio %}
                 <div class="col-md-5">
+                	{% descargar_excel "ep1" %}
                     <h3>Ejecución presupuestaria municipal </h2>
                     <h4 class="text-info">por categoría de Municipios</h4>
                     <table class="table table-condensed">
@@ -76,6 +78,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- maribel 30/07 aci-tabla4-municipal -->
         {% if municipio %}
             <div class="col-md-5">
+            {% descargar_excel "ep2" %}
                 <h3>Ejecución presupuestaria municipal</h3>
                 <h4 class="text-info">por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
                 <table class="table table-condensed">
@@ -103,6 +106,7 @@ Ejecución presupuestaria municipal {{ municipio }}
 
         <!-- maribel 30/07- aci-tabla2 -->
         <div class="col-md-6">
+        	{% descargar_excel "ep3" %}
             <h3>Ejecución del presupuesto de ingresos</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
@@ -135,6 +139,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <br clear="all" />
         <!-- maribel 30/07- aci-tabla3 -->
         <div class="col-md-6">
+        	{% descargar_excel "ep4" %}
             <h3>Ejecución del presupuesto de gastos</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
@@ -167,6 +172,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- /fin aci-tabla2 -->                                                      
       <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
         <!-- maribel 30/07 aci-tabla4 -->
+        {% descargar_excel "ep5" %}
         <h3>Modificaciones al presupuesto - Ingresos totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -210,6 +216,7 @@ Ejecución presupuestaria municipal {{ municipio }}
 
         <!-- /fin aci-tabla4 -->
         <!-- 30/07 aci-tabla5 -->
+        {% descargar_excel "ep6" %}
         <h3>Modificaciones al presupuesto - Gastos totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
@@ -256,6 +263,7 @@ Ejecución presupuestaria municipal {{ municipio }}
       <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
+        	{% descargar_excel "ep7" %}
             <h3>Ejecución presupuestaria ingreso totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
@@ -285,6 +293,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- /fin acitabla6 -->
         <!-- maribel 30/07 aci-tabla7 -->
         <div class="col-md-6">
+        	{% descargar_excel "ep8" %}
             <h3>Ejecución presupuestaria gasto totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
