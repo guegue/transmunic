@@ -16,10 +16,10 @@
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
-    {% for municipio in municipio_list %}                                       
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
-    {% endfor %} 
+    <option value="">Consolidado Municipal</option>
+    {% for amunicipio in municipio_list %}
+        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+    {% endfor %}
     </select>
     <input type="submit" value="Buscar" class="btn btn-primary"/>
     </form>
@@ -114,10 +114,10 @@
                 </tr>                                                                       
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
-                    <td>TOTAL</td>                                                          
-                    <td>{{ asignado|intcomma }}</td>                                        
-                    <td>{{ ejecutado|intcomma }}</td>                                       
-                    <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>       
+                    <td>TOTAL</td>
+                    <td>{{ asignado|intcomma }}</td>
+                    <td>{{ ejecutado|intcomma }}</td>
+                    <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
             </table>                                                                    
             <!-- /fin tabla2 -->                                                      
             <br />   
@@ -160,7 +160,7 @@
                             <td>TOTAL</td>                                                          
                             <td>{{ asignado|intcomma }}</td>                                        
                             <td>{{ ejecutado|intcomma }}</td>                                       
-                            <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td>
+                            <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
                         </tr>       
                     </table>                                                                    
                     <!-- /fin ogm-tabla3 -->                                                      

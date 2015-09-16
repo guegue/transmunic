@@ -12,10 +12,10 @@
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
-    {% for municipio in municipio_list %}                                       
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
-    {% endfor %} 
+    <option value="">Consolidado Municipal</option>
+    {% for amunicipio in municipio_list %}
+        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+    {% endfor %}
     </select>
     <input type="submit" value="Buscar"/>
     </form>
@@ -225,14 +225,14 @@
                     {{ total.ejecutado }}
                 </td>
                 <td class="text-right">
-                    {% if total.actualizado %}                                    
+                    {% if total.actualizado %}
                       {{ total.ejecutado|div:total.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
                         0
-                    {% endif %}     
+                    {% endif %}
                 </td>
                 <td class="text-right">
-                    {% if total.actualizado %}                                    
+                    {% if total.asignado %}
                       {{ total.ejecutado|div:total.asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
                         0

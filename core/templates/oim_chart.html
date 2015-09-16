@@ -18,8 +18,8 @@
     </select>
     <select name="municipio">
     <option value="">Consolidado Municipal</option>
-    {% for municipio in municipio_list %}
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
+    {% for amunicipio in municipio_list %}
+        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
     </select>
     <input type="submit" value="Buscar" class="btn btn-primary"/>
