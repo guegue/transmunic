@@ -2,6 +2,7 @@
 from django import forms
 from lugar.models import Municipio
 from core.models import PERIODO_CHOICES
+import datetime
 class DetallePresupuestoForm(forms.Form): 
     MODELS = (
               ("InversionFuente",u"Inversión"),
@@ -18,6 +19,7 @@ class DetallePresupuestoForm(forms.Form):
                               widget= forms.IntegerField.widget(
                                     attrs={'class':"form-control required"},
                                     ),
+                              initial=lambda: datetime.date.today().year,
                              required = True
                               )
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
