@@ -35,4 +35,53 @@ class PlanInversionModelReport(ReportAdmin):
     list_order_by = ('nombre',)
     type = 'report'
 
+
+# class DetallePresupuestoReport(object):
+#     MODELS = (
+#               ("InversionFuente",u"Inversión")
+#               ("Ingreso",u"Ingreso"),
+#               ("Gasto",u"Gasto"),              
+#               )
+#     MODEL_FIELDS = {
+#               "InversionFuente":["fecha","anio",
+#                                  "periodo","departamento","municipio"
+#                                  ],
+#                 "Ingreso":["fecha","anio",
+#                                  "periodo","departamento","municipio",
+#                                  "descripcion"
+#                                  ],                    
+#                 "Gasto":["fecha","anio",
+#                                  "periodo","departamento","municipio",
+#                                  "descripcion"
+#                                  ],           
+#               "InversionFuenteDetalle":[
+#                                  "inversionfuente",
+#                                  "tipofuente",
+#                                  "fuente",
+#                                  "asignado",
+#                                  "ejecutado"
+#                                  ],
+#               "GastoDetalle":[
+#                                  "gasto",
+#                                  "codigo",
+#                                  "tipogasto",
+#                                  "subtipogasto",
+#                                  "subsubtipogasto",
+#                                  "cuenta",
+#                                  "asignado",
+#                                  "ejecutado"
+#                                  ],
+#               "IngresoDetalle":[
+#                                  "ingreso",
+#                                  "codigo",
+#                                  "tipoingreso",
+#                                  "subtipoingreso",
+#                                  "subsubtipoingreso",
+#                                  "cuenta",
+#                                  "asignado",
+#                                  "ejecutado"
+#                                  ],                                                             
+#               }
+#     title = u'Detalle del Presupuesto'
+    
 reports.register('plan-de-inversion', PlanInversionModelReport)

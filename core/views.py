@@ -14,6 +14,7 @@ from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
 from website.models import Banner
+from core.forms import DetallePresupuestoForm
 
 # Create your views here.
 def home(request):
@@ -193,3 +194,26 @@ def fuentes_view(request):
     return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],\
             'municipio': municipio, 'year': year,},\
             context_instance=RequestContext(request))
+
+
+def descargar_detalle(request):  
+    error = ""  
+    if request.method == 'POST':
+        form = DetallePresupuestoForm(request.POST)
+        if form.is_valid():
+            from core.utils import descargar_detalle_excel
+            result = descargar_detalle_excel(form, request)
+            if result is not None:
+                return result
+            else:
+                error = "No existen datos disponibles"
+    else:
+        form = DetallePresupuestoForm()
+        
+    return render_to_response('descargar_detalle.html', 
+                              {"form":form,
+                               "error":error
+                               }, 
+                              context_instance=RequestContext(request)
+                              )
+    

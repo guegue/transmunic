@@ -504,7 +504,7 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
     for i, encabezado in enumerate(encabezados):
         hoja.write(indice_fila, 
                        indice_columna + i,  
-                       encabezado,
+                       encabezado.capitalize(),
                        COLUMN_HEADER_FORMAT_SIN_RELLENO
                             )
         hoja.col(indice_columna + i).width = 256*30
@@ -516,7 +516,7 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
         for c, atributo in enumerate(celdas):
             value = 0
             value = obtener_valor(row,atributo)            
-            if c > 0:
+            if isinstance(value, Decimal):
                 value = value if isinstance(value, Decimal) else Decimal("{0}".format(value))
                 valor_anterior = totales.get(atributo,Decimal("0"))
                 totales[atributo] = valor_anterior + value
@@ -526,31 +526,32 @@ def crear_hoja_excel(libro, sheet_name,  queryset , titulo,subtitulo, encabezado
                         )              
             else:
                 value = value if value != 0 else "-"
-                hoja.write(indice_fila, indice_columna + c, value
+                hoja.write(indice_fila, indice_columna + c, unicode(value)
                         , LEFT_FORMAT                                
                         )                
-                
-    #ESCRIBIR FILA DE TOTALES
-    indice_fila +=1    
-    for c, atributo in enumerate(celdas):
-        if c > 0:
-            if tipo_totales[c] == "/":
-                formula = 'IF({2}<>0;{0}{1}{2};0)'.format( 
-                xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 1),                                                
-                tipo_totales[c],                
-                xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 2))
-                formato = TOTAL_PERCENTAGE_FORMAT           
+    
+    if tipo_totales:            
+        #ESCRIBIR FILA DE TOTALES
+        indice_fila +=1    
+        for c, atributo in enumerate(celdas):
+            if c > 0:
+                if tipo_totales[c] == "/":
+                    formula = 'IF({2}<>0;{0}{1}{2};0)'.format( 
+                    xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 1),                                                
+                    tipo_totales[c],                
+                    xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 2))
+                    formato = TOTAL_PERCENTAGE_FORMAT           
+                else:
+                    formula = '{0}({1}:{2})'.format( tipo_totales[c],
+                    xlwt.Utils.rowcol_to_cell( 4, indice_columna + c),
+                    xlwt.Utils.rowcol_to_cell(indice_fila -1, indice_columna + c ))
+                    formato = TOTAL_ROW_FORMAT
+                hoja.write(indice_fila, indice_columna + c ,xlwt.Formula(formula),
+                            formato 
+                           )
             else:
-                formula = '{0}({1}:{2})'.format( tipo_totales[c],
-                xlwt.Utils.rowcol_to_cell( 4, indice_columna + c),
-                xlwt.Utils.rowcol_to_cell(indice_fila -1, indice_columna + c ))
-                formato = TOTAL_ROW_FORMAT
-            hoja.write(indice_fila, indice_columna + c ,xlwt.Formula(formula),
-                        formato 
-                       )
-        else:
-            hoja.write(indice_fila, indice_columna, tipo_totales[c] , TOTAL_ROW_FORMAT                                
-                        )
+                hoja.write(indice_fila, indice_columna, tipo_totales[c] , TOTAL_ROW_FORMAT                                
+                            )
             
         
     return hoja
@@ -637,5 +638,86 @@ def obtener_excel_response(reporte,data,sheet_name="hoja1"):
         
     
     response['Content-Disposition'] = u'attachment; filename="{0}.xls"'.format(file_name)            
+    libro.save(response)
+    return response
+
+
+def descargar_detalle_excel(form, request):
+    from django.db.models.loading import get_model
+    from core.models import PERIODO_VERBOSE
+    from string import lower    
+    MODEL_FIELDS = {
+              "InversionFuente":["fecha","anio",
+                                 "periodo","departamento","municipio"
+                                 ],
+                "Ingreso":["fecha","anio",
+                                 "periodo","departamento","municipio",
+                                 "descripcion"
+                                 ],                    
+                "Gasto":["fecha","anio",
+                                 "periodo","departamento","municipio",
+                                 "descripcion"
+                                 ],           
+              "InversionFuenteDetalle":[
+                                 "tipofuente",
+                                 "fuente",
+                                 "asignado",
+                                 "ejecutado"
+                                 ],
+              "GastoDetalle":[
+                                 "codigo",
+                                 "tipogasto",
+                                 "subtipogasto",
+                                 "subsubtipogasto",
+                                 "cuenta",
+                                 "asignado",
+                                 "ejecutado"
+                                 ],
+              "IngresoDetalle":[
+                                 "codigo",
+                                 "tipoingreso",
+                                 "subtipoingreso",
+                                 "subsubtipoingreso",
+                                 "cuenta",
+                                 "asignado",
+                                 "ejecutado"
+                                 ],                                                             
+              }    
+    municipio = form.cleaned_data.get('municipio','')
+    periodo = form.cleaned_data.get('periodo','')
+    year = form.cleaned_data.get('year','')
+    tipo = form.cleaned_data.get('tipo','')
+    
+    response = HttpResponse(content_type='application/vnd-ms-excel')
+    libro = xlwt.Workbook(encoding='utf8')
+    titulo = "reporte"
+    
+    model = get_model(app_label='core', model_name=tipo)
+    try:        
+        obj = model.objects.get(periodo=periodo,
+                                    anio=year,
+                                    municipio = municipio
+                                    )
+        subtitulo = "para {2} periodo: {0} , Año:{1}".format(
+                                             PERIODO_VERBOSE[periodo],
+                                             year,
+                                             unicode(municipio)                
+                                             )
+        qs  = getattr(obj, "{0}detalle_set".format(lower(tipo) ))     
+        queryset = qs.all()        
+    except:
+        obj = None
+        queryset = []
+                                    
+    if queryset:        
+        titulo = "Detalle {0}".format(tipo)        
+        encabezados = MODEL_FIELDS["{0}Detalle".format(tipo)]
+        celdas = MODEL_FIELDS["{0}Detalle".format(tipo)]
+        tipo_totales = []
+        crear_hoja_excel(libro, tipo, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
+    else:
+        return None
+                                
+    response['Content-Disposition'] = u'attachment; filename="{0}.xls"'.format(tipo)            
     libro.save(response)
     return response
