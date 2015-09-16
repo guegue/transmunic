@@ -4,6 +4,10 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 @register.filter
+def million(number):
+    return round(number / 1000000,2)
+
+@register.filter
 def keyvalue(dict, key):
     try:
         return dict[key]
