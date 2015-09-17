@@ -104,26 +104,43 @@ def gf_chart(request):
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
         anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='gasto__anio')
-        final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
+        clase_sql = "SELECT core_gasto.anio AS gasto__anio,'{periodo}' AS gasto__periodo,SUM({quesumar}) AS clase FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
         core_gasto.anio=lugar_clasificacionmunicano.anio JOIN core_tipogasto ON core_gastodetalle.tipogasto_id=core_tipogasto.codigo \
-        WHERE core_gasto.periodo=%s AND core_tipogasto.clasificacion=%s \
-        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id=%s AND lugar_clasificacionmunicano.anio=core_gasto.anio) \
+        WHERE core_gasto.periodo='{periodo}' AND core_tipogasto.clasificacion={tipogasto} \
+        AND lugar_clasificacionmunicano.clasificacion_id=(SELECT clasificacion_id FROM lugar_clasificacionmunicano WHERE municipio_id={municipio} AND lugar_clasificacionmunicano.anio=core_gasto.anio) \
         GROUP BY core_gasto.anio"
+        sql = clase_sql.format(quesumar='asignado', municipio=municipio_id, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.CORRIENTE, )
         cursor = connection.cursor()
-        cursor.execute(final_clase_sql, [PERIODO_FINAL, TipoGasto.CORRIENTE, municipio_id])
+        cursor.execute(sql)
+        inicial_clase = dictfetchall(cursor)
+        sql = clase_sql.format(quesumar='ejecutado', municipio=municipio_id, periodo=PERIODO_FINAL, tipogasto=TipoGasto.CORRIENTE, )
+        cursor = connection.cursor()
+        cursor.execute(sql)
         final_clase = dictfetchall(cursor)
+        for row in anual2:
+            found = False
+            for row2 in inicial_clase:
+                if row2['gasto__anio'] == row['gasto__anio']:
+                    found = True
+                    try:
+                        row['clase_inicial'] = row2['clase'] / mi_clase_anios_count[row['gasto__anio']]
+                    except KeyError:
+                        row['clase_inicial'] = 0
+            if not found:
+                row['clase_inicial'] = 0
         for row in anual2:
             found = False
             for row2 in final_clase:
                 if row2['gasto__anio'] == row['gasto__anio']:
                     found = True
                     try:
-                        row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['gasto__anio']]
+                        row['clase_final'] = row2['clase'] / mi_clase_anios_count[row['gasto__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
                 row['clase_final'] = 0
+        print anual2
         comparativo_anios = anual2
 
         # comparativo con promedio de clasificacion para un año específico
@@ -348,8 +365,8 @@ def gf_chart(request):
         gf_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  [u'Años',u'gasto__periodo',u'P. Inicial',u'Ejecutado',u'Categoría %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado','clase_final'],
+                'names':  [u'Años',u'gasto__periodo',u'P. Inicial',u'Ejecutado',u'Categoría Inicial %s' % (mi_clase.clasificacion,), u'Categoría Final %s' % (mi_clase.clasificacion,)],
+                'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado','clase_inicial','clase_final'],
                 }],
             )
         gf_comparativo_anios_column = Chart(
@@ -359,7 +376,7 @@ def gf_chart(request):
                     'type': 'column',
                     'stacking': False},
                     'terms':{
-                    'gasto__anio': ['asignado', 'ejecutado', 'clase_final'],
+                    'gasto__anio': ['asignado', 'ejecutado', 'clase_inicial', 'clase_final'],
                     },
                     }],
                 chart_options =
