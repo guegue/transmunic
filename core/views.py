@@ -68,28 +68,53 @@ def home(request):
 def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
     template_name = 'municipio.html'
+    #banners = Banner.objects.filter(municipio__slug=slug)
+    banners = Banner.objects.all()
+    #descripcion de graficos de portada 
+    desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
+    desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
+    desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
+    desc_inversionminima = Grafico.objects.get(pk='inversiones')
+    desc_inversionisector = Grafico.objects.get(pk='inversion')
+    #fin de descripcion de graficos de portada
+    departamentos = Departamento.objects.all()
 
-    banners = Banner.objects.filter(municipio__slug=slug)
+    # InversionFuente tiene su propio último año
+    year_list = getYears(InversionFuente)
+    year = year_list[-1]
+    data_fuentes = fuentes_chart(year=year)
 
-    year_list = Inversion_year_list()
-    year = list(year_list)[-1].year
+    year_list = getYears(Inversion)
+    year = year_list[-1]
+    periodo = Anio.objects.get(anio=year).periodo
+    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
-    data_oim = oim_chart(municipio=slug, year=year)
-    data_ogm = ogm_chart(municipio=slug, year=year)
-    data_inversion = inversion_chart(municipio=slug)
-    data_inversion_area = inversion_area_chart(municipio=slug)
+    data_oim = oim_chart(year=year, municipio=slug, portada=True)
+    data_ogm = ogm_chart(year=year, municipio=slug, )
+    data_inversion = inversion_chart()
+    data_inversion_area = inversion_area_chart()
+    data_inversion_minima_sector = inversion_minima_sector_chart()
+    data_inversion_minima_porclase = inversion_minima_porclase(year)
 
-    periodo = Inversion.objects.filter(year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
-            aggregate(ejecutado=Sum('ejecutado'))
-    inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
-            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+    total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'obj': obj, 'banners': banners,
-        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
+    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
+        'charts':( 
+            data_oim['charts'][0], 
+            data_ogm['charts'][0], 
+            #data_inversion['charts'][0], 
+            data_inversion_minima_sector['charts'][0],
+            #data_inversion_area['charts'][0],
+            data_inversion_minima_porclase['charts'][0],
+            data_fuentes['charts'][1],
+            ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
-        }, context_instance=RequestContext(request))
+        'departamentos': departamentos,
+        'home': 'home',
+    }, context_instance=RequestContext(request))
 
 def inversion_minima_sector_view(request):
     template_name = 'chart.html'
