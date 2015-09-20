@@ -46,8 +46,8 @@ def home(request):
     data_inversion_minima_sector = inversion_minima_sector_chart()
     data_inversion_minima_porclase = inversion_minima_porclase(year)
 
-    total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
+    total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
@@ -97,8 +97,8 @@ def municipio(request, slug):
     data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug)
     data_inversion_minima_porclase = inversion_minima_porclase(year)
 
-    total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
+    total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year, ). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
