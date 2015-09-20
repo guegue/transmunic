@@ -83,7 +83,7 @@ def municipio(request, slug):
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
     year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year)
+    data_fuentes = fuentes_chart(year=year, municipio=slug)
 
     year_list = getYears(Inversion)
     year = year_list[-1]
@@ -92,9 +92,9 @@ def municipio(request, slug):
 
     data_oim = oim_chart(year=year, municipio=slug, portada=True)
     data_ogm = ogm_chart(year=year, municipio=slug, )
-    data_inversion = inversion_chart()
-    data_inversion_area = inversion_area_chart()
-    data_inversion_minima_sector = inversion_minima_sector_chart()
+    data_inversion = inversion_chart(municipio=slug)
+    data_inversion_area = inversion_area_chart(municipio=slug)
+    data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug)
     data_inversion_minima_porclase = inversion_minima_porclase(year)
 
     total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))

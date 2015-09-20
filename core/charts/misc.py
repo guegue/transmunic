@@ -83,7 +83,7 @@ def inversion_minima_sector_chart(municipio=None, year=None):
         source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
         source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__anio=year_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
+        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
     else:
         municipio = ''
         source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
@@ -133,8 +133,10 @@ def fuentes_chart(municipio=None,year=None):
     if not year:
         year = year_list[-1]
     if municipio:
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
+                values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
     else:
         municipio = ''
         source = InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).\
@@ -164,7 +166,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__tipofuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': 'Fuentes financiamiento inversión %s' % (municipio, )},
+                'title': {'text': u'Fuentes financiamiento inversión %s' % (municipio, )},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },

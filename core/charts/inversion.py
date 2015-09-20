@@ -22,7 +22,7 @@ def inversion_chart(municipio=None):
 
     if municipio:
         source = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__municipio__slug=municipio). \
-            values('year').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_ultimos = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__municipio__slug=municipio, \
             inversion__anio__gt=list(year_list)[-3]). \
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
