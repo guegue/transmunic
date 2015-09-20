@@ -63,7 +63,8 @@ def inversion_minima_porclase(year):
             series_options =
               [{'options':{ 'type': 'column', },
                   #FIXME : temporal para demo en IEEP 'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
-                'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
+                  # FIXME: a solicitud de maribel se re-incluye. 'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
+                'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
               }],
             chart_options =
               {
