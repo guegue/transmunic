@@ -116,6 +116,7 @@
     {% if municipio %}
     <div class="col-md-5">
     <!-- javier 7/junio gftabla1 -->
+    {% descargar_excel "gf6" %}
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
     <table class="table table-condensed">
@@ -133,6 +134,7 @@
     </tr>
     {% endfor %}
     <tr class="success">
+    	<td></td>
         <td>PROMEDIO</td>
         <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
         <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>

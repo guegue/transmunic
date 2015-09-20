@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^inversion-area$', 'core.views.inversion_area_view', name='inversion_area'),
     url(r'^inversion$', 'core.views.inversion_view', name='inversion'),
     url(r'^fuentes$', 'core.views.fuentes_view', name='fuentes'),
+    url(r'^detalle-presupuesto$', 'core.views.descargar_detalle', name='detalle_presupuesto'),
     url(r'', include('model_report.urls')),
 )

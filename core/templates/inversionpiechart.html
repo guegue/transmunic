@@ -4,6 +4,7 @@
 {% load core_extras %} 
 {% load mathfilters %} 
 {% block main_content %}
+	{% descargar_excel "icat-all" %}
     <h2 class="titular">Inversión municipal {{ municipio }} {{ year }}</h2>
     <form method="GET">
     <select name="year">
@@ -59,6 +60,7 @@
 
         <div class="col-md-5">
             <!--maribel 21/07- tabla1 inversion municipal -->
+            {% descargar_excel "icat1" %}
             <h3>Inversión municipal</h3>
             <h4 class="text-info">Porcentaje por clasificación
               <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsepastel2"  aria-expanded="false" aria-controls="collapsePastel2">Ver gráfico</a>
@@ -101,6 +103,7 @@
         </div>
         <div class="col-md-7">
             <!--maribel 21/07 tabla2 inverson -->
+            {% descargar_excel "icat2" %}
             <h3>Inversión municipal</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-bordered">
@@ -137,6 +140,7 @@
         {% if not municipio %}
         <!--maribel 21/07 tabla3 inversion - nacional -->
         <div class="col-md-7">
+        {% descargar_excel "icat3" %}
             <h3>Inversión municipal por población</h3>
             <h4 class="text-info">por categoría de municipios en córdobas corrientes</h3>
             <table class="table table-condensed">
@@ -160,6 +164,7 @@
         <!-- maribel 21/07 inversion-tabla3-municipal -->
         {% if municipio %}
             <div class="col-md-5">
+            	{% descargar_excel "icat4" %}
                 <h3>Ranquin de municipio de misma categoría municipal</h3>
                 <h4 class="text-info">Millones de córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
@@ -192,6 +197,7 @@
 
         <div class="col-md-10">
         <!-- maribel 21/07  inversion tabla4 -->
+        	{% descargar_excel "icat5" %}
             <h3>Modificaciones al presupuesto municipal</h3>
             <h4>Inversiones en millones de córdobas corrientes</h4>
             <table class="table table-bordered">
@@ -246,6 +252,7 @@
     </div>
     <br clear="all">
     <div role="tabpanel" class="tab-pane fade" id="invhistorico" aria-labelledby="invhistorico-tab">
+    	{% descargar_excel "icat6" %}
         <h3>Comportamiento histórico de las inversiones anuales</h3>
         <h4 class="text-info">En millones de córdobas corrientes
               <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">Ver gráfico</a>
@@ -288,6 +295,7 @@
             </table>
         </div>
         <div class="col-md-10">
+        	{% descargar_excel "icat7" %}
           <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
           <table class="table table-condensed">
             <tr class="info">
