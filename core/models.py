@@ -321,6 +321,7 @@ class Proyecto(models.Model):
             return round(self.ejecutado / self.asignado * 100, 2)
         else:
             return None
+
     @property
     def areageografica_verbose(self):
         return self.areageografica
