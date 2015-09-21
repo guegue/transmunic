@@ -20,7 +20,7 @@ class PlanInversionModelReport(ReportAdmin):
         'self.porcentaje_ejecutado',
     ]
     years = [(year, year) for year in range(2010, 2016)]
-    periodos = [('I', 'Inicial'), ('F', 'Final')]
+    periodos = [(None, '--'), ('I', 'Inicial'), ('F', 'Final')]
     list_filter_widget = {
         'inversion__anio': Select(choices=years),
         'inversion__periodo': Select(choices=periodos),
@@ -37,6 +37,22 @@ class PlanInversionModelReport(ReportAdmin):
     list_order_by = ('nombre',)
     type = 'report'
 
+
+    def __init__(self, parent_report=None, request=None):
+        self.fields = [
+            'inversion__anio',
+            'inversion__municipio__nombre',
+            'nombre',
+            'catinversion__nombre',
+            'asignado',
+            'ejecutado',
+            'self.porcentaje_ejecutado',
+        ]
+        if request.GET.get('inversion__periodo') == 'F':
+            self.fields.remove('asignado')
+        if request.GET.get('inversion__periodo') == 'I':
+            self.fields.remove('ejecutado')
+        super(PlanInversionModelReport, self).__init__(parent_report, request)
 
 # class DetallePresupuestoReport(object):
 #     MODELS = (
