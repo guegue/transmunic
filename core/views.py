@@ -96,19 +96,25 @@ def municipio(request, slug):
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
     year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year, municipio=slug)
+    data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
+    # obtiene último año
     year_list = getYears(Inversion)
     year = year_list[-1]
+
+    # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # siempre sumar 'asginado'
+    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    quesumar = 'asignado'
 
     data_oim = oim_chart(year=year, municipio=slug, portada=True)
-    data_ogm = ogm_chart(year=year, municipio=slug, )
-    data_inversion = inversion_chart(municipio=slug)
-    data_inversion_area = inversion_area_chart(municipio=slug)
-    data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug)
-    data_inversion_minima_porclase = inversion_minima_porclase(year)
+    data_ogm = ogm_chart(year=year, municipio=slug, portada=True)
+    #data_inversion = inversion_chart(municipio=slug, portada=True)
+    #data_inversion_area = inversion_area_chart(municipio=slug, portada=True)
+    data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
+    data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year, ). \
