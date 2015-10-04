@@ -90,7 +90,12 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         year = year_list[-1]
 
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     ChartError = False
 

@@ -27,8 +27,14 @@ def oim_chart(municipio=None, year=None, portada=False):
     if not year:
         year = year_list[-1]
 
+    # obtiene último periodo del año que se quiere ver
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     ChartError = False
 

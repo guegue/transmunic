@@ -20,6 +20,7 @@ from core.forms import DetallePresupuestoForm
 def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
+
     #descripcion de graficos de portada 
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
@@ -27,24 +28,36 @@ def home(request):
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionisector = Grafico.objects.get(pk='inversion')
     #fin de descripcion de graficos de portada
+
     departamentos = Departamento.objects.all()
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
     year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year)
+    data_fuentes = fuentes_chart(year=year, portada=True)
 
+    # obtiene último año
     year_list = getYears(Inversion)
     year = year_list[-1]
+
+    # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # siempre sumar 'asginado'
+    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    quesumar = 'asignado'
 
     data_oim = oim_chart(year=year, portada=True)
-    data_ogm = ogm_chart(year=year)
-    data_inversion = inversion_chart()
-    data_inversion_area = inversion_area_chart()
-    data_inversion_minima_sector = inversion_minima_sector_chart()
-    data_inversion_minima_porclase = inversion_minima_porclase(year)
+    data_ogm = ogm_chart(year=year, portada=True)
+
+    #FIXME no 'quesumar'? usa asignado y ejecutado
+    #data_inversion = inversion_chart()
+
+    #FIXME no 'quesumar'? solo usa ejecutado
+    #data_inversion_area = inversion_area_chart()
+
+    data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
+    data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \

@@ -23,25 +23,32 @@ def getVar(var, request):
     request.session[var] = foo
     return foo
 
-def inversion_minima_porclase(year):
+def inversion_minima_porclase(year, portada=False):
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'ejecutado'
+    print portada
+    print quesumar
+
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
-            ((SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            ((SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
             JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
-            (SELECT SUM(%s) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
+            WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND core_tipoingreso.clasificacion={clasificacion} AND  tipoingreso_id<>'{tipoingreso}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
+            (SELECT SUM({quesumar}) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
             JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Gasto.anio=%s AND core_Gasto.periodo='%s' AND core_tipogasto.clasificacion=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
-            (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.clasificacion={clasificacion} AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
+            (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
             JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
-            AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
-    sql = sql_tpl % ('ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado', year, PERIODO_FINAL, '0',\
-            'ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado')
+            WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND core_tipoingreso.clasificacion={clasificacion} AND  tipoingreso_id<>'{tipoingreso}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+            AS {quesumar_as} FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
+    sql = sql_tpl.format(quesumar=quesumar, year=year, periodo=PERIODO_FINAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='ejecutado')
     cursor = connection.cursor()
     cursor.execute(sql)
     final = dictfetchall(cursor)
-    sql = sql_tpl % ('asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado', year, PERIODO_INICIAL, '0',\
-            'asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado')
+    sql = sql_tpl.format(quesumar='asignado', year=year, periodo=PERIODO_INICIAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
@@ -73,31 +80,37 @@ def inversion_minima_porclase(year):
               })
     return {'charts': (chart,), }
 
-def inversion_minima_sector_chart(municipio=None, year=None):
+def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
     if not year:
         year = list(year_list)[-1]
 
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'ejecutado'
+
     if municipio:
-        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
         source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
         total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
     else:
         municipio = ''
-        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
+        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
         source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
         total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
 
     for record in source:
         try:
-            record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado'] / total_asignado
+            record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
         except IndexError:
             record['ejecutado'] = 0
         try:
-            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado'] / total_asignado
+            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
         except IndexError:
             record['asignado'] = 0
         #record['minimo'] = 0 if not total_asignado['total'] else total_asignado['total'] * (record['minimo']/100)
@@ -125,11 +138,17 @@ def inversion_minima_sector_chart(municipio=None, year=None):
 
 
 
-def fuentes_chart(municipio=None,year=None):
+def fuentes_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(InversionFuente)
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
     if not year:
         year = year_list[-1]
     if municipio:
