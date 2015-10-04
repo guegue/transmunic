@@ -32,7 +32,7 @@
 </div><!-- /.carousel -->
         <div class="row intro">
             <div class="container text-center">
-                <div class="col-md-12">Los presupuestos municipales abiertos es una manera de como los ciudadanos pueden saber cómo sus Gobiernos Municipales utilizan los fondos del Municipio...</div>
+                <div class="col-md-12">En este sitio encontrará información de los presupuestos de los 153 municipios del país a manera de indicadores de gestion para hacer seguimiento a la ejecución presupuestaria.</div>
             </div>
         </div>
 {% endblock %}
@@ -118,7 +118,7 @@
 {% block main_content %}
         <div class="clear"></div>
         <div class="text-center">
-            <h2 class="titular">Presupuesto Consolidado Municipal 2015</h2>
+            <h2 class="titular">Consolidado de Presupuestos Municipales 2015</h2>
             <hr />
         </div>
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
@@ -137,7 +137,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_oim_chart.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_oim_chart.descripcion|linebreaks }}
+                          {{ desc_oim_chart.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
