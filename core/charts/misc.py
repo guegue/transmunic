@@ -10,9 +10,9 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall, glue
+from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.tools import getYears, dictfetchall, glue
 
 def getVar(var, request):
     foo = None
@@ -52,7 +52,7 @@ def inversion_minima_porclase(year, portada=False):
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
-    porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion')
+    porclase = glue(inicial, final, 'clasificacion')
     data = RawDataPool(
            series=
             [{'options': {'source': porclase },
@@ -75,7 +75,8 @@ def inversion_minima_porclase(year, portada=False):
               }],
             chart_options =
               {
-                  'title': {'text': u'Arto 19 - Ley de régimen presupuestaria municipal'},
+                  #grafico 4 de portada
+                  'title': {'text': u''},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), }
@@ -131,7 +132,8 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
               }],
             chart_options =
               {
-                  'title': {'text': u'Arto 12 - Ley de transferencias presupuestarias'},
+                  #grafico 5 de portada Arto 12
+                  'title': {'text': u''},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
