@@ -25,13 +25,13 @@ def getVar(var, request):
 
 def inversion_minima_porclase(year, portada=False):
 
+    periodo = Anio.objects.get(anio=year).periodo
+
     # usar 'asignado' para todo periodo si estamos en portada
     if portada:
         quesumar = 'asignado'
     else:
         quesumar = 'ejecutado'
-    print portada
-    print quesumar
 
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
             ((SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
@@ -44,23 +44,25 @@ def inversion_minima_porclase(year, portada=False):
             JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
             WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND core_tipoingreso.clasificacion={clasificacion} AND  tipoingreso_id<>'{tipoingreso}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
             AS {quesumar_as} FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
-    sql = sql_tpl.format(quesumar=quesumar, year=year, periodo=PERIODO_FINAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='ejecutado')
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    final = dictfetchall(cursor)
-    sql = sql_tpl.format(quesumar='asignado', year=year, periodo=PERIODO_INICIAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
+    #sql = sql_tpl.format(quesumar=quesumar, year=year, periodo=PERIODO_FINAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='ejecutado')
+    #cursor = connection.cursor()
+    #cursor.execute(sql)
+    #final = dictfetchall(cursor)
+    #sql = sql_tpl.format(quesumar='asignado', year=year, periodo=PERIODO_INICIAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
+    sql = sql_tpl.format(quesumar='asignado', year=year, periodo=periodo, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
-    porclase = glue(inicial, final, 'clasificacion')
+    #porclase = glue(inicial, final, 'clasificacion')
     data = RawDataPool(
            series=
-            [{'options': {'source': porclase },
-              'names': [u'Categoría de municipios', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
+            #[{'options': {'source': porclase },
+            [{'options': {'source': inicial },
+              'names': [u'Categoría de municipios', u'Mínimo por ley', u'Presupuestado'],
               'terms': [
                   'clasificacion',
                   'minimo',
-                  'ejecutado',
+                  #'ejecutado',
                   'asignado',
                 ]}
              ])
@@ -69,9 +71,8 @@ def inversion_minima_porclase(year, portada=False):
             datasource = data,
             series_options =
               [{'options':{ 'type': 'column', },
-                  #FIXME : temporal para demo en IEEP 'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
-                  # FIXME: a solicitud de maribel se re-incluye. 'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
-                'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+                  #'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+                  'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
               }],
             chart_options =
               {
