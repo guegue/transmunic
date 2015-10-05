@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mathfilters %}
 {% load static thumbnail chartit %}
 
 {% block titulo %}
@@ -203,7 +204,7 @@
                         </div>
                     </div>
                     <p><span class="text-info"><strong>* Invertido en el periodo</strong></p>
-                    <p><span class="text-danger"><strong>** Minimo por ley</strong>:
+                    <p><span class="text-danger"><strong>** Mínimo por ley</strong>:
                     Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados: Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</p>
                 </div>
 		<div class="col-md-10">
@@ -223,7 +224,7 @@
                                 <li class="col-md-3 col-sm-3 col-xs-6">
                                   <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
-                                  <p class="cifra text-info">* {% widthratio i.ejecutado total_inversion.ejecutado 100|floatformat %}% <br />
+                                  <p class="cifra text-info">* {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% <br />
                                   <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
                                 </li>
                             {% if forloop.last or forloop.counter|divisibleby:4 %}
