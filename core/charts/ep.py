@@ -10,9 +10,9 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, TipoIngreso, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall, glue
+from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, TipoIngreso, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
+from core.tools import getYears, dictfetchall, glue
 from core.charts.misc import getVar
 
 def ep_chart(request):
@@ -37,10 +37,10 @@ def ep_chart(request):
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
                 values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
-                values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(ejecutado=Sum('ejecutado'))
+                values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(asignado=Sum('asignado'))
         rubrosg_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
                 values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(ejecutado=Sum('ejecutado'))
-        rubrosg = glue(rubrosg_inicial, rubrosg_final, periodo, 'tipogasto__clasificacion', actualizado=rubrosg_actualizado)
+        rubrosg = glue(rubrosg_inicial, rubrosg_final, 'tipogasto__clasificacion', actualizado=rubrosg_actualizado)
         for r in rubrosg:
             r['tipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['tipogasto__clasificacion']]
 
@@ -48,10 +48,10 @@ def ep_chart(request):
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,).\
-                values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(ejecutado=Sum('ejecutado'))
+                values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'))
         rubros_final= IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, periodo, 'tipoingreso__clasificacion', actualizado=rubros_actualizado)
+        rubros = glue(rubros_inicial, rubros_final, 'tipoingreso__clasificacion', actualizado=rubros_actualizado)
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
@@ -73,12 +73,12 @@ def ep_chart(request):
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
+        anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
         inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2g = glue(inicial=inicialg, final=finalg, periodo=PERIODO_INICIAL, key='gasto__anio')
+        anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         with open ("core/charts/ep_municipio.sql", "r") as query_file:
             sql=query_file.read()
@@ -96,10 +96,10 @@ def ep_chart(request):
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,).\
                 values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,).\
-                values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(ejecutado=Sum('ejecutado'))
+                values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(asignado=Sum('asignado'))
         rubrosg_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,).\
                 values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(ejecutado=Sum('ejecutado'))
-        rubrosg = glue(rubrosg_inicial, rubrosg_final, periodo, 'tipogasto__clasificacion', actualizado=rubrosg_actualizado)
+        rubrosg = glue(rubrosg_inicial, rubrosg_final, 'tipogasto__clasificacion', actualizado=rubrosg_actualizado)
         for r in rubrosg:
             r['tipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['tipogasto__clasificacion']]
 
@@ -107,10 +107,10 @@ def ep_chart(request):
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,).\
-                values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(ejecutado=Sum('ejecutado'))
+                values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'))
         rubros_final= IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, periodo, 'tipoingreso__clasificacion', actualizado=rubros_actualizado)
+        rubros = glue(rubros_inicial, rubros_final, 'tipoingreso__clasificacion', actualizado=rubros_actualizado)
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
@@ -131,21 +131,21 @@ def ep_chart(request):
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclasep = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
+        porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='ingreso__anio')
+        anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
         inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2g = glue(inicial=inicialg, final=finalg, periodo=PERIODO_INICIAL, key='gasto__anio')
+        anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         with open ("core/charts/ep.sql", "r") as query_file:
             sql=query_file.read()

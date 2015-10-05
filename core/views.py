@@ -6,9 +6,9 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
-from models import Anio, getYears
+from models import Anio, Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
+from tools import getYears
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
