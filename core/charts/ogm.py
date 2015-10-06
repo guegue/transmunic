@@ -381,7 +381,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  ['Gastos del municipio comparado con la categoria','Periodo',u'P.Inicial',u'Categoria P. Inicial',u'P.Final',u'Categoria P.Final'],
+                'names':  [' ','Periodo',u'P.Inicial',u'P.Final',u'Categoria P. Inicial',u'Categoria P.Final'],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
@@ -396,7 +396,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
+                'names':  [' ',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -413,7 +413,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo2_column = Chart(
                 datasource = ogm_comparativo2,
@@ -426,7 +426,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -439,12 +439,13 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
     else: # no municipio
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  [' ','Totales','Asignado','Ejecutado'],
                 'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado',],
                 }],
             )
@@ -458,7 +459,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto','Totales'],
+                'names':  [' ','Gastos Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
@@ -473,7 +474,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -486,7 +487,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo_anios_column = Chart(
                 datasource = ogm_comparativo_anios,
@@ -499,7 +500,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
 
 
@@ -592,7 +593,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     quesumar ]
                   }}],
             chart_options = {
-                'title': { 'text': 'Destino del gasto %s %s' % (municipio, year,)},
+                'title': { 'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -611,7 +612,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   }}],
             chart_options =
               {
-                  'title': {'text': 'Destino del gasto'},
+                  'title': {'text': ' '},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },

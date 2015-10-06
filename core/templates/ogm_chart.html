@@ -67,7 +67,6 @@
             </h4>
             <div class="collapse" id="collapsepastel">               
                 <div class="well">                                              
-                    <h3>Destino del gastos</h3> 
                     <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
                 </div>                                           
             </div> 
@@ -108,8 +107,8 @@
                     <td>{{ row.tipogasto__nombre }}</td>                                    
                     <td class="text-right">{{ row.inicial_asignado|million }}</td>                                    
                     <td class="text-right">{{ row.ejecutado|million }}</td>                                   
-                    {% if row.asignado %}                                                   
-                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% if row.inicial_asignado %}                                                   
+                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
                 </tr>                                                                       
                 {% endfor %}                                                                
@@ -232,8 +231,7 @@
         <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseModificacion"  aria-expanded="false" aria-controls="collapseModificacion">Ver gráfico</a>
         <div class="collapse" id="collapseModificacion">               
             <div class="well">                                              
-                <h3>Destino del gastos</h3> 
-                <div id='comparativo3' class="col-md-10"> Chart will be rendered here </div>
+                <div id='comparativo3' class="col-md-6"> Chart will be rendered here </div>
             </div>                                           
         </div> 
         <table class="table table-condensed ">
@@ -389,15 +387,12 @@
         <!--maribel 20/07 ogm-tabla 7 -->
         <div class="col-md-6">
         {% descargar_excel "ogm6" %}
-            <h3>Ejecución presupuestaria del gasto sector municipal</h3>
+            <h3>Ejecución presupuestaria del gasto</h3>
             <h4 class="text-info">Millones de córdobas corrientes
                 <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsecomparativo_anios"  aria-expanded="false" aria-controls="collapsePastel">Ver gráfico</a>
             </h4>
             <div class="collapse" id="collapsecomparativo_anios">               
                 <div class="well">                                              
-                    <h4>Gastos del municipio {% if municipio %}comparado con la categoría{% endif %}</h4> 
-                    {% if municipio %}<h5>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h5>{% endif %}
-                    <h5 class="text-info">Millones de córdobas corrientes</h5>
                     <div id='comparativo_anios' class="col-md-7"> Chart will be rendered here </div>
                 </div>                                           
             </div> 
