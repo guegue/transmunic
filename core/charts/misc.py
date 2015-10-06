@@ -77,7 +77,7 @@ def inversion_minima_porclase(year, portada=False):
             chart_options =
               {
                   #grafico 4 de portada
-                  'title': {'text': u''},
+                  'title': {'text': u' '},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), }
