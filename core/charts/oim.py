@@ -372,7 +372,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  ['Ejecucion presupuestaria','Periodo','P.Inicial',u'Municipio P. Final',u'Categoria P.Final',u'Categoria P. Final'],
+                'names':  ['Ejecucion presupuestaria','Periodo','P.Inicial',u'Municipio P. Final',u'Categoria P.Inicial',u'Categoria P. Final'],
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
@@ -404,7 +404,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         oim_comparativo2_column = Chart(
                 datasource = oim_comparativo2,
@@ -417,7 +417,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
         oim_comparativo3_column = Chart(
                 datasource = oim_comparativo3,
@@ -431,7 +431,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                 }],
                 chart_options =
-                {'title': { 'text': 'En millones de cordobas corrientes %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
 
     else: # no municipio chartit
@@ -452,7 +452,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         oim_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto','Totales'],
+                'names':  [' ','Ingresos totales'],
                 'terms':  ['ingreso__periodo', 'monto'],
                 }],
                 )
@@ -467,7 +467,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         oim_comparativo3_column = Chart(
                 datasource = oim_comparativo3,
@@ -480,7 +480,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         oim_comparativo_anios_column = Chart(
                 datasource = oim_comparativo_anios,
@@ -493,7 +493,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Ingresos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
 
     oim_tipo = RawDataPool(
@@ -514,7 +514,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 }],
             chart_options =
             {
-                'title': { 'text': 'Ingresos totales %s %s' % (year, municipio,)},
+                'title': { 'text': ' '},
                 'data': { 'table': 'datatable'},
             },
     )
@@ -604,7 +604,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             chart_options =
               {
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'title': {'text': 'Origen de los ingresos'},
+                  'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
               }
