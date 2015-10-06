@@ -142,7 +142,7 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
             chart_options =
               {
                   #grafico 5 de portada Arto 12
-                  'title': {'text': u''},
+                  'title': {'text': u' '},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
@@ -183,7 +183,7 @@ def fuentes_chart(municipio=None, year=None, portada=False):
                 'terms':{'fuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': u'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'title': {'text': u' '},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -196,7 +196,7 @@ def fuentes_chart(municipio=None, year=None, portada=False):
                 'terms':{'fuente__tipofuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': u'Fuentes financiamiento inversión %s' % (municipio, )},
+                'title': {'text': u' '},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
