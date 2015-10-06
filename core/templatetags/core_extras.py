@@ -5,7 +5,10 @@ register = template.Library()
 
 @register.filter
 def million(number):
-    return round(number / 1000000,2)
+    if number:
+        return round(number / 1000000,2)
+    else:
+        return 0
 
 @register.filter
 def keyvalue(dict, key):
