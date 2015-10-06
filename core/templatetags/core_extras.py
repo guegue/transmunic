@@ -21,6 +21,8 @@ def total_sum(dict, key):
         return sum(float(d[key] or 0) for d in dict)
     except TypeError:
         return 0
+    except KeyError:
+        return 0
 
 @register.filter
 def total_avg(dict, key):

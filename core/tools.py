@@ -38,6 +38,39 @@ def glue(inicial, final, key, actualizado=[]):
 
     return glued
 
+
+def superglue(data=(), key='id', default=0):
+    "Glues together different lists of dictionaries using a common key"
+
+    alldata = []
+    for datum in data:
+        # cast as lists
+        datum = list(datum)
+        alldata = alldata + datum
+
+    # do glue
+    nonkeys = []
+    merged = {}
+    for item in alldata:
+        if item[key] in merged:
+            merged[item[key]].update(item)
+        else:
+            merged[item[key]] = item
+        for field, value in item.iteritems():
+            if field <> key and field not in nonkeys:
+                nonkeys.append(field)
+    glued = [val for (_, val) in merged.items()]
+
+    # checks all required keys have a value (default if none)
+    required = nonkeys
+    for item in glued:
+        for r in required:
+            if not r in item:
+                item[r] = default
+
+    return glued
+
+
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
 

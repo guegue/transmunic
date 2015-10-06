@@ -293,7 +293,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         actualizado = dictfetchall(cursor)
         porclase = glue(inicial, final, 'clasificacion', actualizado=actualizado)
         for d in porclase:
-            if d['actualizado']:
+            if d['actualizado'] and d['asignado']:
                 # FIXME: wot? 'asignado' ?
                 d['nivel'] = d['asignado'] / d['actualizado'] * 100
             else:

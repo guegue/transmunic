@@ -111,7 +111,7 @@ Ahorro corriente de inversion  {{ municipio }}
             <h3>Resultado presupuestario ingresos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
-                <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipoingreso__nombre}}</td>                                    
@@ -177,7 +177,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <h3>Modificaciones al presupuesto - Ingresos corrientes totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del ingreso</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+            <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.tipoingreso__nombre}}</td>
