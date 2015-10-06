@@ -29,7 +29,7 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "titulo" : u"Eficiencia en la ejecución del gasto de personal permanente",
                                     "subtitulo"  :  u"Gastos en millones de córdobas corrientes",
                                     "encabezados"  :  ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"],
-                                    "celdas"  :  ["subsubtipogasto__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "celdas"  :  ["subsubtipogasto__nombre","inicial_asignado","ejecutado","ejecutado/inicial_asignado"],
                                     "qs"  : "rubrosp"
                                 },
                         "ogm3": {
@@ -43,14 +43,14 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "titulo"  :  u"Modificaciones al presupuesto municipal de gastos",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
                                     "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["tipogasto__nombre","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "celdas"  :  ["tipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
                                     "qs"  :  "rubros"
                                 },
                         "ogm5": {
                                     "titulo"  :  u"Modificacion al presupuesto municipal del gasto de personal permanente",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
                                     "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["subsubtipogasto__nombre","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "celdas"  :  ["subsubtipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
                                     "qs"  :  "rubrosp"
                                 },
                         "ogm6": {
@@ -78,14 +78,14 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "titulo"  :  u"Ingresos del periodo",
                                     "subtitulo"  :  u"Ingresos en millones de córdobas corrientes",
                                     "encabezados"  :  ["Rubros de ingresos","Inicial","Ejecutado","%(ejecutado/inicial)"],
-                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","inicial_asignado","ejecutado","ejecutado/asignado"],
+                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","inicial_asignado","ejecutado","ejecutado/inicial_asignado"],
                                     "qs"  :  "rubros"
                                 },
                         "oim2": {
                                     "titulo"  :  u"Eficiencia en recaudación municipal",
                                     "subtitulo"  :  u"Recaudación en millones de córdobas corrientes",
                                     "encabezados"  :  ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"],
-                                    "celdas"  :  ["subtipoingreso__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "celdas"  :  ["subtipoingreso__nombre","inicial_asignado","ejecutado","ejecutado/inicial_asignado"],
                                     "qs"  :  "rubrosp"
                                 },                              
                         "oim3": {
@@ -98,15 +98,15 @@ CONFIGURACION_TABLAS_EXCEL = {
                         "oim4":{
                                     "titulo"  :  u"Modificaciones al presupuesto municipal de ingresos",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
-                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","actualizado_ejecutado","actualizado_ejecutado/actualizado_asignado","final_asignado","final_asignado-inicial_asignado","final_ejecutado","final_ejecutado/final_asignado"],
                                     "qs"  :  "rubros"
                                 },
                         "oim5": {
                                     "titulo"  :  u"Modificacion al presupuesto municipal del ingreso de personal permanente",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
                                     "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["subtipoingreso__nombre","asignado","actualizado","actualizado-asignado","ejecutado","ejecutado/actualizado"],
+                                    "celdas"  :  ["subtipoingreso__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
                                     "qs"  : "rubrosp"
                                 },
                         "oim6": {
@@ -454,13 +454,17 @@ def obtener_valor(instance, name, es_diccionario=False):
             elif "-" in name:
                 operador = "-"                
                 
-            atributos = name.split(operador)                        
-            if es_diccionario:
-                value1 = instance[atributos[0]]
-                value2 = instance[atributos[1]]
-            else:
-                value1 = getattr(instance, atributos[0])
-                value2 = getattr(instance, atributos[1])
+            atributos = name.split(operador)
+            try:
+                if es_diccionario:
+                    value1 = instance[atributos[0]]
+                    value2 = instance[atributos[1]]
+                else:
+                    value1 = getattr(instance, atributos[0])
+                    value2 = getattr(instance, atributos[1])
+            except KeyError:
+                value1 = 0
+                value2 = 0
             
             value1 = value1 or Decimal("0")
             value2 = value2 or Decimal("0")
@@ -472,8 +476,11 @@ def obtener_valor(instance, name, es_diccionario=False):
                     value = value1 / value2
             elif operador == "-":
                 value = (value1 - value2) if value1 <> 0 else Decimal("0") 
-        else:       
-            value = instance[name] if es_diccionario else getattr(instance, name)
+        else: 
+            try:
+                value = instance[name] if es_diccionario else getattr(instance, name)
+            except KeyError:
+                value = 0
         
         return value or Decimal("0")
     except AttributeError:
