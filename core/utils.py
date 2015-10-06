@@ -22,7 +22,7 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "titulo":u"Eficiencia en la ejecución del gasto municipal",
                                     "subtitulo":u"Gastos en millones de córdobas corrientes",
                                     "encabezados" : ["Rubro","Inicial","Ejecutado","%(ejecutado/inicial)"],
-                                    "celdas" : ["tipogasto__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "celdas" : ["tipogasto__nombre","inicial_asignado","ejecutado","ejecutado/inicial_asignado"],
                                     "qs" : "rubros"                             
                                   },
                         "ogm2": {
@@ -78,7 +78,7 @@ CONFIGURACION_TABLAS_EXCEL = {
                                     "titulo"  :  u"Ingresos del periodo",
                                     "subtitulo"  :  u"Ingresos en millones de córdobas corrientes",
                                     "encabezados"  :  ["Rubros de ingresos","Inicial","Ejecutado","%(ejecutado/inicial)"],
-                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","asignado","ejecutado","ejecutado/asignado"],
+                                    "celdas"  :  ["subsubtipoingreso__origen__nombre","inicial_asignado","ejecutado","ejecutado/asignado"],
                                     "qs"  :  "rubros"
                                 },
                         "oim2": {

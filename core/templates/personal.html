@@ -4,7 +4,7 @@
 {% load core_extras %} 
 {% block main_content %}
     <div class="col-md-12 text-centered">
-        <div class="pull-left">
+        <div class="pull-left col-md-5">
         	{% descargar_excel "gp-all" %}
             <h2 class="title">Gastos de personal {{ municipio }} {{ year }} </h2>
         </div>
@@ -183,12 +183,7 @@
     <!--maribel - FIXME: del funcionamiento antrior -->
     <div id='chart_ejecutado' style="display:none;">chart</div>
 
-<<<<<<< HEAD
-    <!-- FIXME: copiados de gf -->
     <div id='tipo'>chart</div>
-=======
-    <div id='comparativo3'>chart</div>
->>>>>>> 8e493440ac3df43d046cff876afdc772394e8f46
 
     </div>
     </div>
@@ -312,7 +307,7 @@
         <td>{{ row.actualizado }}</td>
         <td>{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado }}{% else %}0 {% endif %}</td>
         <td>{{ row.ejecutado }}</td>
-        {% if row.actualizado %}
+        {% if row.asignado %}
         <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
