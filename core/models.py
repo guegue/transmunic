@@ -42,6 +42,9 @@ class Grafico(models.Model):
 class Anio(models.Model):
     anio = models.IntegerField()
     periodo = models.CharField(max_length=1)
+    inicial = models.DateField(null=True, blank=True)
+    actualizado = models.DateField(null=True, blank=True)
+    final = models.DateField(null=True, blank=True)
     def __unicode__(self):
         return u'%s %s' % (self.anio, self.periodo)
 
