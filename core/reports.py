@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from models import Proyecto
 from django.utils.translation import ugettext_lazy as _
 from django.forms.widgets import Select, TextInput
+from django.utils.formats import number_format
+
 from model_report.report import reports, ReportAdmin
 from model_report.utils import (usd_format, avg_column, sum_column, count_column)
+
+from models import Proyecto
+
+
+def intcomma(value, instance):
+    if not value:
+        return 0
+    return number_format(value, force_grouping=True)
+
 
 class PlanInversionModelReport(ReportAdmin):
 
@@ -20,7 +30,7 @@ class PlanInversionModelReport(ReportAdmin):
         'self.porcentaje_ejecutado',
     ]
     years = [(year, year) for year in range(2010, 2016)]
-    periodos = [(None, '--'), ('I', 'Inicial'), ('F', 'Final')]
+    periodos = [(None, '--'), ('I', 'Inicial'), ('A', 'Actualizado'), ('F', 'Final')]
     list_filter_widget = {
         'inversion__anio': Select(choices=years),
         'inversion__periodo': Select(choices=periodos),
@@ -32,6 +42,10 @@ class PlanInversionModelReport(ReportAdmin):
         'self.porcentaje_ejecutado': 'Porcentaje ejecutado',
         #'catinversion__nombre': u'Categoría',
         #'date__day': lambda x, y: _('Day'),
+    }
+    override_field_formats = {
+        'asignado': intcomma,
+        'ejecutado': intcomma,
     }
     list_filter = ('inversion__anio', 'inversion__periodo', 'inversion__municipio',)
     list_order_by = ('nombre',)
