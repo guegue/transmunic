@@ -164,8 +164,8 @@
                                 {% endfor %}                                                                
                                 <tr class="success bold">                                                   
                                     <td>TOTAL</td>                                                          
-                                    <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|floatformat:2|intcomma }}</td>                                        
-                                    <td class="text-right">{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</td>                                        
+                                    <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>                                        
+                                    <td class="text-right">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</td>                                        
                                     <td class="montos">{{ rubrosp|div:asignado|mul:100|floatformat:1 }}</td>
                                 </tr>       
                             </table>                                                                    
