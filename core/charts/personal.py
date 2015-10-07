@@ -397,7 +397,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo3 = RawDataPool(
             series=
@@ -418,7 +418,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo2 = RawDataPool(
             series=
@@ -439,7 +439,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
     else: # chartit no municipio
         gf_nivelejecucion = RawDataPool(
@@ -459,7 +459,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options = {
-                    'title': { 'text': u'Nivel de ejecución %s' % (year,)},
+                    'title': { 'text': u' '},
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     }
                 )
@@ -481,7 +481,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo3 = RawDataPool(
             series=
@@ -501,7 +501,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo2 = RawDataPool(
             series=
@@ -521,7 +521,7 @@ def gpersonal_chart(request):
                     },
                     }],
                 chart_options = {
-                    'title': { 'text': 'Gastos %s' % (year)},
+                    'title': { 'text': ' '},
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                 }
                 )
@@ -544,7 +544,7 @@ def gpersonal_chart(request):
                 }],
             chart_options =
             {
-                'title': { 'text': 'Gastos por tipo origen %s %s' % (year, municipio,)},
+                'title': { 'text': ' '},
                 'data': { 'table': 'datatable'},
             },
     )
@@ -561,7 +561,7 @@ def gpersonal_chart(request):
                 'terms': {'nombre': ['asignado']}
             }],
             chart_options = {
-                'title': {'text': 'Gastos de personal %s %s ' % (municipio, year,)},
+                'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -585,7 +585,7 @@ def gpersonal_chart(request):
                     'ejecutado']
                   }}],
             chart_options = {
-                'title': {'text': 'Gastos de personal %s ' % (municipio,)},
+                'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
                 },
             )
@@ -603,7 +603,7 @@ def gpersonal_chart(request):
             datasource = data,
             series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__anio': terms }}],
             chart_options = {
-                'title': {'text': u'Gastos de personal año %s ' % (municipio,)},
+                'title': {'text': u' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
                 },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)

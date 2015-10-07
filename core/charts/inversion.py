@@ -140,7 +140,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         cursor.execute(percapita_final_sql, [municipio_id, PERIODO_FINAL])
         percapita_final = dictfetchall(cursor)
         percapita3 = glue(inicial=percapita_inicial, final=percapita_final, actualizado=percapita_actualizado, key='inversion__anio')
-        #print percapita3
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -273,7 +272,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL,)
-        print sql
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
@@ -513,7 +511,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 if row2['catinversion__nombre'] == row['catinversion__nombre']:
                     row['clase'] = row2['clase']
                     row['clase_percent'] = row2['clase_percent']
-    #print sources
 
     # tabla: get inversions por año
     porano_table = {}

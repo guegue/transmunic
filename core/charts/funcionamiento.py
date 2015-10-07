@@ -140,7 +140,6 @@ def gf_chart(request):
                         row['clase_final'] = 0
             if not found:
                 row['clase_final'] = 0
-        print anual2
         comparativo_anios = anual2
 
         # comparativo con promedio de clasificacion para un año específico
@@ -380,7 +379,7 @@ def gf_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo3 = RawDataPool(
             series=
@@ -401,8 +400,8 @@ def gf_chart(request):
                     },
                     }],
                 chart_options = {
-                    'title': { 'text': 'GASTOS DE FUNCIONAMIENTO'},
-                    'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
+                    'title': { 'text': ' '},
+                    #'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
                     'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                     },
                 )
@@ -425,8 +424,8 @@ def gf_chart(request):
                     },
                     }],
                 chart_options = {
-                    'title': { 'text': 'PORCENTAJE DEL GASTO TOTAL DESTINADO A GASTOS DE FUNCIONAMIENTO'},
-                    'subtitle': { 'text': u'Municipio de %s y Categoría %s %s' % (municipio_row.nombre, mi_clase.clasificacion, year)},
+                    'title': { 'text': ' '},
+                    'subtitle': { 'text': u' '},
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                     },
                 )
@@ -470,7 +469,7 @@ def gf_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo3 = RawDataPool(
             series=
@@ -490,7 +489,7 @@ def gf_chart(request):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'Gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         gf_comparativo2 = RawDataPool(
             series=
@@ -510,7 +509,7 @@ def gf_chart(request):
                     },
                     }],
                 chart_options = {
-                    'title': { 'text': 'Gastos %s' % (year)},
+                    'title': { 'text': ' '},
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
                 }
                 )
@@ -528,7 +527,7 @@ def gf_chart(request):
                 'terms': {'nombre': ['asignado']}
             }],
             chart_options = {
-                'title': {'text': 'Porcentaje del gasto total' },
+                'title': {'text': ' ' },
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -552,7 +551,7 @@ def gf_chart(request):
                     'ejecutado']
                   }}],
             chart_options = {
-                'title': {'text': 'Gastos de funcionamiento %s ' % (municipio,)},
+                'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
                 },
             )
@@ -570,7 +569,7 @@ def gf_chart(request):
             datasource = data,
             series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__anio': terms }}],
             chart_options = {
-                'title': {'text': u'Gastos de funcionamiento año %s ' % (municipio,)},
+                'title': {'text': u' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
                 },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)

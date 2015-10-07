@@ -2,6 +2,7 @@
 
 from itertools import chain
 from datetime import datetime, time
+from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
@@ -11,6 +12,7 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, TipoIngreso, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
+from core.models import Poblacion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
 from core.tools import getYears, dictfetchall, glue
 from core.charts.misc import getVar
@@ -32,6 +34,30 @@ def ep_chart(request):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
         porclasep = None
+
+        # obtiene clase y contador (otros en misma clase) para este año
+        mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
+        mi_clase_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
+        # obtiene clase y contador (otros en misma clase) para todos los años
+        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
+        mi_clase_anios_count = {}
+
+        for aclase in mi_clase_anios:
+            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
+
+        # obtiene datos de municipios de la misma clase
+        with open ("core/charts/ep_otros.sql", "r") as query_file:
+            sql_tpl=query_file.read()
+       
+        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        ingresos = dictfetchall(cursor)
+        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL,)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        gastos = dictfetchall(cursor)
+        otros = glue(ingresos, gastos, 'nombre')
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
@@ -59,16 +85,6 @@ def ep_chart(request):
         ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
         ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
         ep = round(ep_gastos / ep_ingresos * 100, 1)
-
-        # obtiene clase y contador (otros en misma clase) para este año
-        mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
-        mi_clase_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
-        # obtiene clase y contador (otros en misma clase) para todos los años
-        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
-        mi_clase_anios_count = {}
-
-        for aclase in mi_clase_anios:
-            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
@@ -189,7 +205,7 @@ def ep_chart(request):
             )
 
     # FIXME BS
-    asignado = ejecutado = otros = porclase = None
+    asignado = ejecutado = porclase = None
 
     reporte = request.POST.get("reporte","") 
     if "excel" in request.POST.keys() and reporte:        

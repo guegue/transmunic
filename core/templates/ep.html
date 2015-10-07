@@ -62,8 +62,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                         {% for row in porclasep %}
                         <tr>
                             <td class="text-center">{{ row.clasificacion }}</td>
-                            <td class="text-right">{% if row.ingreso %}{{ row.ingreso|floatformat:2 }}{% else %} 0 {% endif %}%</td>
-                            <td class="text-right">{% if row.gasto %}{{ row.gasto|floatformat:2 }} {% else %} 0 {% endif %}%</td>
+                            <td class="text-right">{% if row.ingreso %}{{ row.ingreso|floatformat:2|intcomma }}{% else %} 0 {% endif %}%</td>
+                            <td class="text-right">{% if row.gasto %}{{ row.gasto|floatformat:2|intcomma }} {% else %} 0 {% endif %}%</td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -77,22 +77,22 @@ Ejecución presupuestaria municipal {{ municipio }}
                 <h3>Ejecución presupuestaria municipal</h3>
                 <h4 class="text-info">por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
                 <table class="table table-condensed">
-                    <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+                    <tr class="info"><th>Municipios</th> <th>Ingresos</th> <th>Gastos</th></tr>
                     {% for row in otros %}
-                        {% if municipio.slug == row.ingreso__municipio__slug%}
+                        {% if municipio.slug == row.slug%}
                         <tr class="info">
                         {% else %}
                         <tr>
                         {% endif %}
                             <td>{{ row.nombre }}</td>
-                            <td>{{ row.asignado|floatformat:2 }}%</td>
-                            <td>{{ row.ejecutado|floatformat:2 }}%</td>
+                            <td>{{ row.ingreso|floatformat:1 }}%</td>
+                            <td>{{ row.gasto|floatformat:1 }}%</td>
                         </tr>
                     {% endfor %}
                     <tr class="success">
                         <td>TOTAL</td>
-                        <td>{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
-                        <td>{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                        <td>{{ otros|total_sum:'ingreso'|floatformat:1 }}</td>
+                        <td>{{ otros|total_sum:'gasto'|floatformat:1 }}</td>
                     </tr>
                 </table>
             </div>
@@ -100,17 +100,17 @@ Ejecución presupuestaria municipal {{ municipio }}
         <!-- /fin oim-tabla4-municipal -->
 
         <!-- maribel 30/07- aci-tabla2 -->
-        <div class="col-md-6">
+        <div class="col-md-5">
         	{% descargar_excel "ep3" %}
             <h3>Ejecución del presupuesto de ingresos</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
-                <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipoingreso__clasificacion }}</td>                                    
-                    <td>{{ row.asignado|intcomma }}</td>                                    
-                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>                                    
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
@@ -118,10 +118,10 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
-                    <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubros|total_sum:'asignado' %}
-                        <td>
+                        <td class="text-right">
                             {% if sum_asignado %}
                                 {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
                             {% endif %}
@@ -129,21 +129,17 @@ Ejecución presupuestaria municipal {{ municipio }}
                     {% endwith %}
                 </tr>       
             </table>                                                                    
-        </div>
-        <!-- /fin aci-tabla2 -->                                                      
-        <br clear="all" />
-        <!-- maribel 30/07- aci-tabla3 -->
-        <div class="col-md-6">
+            <br />
         	{% descargar_excel "ep4" %}
             <h3>Ejecución del presupuesto de gastos</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
-                <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+                <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
                 {% for row in rubrosg %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipogasto__clasificacion}}</td>                                    
-                    <td>{{ row.asignado|intcomma }}</td>                                    
-                    <td>{{ row.ejecutado|intcomma }}</td>                                   
+                    <td>{{ row.asignado|million|intcomma }}</td>                                    
+                    <td>{{ row.ejecutado|million|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
@@ -151,8 +147,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
-                    <td>{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                    <td>{{ rubrosg|total_sum:'asignado'|million|intcomma }}</td>
+                    <td>{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubrosg|total_sum:'asignado' %}
                         <td>
                             {% if sum_asignado %}
@@ -175,29 +171,29 @@ Ejecución presupuestaria municipal {{ municipio }}
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.tipoingreso__clasificacion}}</td>
-                    <td>{{ row.asignado|intcomma }}</td>
-                    <td>{{ row.actualizado|intcomma }}</td>
-                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td>{{ row.ejecutado|intcomma }}</td>
+                    <td>{{ row.asignado|million|intcomma }}</td>
+                    <td>{{ row.actualizado|million|intcomma }}</td>
+                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td>{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.actualizado %}
-                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|million|intcomma }}%</td>
                     {% endif %}
                 </tr>
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                <td>{{ rubros|total_sum:'actualizado'|intcomma }}</td>
+                <td>{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+                <td>{{ rubros|total_sum:'actualizado'|million|intcomma }}</td>
                 {% with sum_asignado=rubros|total_sum:'asignado' %}
                     <td class="montos">
                     {% if rubros|total_sum:'actualizado' %}
-                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                <td>{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                 {% with sum_actualizado=rubros|total_sum:'actualizado' %}
                     <td class="montos">
                         {% if sum_actualizado %}
@@ -219,10 +215,10 @@ Ejecución presupuestaria municipal {{ municipio }}
             {% for row in rubrosg %}
                 <tr>
                     <td class="pull-left">{{ row.tipogasto__clasificacion}}</td>
-                    <td>{{ row.asignado|intcomma }}</td>
-                    <td>{{ row.actualizado|intcomma }}</td>
-                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td>{{ row.ejecutado|intcomma }}</td>
+                    <td>{{ row.asignado|million|intcomma }}</td>
+                    <td>{{ row.actualizado|million|intcomma }}</td>
+                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td>{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.actualizado %}
                         <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
@@ -230,18 +226,18 @@ Ejecución presupuestaria municipal {{ municipio }}
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td>{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
-                <td>{{ rubrosg|total_sum:'actualizado'|intcomma }}</td>
+                <td>{{ rubrosg|total_sum:'asignado'|million|intcomma }}</td>
+                <td>{{ rubrosg|total_sum:'actualizado'|million|intcomma }}</td>
                 {% with sum_asignado=rubrosg|total_sum:'asignado' %}
                     <td class="montos">
                     {% if rubrosg|total_sum:'actualizado' %}
-                        {{ rubrosg|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                        {{ rubrosg|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                <td>{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
                 {% with sum_actualizado=rubrosg|total_sum:'actualizado' %}
                     <td class="montos">
                         {% if sum_actualizado %}
@@ -266,8 +262,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.ingreso__anio }}</td>
-                    <td>{{ row.asignado|intcomma }}</td>
-                    <td>{{ row.ejecutado|intcomma }}</td>
+                    <td>{{ row.asignado|million|intcomma }}</td>
+                    <td>{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.asignado %}
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}
@@ -275,8 +271,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% endfor %}
                 <tr class="success bold">
                     <td>TOTAL</td>
-                    <td>{{ anuales|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+                    <td>{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
+                    <td>{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with total_sum_asignado=anuales|total_sum:'asignado' %}
                     {% if total_sum_asignado %}
                         <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
@@ -296,8 +292,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% for row in anualesg %}
                 <tr>
                     <td>{{ row.gasto__anio }}</td>
-                    <td>{{ row.asignado|intcomma }}</td>
-                    <td>{{ row.ejecutado|intcomma }}</td>
+                    <td>{{ row.asignado|million|intcomma }}</td>
+                    <td>{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.asignado %}
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}
@@ -305,8 +301,8 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% endfor %}
                 <tr class="success bold">
                     <td>TOTAL</td>
-                    <td>{{ anualesg|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ anualesg|total_sum:'ejecutado'|intcomma }}</td>
+                    <td>{{ anualesg|total_sum:'asignado'|million|intcomma }}</td>
+                    <td>{{ anualesg|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with total_sum_asignado=anualesg|total_sum:'asignado' %}
                     {% if total_sum_asignado %}
                         <td class="montos">{{ anualesg|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>

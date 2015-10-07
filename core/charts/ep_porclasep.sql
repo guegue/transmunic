@@ -15,5 +15,4 @@ SELECT clasificacion, (
          core_{var}.anio=lugar_clasificacionmunicano.anio                 
           WHERE core_{var}.anio = {year} AND core_{var}.periodo='{periodo_final}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id)
           , 0)
-    -1 ) * 100 AS {var}  FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion;
---- FIXME leer ep.sql e implementar aqui
+    ) * 100 AS {var}  FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion;
