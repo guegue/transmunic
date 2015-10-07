@@ -40,7 +40,7 @@ class PlanInversionModelReport(ReportAdmin):
         'nombre': 'Proyecto',
         'inversion__municipio__nombre': 'Municipio',
         'self.porcentaje_ejecutado': 'Porcentaje ejecutado',
-        #'catinversion__nombre': u'Categoría',
+        'catinversion__nombre': u'Categoría',
         #'date__day': lambda x, y: _('Day'),
     }
     override_field_formats = {
