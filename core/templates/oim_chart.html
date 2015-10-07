@@ -297,10 +297,10 @@
                 </td>
                 {% endwith %}
                 <td class="text-right">{{ rubros|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
-                {% with sum_actualizado=rubros|total_sum:'actualizado_ejecutado' %}
+                {% with sum_actualizado=rubros|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -316,10 +316,10 @@
                 </td>
                 {% endwith %}
                 <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                {% with sum_actualizado=rubros|total_sum:'final_ejecutado' %}
+                {% with sum_actualizado=rubros|total_sum:'final_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -374,10 +374,10 @@
                 </td>
                 {% endwith %}
                 <td class="text-right">{{ rubrosp|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
-                {% with sum_actualizado=rubrosp|total_sum:'actualizado_ejecutado' %}
+                {% with sum_actualizado=rubrosp|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubrosp|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubrosp|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -393,10 +393,10 @@
                 </td>
                 {% endwith %}
                 <td class="text-right">{{ rubrosp|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                {% with sum_actualizado=rubrosp|total_sum:'final_ejecutado' %}
+                {% with sum_actualizado=rubrosp|total_sum:'final_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubrosp|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubrosp|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
