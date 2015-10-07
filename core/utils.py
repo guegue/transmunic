@@ -42,15 +42,15 @@ CONFIGURACION_TABLAS_EXCEL = {
                         "ogm4": {
                                     "titulo"  :  u"Modificaciones al presupuesto municipal de gastos",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
-                                    "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["tipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
+                                    "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["tipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","actualizado_ejecutado","actualizado_ejecutado/actualizado_asignado","final_asignado","final_asignado-inicial_asignado","final_ejecutado","final_ejecutado/final_asignado"],
                                     "qs"  :  "rubros"
                                 },
                         "ogm5": {
                                     "titulo"  :  u"Modificacion al presupuesto municipal del gasto de personal permanente",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
-                                    "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["subsubtipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
+                                    "encabezados"  :  [u"Rubros del gasto","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["subsubtipogasto__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","actualizado_ejecutado","actualizado_ejecutado/actualizado_asignado","final_asignado","final_asignado-inicial_asignado","final_ejecutado","final_ejecutado/final_asignado"],
                                     "qs"  :  "rubrosp"
                                 },
                         "ogm6": {
@@ -105,8 +105,8 @@ CONFIGURACION_TABLAS_EXCEL = {
                         "oim5": {
                                     "titulo"  :  u"Modificacion al presupuesto municipal del ingreso de personal permanente",
                                     "subtitulo"  :  u"Millones de córdobas corrientes",
-                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
-                                    "celdas"  :  ["subtipoingreso__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","ejecutado","ejecutado/actualizado_asignado"],
+                                    "encabezados"  :  [u"Rubros del ingreso","Inicial","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado","Actualizado",u"Modificación","Ejecutado","% Ejecutado/Actualizado"],
+                                    "celdas"  :  ["subtipoingreso__nombre","inicial_asignado","actualizado_asignado","actualizado_asignado-inicial_asignado","actualizado_ejecutado","actualizado_ejecutado/actualizado_asignado","final_asignado","final_asignado-inicial_asignado","final_ejecutado","final_ejecutado/final_asignado"],
                                     "qs"  : "rubrosp"
                                 },
                         "oim6": {
