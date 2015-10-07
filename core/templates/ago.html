@@ -116,8 +116,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipoingreso__nombre}}</td>                                    
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>                                    
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
                         <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
@@ -125,8 +125,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
-                    <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubros|total_sum:'asignado' %}
                         <td>
                             {% if sum_asignado %}
@@ -149,8 +149,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% for row in rubrosg %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipogasto__nombre}}</td>                                    
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>                                    
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
                     {% if row.asignado %}                                                   
                         <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
@@ -158,10 +158,10 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
-                    <td>{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
-                    <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ rubrosg|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubrosg|total_sum:'asignado' %}
-                        <td>
+                        <td class="text-right class="text-right"">
                             {% if sum_asignado %}
                                 {{ rubrosg|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
                             {% endif %}
@@ -173,6 +173,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
       </div>
         <!-- /fin aci-tabla2 -->                                                      
       <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
+        <div class="col-md-9">
+
         <!-- maribel 30/07 aci-tabla4 -->
         {% descargar_excel "ago5" %}
         <h3>Modificaciones al presupuesto - Ingresos corrientes propios</h3>
@@ -182,10 +184,10 @@ Autonomía para asumir el gasto corriente {{ municipio }}
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.tipoingreso__nombre}}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.actualizado|intcomma }}</td>
-                    <td class="text-right">{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.actualizado|million|intcomma }}</td>
+                    <td class="text-right">{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.actualizado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
@@ -193,18 +195,18 @@ Autonomía para asumir el gasto corriente {{ municipio }}
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td class="text-right">{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                <td class="text-right">{{ rubros|total_sum:'actualizado'|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'actualizado'|million|intcomma }}</td>
                 {% with sum_asignado=rubros|total_sum:'asignado' %}
                     <td class="montos text-right">
                     {% if rubros|total_sum:'actualizado' %}
-                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                 {% with sum_actualizado=rubros|total_sum:'actualizado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
@@ -217,6 +219,7 @@ Autonomía para asumir el gasto corriente {{ municipio }}
         <br />
 
         <!-- /fin aci-tabla4 -->
+
         <!-- 30/07 aci-tabla5 -->
         {% descargar_excel "ago6" %}
         <h3>Modificaciones al presupuesto - Gastos corrientes totales</h3>
@@ -226,10 +229,10 @@ Autonomía para asumir el gasto corriente {{ municipio }}
             {% for row in rubrosg %}
                 <tr>
                     <td class="pull-left">{{ row.tipogasto__nombre}}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.actualizado|intcomma }}</td>
-                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.actualizado|million|intcomma }}</td>
+                    <td class="text-right">{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.actualizado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
@@ -237,18 +240,18 @@ Autonomía para asumir el gasto corriente {{ municipio }}
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td class="text-right">{{ rubrosg|total_sum:'asignado'|intcomma }}</td>
-                <td class="text-right">{{ rubrosg|total_sum:'actualizado'|intcomma }}</td>
+                <td class="text-right">{{ rubrosg|total_sum:'asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubrosg|total_sum:'actualizado'|million|intcomma }}</td>
                 {% with sum_asignado=rubrosg|total_sum:'asignado' %}
                     <td class="montos text-right">
                     {% if rubrosg|total_sum:'actualizado' %}
-                        {{ rubrosg|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                        {{ rubrosg|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td>{{ rubrosg|total_sum:'ejecutado'|intcomma }}</td>
+                <td class="text-right">{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
                 {% with sum_actualizado=rubrosg|total_sum:'actualizado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
@@ -259,8 +262,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
             </tr>
         </table>
         <br />
-
         <!-- /fin aci-tabla4 -->
+        </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
         <!--maribel 20/07 oim-tabla 7 -->
@@ -273,8 +276,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.ingreso__anio }}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.asignado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}
@@ -282,8 +285,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% endfor %}
                 <tr class="success bold">
                     <td>TOTAL</td>
-                    <td class="text-right">{{ anuales|total_sum:'asignado'|intcomma }}</td>
-                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with total_sum_asignado=anuales|total_sum:'asignado' %}
                     {% if total_sum_asignado %}
                         <td class="montos text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
@@ -303,8 +306,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% for row in anualesg %}
                 <tr>
                     <td>{{ row.gasto__anio }}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.asignado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}
@@ -312,8 +315,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 {% endfor %}
                 <tr class="success bold">
                     <td>TOTAL</td>
-                    <td class="text-right">{{ anualesg|total_sum:'asignado'|intcomma }}</td>
-                    <td class="text-right">{{ anualesg|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ anualesg|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ anualesg|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with total_sum_asignado=anualesg|total_sum:'asignado' %}
                     {% if total_sum_asignado %}
                         <td class="montos text-right">{{ anualesg|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
