@@ -119,8 +119,8 @@
             {% for total in cat %}
               <tr>
                 <td class="text-left">{{ total.catinversion__nombre }}</td>
-                <td class="text-right">{{ total.asignado|intcomma }}</td>
-                <td class="text-right">{{ total.ejecutado|intcomma }}</td>
+                <td class="text-right">{{ total.asignado|million|intcomma }}</td>
+                <td class="text-right">{{ total.ejecutado|million|intcomma }}</td>
                 <td>
                 {% if total.asignado %}
                     <span class="text-success">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
@@ -130,8 +130,8 @@
               {% endfor %}
               <tr class="success bold">                                       
                 <td>TOTAL</td>                                              
-                <td class="text-right">{{ asignado|intcomma }}</td>                            
-                <td class="text-right">{{ ejecutado|intcomma }}</td>                           
+                <td class="text-right">{{ asignado|million|intcomma }}</td>                            
+                <td class="text-right">{{ ejecutado|million|intcomma }}</td>                           
                 <td class="montos text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
               </tr>
             </tbody>
@@ -177,14 +177,14 @@
                         {% endif %}
                             <td> {{forloop.counter}} </td>
                             <td>{{ row.inversion__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.asignado_percent }}</td>
-                            <td class="info text-right">{{ row.ejecutado_percent }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
                         </tr>
                     {% endfor %}
                     <tr class="success">
-                        <td>TOTAL</td>
-                        <td class="text-right">{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
-                        <td class="text-right">{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                        <td colspan="2">TOTAL</td>
+                        <td class="text-right">{{ otros|total_sum:'asignado'|million|intcomma }}</td>
+                        <td class="text-right">{{ otros|total_sum:'ejecutado'|million|intcomma }}</td>
                     </tr>
                 </table>
             </div>
@@ -225,7 +225,7 @@
                     {{ total.actualizado }}
                 </td>
                 <td class="text-right">
-                    {% if total.actualizado %}{{ total.actualizado|sub:total.asignado|intcomma }}{% else %}0{% endif %} 
+                    {% if total.actualizado %}{{ total.actualizado|sub:total.asignado|million|intcomma }}{% else %}0{% endif %} 
                 </td>
                 <td class="text-right">
                     {{ total.ejecutado }}
@@ -309,12 +309,12 @@
              <tr>
                <td class="text-left">{{ key }}</td>
                {% for year in year_list %}
-                 <td>{{ data|keyvalue:year|intword }}</td>
+                 <td>{{ data|keyvalue:year|million|intcomma }}</td>
                {% endfor %}
                <td>{{ data.extra|intword }}</td>
                <!-- old-fashioned way:
                {% for subkey, subdata in data.items %}
-               <td>{{ subkey }} = {{ subdata| intword}}</td>
+               <td>{{ subkey }} = {{ subdata|intcomma}}</td>
                {% endfor %}
                 -->
              </tr>

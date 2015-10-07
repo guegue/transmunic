@@ -128,7 +128,7 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                     <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
                     <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubros|total_sum:'asignado' %}
-                        <td>
+                        <td class="text-right">
                             {% if sum_asignado %}
                                 {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
                             {% endif %}
