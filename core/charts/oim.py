@@ -28,7 +28,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         year = year_list[-1]
 
     # obtiene último periodo del año que se quiere ver
-    periodo = Anio.objects.get(anio=year).periodo
+    year_data = Anio.objects.get(anio=year)
+    periodo = year_data.periodo
 
     # usar 'asignado' para todo periodo si estamos en portada
     if portada:
@@ -651,6 +652,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
+            'year_data': year_data, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}

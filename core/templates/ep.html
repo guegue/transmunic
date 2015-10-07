@@ -58,19 +58,14 @@ Ejecución presupuestaria municipal {{ municipio }}
                     <h3>Ejecución presupuestaria municipal </h2>
                     <h4 class="text-info">por categoría de Municipios</h4>
                     <table class="table table-condensed">
-                        <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                        <tr class="info"><th>Categoría de municipio</th> <th>Ingresos</th> <th>Gastos</th></tr>
                         {% for row in porclasep %}
                         <tr>
-                            <td>{{ row.clasificacion }}</td>
-                            <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
-                            <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                            <td class="text-center">{{ row.clasificacion }}</td>
+                            <td class="text-right">{% if row.ingreso %}{{ row.ingreso|floatformat:2 }}{% else %} 0 {% endif %}%</td>
+                            <td class="text-right">{% if row.gasto %}{{ row.gasto|floatformat:2 }} {% else %} 0 {% endif %}%</td>
                         </tr>
                         {% endfor %}
-                        <tr class="success">
-                            <td><strong>TOTAL</strong></td>
-                            <td><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                            <td><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
-                        </tr>
                     </table>
                 </div>
         {% endif%}

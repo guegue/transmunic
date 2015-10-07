@@ -185,6 +185,7 @@ def ogm_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
     
     return render_to_response(template_name, { \
+            'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
@@ -204,6 +205,7 @@ def oim_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
         
     return render_to_response(template_name, { \
+            'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\

@@ -119,23 +119,35 @@ def ep_chart(request):
         ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
         ep = round(ep_gastos / ep_ingresos * 100, 1)
 
-        # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         with open ("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl=query_file.read()
         
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        # FIXME: no longer use this?
+        # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
+        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        #cursor = connection.cursor()
+        #cursor.execute(sql)
+        #inicial = dictfetchall(cursor)
+        #sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        #cursor = connection.cursor()
+        #cursor.execute(sql)
+        #final = dictfetchall(cursor)
+        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        #cursor = connection.cursor()
+        #cursor.execute(sql)
+        #actualizado = dictfetchall(cursor)
+        #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
+
+        # the new way... re-haciendo "porclasep"
+        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL)
         cursor = connection.cursor()
         cursor.execute(sql)
-        inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        ingresos = dictfetchall(cursor)
+        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL,)
         cursor = connection.cursor()
         cursor.execute(sql)
-        final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        cursor = connection.cursor()
-        cursor.execute(sql)
-        actualizado = dictfetchall(cursor)
-        porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
+        gastos = dictfetchall(cursor)
+        porclasep = glue(ingresos, gastos, 'clasificacion')
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
