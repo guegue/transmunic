@@ -25,6 +25,19 @@ PERIODO_CHOICES = (
 AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio', None: 'None'}
 CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
 
+class Organizacion(models.Model):
+    nombre = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True,null=True)
+    correo = models.CharField(max_length=100, null=True, blank=True)
+    web = models.CharField(max_length=200, null=True, blank=True)
+    logo = ImageField(upload_to='organizacion', null=True, blank=True)
+ 
+    class Meta:
+        verbose_name_plural = 'Organizaciones'
+        ordering = ['nombre']
+    def __unicode__(self):
+        return self.nombre
+
 class Grafico(models.Model):
     id = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200)
