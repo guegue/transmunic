@@ -22,8 +22,8 @@ def home(request):
     banners = Banner.objects.all()
 
     #cleans session vars
-    del request.session['year']
-    del request.session['municipio']
+    request.session['year'] = None
+    request.session['municipio'] = None
 
     #descripcion de graficos de portada 
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
