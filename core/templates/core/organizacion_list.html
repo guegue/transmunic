@@ -3,15 +3,17 @@
 
 {% block content %}
     <h2>Organizaciones</h2>
-    <ul>
+    <div class="col-md-10 col-md-offset-2">
         {% for object in object_list %}
-            <li>{{ object.nombre }}: {{ object.correo }} {{ object.web }} 
-              {% if object.logo %}
-              {% thumbnail object.logo "200" as img %}
-                <img src="{{ img.url }}" alt="{{ logo }}"/>
-              {% endthumbnail %}
-              {% endif %}
-            </li>
+            <div class="col-md-5 organizaciones">
+                {% if object.logo %}
+                    {% thumbnail object.logo "120" as img %}
+                    <img src="{{ img.url }}" alt="{{ logo }}" class="pull-left"/>
+                    {% endthumbnail %}
+                {% endif %}
+                <h4>{{ object.nombre }}</h4>.
+                {{ object.correo }} {{ object.web }} 
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
