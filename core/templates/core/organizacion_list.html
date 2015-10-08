@@ -2,7 +2,7 @@
 {% load static thumbnail %}
 
 {% block content %}
-    <h2>Organizaciones</h2>
+    <h2>Participación Ciudadana</h2>
     <div class="col-md-10 col-md-offset-2">
         {% for object in object_list %}
             <div class="col-md-5 organizaciones">
@@ -12,8 +12,9 @@
                     {% endthumbnail %}
                 {% endif %}
                 <h4>{{ object.nombre }}</h4>.
-                {{ object.correo }} {{ object.web }} 
+                {{ object.correo }} {{ object.web|urlize }} 
             </div>
+            {% if forloop.last or forloop.counter|divisibleby:2 %}<br clear="all" />{% endif %}
         {% endfor %}
     </div>
 {% endblock %}
