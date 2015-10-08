@@ -280,7 +280,7 @@
         {% with sum_actualizado=porclase|total_sum:'actualizado' %}
         <td>
         {% if sum_actualizado %}
-        {{ porclase|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|million|intcomma}}
+        {{ porclase|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
         {% endif %}
         </td>
         {% endwith %}
