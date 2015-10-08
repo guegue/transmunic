@@ -88,7 +88,7 @@
                 </div>
               </button></a>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 hidden-xs">
             <h3>Informaci&oacute;n por Municipio</h3>
             <img src="/static/img/nicaragua.png" width="500" usemap="#nicaragua-image" >
             <map id="nicaragua-image" name="nicaragua-image">
@@ -225,7 +225,7 @@
                                   <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
                                   <p class="cifra text-info">* {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% <br />
-                                  <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
+                                  <span class="text-danger cifra minimo">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
                                 </li>
                             {% if forloop.last or forloop.counter|divisibleby:4 %}
                                 </ul>
