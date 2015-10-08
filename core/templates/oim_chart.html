@@ -255,7 +255,20 @@
         </div>
         <div class="col-md-11">
         <table class="table table-condensed">
-            <tr><td></td><td></td><td colspan="4" class="success text-center"><h4>Modifcación al {{ year_data.actualizado }}</h4></td><td colspan="4" class="danger"><h4>Modificación al {{ year_data.final }}</h4></td></tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td colspan="4" class="success text-center">
+                    <h4>Modifcación intermedia 
+                        <a href="#" data-toggle="tooltip" data-original-title="Modifcación al {{ year_data.actualizado }}" class="link-info">*</a>
+                    </h4>
+                </td>
+                <td colspan="4" class="danger text-center">
+                    <h4>Modificación al cierre
+                        <a href="#" data-toggle="tooltip" data-original-title="Modifcación al {{ year_data.final }}" class="link-info">*</a>
+                    </h4>
+                </td>
+            </tr>
             <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> 
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
