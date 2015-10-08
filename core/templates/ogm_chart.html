@@ -42,11 +42,11 @@
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
                     <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuesto inicial</h3>
-                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
                 </div>
                 <div class="col-md-4">
                     <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
                 </div>
                 {% if municipio %}
                     <div class="col-md-4">
