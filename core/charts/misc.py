@@ -58,7 +58,7 @@ def inversion_minima_porclase(year, portada=False):
            series=
             #[{'options': {'source': porclase },
             [{'options': {'source': inicial },
-              'names': [u'Categoría de municipios', u'Mínimo por ley', u'Presupuestado'],
+              'names': [u'Categorías de municipios', u'Mínimo por ley', u'Presupuestado'],
               'terms': [
                   'clasificacion',
                   'minimo',
