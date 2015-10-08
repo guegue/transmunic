@@ -1,12 +1,14 @@
 from django.conf.urls import patterns, include, url
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from model_report import report
 from . import charts
+from .models import Organizacion
 
 report.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
+    url(r'^organizaciones$', ListView.as_view(model=Organizacion)),
     url(r'^gasto-minimo-sector$', 'core.views.inversion_minima_sector_view', name='gasto_minimo_sector'),
     url(r'^oim$', 'core.views.oim_view', name='origen_ingresos'),
     url(r'^ogm$', 'core.views.ogm_view', name='origen_gastos'),
