@@ -5,10 +5,20 @@
 <div class="row">
     <div class="col-md-10 pull-right-2 col-md-offset-1">
         <h3 class="text-primary">{{ flatpage.title }}</h3>
-        {% if flatpage.url == '/transferencias-presupuestarias/' %}<div class="pull-left" style="margin-right: 20px;"><iframe width="660" height="415" src="https://www.youtube.com/embed/FLX6UdjOFts" frameborder="0" allowfullscreen></iframe></div>{% endif %}
-        <div class="text-justify">
-        {{ flatpage.content|urlize|linebreaks }}
-        </div>
+        {% if flatpage.url == '/transferencias-presupuestarias/' %}<div class="text-center" style="margin-right: 20px;"><iframe width="700" height="415" src="https://www.youtube.com/embed/FLX6UdjOFts" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+        {% if flatpage.url == '/ciclo-presupuestario/' %}
+            <div class="text-center" style="margin-bottom: 20px;"><iframe width="700" height="415" src="https://www.youtube.com/embed/FLX6UdjOFts" frameborder="0" allowfullscreen></iframe></div>
+            <div class="text-justify col-md-12">
+            {{ flatpage.content|urlize|linebreaks }}
+            </div>
+            <div class="text-center">
+            <img src="{% static 'img/ciclo.jpg' %}" alt="ciclo presupuestario" />
+            </div>
+        {% else %}
+            <div class="text-justify col-md-12">
+            {{ flatpage.content|urlize|linebreaks }}
+            </div>
+        {% endif %}
     </div>
 </div>
 
