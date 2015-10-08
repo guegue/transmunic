@@ -55,8 +55,8 @@ class ProyectoInline(admin.TabularInline):
 
 class InversionAdmin(admin.ModelAdmin):
     inlines = [ProyectoInline]
-    list_display = ['id','departamento','municipio']
-    list_filter = ('departamento','municipio')
+    list_display = ['id','departamento','municipio', 'fecha','periodo']
+    list_filter = ('departamento','municipio', 'periodo', 'anio')
 
 admin.site.register(Anio)
 admin.site.register(Grafico)
