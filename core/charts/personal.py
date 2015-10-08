@@ -298,7 +298,7 @@ def gpersonal_chart(request):
         actualizado = dictfetchall(cursor)
         porclase = glue(inicial, final, 'clasificacion', actualizado=actualizado)
         for d in porclase:
-            if d['actualizado']:
+            if d['actualizado'] and d['ejecutado']:
                 d['nivel'] = d['ejecutado'] / d['actualizado'] * 100
             else:
                 d['nivel'] = 0
