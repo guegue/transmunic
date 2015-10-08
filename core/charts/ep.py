@@ -84,7 +84,10 @@ def ep_chart(request):
         # calculo de La Ejecución presupuestaria alcanzó el: 
         ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
         ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
-        ep = round(ep_gastos / ep_ingresos * 100, 1)
+        if ep_ingresos:
+            ep = round(ep_gastos / ep_ingresos * 100, 1)
+        else:
+            ep = 0
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
