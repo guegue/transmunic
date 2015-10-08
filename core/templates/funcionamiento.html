@@ -71,7 +71,7 @@
         <div class="col-md-12">
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuestado</h3>
+                <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuesto inicial</h3>
                 <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
             </div>
             <div class="col-md-4">
@@ -120,7 +120,7 @@
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
     <table class="table table-condensed">
-    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+        <tr class="info"><th>Posición</th><th>Municipios</th> <th>Inicial</th> <th>Ejecutado</th></tr>
     {% for row in otros %}
         {% if municipio.slug == row.gasto__municipio__slug%}
             <tr class="info">
@@ -323,12 +323,12 @@
     <!--TAB3-->
     <div role="tabpanel" class="tab-pane fade" id="gforigen" aria-labelledby="gforigen-tab">
     <!-- javier 7/junio gftabla5 -->
-    <div class="col-md-7">
-    	{% descargar_excel "gf5" %}
-        <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
+    {% descargar_excel "gf5" %}
+    <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
+    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <div class="col-md-5">
     <table class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+        <tr class="info"><th>Año</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in anuales %}
     <tr>
         <td>{{ row.gasto__anio }}</td>
@@ -351,12 +351,9 @@
     <!-- /fin gftabla5 -->
     </div>
     <br clear="all" />
-        <h3>Gastos de funcionamiento</h3>
-        <h4>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h4>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
-        <div id='none' class="col-md-10"></div>
-        <div id='gfbar' class="col-md-10"></div>
+        <div id='comparativo_anios' class="col-md-10"></div>
         <div id='none' style="display:none"></div>
+
      </div>
     </div>
 <script>
