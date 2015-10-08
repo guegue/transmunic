@@ -21,6 +21,10 @@ def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
 
+    #cleans session vars
+    del request.session['year']
+    del request.session['municipio']
+
     #descripcion de graficos de portada 
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
