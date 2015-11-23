@@ -170,7 +170,7 @@ class SubTipoIngreso(models.Model):
 
     class Meta:
         verbose_name_plural = 'Subtipos de ingresos'
-        ordering = ['nombre']
+        ordering = ['codigo']
     def __unicode__(self):
         return self.nombre
 
@@ -183,7 +183,7 @@ class SubSubTipoIngreso(models.Model):
  
     class Meta:
         verbose_name_plural = 'Sub-subtipos de ingresos'
-        ordering = ['nombre']
+        ordering = ['codigo']
     def __unicode__(self):
         return self.nombre
 
