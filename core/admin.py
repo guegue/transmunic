@@ -47,6 +47,10 @@ class IngresoAdmin(admin.ModelAdmin):
     list_display = ['id','fecha', 'departamento','municipio']
     list_filter = ('fecha','departamento','municipio')
 
+class TipoIngresoAdmin(admin.ModelAdmin):
+    list_display = ('codigo','nombre','clasificacion')
+    list_filter = ['clasificacion']
+
 class ProyectoInline(admin.TabularInline):
     model = Proyecto
     extra = 1
@@ -67,7 +71,7 @@ admin.site.register(SubTipoGasto)
 admin.site.register(SubSubTipoGasto)
 admin.site.register(OrigenRecurso)
 admin.site.register(OrigenGasto)
-admin.site.register(TipoIngreso)
+admin.site.register(TipoIngreso,TipoIngresoAdmin)
 admin.site.register(SubSubTipoIngreso, SubSubTipoIngresoAdmin)
 admin.site.register(SubTipoIngreso, SubTipoIngresoAdmin)
 admin.site.register(TipoFuenteFmto)
