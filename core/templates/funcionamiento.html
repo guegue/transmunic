@@ -72,11 +72,11 @@
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
                 <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuesto inicial</h3>
-                <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
             </div>
             <div class="col-md-4">
                 <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
             </div>
             {% if municipio %}
             <div class="col-md-4">
@@ -95,7 +95,7 @@
         <h4 class="text-info">por categoría de Municipios</h4>
 
         <table class="table table-condensed">
-            <tr class="info"><th>Categoría</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+            <tr class="info"><th>Categoría</th> <th>P.Inicial</th> <th>Ejecutado</th></tr>
             {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
@@ -248,7 +248,7 @@
     <!-- javier 7/junio gftabla4 nacional -->
     {% descargar_excel "gf3" %}
     <h3>Modificaciones al presupuesto municipal por categoría</h3>
-    <h4 class="text-info">Millones de córdobas</h4>
+    <h4 class="text-info">Millones de córdobas destinados a gastos de funcionamiento </h4>
     <table  class="table table-condensed">
         <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
     {% for row in porclase %}

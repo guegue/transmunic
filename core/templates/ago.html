@@ -4,11 +4,11 @@
 {% load mathfilters %}
 {% load core_extras %} 
 {% block titulo %}
-Autonomía para asumir el gasto corriente {{ municipio }} 
+Dependencia para asumir gastos corrientes {{ municipio }} 
 {% endblock %}
 {% block main_content %}
 	{% descargar_excel "ago-all" %}
-    <h2 class="titular">Autonomía para asumir el gasto corriente   {{ municipio }} {{ year }}</h2>
+    <h2 class="titular">Dependencia para asumir gastos corrientes   {{ municipio }} {{ year }}</h2>
 
     {{ charts|load_charts:"chart" }}
 
@@ -39,11 +39,11 @@ Autonomía para asumir el gasto corriente {{ municipio }}
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
                     <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
-                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
                 </div>
                 <div class="col-md-4">
                     <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
                 </div>
                 {% if municipio %}
                     <div class="col-md-4">
@@ -57,7 +57,7 @@ Autonomía para asumir el gasto corriente {{ municipio }}
         {% if not municipio %}
                 <div class="col-md-5">
                 	{% descargar_excel "ago1" %}
-                    <h3>Autonomía para asumir el gasto corriente con ingresos corrientes propios </h2>
+                    <h3>Dependecia para asumir gastos corrientes con ingresos corrientes propios </h2>
                     <h4 class="text-info">por categoría de Municipios</h4>
                     <table class="table table-condensed">
                         <tr class="info text-center"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
@@ -81,8 +81,8 @@ Autonomía para asumir el gasto corriente {{ municipio }}
         {% if municipio %}
             <div class="col-md-5">
             	{% descargar_excel "ago2" %}
-                <h3>Ahorro Corriente para Inversiones</h3>
-                <h4 class="text-info">por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
+                <h3>Dependecia para asumir gastos corrientes con ingresos corrientes propios</h3>
+                <h4 class="text-info">Ranquin por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h4>
                 <table class="table table-condensed">
                     <tr class="info"><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
                     {% for row in otros %}
@@ -109,7 +109,7 @@ Autonomía para asumir el gasto corriente {{ municipio }}
         <!-- maribel 30/07- aci-tabla2 -->
         <div class="col-md-6">
         	{% descargar_excel "ago3" %}
-            <h3>Resultado presupuestario ingresos corrientes totales</h3>
+            <h3>Resultado presupuestario ingresos corrientes propios</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
                 <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
@@ -225,7 +225,7 @@ Autonomía para asumir el gasto corriente {{ municipio }}
         <h3>Modificaciones al presupuesto - Gastos corrientes totales</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del gastos corrientes</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
+            <tr class="info"> <th>Rubros de gastos corrientes</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
             {% for row in rubrosg %}
                 <tr>
                     <td class="pull-left">{{ row.tipogasto__nombre}}</td>
