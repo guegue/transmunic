@@ -8,7 +8,7 @@
 {% endblock %}
 {% block main_content %}
 {% descargar_excel "ogm-all" %}
-<h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% endif %}</h2>
+<h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% else %}2015 {% endif %}</h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -128,13 +128,13 @@
             <h3 class="text-center">Eficiencia en la ejecución del gasto de personal permanente</h3>
             <div class="col-md-6">
                     <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuestado</h3>
-                    <span class="cifra grande text-primary">{{ rubrosp|total_sum:'inicial_asignado'|floatformat:2|intcomma }}</span>
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
+                    <span class="cifra grande text-primary">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</span>
 
             </div>
             <div class="col-md-6">
                     <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</span>
             </div>
             <div class="separador"></div>
             <div class="center"><a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseejecucion"  aria-expanded="false" aria-controls="collapseejecucion">Consultar detalles </a></div>
