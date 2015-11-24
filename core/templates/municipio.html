@@ -6,78 +6,193 @@
 {% endblock %}
 
 {% block slide_portada %}
-    <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+<div id="myCarousel2" class="carousel slide" data-ride="carousel">
       <!-- Indicators -->
       <ol class="carousel-indicators">
         {% for banner in banners %}
-          <li data-target="#myCarousel2" data-slide-to="{{forloop.counter0}}" {% if forloop.first %} class="active"{% endif%}></li>
+        <li data-target="#myCarousel2" data-slide-to="{{forloop.counter0}}" {% if forloop.first %} class="active"{% endif%} style="background-color: #{{ banner.color }}"></li>
         {% endfor %}
       </ol>
       <div class="carousel-inner" role="listbox">
         {% for banner in banners %}
           <!--Slider Item{{ banners.count }}-->
-          <div class="item{% if forloop.first %} active{% endif%}">
-            {% thumbnail banner.imagen "1600x400" crop='center' as img %}
-              <img src="{{ img.url }}" class="pull-right" alt="{{ banner }}" />
-            {% endthumbnail %}
+          <div class="item{% if forloop.first %} active{% endif%}" style="background-color: #{{ banner.color }}">
             <div class="container">
-              <div class="carousel-caption">
+              {% thumbnail banner.imagen "1170x500" crop='center' as img %}
+                <img src="{{ img.url }}" alt="{{ banner }}"/>
+              {% endthumbnail %}
+              <!--div class="carousel-caption">
                 <h1>{{ banner.titulo }}</h1>
                 <p>{{ banner.descripcion }}</p>
-              </div>
+              </div-->
             </div>
-          </div>
+          </div>        
         {% endfor %}
       </div>
-    </div><!-- /.carousel -->
+</div><!-- /.carousel -->
+        <div class="row intro">
+            <div class="container text-center">
+                <div class="col-md-12">Los presupuestos municipales abiertos es una manera de como los ciudadanos pueden saber cómo sus Gobiernos Municipales utilizan los fondos del Municipio...</div>
+            </div>
+        </div>
 {% endblock %}
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
-      <div class="container">
-        <div class="row-fluid">
-              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-primary">
-                <i class="fa fa-street-view fa-4x pull-left"></i>
-                <h3>Poblaci&oacute;n</h3>
-                <span class="cifra">50%</span>
-              </button>
-              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-success">
-                <i class="fa fa-building fa-4x pull-left"></i>
-                <h3>Item 2</h3>
-                <span class="cifra">50%</span>
-              </button>
-              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-danger">
-                <i class="fa fa-child fa-4x pull-left"></i>
-                <h3>Item3</h3>
-                <span class="dolar"></span>
-                <span class="cifra">50%</span>
-              </button>
-              <button class="col-md-2 col-sm-4 col-xs-12 btn btn-info">
-                <i class="fa fa-child fa-4x pull-left"></i>
-                <h3>Item3</h3>
-                <span class="dolar"></span>
-                <span class="cifra">50%</span>
-              </button>
+        <div class="container">
+            <div class="col-md-5">
+              <div style="background-color: #fff;clear: both; width: 500px; height: 50px;display:inline;" id="selections"></div>
+              {% load i18n flatpages %}
+              {% get_flatpages '/transferencias-presupuestarias/' as pages %}
+              {% for page in pages %}
+                <h3>{{ page.title }}</h3>
+                <p class="text-justify col-md-11" style="margin-left:-15px;">{{ page.content|safe|truncatewords:80 }}<a href="{{ page.url }}" class="text-primary"> leer m&aacute;s</a></p>
+              {% endfor %}
+              <h4 class="text-info" style="margin-top:20px;">Consulte</h4>
+              <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
+                <span class="recuadro-icon">
+                    <img src="{% static 'img/balanzab.png' %}" />
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Marco Legal</h4>
+                    <span class="cifra">Municipal</span>
+                </div>
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'circulo-presupuestario' %}"><button class="recuadro btn btn-success">
+                <span class="recuadro-icon">
+                    <img src="{% static 'img/ciclob.png' %}" />
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Ciclo Presupuestario</h4>
+                    <span class="cifra">Municipal</span>
+                </div>
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'analisis-presupuestario' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
+                <span class="recuadro-icon">
+                    <img src="{% static 'img/analisis.png' %}" />
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Análisis Presupuestario</h4>
+                    <span class="dolar"></span>
+                    <span class="cifra">Municipal</span>
+                </div>
+              </button></a>
+              <a href="{% url 'documento_by_tipo' 'participacion-ciudadana' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-info">
+                <span class="recuadro-icon">
+                    <img src="{% static 'img/participacionb.png' %}" />
+                </span>
+                <div class="recuadro-text pull-left">
+                    <h4>Participación Ciudadana</h4>
+                    <span class="dolar"></span>
+                    <span class="cifra">Gestion Municipal</span>
+                </div>
+              </button></a>
         </div>
-      </div>
+        <div class="col-md-7">
+            <h3>Informaci&oacute;n por Municipio</h3>
+            <img src="/static/img/nicaragua.png" width="500" usemap="#nicaragua-image" >
+            <map id="nicaragua-image" name="nicaragua-image">
+            <area shape="poly" coords="15,234,37,246,6,248,67,304,102,254,107,242,101,227,102,207,94,201,84,200,80,210,78,231,65,239,51,237,36,243,28,245,14,233,7,246,9,251,12,240,14,244,10,247,15,240,15,234,15,236,18,239,15,236,16,235" alt="Municipios Chinandega" target="Municipios=chinandega" href="#" municipio="chinandega"/>
+            <area shape="poly" coords="68,305,84,324,93,330,106,349,129,322,115,317,111,309,112,299,122,306,135,294,141,274,148,264,137,252,128,239,122,219,113,222,103,228,107,237,108,246,97,263,76,293,66,305" alt="Municipios de León" target="Municipios=Leon" href="#" municipio="leon" />
+            <area shape="poly" coords="141,251,164,235,160,220,149,218,149,203,148,189,141,187,131,192,120,188,109,200,101,208,101,219,103,227,121,221,126,229,130,242,140,252" alt="Municipios de Estelí" target="Municipios=Esteli" href="#" municipio="esteli" />
+            <area shape="poly" coords="101,206,98,181,99,160,110,166,122,172,136,168,147,164,161,169,166,174,165,185,153,190,144,186,132,188,124,187,103,205" alt="Municipios de Madriz" target="Municipios=Madriz" href="#" municipio="madriz" />
+            <area shape="poly" coords="100,163,99,147,132,151,150,130,170,111,172,128,188,137,197,140,195,155,192,172,188,181,180,180,168,178,162,168,151,164,138,167,134,171,123,170,101,163" alt="Municipios de Nueva Segovia" target="Municipios=NuevaSegovia" href="#NuevaSegovia" municipio="nuevasegovia" />
+            <area shape="poly" coords="151,191,149,206,157,222,167,236,177,238,222,190,233,169,232,162,237,155,251,150,255,145,265,151,285,119,285,101,287,85,283,81,275,76,274,54,267,51,251,68,249,72,255,82,255,87,251,92,244,91,223,108,207,118,199,124,197,135,198,141,190,179,179,182,170,179,163,188,153,193,152,193,151,194" alt="Municipios de Jinotega" target="Municipios=Jinotega" href="#Jinotega" municipio="jinotega" />
+            <area shape="poly" coords="222,195,239,218,259,219,279,218,291,221,300,212,317,209,337,207,361,204,391,204,400,214,410,224,420,233,422,233,419,205,423,158,431,123,447,98,452,75,447,50,444,29,455,4,421,5,408,20,384,31,356,34,333,45,311,47,297,37,289,25,273,35,267,50,273,56,277,62,275,70,280,80,290,89,288,106,287,121,277,138,269,153,257,148,244,153,235,157,236,165,233,175,225,188,222,195,225,195" alt="Municipios de RAAN" target="Municipios=RAAN" href="#RAAN" municipio="raan" />
+            <area shape="poly" coords="141,254,148,262,149,266,144,275,157,283,173,289,182,289,186,278,203,275,222,269,228,266,239,268,254,279,261,263,254,256,253,244,265,227,267,217,240,218,220,196,208,209,195,221,184,233,177,239,169,238,165,233,141,252" alt="Municipios de Matagalpa" target="Municipios=Matagalpa" href="#Matagalpa" municipio="matagalpa"/>
+            <area shape="poly" coords="106,348,127,385,140,363,143,359,152,359,153,347,154,336,171,333,180,326,191,323,186,311,181,301,170,290,159,284,146,276,141,275,138,285,137,293,143,299,149,308,151,317,160,317,162,323,150,332,140,330,143,319,138,316,130,320,109,346" target="Municipios=Managua" href="#Managua" municipio="managua" />
+            <area shape="poly" coords="175,291,187,310,194,327,198,345,209,345,211,327,215,312,229,316,245,312,255,302,264,304,279,275,270,260,264,259,258,274,256,281,243,272,230,268,213,274,198,276,188,277,178,291" alt="Municipios de Boaco" target="Municipio=Boaco" href="#Boaco" municipio="boaco" />
+            <area shape="poly" coords="155,339,154,353,153,359,157,365,163,372,172,360,173,346,175,337,171,334,164,336,158,336,155,341" alt="Municipios de Masaya" target="Municipios=Masaya" href="#Masaya" municipio="masaya"/>
+            <area shape="poly" coords="130,383,154,407,163,395,159,389,161,383,165,378,162,372,155,362,147,361,139,358,135,371,129,380,127,382,128,381,131,382" alt="Municipios de Carazo" target="Municipios=Carazo" href="#Carazo" municipio="carazo" />
+            <area shape="poly" coords="163,374,163,384,162,393,163,397,178,390,186,385,187,369,181,362,181,348,183,342,194,339,191,324,181,327,175,333,173,342,173,353,169,366,165,373,163,386" alt="Municiapios de Granada" target="Municipios=Granada" href="#Granada" municipio="granada" />
+            <area shape="poly" coords="211,342,227,363,234,365,264,390,292,365,298,364,317,368,323,366,309,354,301,353,299,328,291,306,287,286,278,280,275,290,266,304,255,303,247,313,234,314,227,317,222,314,212,314,209,330,209,341,215,347" alt="Municipios de Chontales" target="Municipio=Chontales" href="#Chontales" municipio="chontales"/>
+            <area shape="poly" coords="157,405,166,421,185,437,204,460,215,444,257,461,250,453,216,439,227,409,213,396,195,405,188,395,186,387,177,393,169,397,164,399,159,407,160,406,160,407,161,407,160,406" alt="Municipios de Rivas" target="Municipios=Rivas" href="#Rivas" municipio="rivas"/>
+            <area shape="poly" coords="259,455,258,462,280,470,289,469,302,456,308,452,329,462,346,468,359,480,365,491,384,497,401,492,413,480,408,471,398,456,388,454,371,455,358,447,346,433,323,409,323,391,319,377,312,366,296,365,277,378,266,390,267,394,284,415,295,435,301,445,298,450,293,462,275,461,260,456" alt="Municipios de Rio San Juan" target="Municipios=RioSanJuan" href="#RioSanJuan" municipio="riosanjuan" />
+            <area shape="poly" coords="270,218,258,236,253,248,259,264,268,261,277,275,282,287,295,302,298,325,304,350,321,365,324,376,324,390,325,414,356,444,381,456,400,460,391,427,395,405,411,395,412,374,400,354,411,320,427,298,423,277,421,230,409,228,389,205,357,207,316,211,295,217,270,220,260,233" alt="Municipios de la RAAS" target="Municipios=RAAS" href="#RAAS" municipio="raas"/>
+            </map>
+            <p class="text-warning">Click en el departamento para acceder a sus municipios</p>
+            {%  include "mapas.html" %}
+        </div>
+    </div>
     </section>
 {% endblock %}
-
 {% block main_content %}
-        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area" }}
+        <div class="clear"></div>
+        <div class="text-center">
+            <h2 class="titular">Presupuesto Consolidado Municipal 2015</h2>
+            <hr />
+        </div>
+        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
-          <h2>Cuanto ingresa?</h2>
-          <div id='oim_ejecutado'>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-          </div>
+            <h2>&iquest;Cuánto ingresa?</h2>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#oim-desc">
+             ?
+            </button>
+            <div id='oim_ejecutado'></div>
+            <!-- OIM modal -->
+            <div class="modal fade" id="oim-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_oim_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_oim_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <h2>En que se gasta?</h2>
-          <div id='ogm_ejecutado'>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-          </div>
+            <h2>&iquest;En qué se gasta?</h2>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#ogm-desc">
+             ?
+            </button>
+            <div id='ogm_ejecutado'></div>
+            <!-- OGM modal -->
+            <div class="modal fade" id="ogm-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_ogm_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_ogm_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <h2>Fuentes de Financiamiento</h2>
+            <h2>&iquest;C&oacute;mo se financia?</h2>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-fuentes-desc">
+             ?
+            </button>
+            <div id='fuentes'></div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-fuentes-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_invfuentes_chart.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_invfuentes_chart.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
 {% endblock %}
 
@@ -85,14 +200,20 @@
     <section id="inversiones" class="main">
         <div class="container">
             <div class="row">
+                <div class="text-center">
+                    <h2 class="titular" style="margin-bottom:40px;">Presupuesto Inversi&oacute;n Municipal 2015</h2>
+                    <!--FIXME: Una vez se cargue el ejecutado cambiar
+                    Presupuesto por Ejecucion --!>
+                </div>
                 <div class="col-md-2">
                     <div class="clearfix">
-                        <h4 class="pull-left">Inversiones ejecutadas en 2012</h4>
                         <div class="pull-right">
                             <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
                         </div>
                     </div>
-                    <p>En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
+                    <p><span class="text-info"><strong>* Invertido en el periodo</strong></p>
+                    <p><span class="text-danger"><strong>** Minimo por ley</strong>:
+                    Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados: Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</p>
                 </div>
 		<div class="col-md-10">
     		    <div id="carousel-inv" class="carousel slide" data-ride="carousel">
@@ -109,9 +230,10 @@
                                 <ul class="thumbnails">
                             {% endif %}
                                 <li class="col-md-3 col-sm-3 col-xs-6">
-                                  <div class="circular {{ i.catinversion__slug }}" style="background: url('{% static 'img/'|add:i.catinversion__slug|add:'.jpg' %}') no-repeat;" class="img-responsive" ></div>
+                                  <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
-                                  <p>{% widthratio i.ejecutado total_inversion.ejecutado 100 %}%</p>
+                                  <p class="cifra text-info">* {% widthratio i.ejecutado total_inversion.ejecutado 100|floatformat %}% <br />
+                                  <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
                                 </li>
                             {% if forloop.last or forloop.counter|divisibleby:4 %}
                                 </ul>
@@ -130,80 +252,104 @@
                     </div><!-- /.carousel -->
                 </div>
             </div>
-        </div>
-    </section>
-    <section id="proyectos">
-    <div class="container">
-        <div class="text-center">
-            <h3>Proyectos relevantes ejecutados en 2012</h3>
-            <p class="lead">En el año 2012 el 94% de la inversión se destinó a caminos, puentes y aicantarillado (en ia zona rural) y calles, aceras y andenes (en la zona urbana). En 2010 y 2011 la inversión en éste tipo de proyectos ascendió a más del 85%. En cambio el promedio nacional para municipios categoría "C" en el año 2012, fue del 48%</p>
-        </div>
-        <div class="row-fluid">
-          <div class="col-md-8">
-              <div class="col-md-6">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-globe icon-medium"></i>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Caminos, puentes y alcantarillados</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-                    </div>
+            <hr />
+	    <div class="col-md-12">
+		    <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3>Inversión mínima de los ingresos  corrientes por categoría de municipio
+                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#inversion-minima">
+                        ?
+                    </button>
+                    </h3>
                 </div>
-              </div>            
-              <div class="col-md-6">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-thumbs-up-alt icon-medium"></i>
+			    <div class="panel-body">
+                    <div id='inversion_area'>
                     </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Calles, aceras y andenes</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-                    </div>
-                </div>
-              </div>            
-	    </div>
-            <div class="col-md-4">
-                <div class="media">
-                    <div class="pull-left">
-                        <i class="icon-leaf icon-medium icon-rounded"></i>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Fortalecimiento institucional</h4>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+		    	</div>
+		    </div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-minima" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionminima.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_inversionminima.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    </section>
-
-    <section id="distribucion">
-    <div class="container">
-        <div class="text-center">
-            <h2>Distribuci&oacute;n territorial de la inversi&oacute;n</h2>
-            <p>En el año 2012, el 39% de la inversión se realizó en el casco urbano de Acoyapa y un 57% se concentró en 9 comunidades rurales. El 4% restante se destinó a proyectos de fortalecimiento institucional.</p>
-        </div> 
-	<div class="col-md-12">
-	    <div class="col-md-6">
-		<div class="panel panel-primary">
-			<div class="panel-heading"><h3>Distribucion por &aacute;rea</h3></div>
-			<div class="panel-body">
-              <div id='inversion_area'>
-              </div>
-			</div>
 		</div>
-	    </div>
-	    <div class="col-md-6">
-		<div class="panel panel-success">
-			<div class="panel-heading"><h3>Comportamiento del presupuesto</h3></div>
-			<div class="panel-body">
-              <div id='inversion'>
-              </div>
+	    <div class="col-md-12">
+		    <div class="panel panel-success">
+			    <div class="panel-heading">
+                    <h3>Inversión mínima por sector priorizado
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-minima">
+                     ?
+                   </button>
+                   </h3>    
+                </div>
+
+			    <div class="panel-body">
+                    <div id='inversion'>
+                </div>
 			</div>
+            <!-- GF modal -->
+            <div class="modal fade" id="inversion-sector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionisector.nombre }}</h4>
+                      </div>
+                      <div class="modal-body">
+                          {{ desc_inversionisector.descripcion|linebreaks }}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
 	    </div>	
 	</div>
-    </div>
    </section>
+    <div class="clear"></div>
+   <script type="text/javascript">
+    var xref = {
+        {% for d in departamentos %}
+        {{d.codigo}}: '<span id="submapa"><div onclick="javascript:$(' + "'#submapa'" + ').fadeOut();" style="float:right">&#x274c;</div> <h3 class="text-success">{{d.nombre}}</h3> </div><img src="/static/img/{{d.codigo}}.jpg" usemap="#{{d.codigo}}" /></span>',
+        {% endfor %}
+    };
+    var defaultDipTooltip = 'I know you want the dip. But it\'s loaded with saturated fat, just skip it and enjoy as many delicious, crisp vegetables as you can eat.';
+
+    $('img').mapster({
+        mapKey: 'municipio',
+        fillOpacity: 0.4,
+        fillColor:"337AB7",
+        showToolTip: true,
+        toolTipClose: ["tooltip-click", "area-click"],
+        onClick: function (e) {
+            var newToolTip = defaultDipTooltip;
+            $('#selections').html(xref[e.key]);
+                if (e.key==='managua') {
+                    newToolTip = "OK. I know I have come down on the dip before, but let's be real. Raw asparagus without any of that " +
+                            "delicious ranch and onion dressing slathered all over it is not so good.";
+                }
+                image.mapster('set_options',{
+                    areas: [{
+                        key: "managua",
+                        toolTip: newToolTip
+                    }]
+                });
+        },
+        showToolTip: true,
+    });
+    </script>
 
 {% endblock %}

@@ -6,19 +6,25 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
-from models import Anio, getYears
+from models import Anio, Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
+from tools import getYears
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
 from website.models import Banner
+from core.forms import DetallePresupuestoForm
 
 # Create your views here.
 def home(request):
     template_name = 'index.html'
     banners = Banner.objects.all()
+
+    #cleans session vars
+    request.session['year'] = None
+    request.session['municipio'] = None
+
     #descripcion de graficos de portada 
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
@@ -26,27 +32,39 @@ def home(request):
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionisector = Grafico.objects.get(pk='inversion')
     #fin de descripcion de graficos de portada
+
     departamentos = Departamento.objects.all()
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
     year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year)
+    data_fuentes = fuentes_chart(year=year, portada=True)
 
+    # obtiene último año
     year_list = getYears(Inversion)
     year = year_list[-1]
+
+    # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # siempre sumar 'asginado'
+    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    quesumar = 'asignado'
 
     data_oim = oim_chart(year=year, portada=True)
-    data_ogm = ogm_chart(year=year)
-    data_inversion = inversion_chart()
-    data_inversion_area = inversion_area_chart()
-    data_inversion_minima_sector = inversion_minima_sector_chart()
-    data_inversion_minima_porclase = inversion_minima_porclase(year)
+    data_ogm = ogm_chart(year=year, portada=True)
 
-    total_inversion = Proyecto.objects.filter(inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, ). \
+    #FIXME no 'quesumar'? usa asignado y ejecutado
+    #data_inversion = inversion_chart()
+
+    #FIXME no 'quesumar'? solo usa ejecutado
+    #data_inversion_area = inversion_area_chart()
+
+    data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
+    data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
+
+    total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
@@ -68,28 +86,59 @@ def home(request):
 def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
     template_name = 'municipio.html'
+    #banners = Banner.objects.filter(municipio__slug=slug)
+    banners = Banner.objects.all()
+    #descripcion de graficos de portada 
+    desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
+    desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
+    desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
+    desc_inversionminima = Grafico.objects.get(pk='inversiones')
+    desc_inversionisector = Grafico.objects.get(pk='inversion')
+    #fin de descripcion de graficos de portada
+    departamentos = Departamento.objects.all()
 
-    banners = Banner.objects.filter(municipio__slug=slug)
+    # InversionFuente tiene su propio último año
+    year_list = getYears(InversionFuente)
+    year = year_list[-1]
+    data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
-    year_list = Inversion_year_list()
-    year = list(year_list)[-1].year
+    # obtiene último año
+    year_list = getYears(Inversion)
+    year = year_list[-1]
 
-    data_oim = oim_chart(municipio=slug, year=year)
-    data_ogm = ogm_chart(municipio=slug, year=year)
-    data_inversion = inversion_chart(municipio=slug)
-    data_inversion_area = inversion_area_chart(municipio=slug)
+    # obtiene periodo del año a ver
+    periodo = Anio.objects.get(anio=year).periodo
 
-    periodo = Inversion.objects.filter(year=year).aggregate(max_fecha=Max('fecha'))['max_fecha']
-    total_inversion = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
-            aggregate(ejecutado=Sum('ejecutado'))
-    inversion_categoria = Proyecto.objects.filter(inversion__fecha=periodo, inversion__municipio__slug=slug). \
-            values('catinversion__slug','catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+    # siempre sumar 'asginado'
+    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    quesumar = 'asignado'
 
-    return render_to_response(template_name, { 'obj': obj, 'banners': banners,
-        'charts':( data_oim['charts'][1], data_ogm['charts'][1], data_inversion['charts'][0], data_inversion_area['charts'][0]),
+    data_oim = oim_chart(year=year, municipio=slug, portada=True)
+    data_ogm = ogm_chart(year=year, municipio=slug, portada=True)
+    #data_inversion = inversion_chart(municipio=slug, portada=True)
+    #data_inversion_area = inversion_area_chart(municipio=slug, portada=True)
+    data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
+    data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
+
+    total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year, ). \
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
+
+    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
+        'charts':( 
+            data_oim['charts'][0], 
+            data_ogm['charts'][0], 
+            #data_inversion['charts'][0], 
+            data_inversion_minima_sector['charts'][0],
+            #data_inversion_area['charts'][0],
+            data_inversion_minima_porclase['charts'][0],
+            data_fuentes['charts'][1],
+            ),
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
-        }, context_instance=RequestContext(request))
+        'departamentos': departamentos,
+        'home': 'home',
+    }, context_instance=RequestContext(request))
 
 def inversion_minima_sector_view(request):
     template_name = 'chart.html'
@@ -111,11 +160,21 @@ def inversion_categoria_view(request):
     data_fuentes = fuentes_chart(year=year)
     data['charts'].append( fuentes_chart(year=year)['charts'][1] )
 
-    return render_to_response(template_name, { \
+    reporte = request.POST.get("reporte","") 
+    if "excel" in request.POST.keys() and reporte:        
+        from core.utils import obtener_excel_response
+        data = { \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, \
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}          
+        return obtener_excel_response(reporte=reporte, data=data)
+
+    return render_to_response(template_name, { \
+            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
+            'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
 
@@ -130,6 +189,7 @@ def ogm_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
     
     return render_to_response(template_name, { \
+            'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
@@ -149,6 +209,7 @@ def oim_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
         
     return render_to_response(template_name, { \
+            'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
@@ -182,3 +243,26 @@ def fuentes_view(request):
     return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],\
             'municipio': municipio, 'year': year,},\
             context_instance=RequestContext(request))
+
+
+def descargar_detalle(request):  
+    error = ""  
+    if request.method == 'POST':
+        form = DetallePresupuestoForm(request.POST)
+        if form.is_valid():
+            from core.utils import descargar_detalle_excel
+            result = descargar_detalle_excel(form, request)
+            if result is not None:
+                return result
+            else:
+                error = "No existen datos disponibles"
+    else:
+        form = DetallePresupuestoForm()
+        
+    return render_to_response('descargar_detalle.html', 
+                              {"form":form,
+                               "error":error
+                               }, 
+                              context_instance=RequestContext(request)
+                              )
+    

@@ -10,9 +10,9 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall, glue
+from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.tools import getYears, dictfetchall, glue
 
 def getVar(var, request):
     foo = None
@@ -23,37 +23,46 @@ def getVar(var, request):
     request.session[var] = foo
     return foo
 
-def inversion_minima_porclase(year):
+def inversion_minima_porclase(year, portada=False):
+
+    periodo = Anio.objects.get(anio=year).periodo
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'ejecutado'
+
     sql_tpl="SELECT clasificacion,minimo_inversion AS minimo,\
-            ((SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            ((SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
             JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
-            (SELECT SUM(%s) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
+            WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND core_tipoingreso.clasificacion={clasificacion} AND  tipoingreso_id<>'{tipoingreso}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) -\
+            (SELECT SUM({quesumar}) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
             JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Gasto.anio=%s AND core_Gasto.periodo='%s' AND core_tipogasto.clasificacion=%s AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
-            (SELECT SUM(%s) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+            WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.clasificacion={clasificacion} AND lugar_clasificacionmunicano.clasificacion_id=clase.id)) /\
+            (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
             JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-            WHERE core_Ingreso.anio=%s AND core_Ingreso.periodo='%s' AND core_tipoingreso.clasificacion=%s AND  tipoingreso_id<>'%s' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
-            AS %s FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
-    sql = sql_tpl % ('ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado', year, PERIODO_FINAL, '0',\
-            'ejecutado', year, PERIODO_FINAL, '0', 'FIXME15000000', 'ejecutado')
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    final = dictfetchall(cursor)
-    sql = sql_tpl % ('asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado', year, PERIODO_INICIAL, '0',\
-            'asignado', year, PERIODO_INICIAL, '0', 'FIXME15000000', 'asignado')
+            WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND core_tipoingreso.clasificacion={clasificacion} AND  tipoingreso_id<>'{tipoingreso}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) * 100\
+            AS {quesumar_as} FROM lugar_clasificacionmunic AS clase WHERE minimo_inversion>0"
+    #sql = sql_tpl.format(quesumar=quesumar, year=year, periodo=PERIODO_FINAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='ejecutado')
+    #cursor = connection.cursor()
+    #cursor.execute(sql)
+    #final = dictfetchall(cursor)
+    #sql = sql_tpl.format(quesumar='asignado', year=year, periodo=PERIODO_INICIAL, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
+    sql = sql_tpl.format(quesumar='asignado', year=year, periodo=periodo, clasificacion='0', tipoingreso='FIXME15000000', quesumar_as='asignado')
     cursor = connection.cursor()
     cursor.execute(sql)
     inicial = dictfetchall(cursor)
-    porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion')
+    #porclase = glue(inicial, final, 'clasificacion')
     data = RawDataPool(
            series=
-            [{'options': {'source': porclase },
-              'names': [u'Categoría de municipios', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
+            #[{'options': {'source': porclase },
+            [{'options': {'source': inicial },
+              'names': [u'Categorías de municipios', u'Mínimo por ley', u'Presupuestado'],
               'terms': [
                   'clasificacion',
                   'minimo',
-                  'ejecutado',
+                  #'ejecutado',
                   'asignado',
                 ]}
              ])
@@ -62,49 +71,63 @@ def inversion_minima_porclase(year):
             datasource = data,
             series_options =
               [{'options':{ 'type': 'column', },
-                  #FIXME : temporal para demo en IEEP 'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
-                'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
+                  #'terms':{ 'clasificacion': [ 'asignado', 'ejecutado', 'minimo', ] }
+                  'terms':{ 'clasificacion': [ 'asignado', 'minimo', ] }
               }],
             chart_options =
               {
-                  'title': {'text': u'Arto 19 - Ley de régimen presupuestaria municipal'},
+                  #grafico 4 de portada
+                  'title': {'text': u' '},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), }
 
-def inversion_minima_sector_chart(municipio=None, year=None):
+def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
     if not year:
         year = list(year_list)[-1]
+    periodo = Anio.objects.get(anio=year).periodo
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'ejecutado'
 
     if municipio:
-        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        #source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
+        #source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__anio=year_inicial, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))
+        #total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
+        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
     else:
         municipio = ''
-        source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'))
-        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        #source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
+        #source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
+        #total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
+        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(total=Sum('asignado'))['total'] / 100
 
     for record in source:
+        #try:
+        #    record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
+        #except IndexError:
+        #    record['ejecutado'] = 0
         try:
-            record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0]['ejecutado'] / total_asignado
-        except IndexError:
-            record['ejecutado'] = 0
-        try:
-            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0]['asignado'] / total_asignado
+            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
         except IndexError:
             record['asignado'] = 0
         #record['minimo'] = 0 if not total_asignado['total'] else total_asignado['total'] * (record['minimo']/100)
     data = RawDataPool(
            series=
             [{'options': {'source': source },
-              'names': [u'Sector priorizado', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
-              'terms': ['nombre','minimo','ejecutado','asignado']
+              #'names': [u'Sector priorizado', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
+              #'terms': ['nombre','minimo','ejecutado','asignado']
+              'names': [u'Sector priorizado', u'Mínimo por ley', u'Presupuestado'],
+              'terms': ['nombre', 'minimo', 'asignado']
                 }
              ])
 
@@ -112,28 +135,38 @@ def inversion_minima_sector_chart(municipio=None, year=None):
             datasource = data,
             series_options =
               [{'options':{ 'type': 'column', },
-                  'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] },
+                  #'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] },
+                  'terms':{ 'nombre': [ 'asignado', 'minimo', ] },
                   #'terms':{ 'nombre': [ {'asignado': {'name':'Test', 'legendIndex': '1'} }, 'ejecutado', 'minimo', ] },
               }],
             chart_options =
               {
-                  'title': {'text': u'Arto 12 - Ley de transferencias presupuestarias'},
+                  #grafico 5 de portada Arto 12
+                  'title': {'text': u' '},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
 
 
 
-def fuentes_chart(municipio=None,year=None):
+def fuentes_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(InversionFuente)
     periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
     if not year:
         year = year_list[-1]
     if municipio:
-        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__year=year).\
+        source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
+        source_portada = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
+                values('fuente__tipofuente__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__tipofuente__nombre')
     else:
         municipio = ''
         source = InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).\
@@ -150,7 +183,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': u'Financiamiento de la inversión %s %s' % (municipio, year,)},
+                'title': {'text': u' '},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -163,7 +196,7 @@ def fuentes_chart(municipio=None,year=None):
                 'terms':{'fuente__tipofuente__nombre': [quesumar]}
               }],
             chart_options = {
-                'title': {'text': 'Fuentes financiamiento inversión %s' % (municipio, )},
+                'title': {'text': u' '},
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },

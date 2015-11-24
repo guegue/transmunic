@@ -40,6 +40,16 @@
             });
         });
     </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68619423-1', 'auto');
+    ga('send', 'pageview');
+
+    </script>
   </head>
 <!-- NAVBAR
 ================================================== -->
@@ -61,7 +71,6 @@
             <div id="navbar" class="navbar-collapse collapse pull-right">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'home' %}">INICIO</a></li>
-                <li><a href="/significado/">&iquest;QU&Eacute; SIGNIFICA?</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PRESUPUESTOS <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
@@ -70,14 +79,16 @@
                     <li class="divider"></li>
                     <li><a href="{%url 'gastos_funcion'%}">Gastos de funcionamiento</a></li>
                     <li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
-                    <li><a href="{%url 'autonomia_gastos'%}">Autonomía para asumir gastos operativos</a></li>
+                    <li><a href="{%url 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</a></li>
                     <li><a href="{%url 'ahorro_corriente'%}">Ahorro corriente para inversiones</a></li>
                     <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
                     <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
+                    <li><a href="{%url 'detalle_presupuesto'%}">Descargar Detalle Presupuesto</a></li>
                   </ul>
                 </li>
                 <li><a href="/core/plan-de-inversion/?inversion__anio=2015&inversion__municipio=1">PLANES DE INVERSIÓN</a></li>
-                    <li><a href="#contact">CONTÁCTENOS</a></li>
+                <li><a href="/glosario">GLOSARIO</a></li>
+                <li><a href="/significado/">PRESENTACIÓN</a></li>
               </ul>
             </div>
           </div>

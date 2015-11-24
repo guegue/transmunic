@@ -16,9 +16,9 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Anio, getYears, dictfetchall, glue
+from core.models import Anio, GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.tools import getYears, dictfetchall, glue, superglue
 from lugar.models import Poblacion
 
 def ogm_chart(municipio=None, year=None, portada=False):
@@ -27,8 +27,15 @@ def ogm_chart(municipio=None, year=None, portada=False):
     if not year:
         year = year_list[-1]
 
-    periodo = Anio.objects.get(anio=year).periodo
-    quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    # obtiene último periodo del año que se quiere ver
+    year_data = Anio.objects.get(anio=year)
+    periodo = year_data.periodo
+
+    # usar 'asignado' para todo periodo si estamos en portada
+    if portada:
+        quesumar = 'asignado'
+    else:
+        quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     ChartError = False
 
@@ -39,49 +46,57 @@ def ogm_chart(municipio=None, year=None, portada=False):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
 
-        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen__nombre')
-        tipos_inicial = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
-        tipos_final = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
-        sources = glue(tipos_inicial, tipos_final, periodo, 'subsubtipogasto__origen__nombre')
+        source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
+        tipos_inicial = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_final = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
+        sources = glue(tipos_inicial, tipos_final, 'subsubtipogasto__origen__nombre')
         source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=periodo, gasto__anio__gt=year_list[-3])
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__municipio__slug=municipio)
 
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             gasto__municipio__slug=municipio).\
-            values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             gasto__municipio__slug=municipio).\
-            values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_periodo = GastoDetalle.objects.filter(gasto__periodo=periodo, \
+            gasto__municipio__slug=municipio).\
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["gasto__anio"] == int(year)).next()['asignado']
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_periodo if item["gasto__anio"] == int(year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
 
         # obtiene datos de gastos en ditintos rubros de persoal pemanente (codigo 1100000)
         rubrosp_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
-                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
-                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosp_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejectuado=Sum('ejecutado'))
+        rubrosp_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
+                subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubrosp_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
                 values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosp = glue(rubrosp_inicial, rubrosp_final, periodo, 'subsubtipogasto__codigo', actualizado=rubrosp_actualizado)
+        rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final, rubrosp_actualizado, rubrosp_periodo), key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
                 values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, periodo, 'tipogasto__codigo', actualizado=rubros_actualizado)
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -98,28 +113,28 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
         municipios_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year, \
                 gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
-        municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__clase__anio=year, \
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
+        municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year, \
                 gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
                 values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
-        otros = glue(municipios_inicial, municipios_final, PERIODO_FINAL, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
+        otros = glue(municipios_inicial, municipios_final, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de gastos
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
             row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
             row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
-        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
+        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=False)
 
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
+        tipo = glue(tipo_inicial, tipo_final, 'subsubtipogasto__origen__nombre')
 
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='gasto__anio')
+        anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
         final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
         core_gasto.anio=lugar_clasificacionmunicano.anio JOIN core_tipogasto ON core_gastodetalle.tipogasto_id=core_tipogasto.codigo \
@@ -224,16 +239,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        anual2 = glue(inicial=inicial, final=final, periodo=PERIODO_INICIAL, key='gasto__anio')
+        anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
 
-        source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen__nombre')
-        tipos_inicial = GastoDetalle.objects.filter(gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
-        tipos_final = GastoDetalle.objects.filter(gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
-        sources = glue(tipos_inicial, tipos_final, periodo, 'subsubtipogasto__origen__nombre')
-        source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__anio__gt=year_list[-3])
+        source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
+        tipos_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
+        sources = glue(tipos_inicial, tipos_final, 'subsubtipogasto__origen__nombre')
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo)
 
-        source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum(quesumar)).order_by('subsubtipogasto__origen')
         source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo)
         source_barra2 = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__anio__gt=year_list[-3])
         
@@ -241,33 +254,42 @@ def ogm_chart(municipio=None, year=None, portada=False):
         rubrosp_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosp_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, \
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubrosp_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, \
+                subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
+                exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubrosp_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosp = glue(rubrosp_inicial, rubrosp_final, periodo, 'subsubtipogasto__codigo', actualizado=rubrosp_actualizado)
+        rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final, rubrosp_actualizado, rubrosp_periodo), key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, ).\
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, ).\
+                exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
+                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, periodo, 'tipogasto__codigo', actualizado=rubros_actualizado)
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,).\
-            values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,).\
-            values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_periodo = GastoDetalle.objects.filter(gasto__periodo=periodo,).\
+            values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
         sql_tpl="SELECT clasificacion,\
@@ -283,14 +305,15 @@ def ogm_chart(municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_ACTUALIZADO,)
+        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO,)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclase = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
+        porclase = glue(inicial, final, 'clasificacion', actualizado=actualizado)
         for d in porclase:
-            if d['actualizado']:
-                d['nivel'] = d['ejecutado'] / d['actualizado'] * 100
+            if d['actualizado'] and d['asignado']:
+                # FIXME: wot? 'asignado' ?
+                d['nivel'] = d['asignado'] / d['actualizado'] * 100
             else:
                 d['nivel'] = 0
 
@@ -308,24 +331,24 @@ def ogm_chart(municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL,)
+        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo,)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_ACTUALIZADO,)
+        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO,)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclasep = glue(inicial, final, PERIODO_INICIAL, 'clasificacion', actualizado=actualizado)
+        porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))
         tipo_final = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(tipo_inicial, tipo_final, periodo, 'subsubtipogasto__origen__nombre')
+        tipo = glue(tipo_inicial, tipo_final, 'subsubtipogasto__origen__nombre')
 
         # obtiene datos para OGM comparativo de un año específico
         inicial = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('gasto__periodo').annotate(monto=Sum('asignado')).order_by('gasto__periodo'))
-        actualizado = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO).values('gasto__periodo').annotate(monto=Sum('ejecutado')).order_by('gasto__periodo'))
+        actualizado = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO).values('gasto__periodo').annotate(monto=Sum('asignado')).order_by('gasto__periodo'))
         final = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL).values('gasto__periodo').annotate(monto=Sum('ejecutado')).order_by('gasto__periodo'))
         comparativo2 = list(chain(inicial, final, ))
         comparativo3 = list(chain(inicial, final, actualizado))
@@ -335,7 +358,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos para OGM comparativo de todos los años
         anios_inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         anios_final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
-        comparativo_anios = glue(anios_inicial, anios_final, periodo, 'gasto__anio')
+        comparativo_anios = glue(anios_inicial, anios_final, 'gasto__anio')
 
         # obtiene valores para este año de las listas
         try:
@@ -343,11 +366,11 @@ def ogm_chart(municipio=None, year=None, portada=False):
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_periodo if item["gasto__anio"] == int(year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
         # FIXME que es esto: ???
-        source_anios = glue(source_inicial, source_final, periodo, 'gasto__anio')
+        source_anios = glue(source_inicial, source_final, 'gasto__anio')
 
 
     #
@@ -357,7 +380,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
-                'names':  ['Gastos del municipio comparado con la categoria','Periodo',u'P.Inicial',u'Categoria P. Inicial',u'P.Final',u'Categoria P.Final'],
+                'names':  [' ','Periodo',u'P.Inicial',u'P.Final',u'Categoria P. Inicial',u'Categoria P.Final'],
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
@@ -372,7 +395,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
+                'names':  [' ',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms':  ['gasto__periodo','municipio','clase'],
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
@@ -389,7 +412,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo2_column = Chart(
                 datasource = ogm_comparativo2,
@@ -402,7 +425,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -415,12 +438,13 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s %s' % (municipio, year)}},
+                {'title': { 'text': ' '}},
                 )
     else: # no municipio
         ogm_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
+                'names':  [' ','Totales','Asignado','Ejecutado'],
                 'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado',],
                 }],
             )
@@ -434,7 +458,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto','Totales'],
+                'names':  [' ','Gastos Totales'],
                 'terms':  ['gasto__periodo', 'monto'],
                 }],
                 )
@@ -449,7 +473,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -462,7 +486,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (year)}},
+                {'title': { 'text': ' '}},
                 )
         ogm_comparativo_anios_column = Chart(
                 datasource = ogm_comparativo_anios,
@@ -475,7 +499,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': 'gastos %s' % (municipio,)}},
+                {'title': { 'text': ' '}},
                 )
 
 
@@ -553,7 +577,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             [{'options': {'source': source },
               'terms': [
                 'subsubtipogasto__origen__nombre',
-                'ejecutado',
+                quesumar,
                 ]}
              ])
 
@@ -565,10 +589,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'stacking': False},
                 'terms':{
                   'subsubtipogasto__origen__nombre': [
-                    'ejecutado']
+                    quesumar ]
                   }}],
             chart_options = {
-                'title': { 'text': 'Destino del gasto %s %s' % (municipio, year,)},
+                'title': { 'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -583,11 +607,11 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'stacking': False},
                 'terms':{
                   'subsubtipogasto__origen__nombre': [
-                    'ejecutado']
+                    quesumar ]
                   }}],
             chart_options =
               {
-                  'title': {'text': 'Destino del gasto'},
+                  'title': {'text': ' '},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
@@ -634,6 +658,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
+            'year_data': year_data, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}

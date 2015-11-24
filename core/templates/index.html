@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mathfilters %}
 {% load static thumbnail chartit %}
 
 {% block titulo %}
@@ -30,6 +31,11 @@
         {% endfor %}
       </div>
 </div><!-- /.carousel -->
+        <div class="row intro">
+            <div class="container text-center">
+                <div class="col-md-12">En este sitio encontrará información de los presupuestos de los 153 municipios del país a manera de indicadores de gestion para hacer seguimiento a la ejecución presupuestaria.</div>
+            </div>
+        </div>
 {% endblock %}
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
@@ -52,7 +58,7 @@
                     <span class="cifra">Municipal</span>
                 </div>
               </button></a>
-              <a href="{% url 'documento_by_tipo' 'circulo-presupuestario' %}"><button class="recuadro btn btn-success">
+              <a href="/ciclo-presupuestario/"><button class="recuadro btn btn-success">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/ciclob.png' %}" />
                 </span>
@@ -71,7 +77,7 @@
                     <span class="cifra">Municipal</span>
                 </div>
               </button></a>
-              <a href="{% url 'documento_by_tipo' 'participacion-ciudadana' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-info">
+              <a href="/core/organizaciones"><button class="recuadro col-sm-4 col-xs-12 btn btn-info">
                 <span class="recuadro-icon">
                     <img src="{% static 'img/participacionb.png' %}" />
                 </span>
@@ -82,7 +88,7 @@
                 </div>
               </button></a>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 hidden-xs">
             <h3>Informaci&oacute;n por Municipio</h3>
             <img src="/static/img/nicaragua.png" width="500" usemap="#nicaragua-image" >
             <map id="nicaragua-image" name="nicaragua-image">
@@ -113,15 +119,12 @@
 {% block main_content %}
         <div class="clear"></div>
         <div class="text-center">
-            <h2 class="titular">Presupuesto Consolidado Municipal 2015</h2>
+            <h2 class="titular">Consolidado de Presupuestos Municipales 2015</h2>
             <hr />
         </div>
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
         <div class="col-md-4 col-sm-4">
-            <h2>&iquest;Cuánto ingresa?</h2>
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#oim-desc">
-             ?
-            </button>
+            <h2>&iquest;Cuánto ingresa <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#oim-desc"> </button></h2>
             <div id='oim_ejecutado'></div>
             <!-- OIM modal -->
             <div class="modal fade" id="oim-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -132,7 +135,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_oim_chart.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_oim_chart.descripcion|linebreaks }}
+                          {{ desc_oim_chart.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
@@ -142,10 +145,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-4">
-            <h2>&iquest;En qué se gasta?</h2>
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#ogm-desc">
-             ?
-            </button>
+            <h2>&iquest;En qué se gasta <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#ogm-desc"> </button></h2>
             <div id='ogm_ejecutado'></div>
             <!-- OGM modal -->
             <div class="modal fade" id="ogm-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -156,7 +156,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_ogm_chart.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_ogm_chart.descripcion|linebreaks }}
+                          {{ desc_ogm_chart.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
@@ -166,10 +166,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-4">
-            <h2>&iquest;C&oacute;mo se financia?</h2>
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-fuentes-desc">
-             ?
-            </button>
+            <h2>&iquest;C&oacute;mo se financian las inversiones? <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#inversion-fuentes-desc">  </button></h2>
             <div id='fuentes'></div>
             <!-- GF modal -->
             <div class="modal fade" id="inversion-fuentes-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -180,7 +177,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_invfuentes_chart.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_invfuentes_chart.descripcion|linebreaks }}
+                          {{ desc_invfuentes_chart.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
@@ -196,7 +193,7 @@
         <div class="container">
             <div class="row">
                 <div class="text-center">
-                    <h2 class="titular" style="margin-bottom:40px;">Presupuesto Inversi&oacute;n Municipal 2015</h2>
+                    <h2 class="titular" style="margin-bottom:40px;">Inversi&oacute;n Municipal 2015</h2>
                     <!--FIXME: Una vez se cargue el ejecutado cambiar
                     Presupuesto por Ejecucion --!>
                 </div>
@@ -207,7 +204,7 @@
                         </div>
                     </div>
                     <p><span class="text-info"><strong>* Invertido en el periodo</strong></p>
-                    <p><span class="text-danger"><strong>** Minimo por ley</strong>:
+                    <p><span class="text-danger"><strong>** Mínimo por ley</strong>:
                     Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados: Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</p>
                 </div>
 		<div class="col-md-10">
@@ -227,8 +224,8 @@
                                 <li class="col-md-3 col-sm-3 col-xs-6">
                                   <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
                                   <a href="#">{{ i.catinversion__nombre }}</a>
-                                  <p class="cifra text-info">* {% widthratio i.ejecutado total_inversion.ejecutado 100|floatformat %}% <br />
-                                  <span class="text-danger cifra" style="font-size:28px;">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
+                                  <p class="cifra text-info">* {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% <br />
+                                  <span class="text-danger cifra minimo">{% if i.catinversion__minimo %}* {{ i.catinversion__minimo|floatformat }}%{% endif %}</span>
                                 </li>
                             {% if forloop.last or forloop.counter|divisibleby:4 %}
                                 </ul>
@@ -252,8 +249,7 @@
 		    <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3>Inversión mínima de los ingresos  corrientes por categoría de municipio
-                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#inversion-minima">
-                        ?
+                    <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#inversion-minima">
                     </button>
                     </h3>
                 </div>
@@ -271,7 +267,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_inversionminima.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_inversionminima.descripcion|linebreaks }}
+                          {{ desc_inversionminima.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
@@ -284,8 +280,8 @@
 		    <div class="panel panel-success">
 			    <div class="panel-heading">
                     <h3>Inversión mínima por sector priorizado
-                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#inversion-minima">
-                     ?
+                    <button type="button" class="btn btn-primary btn-xs question" data-toggle="modal" data-target="#inversion-minima">
+                    
                    </button>
                    </h3>    
                 </div>
@@ -303,7 +299,7 @@
                         <h4 class="modal-title" id="myModalLabel">{{ desc_inversionisector.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_inversionisector.descripcion|linebreaks }}
+                          {{ desc_inversionisector.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>

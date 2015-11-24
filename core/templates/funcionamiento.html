@@ -4,7 +4,7 @@
 {% load core_extras %} 
 {% block main_content %}
     <div class="col-md-12 text-centered">
-        <div class="pull-left">
+        <div class="pull-left col-md-7">
         	{% descargar_excel "gf-all" %}
             <h2 class="title">Gastos de funcionamiento {{ municipio }} {{ year }} </h2>
         </div>
@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    <div id="span12 search">
+    <div id="search">
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -41,7 +41,7 @@
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
+    <option value="">Consolidado Municipal</option>
     {% for amunicipio in municipio_list %}
         <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
@@ -57,9 +57,9 @@
     </ul>
     <div class="clearfix"></div>
     {% if municipio %}
-        {{ charts|load_charts:"gfbar, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
+        {{ charts|load_charts:"none, barra, pie, comparativo2, comparativo3, comparativo_anios, " }}
     {% else %}
-        {{ charts|load_charts:"gfbar, barra, pie,comparativo2, comparativo3, comparativo_anios, nivelejecucion" }}
+        {{ charts|load_charts:"gfbar, barra, pie,comparativo2, comparativo3, comparativo_anios, "  }}
     {% endif %}
     <div id="gfTabContent" class="tab-content col-md-12">
 
@@ -71,12 +71,12 @@
         <div class="col-md-12">
             <div class="col-md-4">
                 <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuestado</h3>
-                <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuesto inicial</h3>
+                <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
             </div>
             <div class="col-md-4">
                 <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
             </div>
             {% if municipio %}
             <div class="col-md-4">
@@ -95,7 +95,7 @@
         <h4 class="text-info">por categoría de Municipios</h4>
 
         <table class="table table-condensed">
-            <tr class="info"><th>Categoría</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+            <tr class="info"><th>Categoría</th> <th>P.Inicial</th> <th>Ejecutado</th></tr>
             {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
@@ -105,8 +105,8 @@
             {% endfor %}
             <tr class="success">
                 <td><strong>PROMEDIO</strong></td>
-                <td><strong>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</strong></td>
-                <td><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
+                <td class="text-right"><strong>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</strong></td>
+                <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
             </tr>
         </table>
     <!-- /fin gftabla1 nacional-->
@@ -116,10 +116,11 @@
     {% if municipio %}
     <div class="col-md-5">
     <!-- javier 7/junio gftabla1 -->
+    {% descargar_excel "gf6" %}
     <h3>Ranquin de municipio de misma categoría municipal</h3>
     <h4 class="text-info">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
     <table class="table table-condensed">
-    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+        <tr class="info"><th>Posición</th><th>Municipios</th> <th>Inicial</th> <th>Ejecutado</th></tr>
     {% for row in otros %}
         {% if municipio.slug == row.gasto__municipio__slug%}
             <tr class="info">
@@ -128,14 +129,15 @@
         {% endif %}
         <td> {{forloop.counter}} </td>
         <td>{{ row.gasto__municipio__nombre }}</td>
-        <td>{{ row.asignado_percent }}%</td>
-        <td class="info">{{ row.ejecutado_percent }}%</td>
+        <td class="text-right">{{ row.asignado_percent }}%</td>
+        <td class="info text-right">{{ row.ejecutado_percent }}%</td>
     </tr>
     {% endfor %}
     <tr class="success">
+    	<td></td>
         <td>PROMEDIO</td>
-        <td>{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
-        <td>{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+        <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
+        <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
     </tr>
     </table>
     <!-- /fin gftabla1 -->
@@ -146,29 +148,32 @@
     <!-- javier 7/junio gftabla2 -->
     {% descargar_excel "gf1" %}
     <h3>Resultado presupuestario gastos de funcionamiento</h3>
-    <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseporcentaje_gasto"  aria-expanded="false" aria-controls="collapseporcentaje_gasto">Ver gráfico</a></h4>
-    <div class="collapse" id="collapseporcentaje_gasto">
-            <div class="well">
-                <div class="col-md-7"><div id='comparativo2'> Chart will be rendered here </div></div>
-            </div>
+    <h4 class="text-info">Millones de córdobas corrientes
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsepastel"  aria-expanded="false" aria-controls="collapseExample">Ver gráfico </a>
+    </h4>
+    <hr />
+    <div class="collapse col-md-4" id="collapsepastel">
+        <div class="well">
+            <div id='comparativo2' class="col-md-6"> Chart will be rendered here </div>
+        </div>
     </div>
     <table class="table table-condensed">
-        <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
+        <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in rubros %}
     <tr>
         <td>{{ row.tipogasto__nombre }}</td>
-        <td>{{ row.asignado|intcomma }}</td>
-        <td>{{ row.ejecutado|intcomma }}</td>
+        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.asignado %}
-            <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+            <td class="text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
     <tr class="success bold">
         <td>TOTAL</td>
-        <td>{{ asignado|intcomma }}</td>
-        <td>{{ ejecutado|intcomma }}</td>
-        <td>{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
+        <td class="text-right">{{ asignado|million|intcomma }}</td>
+        <td class="text-right">{{ ejecutado|million|intcomma }}</td>
+        <td class="text-right">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
     </table>
     <!-- /fin gftabla2 -->
     <br />
@@ -186,8 +191,10 @@
     <!--TAB2 -->
     <div role="tabpanel" class="tab-pane fade" id="gfmodificacion" aria-labelledby="gfmodificacion-tab">
 
+    <div class="col-md-7">
     <!-- javier 7/junio gftabla3 -->
     {% descargar_excel "gf2" %}
+
     <h3>Modificaciones al presupuesto municipal</h3>
     <h4 class="text-info">Millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsemodificacion"  aria-expanded="false" aria-controls="collapsemodificacion">Ver gráfico</a></h4>
     <div class="collapse" id="collapsemodificacion">
@@ -196,35 +203,37 @@
             </div>
     </div>
     <table class="table table-condensed">
-        <tr class="info"> <th>Tipo</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
     {% for row in rubros %}
     <tr>
         <td class="pull-left">{{ row.tipogasto__nombre }}</td>
-        <td>{{ row.asignado|intcomma }}</td>
-        <td>{{ row.actualizado|intcomma }}</td>
-        <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-        <td>{{ row.ejecutado|intcomma }}</td>
+        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+        <td class="text-right">{{ row.actualizado|million|intcomma }}</td>
+        <td class="text-right">{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0{% endif %}</td>
+        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.actualizado %}
-        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+        <td class="text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+        {% else %}
+        <td class="text-right"></td>
         {% endif %}
     </tr>
     {% endfor %}
     <tr class="success bold">
         <td>TOTAL</td>
-        <td>{{ rubros|total_sum:'asignado'|intcomma }}</td>
-        <td>{{ rubros|total_sum:'actualizado'|intcomma }}</td>
+        <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+        <td class="text-right">{{ rubros|total_sum:'actualizado'|million|intcomma }}</td>
         {% with sum_asignado=rubros|total_sum:'asignado' %}
-        <td>
+        <td class="text-right">
         {% if rubros|total_sum:'actualizado' %}
-            {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+            {{ rubros|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
         {% else %}
             0
         {% endif %}
         </td>
         {% endwith %}
-        <td>{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
+        <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
         {% with sum_actualizado=rubros|total_sum:'actualizado' %}
-        <td>
+        <td class="text-right">
         {% if sum_actualizado %}
         {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
         {% endif %}
@@ -239,37 +248,37 @@
     <!-- javier 7/junio gftabla4 nacional -->
     {% descargar_excel "gf3" %}
     <h3>Modificaciones al presupuesto municipal por categoría</h3>
-    <h4 class="text-info">Millones de córdobas</h4>
+    <h4 class="text-info">Millones de córdobas destinados a gastos de funcionamiento </h4>
     <table  class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Actualizado</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
     {% for row in porclase %}
     <tr>
         <td>{{ row.clasificacion }}</td>
-        <td>{% if row.asignado %} {{ row.asignado|intcomma }}{% else %}0 {% endif %}</td>
-        <td>{% if row.actualizado %} {{ row.actualizado|intcomma }}{% else %}0 {% endif %}</td>
-        <td>{% if row.actualizado %} {{ row.actualizado|sub:row.asignado }}{% else %}0 {% endif %}</td>
-        <td>{% if row.ejecutado %} {{ row.ejecutado|intcomma }}{% else %}0 {% endif %}</td>
+        <td class="text-right">{% if row.asignado %} {{ row.asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+        <td class="text-right">{% if row.actualizado %} {{ row.actualizado|million|intcomma }}{% else %}0 {% endif %}</td>
+        <td class="text-right">{% if row.actualizado %} {{ row.actualizado|sub:row.asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+        <td class="text-right">{% if row.ejecutado %} {{ row.ejecutado|million|intcomma }}{% else %}0 {% endif %}</td>
         {% if row.actualizado %}
-        <td>{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
+        <td class="text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
     <tr class="success bold">
         <td>TOTAL</td>
-        <td>{{ porclase|total_sum:'asignado'|intcomma }}</td>
-        <td>{{ porclase|total_sum:'actualizado'|intcomma }}</td>
+        <td class="text-right">{{ porclase|total_sum:'asignado'|million|intcomma }}</td>
+        <td class="text-right">{{ porclase|total_sum:'actualizado'|million|intcomma }}</td>
         {% with sum_asignado=porclase|total_sum:'asignado' %}
-        <td>
+        <td class="text-right">
         {% if porclase|total_sum:'actualizado' %}
-            {{ porclase|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+            {{ porclase|total_sum:'actualizado'|sub:sum_asignado|million|intcomma }}
         {% else %}
             0
         {% endif %}
         </td>
         {% endwith %}
-        <td>{{ porclase|total_sum:'ejecutado'|intcomma }}</td>
+        <td class="text-right">{{ porclase|total_sum:'ejecutado'|million|intcomma }}</td>
         {% with sum_actualizado=porclase|total_sum:'actualizado' %}
-        <td>
+        <td class="text-right">
         {% if sum_actualizado %}
         {{ porclase|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
         {% endif %}
@@ -286,7 +295,7 @@
     <h3>Modificación al presupuesto municipios categoría '{{ mi_clase.clasificacion }}'</h3>
     <h4 class="text-info">Millones de córdobas destinado a gastos de funcionamiento por categoría de Municipios</h4>
     <table  class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
     {% for row in otros %}
         {% if municipio.slug == row.gasto__municipio__slug%}
             <tr class="info">
@@ -294,41 +303,19 @@
             <tr>
         {% endif %}
         <td>{{ row.gasto__municipio__nombre }}</td>
-        <td>{{ row.asignado }}</td>
-        <td>{{ row.actualizado }}</td>
-        <td>{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado }}{% else %}0 {% endif %}</td>
-        <td>{{ row.ejecutado }}</td>
+        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+        <td class="text-right">{{ row.actualizado|million|intcomma}}</ td>
+        <td class="text-right">{% if row.actualizado %} {{ row.actualizado|sub:row.actualizado|million|intcomma }}{% else %}0 {% endif %}</td>
+        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.actualizado %}
-        <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        <td class="text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
-    <tr class="success bold">
-        <td>TOTAL</td>
-        <td>{{ otros|total_sum:'asignado'|intcomma }}</td>
-        <td>{{ otros|total_sum:'actualizado'|intcomma }}</td>
-        {% with sum_asignado=otros|total_sum:'asignado' %}
-        <td>
-        {% if otros|total_sum:'actualizado' %}
-            {{ otros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
-        {% else %}
-            0
-        {% endif %}
-        </td>
-        {% endwith %}
-        <td>{{ otros|total_sum:'ejecutado'|intcomma }}</td>
-        {% with sum_actualizado=otros|total_sum:'actualizado' %}
-        <td>
-        {% if sum_actualizado %}
-        {{ otros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
-        {% endif %}
-        </td>
-        {% endwith %}
-    </tr>
     </table>
     {% endif %}
     <!-- /fin gftabla4 -->
-        <div id='nivelejecucion' class="col-md-10"></div>
+    </div>
         <div id='comparativo3' class="col-md-10 visible-xs"></div>
         <div id='barra' class="visible-xs"></div>
     </div> <!--END TAB2-->
@@ -336,40 +323,37 @@
     <!--TAB3-->
     <div role="tabpanel" class="tab-pane fade" id="gforigen" aria-labelledby="gforigen-tab">
     <!-- javier 7/junio gftabla5 -->
-    <div class="col-md-7">
-    	{% descargar_excel "gf5" %}
-        <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
+    {% descargar_excel "gf5" %}
+    <h3>Ejecución presupuestaria del gasto de funcionamiento</h3>
+    <h4 class="text-info">Millones de córdobas corrientes</h4>
+    <div class="col-md-5">
     <table class="table table-condensed">
-        <tr class="info"><th>Municipio</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>
+        <tr class="info"><th>Año</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
     {% for row in anuales %}
     <tr>
         <td>{{ row.gasto__anio }}</td>
-        <td>{{ row.asignado|intcomma }}</td>
-        <td>{{ row.ejecutado|intcomma }}</td>
+        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.asignado %}
-        <td>{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        <td class="text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
     <tr class="success bold">
         <td>TOTAL</td>
-        <td>{{ anuales|total_sum:'asignado'|intcomma }}</td>
-        <td>{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+        <td class="text-right">{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
+        <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
         {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
-        <td>{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+        <td class="text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
         {% endwith %}
     </tr>
     </table>
     <!-- /fin gftabla5 -->
     </div>
     <br clear="all" />
-        <h3>Gastos de funcionamiento</h3>
-        <h4>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h4>
-        <h4 class="text-info">Millones de córdobas corrientes</h4>
         <div id='comparativo_anios' class="col-md-10"></div>
-        <div id='gfbar' class="visible-xs"></div>
         <div id='none' style="display:none"></div>
+
      </div>
     </div>
 <script>

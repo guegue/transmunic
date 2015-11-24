@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %} 
+{% load mathfilters %}
+{% load core_extras %} 
+{% block titulo %}
+Detalle Presupuesto 
+{% endblock %}
+{% block main_content %}
+    <h2 class="titular">Descargar Detalle Presupuesto</h2>
+    <div class="row">
+		<form class="form-inline pull-left"  method="POST">  
+			{% csrf_token %}
+			 {% for field in form %}
+		  <div class="form-group {% if field.errors %} has-error {% endif %}">
+		    <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+		    {{ field }}
+		  </div>
+		  {% endfor %}
+		  <button type="submit" class="btn btn-success">Descargar</button>
+		</form>
+	</div>
+	{% if error %}
+		<h4 >{{ error }}</h4>
+	{% endif %}
+
+{% endblock %}

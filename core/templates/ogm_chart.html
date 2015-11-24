@@ -8,7 +8,7 @@
 {% endblock %}
 {% block main_content %}
 {% descargar_excel "ogm-all" %}
-<h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% endif %}</h2>
+<h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% else %}2015 {% endif %}</h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -16,10 +16,10 @@
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
-    {% for municipio in municipio_list %}                                       
-        <option {% if municipio.slug == request.GET.municipio %}selected{% endif %} value="{{municipio.slug}}">{{municipio}}</option>
-    {% endfor %} 
+    <option value="">Consolidado Municipal</option>
+    {% for amunicipio in municipio_list %}
+        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+    {% endfor %}
     </select>
     <input type="submit" value="Buscar" class="btn btn-primary"/>
     </form>
@@ -41,12 +41,12 @@
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuestado</h3>
-                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los gastos de administración y prestación de los">Presupuesto inicial</h3>
+                    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
                 </div>
                 <div class="col-md-4">
                     <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="Gasto de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
                 </div>
                 {% if municipio %}
                     <div class="col-md-4">
@@ -67,7 +67,6 @@
             </h4>
             <div class="collapse" id="collapsepastel">               
                 <div class="well">                                              
-                    <h3>Destino del gastos</h3> 
                     <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
                 </div>                                           
             </div> 
@@ -77,7 +76,7 @@
                 </div>                                           
             </div> 
             <table class="table">
-                <tr class="info"> <th colspan="2">Rubros gastos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
+                <tr class="info"> <th colspan="2">Rubros de gastos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
                 {% for total in totales %}
                 <tr>
                     <td><img src="/static/img/Otros origenes.png" class="pull-left" height="40" alt="{{ total.tipogasto__nombre }}" /></td>
@@ -102,22 +101,22 @@
                 </div>                                                          
             </div> 
             <table class="table table-condensed">                                       
-                <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+                <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipogasto__nombre }}</td>                                    
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
-                    {% if row.asignado %}                                                   
-                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
+                    {% if row.inicial_asignado %}                                                   
+                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
                 </tr>                                                                       
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
-                    <td>TOTAL</td>                                                          
-                    <td>{{ asignado|intcomma }}</td>                                        
-                    <td>{{ ejecutado|intcomma }}</td>                                       
-                    <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>       
+                    <td>TOTAL</td>
+                    <td class="text-right">{{ asignado|million }}</td>
+                    <td class="text-right">{{ ejecutado|million }}</td>
+                    <td class="montos">{% if inicial_asignado %}{{ ejecutado|div:inicial_asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
             </table>                                                                    
             <!-- /fin tabla2 -->                                                      
             <br />   
@@ -129,13 +128,13 @@
             <h3 class="text-center">Eficiencia en la ejecución del gasto de personal permanente</h3>
             <div class="col-md-6">
                     <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuestado</h3>
-                    <span class="cifra grande text-primary">{{ rubrosp|total_sum:'asignado'|floatformat:2|intcomma }}</span>
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
+                    <span class="cifra grande text-primary">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</span>
 
             </div>
             <div class="col-md-6">
                     <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|floatformat:2|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</span>
             </div>
             <div class="separador"></div>
             <div class="center"><a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseejecucion"  aria-expanded="false" aria-controls="collapseejecucion">Consultar detalles </a></div>
@@ -145,22 +144,22 @@
 					{% descargar_excel "ogm2" %}                    
                     <h4>Gastos en millones de córdobas corrientes</h3>
                     <table class="table table-condensed">                                       
-                        <tr class="info"> <th>Rubro</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+                        <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
                         {% for row in rubrosp %}                                                     
                             <tr>                                                                        
                                 <td class="capfirst">{{ row.subsubtipogasto__nombre }}</td>                                    
-                                <td class="text-right">{{ row.asignado|intcomma }}</td>                                    
-                                <td class="text-right">{{ row.ejecutado|intcomma }}</td>                                   
-                                {% if row.asignado %}                                                   
-                                    <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                                <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
+                                <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
+                                {% if row.inicial_asignado %}                                                   
+                                    <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
                                 {% endif %}                                                             
                             </tr>                                                                       
                         {% endfor %}                                                                
                         <tr class="success bold">                                                   
                             <td>TOTAL</td>                                                          
-                            <td>{{ asignado|intcomma }}</td>                                        
-                            <td>{{ ejecutado|intcomma }}</td>                                       
-                            <td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td>
+                            <td class="text-right"><strong>{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</strong></td>
+                            <td class="text-right"><strong>{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</strong></td>
+                            <td class="montos">{% if inicial_asignado %}{{ ejecutado|div:inicial_asignado|mul:100|floatformat:1 }}%{% endif %}</td>
                         </tr>       
                     </table>                                                                    
                     <!-- /fin ogm-tabla3 -->                                                      
@@ -179,14 +178,14 @@
                     {% for row in porclasep %}
                     <tr>
                         <td>{{ row.clasificacion }}</td>
-                        <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
-                        <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                        <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
+                        <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</td>
                     </tr>
                     {% endfor %}
                     <tr class="success">
                         <td><strong>TOTAL</strong></td>
-                        <td><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                        <td><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
                     </tr>
                 </table>
                 </div>
@@ -195,6 +194,7 @@
             <!-- maribel 20/07 ogm-tabla4-municipal -->
             {% if municipio %}
                 <div class="col-md-6">
+                {% descargar_excel "ogm8" %}
                 <h3>Ranquin de municipio de misma categoría municipal</h3>
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
@@ -231,42 +231,88 @@
         <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseModificacion"  aria-expanded="false" aria-controls="collapseModificacion">Ver gráfico</a>
         <div class="collapse" id="collapseModificacion">               
             <div class="well">                                              
-                <h3>Destino del gastos</h3> 
-                <div id='comparativo3' class="col-md-10"> Chart will be rendered here </div>
+                <div id='comparativo3' class="col-md-6"> Chart will be rendered here </div>
             </div>                                           
         </div> 
-        <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del gasto</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
+        <table class="table table-condensed ">
+            <tr>
+                <td></td>
+                <td></td>
+                <td colspan="4" class="success text-center">
+                    <h4>Modifcación intermedia 
+                        <a href="#" data-toggle="tooltip" data-original-title="Modifcación al {{ year_data.actualizado }}" class="link-info">*</a>
+                    </h4>
+                </td>
+                <td colspan="4" class="danger text-center">
+                    <h4>Modificación al cierre
+                        <a href="#" data-toggle="tooltip" data-original-title="Modifcación al {{ year_data.final }}" class="link-info">*</a>
+                    </h4>
+                </td>
+            </tr>
+            <tr class="info"> <th>Rubros de gastoss</th> <th>Inicial</th> 
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+            </tr>
             {% for row in rubros %}
                 <tr>
                     <td class="pull-left">{{ row.tipogasto__nombre }}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.actualizado|intcomma }}</td>
-                    <td class="text-right">{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
-                    {% if row.actualizado %}
-                        <td class="montos">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+
+                    <td class="success text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="success text-right">{% if row.actualizado_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    {% if row.actualizado_asignado %}
+                        <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% else %}
+                        <td class="success montos">0</td>
                     {% endif %}
+
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="danger text-right">{% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    {% if row.final_asignado %}
+                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% endif %}
+
                 </tr>
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td class="text-right">{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                <td class="text-right">{{ rubros|total_sum:'actualizado'|intcomma }}</td>
-                {% with sum_asignado=rubros|total_sum:'asignado' %}
-                    <td class="montos text-right">
-                    {% if rubros|total_sum:'actualizado' %}
-                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'actualizado_asignado' %}
+                        {{ rubros|total_sum:'actualizado_asignado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td class="text-right">{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
-                {% with sum_actualizado=rubros|total_sum:'actualizado' %}
+                <td class="text-right">{{ rubros|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+                <!-- totales periodo final -->
+                <td class="text-right">{{ rubros|total_sum:'final_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'final_asignado' %}
+                        {{ rubros|total_sum:'final_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'final_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -276,40 +322,73 @@
         <!-- /fin ogm-tabla5 -->
         <!-- maribeli 20/07 ogm-tabla6 -->
         {% descargar_excel "ogm5" %}
-        <h3>Modificacion al presupuesto municipal del gasto de personal permanente</h3>
+        <h3>Modificaciones al presupuesto municipal del gasto de personal permanente</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
-            <tr class="info"> <th>Rubros del gasto</th> <th>Inicial</th> <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
+            <tr><td></td><td></td><td colspan="4" class="success text-center"><h4>Modifcación al {{ year_data.actualizado }}</h4></td><td colspan="4" class="danger"><h4>Modificación al {{ year_data.final }}</h4></td></tr>
+            <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> 
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+            </tr>
             {% for row in rubrosp %}
                 <tr>
                     <td class="pull-left">{{ row.subsubtipogasto__nombre }}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td>{{ row.actualizado|intcomma }}</td>
-                    <td>{% if row.actualizado %}{{ row.actualizado|sub:row.asignado|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
-                    {% if row.actualizado %}
-                        <td class="montos text-right">{{ row.ejecutado|div:row.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+
+                    <td class="success text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="success text-right">{% if row.actualizado_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    {% if row.actualizado_asignado %}
+                        <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% else %}
+                        <td class="success montos">0</td>
+                    {% endif %}
+
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="danger text-right">{% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    {% if row.final_asignado %}
+                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
                 </tr>
             {% endfor %}
             <tr class="success bold">
                 <td>TOTAL</td>
-                <td class="text-right">{{ rubros|total_sum:'asignado'|intcomma }}</td>
-                <td class="text-right">{{ rubros|total_sum:'actualizado'|intcomma }}</td>
-                {% with sum_asignado=rubros|total_sum:'asignado' %}
-                    <td class="montos text-right">
-                    {% if rubros|total_sum:'actualizado' %}
-                        {{ rubros|total_sum:'actualizado'|sub:sum_asignado|intcomma }}
+                <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubrosp|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubrosp|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubrosp|total_sum:'actualizado_asignado' %}
+                        {{ rubrosp|total_sum:'actualizado_asignado'|sub:sum_asignado|million|intcomma }}
                     {% else %}
                         0
                     {% endif %}
                 </td>
                 {% endwith %}
-                <td class="text-right">{{ rubros|total_sum:'ejecutado'|intcomma }}</td>
-                {% with sum_actualizado=rubros|total_sum:'actualizado' %}
+                <td class="text-right">{{ rubrosp|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubrosp|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}
+                        {{ rubrosp|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+                <!-- totales periodo final -->
+                <td class="text-right">{{ rubrosp|total_sum:'final_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubrosp|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubrosp|total_sum:'final_asignado' %}
+                        {{ rubrosp|total_sum:'final_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubrosp|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubrosp|total_sum:'final_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubrosp|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -320,15 +399,12 @@
         <!--maribel 20/07 ogm-tabla 7 -->
         <div class="col-md-6">
         {% descargar_excel "ogm6" %}
-            <h3>Ejecución presupuestaria del gasto sector municipal</h3>
+            <h3>Ejecución presupuestaria del gasto</h3>
             <h4 class="text-info">Millones de córdobas corrientes
                 <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsecomparativo_anios"  aria-expanded="false" aria-controls="collapsePastel">Ver gráfico</a>
             </h4>
             <div class="collapse" id="collapsecomparativo_anios">               
                 <div class="well">                                              
-                    <h4>Gastos del municipio {% if municipio %}comparado con la categoría{% endif %}</h4> 
-                    {% if municipio %}<h5>Municipio de {{ municipio}} y Categoría del Municipio {{ year }}</h5>{% endif %}
-                    <h5 class="text-info">Millones de córdobas corrientes</h5>
                     <div id='comparativo_anios' class="col-md-7"> Chart will be rendered here </div>
                 </div>                                           
             </div> 
@@ -337,8 +413,8 @@
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.gasto__anio }}</td>
-                    <td class="text-right">{{ row.asignado|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|intcomma }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.asignado %}
                         <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}
@@ -346,8 +422,8 @@
                 {% endfor %}
                 <tr class="success bold">
                     <td>TOTAL</td>
-                    <td class="text-right">{{ anuales|total_sum:'asignado'|intcomma }}</td>
-                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|intcomma }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'asignado'|million }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
                     {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
                     <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
                     {% endwith %}
@@ -356,13 +432,13 @@
         </div>
         <!-- /fin gftabla7 -->
         <!--maribel 20/07 ogm-tabla 8 -->
-        <div class="col-md-10">
+        <div class="col-md-8">
         	{% descargar_excel "ogm7" %}
             <h3>Gastos por períodos</h3>
             <h4 class="text-info">Millones de c&oacute;rdoba corrientes</h4>
             <table class="table table-condensed">
                 <tr  class="info">
-                    <th>Rubro</th>
+                    <th>Rubros de gastos</th>
                     {% for year in year_list %}
                         <th>{{ year }}</th>
                     {% endfor %}
@@ -371,12 +447,12 @@
                 <tr>
                     <td class="text-left">{{ key }}</td>
                     {% for year in year_list %}
-                    <td class="text-right">{{ data|keyvalue:year|intword }}</td>
+                    <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
                     {% endfor %}
                    <!--td>{{ data.extra }}</td-->
                    <!-- old-fashioned way:
                      {% for subkey, subdata in data.items %}
-                       <td>{{ subkey }} = {{ subdata| intword}}</td>
+                       <td>{{ subkey }} = {{ subdata}}</td>
                        {% endfor %}
                    -->
                 </tr>

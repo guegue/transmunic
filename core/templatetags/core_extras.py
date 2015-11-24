@@ -4,6 +4,13 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 @register.filter
+def million(number):
+    if number:
+        return round(number / 1000000,2)
+    else:
+        return 0
+
+@register.filter
 def keyvalue(dict, key):
     try:
         return dict[key]
@@ -16,6 +23,8 @@ def total_sum(dict, key):
     try:
         return sum(float(d[key] or 0) for d in dict)
     except TypeError:
+        return 0
+    except KeyError:
         return 0
 
 @register.filter
