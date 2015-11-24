@@ -425,7 +425,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
+                {'title': { 'text': ' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                },
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -473,7 +475,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
+                {'title': { 'text': ' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} }
+                },
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,

@@ -418,7 +418,9 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
+                {'title': { 'text': ' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                },
                 )
         oim_comparativo3_column = Chart(
                 datasource = oim_comparativo3,
@@ -467,8 +469,11 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'ingreso__periodo': ['monto',]
                     },
                     }],
-                chart_options =
-                {'title': { 'text': ' '}},
+                chart_options = {
+                    'title': { 'text': ' '},
+                    #'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
+                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                },
                 )
         oim_comparativo3_column = Chart(
                 datasource = oim_comparativo3,
