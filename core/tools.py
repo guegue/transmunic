@@ -1,5 +1,7 @@
 # -*- coding: UTF-8 -*-
 
+import collections
+
 def getYears(model):
     "Gets all years with data from a model.anio"
 
@@ -27,7 +29,8 @@ def glue(inicial, final, key, actualizado=[]):
             merged[item[key]].update(item)
         else:
             merged[item[key]] = item
-    glued = [val for (_, val) in merged.items()]
+    omerged = collections.OrderedDict(sorted(merged.items()))
+    glued = [val for (_, val) in omerged.iteritems()]
 
     # checks all required keys have a value (0 if none)
     required = ('ejecutado', 'actualizado', 'asignado')
