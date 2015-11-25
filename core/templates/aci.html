@@ -18,7 +18,7 @@ Ahorro corriente de inversion  {{ municipio }}
     {% endfor %}
     </select>
     <select name="municipio">
-    <option value="">--</option>
+    <option value="">Consolidado Municipal</option>
     {% for amunicipio in municipio_list %}
         <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}
@@ -108,7 +108,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- maribel 30/07- aci-tabla2 -->
         <div class="col-md-6">
         	{% descargar_excel "aci3" %}
-            <h3>Resultado presupuestario ingresos corrientes totales</h3>
+            <h3>Ingresos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
                 <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
@@ -141,7 +141,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!-- maribel 30/07- aci-tabla3 -->
         <div class="col-md-6">
             {% descargar_excel "aci4" %}
-            <h3>Resultado presupuestario gastos corrientes totales</h3>
+            <h3>Gastos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
             <table class="table table-condensed">                                       
                 <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th>% (ejecutado/inicial)</th></tr>
@@ -265,7 +265,7 @@ Ahorro corriente de inversion  {{ municipio }}
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
         	{% descargar_excel "aci7" %}
-            <h3>Ejecución presupuestaria del ingreso corrientes totalesl</h3>
+            <h3>Ejecución presupuestaria del ingreso corrientes totales</h3>
             <h4 class="text-info">Millones de córdobas corrientes</h4>
             <table class="table table-condensed">
                 <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th>% Ejecutado/Inicial</th></tr>

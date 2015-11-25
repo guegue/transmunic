@@ -23,7 +23,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -202,7 +202,9 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                   }}],
             chart_options = {
                 'title': {
-                  'text': u'Ahorro corriente para inversiones %s ' % (municipio,)},
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Años'} },
                 },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )

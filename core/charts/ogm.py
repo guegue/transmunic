@@ -25,7 +25,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)

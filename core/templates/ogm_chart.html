@@ -114,9 +114,9 @@
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>
-                    <td class="text-right">{{ asignado|million }}</td>
-                    <td class="text-right">{{ ejecutado|million }}</td>
-                    <td class="montos">{% if inicial_asignado %}{{ ejecutado|div:inicial_asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
+                    <td class="text-right">{{ asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
+                    <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
             </table>                                                                    
             <!-- /fin tabla2 -->                                                      
             <br />   
@@ -159,7 +159,7 @@
                             <td>TOTAL</td>                                                          
                             <td class="text-right"><strong>{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</strong></td>
                             <td class="text-right"><strong>{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</strong></td>
-                            <td class="montos">{% if inicial_asignado %}{{ ejecutado|div:inicial_asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                            <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
                         </tr>       
                     </table>                                                                    
                     <!-- /fin ogm-tabla3 -->                                                      

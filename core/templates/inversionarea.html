@@ -3,7 +3,7 @@
 {% block main_content %}
     <form method="GET">
     <select name="municipio">
-    <option value="">--</option>
+    <option value="">Consolidado Municipal</option>
     {% for amunicipio in municipio_list %}
         <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
     {% endfor %}

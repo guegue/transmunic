@@ -29,7 +29,7 @@ def gf_chart(request):
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -427,6 +427,8 @@ def gf_chart(request):
                     'title': { 'text': ' '},
                     'subtitle': { 'text': u' '},
                     'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                    'xAxis': { 'title': {'text': u'Gastos de funcionamiento'} },
                     },
                 )
     else: # chartit no municipio

@@ -23,7 +23,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'

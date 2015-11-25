@@ -192,7 +192,7 @@ def ogm_view(request):
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
@@ -202,7 +202,6 @@ def oim_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = oim_chart(municipio=municipio, year=year)
-    
     reporte = request.POST.get("reporte","") 
     if "excel" in request.POST.keys() and reporte:        
         from core.utils import obtener_excel_response            
@@ -212,7 +211,7 @@ def oim_view(request):
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))

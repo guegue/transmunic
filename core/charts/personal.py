@@ -32,7 +32,7 @@ def gpersonal_chart(request):
         year = year_list[-2]
 
     # obtiene último periodo del año que se quiere ver                          
-    year_data = Anio.objects.get(anio=year)                                     
+    year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -76,14 +76,18 @@ def gpersonal_chart(request):
         # obtiene datos de municipios de la misma clase
         municipios_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__clase__anio=year, \
                 tipogasto=TipoGasto.PERSONAL, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(inicial_asignado=Sum('asignado'), inicial_ejecutado=Sum('ejecutado'))
         municipios_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year, \
                 tipogasto=TipoGasto.PERSONAL, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
-        municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year, \
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__clase__anio=year, \
                 tipogasto=TipoGasto.PERSONAL, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
-        otros = glue(municipios_inicial, municipios_final, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        municipios_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year, \
+                tipogasto=TipoGasto.PERSONAL, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
+                values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by('gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        #otros = glue(municipios_inicial, municipios_final, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
+        otros = superglue(data=(municipios_inicial, municipios_final, municipios_actualizado, municipios_periodo), key='gasto__municipio__nombre')
         # inserta porcentages de total de gastos
         for row in otros:
             total = {}
@@ -293,26 +297,33 @@ def gpersonal_chart(request):
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
         sql_tpl="SELECT clasificacion,\
-                (SELECT SUM({quesumar}) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
+                (SELECT SUM(asignado) AS {asignado} FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
+                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
+                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.codigo='{tipogasto}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ), \
+                (SELECT SUM(ejecutado) AS {ejecutado} FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
                 JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
                 WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.codigo='{tipogasto}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
-                AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, )
+                FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
+        sql = sql_tpl.format(asignado="inicial_asignado", ejecutado='inicial_ejecutado', year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="final_asignado", ejecutado="final_ejecutado", year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="asignado", ejecutado="ejecutado", year=year, periodo=periodo, tipogasto=TipoGasto.PERSONAL, )
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        porclase_periodo = dictfetchall(cursor)
+        sql = sql_tpl.format(asignado="actualizado_asignado", ejecutado="actualizado_ejecutado", year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclase = glue(inicial, final, 'clasificacion', actualizado=actualizado)
+        porclase = superglue(data=(inicial, final, actualizado, porclase_periodo), key='clasificacion')
         for d in porclase:
-            if d['actualizado'] and d['ejecutado']:
-                d['nivel'] = d['ejecutado'] / d['actualizado'] * 100
+            if d['asignado'] and d['ejecutado']:
+                d['nivel'] = d['ejecutado'] / d['asignado'] * 100
             else:
                 d['nivel'] = 0
 
@@ -464,7 +475,7 @@ def gpersonal_chart(request):
         gf_nivelejecucion = RawDataPool(
             series=
                 [{'options': {'source': porclase },
-                'terms':  ['clasificacion','ejecutado','actualizado','nivel'],
+                'terms':  ['clasificacion','final_ejecutado','final_asignado','nivel'],
                 }],
             )
         gf_nivelejecucion_bar = Chart(
