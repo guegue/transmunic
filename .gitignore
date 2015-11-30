@@ -44,7 +44,7 @@ wsgi.py
 
 # archivos a ignorar para este proyecto
 media/
-static/
+/static/
 transmunic/static/
 local_settings.py
 
