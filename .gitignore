@@ -37,6 +37,7 @@ tmp
 
 *.swp
 /*.sql
+*.gz
 /sql
 *.db
 *.sqlite
