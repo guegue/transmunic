@@ -99,13 +99,13 @@
             {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
-                    <td class="tex-center">{% if row.inicial_asignado %}{{ row.inicial_asignado|floatformat:2 }}%{% else %} 0% {% endif %}</td>
-                    <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
+                    <td class="tex-right">{% if row.inicial_asignado %}{{ row.inicial_asignado|floatformat:2 }}%{% else %} 0% {% endif %}</td>
+                    <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
                 </tr>
             {% endfor %}
             <tr class="success">
                 <td><strong>PROMEDIO</strong></td>
-                <td class="text-right"><strong>{% if inicial_asignado %}{{ porclasep|total_avg:'inicial_asignado'|floatformat:1 }}%{% endif %}</strong></td>
+                <td class="text-right"><strong>{% if asignado %}{{ porclasep|total_avg:'asignado'|floatformat:1 }}%{% endif %}</strong></td>
                 <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
             </tr>
         </table>
@@ -171,9 +171,9 @@
     {% endfor %}
     <tr class="success bold">
         <td>TOTAL</td>
-        <td class="text-right">{{ inicial_asignado|million|intcomma }}</td>
+        <td class="text-right">{{ asignado|million|intcomma }}</td>
         <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-        <td class="text-right">{% if inicial_asignado %}{{ ejecutado|div:inicial_asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
+        <td class="text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
     </table>
     <!-- /fin gftabla2 -->
     <br />
