@@ -47,8 +47,6 @@ def gf_chart(request):
         source_final = GastoDetalle.objects.filter(gasto__periodo=periodo, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
             order_by('gasto__anio').values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        print source_inicial
-        print "***"
 
         # obtiene valores para este año de las listas
         try:
@@ -360,8 +358,6 @@ def gf_chart(request):
             asignado = 0
         try:
             ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()['ejecutado']
-            print "ejecutado"
-            print ejecutado
         except StopIteration:
             ejecutado = 0
         source = glue(source_inicial, source_final, 'gasto__anio')
@@ -609,7 +605,6 @@ def gf_chart(request):
         dataterms = ['gasto__anio', 'asignado', 'ejecutado']
         terms = ['asignado', 'ejecutado']
 
-    print source
     data = RawDataPool(series = [{'options': {'source': source }, 'terms': dataterms}])
     gfbar = Chart(
             datasource = data,
@@ -629,8 +624,8 @@ def gf_chart(request):
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
 
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         
         data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
