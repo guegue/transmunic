@@ -180,7 +180,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
         with open ("core/charts/aci.sql", "r") as query_file:
             sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [year_list])
+        year_list.pop()
+        source = IngresoDetalle.objects.raw(sql, [year_list]) # FIXME: pop removes '2016'
     data = RawDataPool(
            series=
             [{'options': {'source': source },
