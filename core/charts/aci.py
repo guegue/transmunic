@@ -37,7 +37,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \
             ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL, \
+        source_final = IngresoDetalle.objects.filter(ingreso__periodo=periodo, \
             ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         # obtiene valores para este año de las listas
@@ -155,7 +155,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
+        source_final = IngresoDetalle.objects.filter(ingreso__periodo=periodo, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # obtiene valores para este año de las listas
@@ -171,7 +171,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         with open ("core/charts/aci_porclasep.sql", "r") as query_file:
             sql_tpl=query_file.read()
-        
+
         sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE)
         cursor = connection.cursor()
         cursor.execute(sql)
