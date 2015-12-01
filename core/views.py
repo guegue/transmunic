@@ -167,7 +167,6 @@ def inversion_categoria_view(request):
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, \
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}
         return obtener_excel_response(reporte=reporte, data=data)
 
