@@ -62,7 +62,8 @@ def superglue(data=(), key='id', default=0):
         for field, value in item.iteritems():
             if field <> key and field not in nonkeys:
                 nonkeys.append(field)
-    glued = [val for (_, val) in merged.items()]
+    omerged = collections.OrderedDict(sorted(merged.items()))
+    glued = [val for (_, val) in omerged.items()]
 
     # checks all required keys have a value (default if none)
     required = nonkeys
