@@ -12,7 +12,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue
+from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 
 
@@ -62,21 +62,25 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
-        rubrosg_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosg = glue(rubrosg_inicial, rubrosg_final, 'tipogasto', actualizado=rubrosg_actualizado)
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+        rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final, rubrosg_actualizado, rubrosg_periodo), key='tipogasto')
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'))
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'))
-        rubros_final= IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, 'tipoingreso', actualizado=rubros_actualizado)
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipoingreso')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -90,7 +94,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         with open ("core/charts/aci_otros.sql", "r") as query_file:
             sql_tpl=query_file.read()
-       
+
         sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, mi_clase=mi_clase.clasificacion_id)
         cursor = connection.cursor()
         cursor.execute(sql)
@@ -129,21 +133,25 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'))
-        rubrosg_final= GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosg = glue(rubrosg_inicial, rubrosg_final, 'tipogasto', actualizado=rubrosg_actualizado)
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+        rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final, rubrosg_actualizado, rubrosg_periodo), key='tipogasto')
 
         # obtiene datos de ingresos en ditintos rubros
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'))
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'))
-        rubros_final= IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = glue(rubros_inicial, rubros_final, 'tipoingreso', actualizado=rubros_actualizado)
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipoingreso')
 
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoGasto.CORRIENTE).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
@@ -214,13 +222,13 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     # FIXME BS
     porclase = None
 
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = {'charts': (bar, ), \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}          
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
 
