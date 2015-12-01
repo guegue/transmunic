@@ -148,7 +148,7 @@
                 {% for row in porclasep %}
                 <tr>
                     <td>{{ row.clasificacion }}</td>
-                    <td class="tex-center">{% if row.asignado %}{{ row.inicial_asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
+                    <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
                     <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
                 </tr>
                 {% endfor %}
@@ -177,7 +177,7 @@
                         {% endif %}
                             <td> {{forloop.counter}} </td>
                             <td>{{ row.inversion__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.inicial_asignado_percent|intcomma }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
                             <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
                         </tr>
                     {% endfor %}
