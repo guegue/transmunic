@@ -63,13 +63,13 @@ Ahorro corriente de inversion  {{ municipio }}
                         {% for row in porclasep %}
                         <tr>
                             <td>{{ row.clasificacion }}</td>
-                            <td class="tex-center">{% if row.inicial_asignado %}{{ row.inicial_asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
+                            <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
                             <td>{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
                         </tr>
                         {% endfor %}
                         <tr class="success">
                             <td><strong>TOTAL</strong></td>
-                            <td><strong>{{ porclasep|total_sum:'inicial_asignado'|floatformat:2 }}</strong></td>
+                            <td><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
                             <td><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
                         </tr>
                     </table>

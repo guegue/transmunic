@@ -66,7 +66,7 @@ def ep_chart(request):
                 values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
                 values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
+        rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
                 values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final, rubrosg_actualizado, rubrosg_periodo), key='tipogasto__clasificacion')
         for r in rubrosg:
@@ -79,7 +79,7 @@ def ep_chart(request):
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
+        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,).\
                 values('tipoingreso__clasificacion').order_by('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipoingreso__clasificacion')
         for r in rubros:
@@ -144,7 +144,7 @@ def ep_chart(request):
 
         # calculo de La Ejecución presupuestaria alcanzó el: 
         ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
-        ep_gastos = sum(item['ejecutado'] for item in rubrosg_final)
+        ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
         if ep_ingresos == 0: #FIXME: only way to avoud ZeroDivisionError ?
             ep = 0
         else:
