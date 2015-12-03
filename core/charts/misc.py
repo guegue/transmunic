@@ -86,7 +86,7 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
     if not year:
-        year = list(year_list)[-1]
+        year = list(year_list)[-2]
     periodo = Anio.objects.get(anio=year).periodo
 
     # usar 'asignado' para todo periodo si estamos en portada
@@ -161,7 +161,7 @@ def fuentes_chart(municipio=None, year=None, portada=False):
         quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
     if municipio:
         source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
@@ -315,7 +315,7 @@ def ep_chart(request):
 
 def psd_chart(request):
     municipio_list = Municipio.objects.all()
-    year_list = getYears(Ingreso)[:-1]
+    year_list = getYears(Ingreso)[:-2]
     municipio = request.GET.get('municipio','')
     if municipio:
         with open ("core/charts/psd_municipio.sql", "r") as query_file:

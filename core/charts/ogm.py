@@ -25,7 +25,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
     if not year:
-        year = year_list[-1]
+        year = year_list[-2]
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
@@ -425,7 +425,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
+                {'title': { 'text': ' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                },
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
@@ -473,7 +475,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
+                {'title': { 'text': ' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} }
+                },
                 )
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,

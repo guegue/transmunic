@@ -68,9 +68,9 @@ def home(request):
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
-        'charts':( 
-            data_oim['charts'][0], 
-            data_ogm['charts'][0], 
+        'charts':(
+            data_oim['charts'][0],
+            data_ogm['charts'][0],
             #data_inversion['charts'][0], 
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
@@ -125,9 +125,9 @@ def municipio(request, slug):
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
-        'charts':( 
-            data_oim['charts'][0], 
-            data_ogm['charts'][0], 
+        'charts':(
+            data_oim['charts'][0],
+            data_ogm['charts'][0],
             #data_inversion['charts'][0], 
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
@@ -160,15 +160,14 @@ def inversion_categoria_view(request):
     data_fuentes = fuentes_chart(year=year)
     data['charts'].append( fuentes_chart(year=year)['charts'][1] )
 
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = { \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, \
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}          
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response(template_name, { \
@@ -183,16 +182,16 @@ def ogm_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
-        from core.utils import obtener_excel_response            
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
+        from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
-    
+
     return render_to_response(template_name, { \
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
@@ -202,17 +201,16 @@ def oim_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = oim_chart(municipio=municipio, year=year)
-    
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
-        from core.utils import obtener_excel_response            
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
+        from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
-        
+
     return render_to_response(template_name, { \
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'year': year, 'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
+            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
             context_instance=RequestContext(request))
@@ -245,8 +243,8 @@ def fuentes_view(request):
             context_instance=RequestContext(request))
 
 
-def descargar_detalle(request):  
-    error = ""  
+def descargar_detalle(request):
+    error = ""
     if request.method == 'POST':
         form = DetallePresupuestoForm(request.POST)
         if form.is_valid():
@@ -258,11 +256,11 @@ def descargar_detalle(request):
                 error = "No existen datos disponibles"
     else:
         form = DetallePresupuestoForm()
-        
-    return render_to_response('descargar_detalle.html', 
+
+    return render_to_response('descargar_detalle.html',
                               {"form":form,
                                "error":error
-                               }, 
+                               },
                               context_instance=RequestContext(request)
                               )
-    
+

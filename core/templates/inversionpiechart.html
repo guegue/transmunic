@@ -42,11 +42,11 @@
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="inversion monto asignado" />
                     <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
-                    <span class="cifra grande text-primary">{{ asignado|intcomma }}</span>
+                    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
                 </div>
                 <div class="col-md-4">
                     <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="inversion monto asignado" />
-                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|intcomma }}</span>
+                    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
                 </div>
                 {% if municipio %}
                     <div class="col-md-4">
@@ -119,11 +119,11 @@
             {% for total in cat %}
               <tr>
                 <td class="text-left">{{ total.catinversion__nombre }}</td>
-                <td class="text-right">{{ total.asignado|million|intcomma }}</td>
+                <td class="text-right">{{ total.inicial_asignado|million|intcomma }}</td>
                 <td class="text-right">{{ total.ejecutado|million|intcomma }}</td>
                 <td>
-                {% if total.asignado %}
-                    <span class="text-success">{{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%</span>
+                {% if total.inicial_asignado %}
+                    <span class="text-success">{{ total.ejecutado|div:total.inicial_asignado|mul:100|floatformat:2 }}%</span>
                 {% endif %}
                 </td>
               </tr>
@@ -201,51 +201,47 @@
             <h3>Modificaciones al presupuesto municipal</h3>
             <h4>Inversiones en millones de córdobas corrientes</h4>
             <table class="table table-bordered">
-            <thead>
-                <tr class="info">
-                    <th>Clasificaci&oacute;n de la Inversi&oacute;n</th>
-                    <th>Inicial</th>
-                    <th>Actualizado</th>
-                    <th>Modificación</th>
-                    <th>Ejecutado</th>
-                    <th>%Ejecutado/Actualizado</th>
-                    <th>%Ejecutado/Inicial</th>
-                </tr>
-            </thead>
             <tbody>
-            {% for total in cat %}
-              <tr>
-                <td class="text-left">
-                    {{ total.catinversion__nombre }}
-                </td>
-                <td class="text-right">
-                   {{ total.asignado }}</td>
-                </td>
-                <td class="text-right">
-                    {{ total.actualizado }}
-                </td>
-                <td class="text-right">
-                    {% if total.actualizado %}{{ total.actualizado|sub:total.asignado|million|intcomma }}{% else %}0{% endif %} 
-                </td>
-                <td class="text-right">
-                    {{ total.ejecutado }}
-                </td>
-                <td class="text-right">
-                    {% if total.actualizado %}
-                      {{ total.ejecutado|div:total.actualizado|mul:100|floatformat:1|intcomma }}%</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="4" class="success text-center">
+                        <h4>Modificación intermedia 
+                        <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
+                        </h4>
+                    </td>
+                    <td colspan="4" class="danger text-center">
+                        <h4>Modificación al cierre
+                            <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
+                        </h4>
+                    </td>
+                </tr>
+                <tr class="info"> <th>Rubros de inversión</th> <th>Inicial</th> 
+                    <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                    <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                </tr>
+                {% for row in cat %}
+                <tr>
+                    <td class="text-left">{{ row.catinversion__nombre }}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+    
+                    <td class="success text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="success text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    {% if row.actualizado_asignado %}
+                        <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
-                        0
+                        <td class="success montos">0</td>
                     {% endif %}
-                </td>
-                <td class="text-right">
-                    {% if total.asignado %}
-                      {{ total.ejecutado|div:total.asignado|mul:100|floatformat:1|intcomma }}%</td>
-                    {% else %}
-                        0
-                    {% endif %}     
-                </td>
-              </td>
-            {% endfor %}
+
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    {% if row.final_asignado %}
+                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
             </tbody>
             </table>
         </div>
@@ -264,34 +260,17 @@
         </div> 
         <div class="col-md-9">
             <table class="table table-bordered">
-            <thead>
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
+                {% for row in anuales %} 
                 <tr>
-                    <th>A&ntilde;o</th>
-                    <th>Inicial</th>
-                    <th>Actualizado</th>
-                    <th>Modificado</th>
-                    <th>Ejecutado</th>
-                    <th>Ejecutado/Inicial</th>
+                    <td class="text-left"><h4>{{ row.inversion__anio }}</h4></td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% if row.asignado %}
+                        <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:2 }}%</td>
+                    {% endif %}
                 </tr>
-            </thead>
-            {% for total in anuales %} 
-              <tr>
-                <td class="text-left">
-                    <h4>{{ total.inversion__anio }}</h4>
-                </td>
-                <td>{% if total.asignado %}{{ total.asignado }}{% else %}No disponible {% endif %}</td>
-                <td class="text-right">{{ total.actualizado }}</td>
-                <td class="text-right">{% if total.actualizado %}{{ total.actualizado|sub:total.asignado }}{% else %}0{% endif %}</td>
-                <td class="text-right">{{ total.ejecutado }}</td>
-                <td class="text-right">
-                {% if total.asignado %}
-                    {{ total.ejecutado|div:total.asignado|mul:100|floatformat:2 }}%
-                </div>
-                {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
+                {% endfor %}
             </table>
         </div>
         <div class="col-md-10">
@@ -301,7 +280,7 @@
             <tr class="info">
               <th></th>
               {% for year in year_list %}
-                <th>{{ year|date:"Y" }}</th>
+                   <th>{{ year }}</th>
               {% endfor %}
               <th>Promedio</th>
             </tr>
