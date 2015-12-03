@@ -29,13 +29,13 @@ SECRET_KEY = '=*2w4v6%9wib742a3hr!&a0h2%a_x2pp7k6svha1@@1g0y#q(s'
 SITE_ID = 1
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
-TEMPLATE_DEBUG = True
+#TEMPLATE_DEBUG = True
 
 TEMPLATE_DIRS = ('templates', )
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
