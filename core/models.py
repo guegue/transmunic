@@ -262,7 +262,7 @@ class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
     #municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
-    nombremunic = models.CharField(max_length=250)
+    nombremunic = models.CharField(max_length=250, null=True,blank=True)
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
@@ -282,11 +282,12 @@ class Proyecto(models.Model):
     inversion = models.ForeignKey(Inversion, related_name='inversion', null=True)
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
-    tipoproyecto = models.ForeignKey(TipoProyecto, related_name='tipo_proyecto', null=True)
-    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion', null=True)
-    areageografica = models.CharField(choices=AREA_CHOICES, max_length=1, null=True)
+    tipoproyecto = models.ForeignKey(TipoProyecto, related_name='tipo_proyecto', null=True,blank=True)
+    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion', null=True,blank=True)
+    areageografica = models.CharField(choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)
+    ficha =  models.FileField(upload_to='proyecto', blank=True, null=True)
 
     @property
     def porcentaje_ejecutado(self):
