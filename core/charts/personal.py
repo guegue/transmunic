@@ -232,13 +232,13 @@ def gpersonal_chart(request):
             tipogasto=TipoGasto.PERSONAL, \
             gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
             values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        try:
-            for record in source_inicial:
+        for record in source_inicial:
+            try:
                 record['ejecutado'] = source_final.filter(gasto__anio=record['gasto__anio'])[0]['ejecutado']
                 record['promedio'] = gasto_promedio.filter(gasto__anio=record['gasto__anio'])[0]['asignado']
-        except IndexError:
-            record['promedio'] = 0 #FIXME: really?
-            pass
+            except IndexError:
+                record['promedio'] = 0 #FIXME: really?
+                pass
 
         source = source_inicial
         #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
