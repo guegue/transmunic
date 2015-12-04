@@ -3,6 +3,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.forms.widgets import Select, TextInput
 from django.utils.formats import number_format
+from django.conf import settings
 
 from model_report.report import reports, ReportAdmin
 from model_report.utils import (usd_format, avg_column, sum_column, count_column)
@@ -16,7 +17,13 @@ def intcomma(value, instance):
     return number_format(value, force_grouping=True)
 
 
+def link_to_media(rvalue, instance):
+    if instance.is_value:
+        return '<a href="%s%s">%s</a>' % (settings.MEDIA_URL, rvalue, rvalue)
+    return rvalue.value[0]
+
 class PlanInversionModelReport(ReportAdmin):
+
 
     title = u'Plan de inversión'
     model = Proyecto
@@ -48,6 +55,7 @@ class PlanInversionModelReport(ReportAdmin):
     override_field_formats = {
         'asignado': intcomma,
         'ejecutado': intcomma,
+        'ficha': link_to_media,
     }
     list_filter = ('inversion__anio', 'inversion__periodo', 'inversion__municipio',)
     list_order_by = ('nombre',)
@@ -118,5 +126,5 @@ class PlanInversionModelReport(ReportAdmin):
 #                                  ],                                                             
 #               }
 #     title = u'Detalle del Presupuesto'
-    
+
 reports.register('plan-de-inversion', PlanInversionModelReport)
