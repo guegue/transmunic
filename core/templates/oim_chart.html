@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block main_content %}
+    {% if year == '2016' %}<h2 class="enconsulta text-center">Presupuesto en consulta {% if year %}{{ year }}{% endif %}</h1>{% endif %}
 	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% else %}2015 {% endif %}</h2>
     <form method="GET">
@@ -41,13 +42,15 @@
             <div class="col-md-12">
                 <div class="col-md-4">
                     <img src="{% static 'img/gfasignado.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
-                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
+                    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto{% if year != '2016'%} inicial{% endif %}</h3>
                     <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
                 </div>
+                {% if year != '2016' %}
                 <div class="col-md-4">
                     <img src="{% static 'img/gf.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
                     <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
                 </div>
+                {% endif %}
                 {% if municipio %}
                     <div class="col-md-4">
                     <img src="{% static 'img/categoria2.png' %}" class="img-responsive margen pull-left" alt="Categoria de municipio" />
@@ -71,14 +74,16 @@
                 </div>
               </div>
                 <table class="table">
-                  <tr class="info"> <th colspan="2">Rubros de ingresos</th><th>Inicial</th> <th>Ejecutado</th> </tr>
+                    <tr class="info"> <th colspan="2">Rubros de ingresos</th><th>Inicial</th> {% if year != '2016' %}<th>Ejecutado</th> {% endif %}</tr>
                   {% for total in totales %}
                   <tr>
                     <td><img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
                     </td>
                     <td> <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> </td>
                     <td><span class="btn btn-info col-md-12 cifra">{{ total.asignado_percent|floatformat:1 }}%</span></td>
+                    {% if year != '2016' %}
                     <td><span class="btn btn-info col-md-12 cifra">{{ total.ejecutado_percent|floatformat:1 }}%</span></td>
+                    {% endif %}
                   </tr>
                 {% endfor %}
              </table>
@@ -105,24 +110,30 @@
                 <tr class="info"> 
                     <th>Rubros de ingresos</th> 
                     <th>Inicial</th> 
+                    {% if year != '2016' %}
                     <th>Ejecutado</th> 
                     <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
+                    {% endif %}
                 </tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.subsubtipoingreso__origen__nombre}}</td>                                    
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                    {% if row.inicial_asignado %}                                                   
-                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                    {% endif %}                                                             
+                    {% if year != '2016' %}
+                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                        {% if row.inicial_asignado %}                                                   
+                            <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
+                        {% endif %}                                                             
+                    {% endif %}
                 </tr>                                                                       
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
                     <td class="text-right">{{ asignado|million|intcomma }}</td>                                        
+                    {% if year != '2016' %}
                     <td class="text-right">{{ ejecutado|million|intcomma }}</td>                                       
                     {% if asignado %}<td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>{% endif %}
+                    {% endif %}
             </table>                                                                    
         </div>
         <!-- /fin oim-tabla2 -->                                                      
@@ -134,10 +145,12 @@
                     <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto inicial</h3>
                     <span class="cifra grande text-primary">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</span>
             </div>
+            {% if year != '2016' %}
             <div class="col-md-6">
                     <img src="{% static 'img/oim-asignadop.png' %}" class="img-responsive margen pull-left" alt="ingreso de funcionamiento asignado" />
                     <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</span>
             </div>
+            {% endif %}
             <div class="separador"></div>
             <div class="center"><a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseeficiencia"  aria-expanded="false" aria-controls="collapseExample">Consultar detalles </a></div>
               <hr />
@@ -149,24 +162,30 @@
                                 <tr class="info"> 
                                     <th>Rubros de ingresos</th> 
                                     <th>Inicial</th> 
-                                    <th>Ejecutado</th> 
-                                    <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
+                                    {% if year != '2016' %}
+                                        <th>Ejecutado</th> 
+                                        <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
+                                    {% endif %}
                                 </tr>
                                 {% for row in rubrosp %}                                                     
                                 <tr>                                                                        
                                     <td>{{ row.subtipoingreso__nombre }}</td>                                    
                                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                                    {% if row.inicial_asignado %}                                                   
-                                        <td class="montos text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                                    {% endif %}                                                             
+                                    {% if year != '2016' %}
+                                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
+                                        {% if row.inicial_asignado %}                                                   
+                                            <td class="montos text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
+                                        {% endif %}                                                             
+                                    {% endif %}
                                 </tr>                                                                       
                                 {% endfor %}                                                                
                                 <tr class="success bold">                                                   
                                     <td>TOTAL</td>                                                          
                                     <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>                                        
+                                    {% if year != '2016' %}
                                     <td class="text-right">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</td>                                        
                                     <td class="montos">{{ rubrosp|div:asignado|mul:100|floatformat:1 }}</td>
+                                    {% endif %}
                                 </tr>       
                             </table>                                                                    
                            <!-- /fin oim-tabla3 -->                                                      
@@ -183,12 +202,14 @@
                     <h3> Recaudación por habitante según categoría de municipios</h3>
                     <h4 class="text-info">Córdobas Corrientes</h4>
                     <table class="table table-condensed col-md-3">
-                        <tr class="info"><th>Categoría de municipio</th> <th>Presupuestado</th> <th>Ejecutado</th></tr>
+                        <tr class="info"><th>Categoría de municipio</th> <th>Presupuestado</th> {% if year != '2016' %}<th>Ejecutado</th>{% endif %}</tr>
                         {% for row in porclasep %}
                         <tr>
                             <td class="text-center">{{ row.clasificacion }}</td>
                             <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
+                            {% if year != '2016' %}
                             <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                         <tr class="success">
@@ -207,7 +228,7 @@
                     <h3>Ranquin de recaudación por habitante categoría municipal "{{ mi_clase.clasificacion }}"</h3>
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
-                    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
+                    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th>{% if year != '2016' %}<th>Ejecución</th>{% endif %}</tr>
                     {% for row in otros %}
                         {% if municipio.slug == row.ingreso__municipio__slug%}
                         <tr class="info">
@@ -217,13 +238,17 @@
                             <td class="text-center"> {{forloop.counter}} </td>
                             <td>{{ row.ingreso__municipio__nombre }}</td>
                             <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                            <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% if year != '2016' %}
+                                <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
                         <td class="text-right">{{ otros|total_sum:'asignado_percent'|floatformat:2|intcomma }}</td>
+                        {% if year != '2016' %}
                         <td class="text-right">{{ otros|total_sum:'ejecutado_percent'|floatformat:2|intcomma }}</td>
+                        {% endif %}
                         <td></td>
                     </tr>
                 </table>

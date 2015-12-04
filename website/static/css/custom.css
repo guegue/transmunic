@@ -22,8 +22,14 @@ body h1, body h2, body h3, body h4, body .created , #inversiones .thumbnails p, 
     font-weight: normal;
 }
 h2, h2 > a , .titular-header { 
-    color: #5A5A5A;
+    color: #187EBF;
 }
+h2.enconsulta { 
+    color: #085106;
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+h2 { font-size: 24px;}
 .titular-header {
     margin-top: 6px !important;
 
@@ -40,12 +46,13 @@ body > section {
 .graficos-portada h2, .blanco{
     color: #fff;
 }
+.titularp {color: #fff !important;}
 h2.titular, .title  {
     margin-top: 0px !important;
     padding: 15px 0px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
-    color: #3C763D;
+    color: #005899;
     text-align: center;
 }
 .interna {
@@ -220,4 +227,14 @@ h2.titular, .title  {
 .capfirst { text-transform: capitalize;}
 tr th, .center { text-align: center !important;}
 .link-info { color: #0FF; text-decoration: underline;}
-.link-info:hover { color: #fff;}
+.consultap a, .consultap:hover, .link-info:hover { color: #fff;}
+.consultap { background-color: #EC6706 !important;padding-top:15px;padding-bottom:65px;}
+.consultap a { font-size: 17px;font-weight: bold;font-family: "Fjalla One";} 
+.intro {
+    font-family: "Josefin Sans";
+    font-size: 25px;
+    color: #FFF;
+    padding-top: 27px;
+    padding-bottom: 30px;
+    background-color: #005899 !important;
+}

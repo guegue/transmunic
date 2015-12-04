@@ -31,9 +31,37 @@
         {% endfor %}
       </div>
 </div><!-- /.carousel -->
+        <!-- finaliza muelle de los buelles -->
         <div class="row intro">
             <div class="container text-center">
                 <div class="col-md-12">En este sitio encontrará información de los presupuestos de los 153 municipios del país a manera de indicadores de gestion para hacer seguimiento a la ejecución presupuestaria.</div>
+            </div>
+        </div>
+        <!--presupuesto de consulta muelle de los buelles -->
+        <div class="row consultap">
+            <div class="container text-center">
+                <h2 class="titularp">Ahora disponible el presupuesto de consulta de Muelle de los Buelles</h2>
+                <br />
+                <div class="col-md-offset-1 col-md-3">
+                <a href="">
+                    <i class="fa fa-calendar fa-4x"></i><br />Calendario de Consulta
+                </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="/core/oim?year=2016&municipio=muelle-de-lod-bueyes">
+                    <i class="fa fa-cog fa-4x"></i><br />Ingresos
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="/core/ogm?year=2016&municipio=muelle-de-lod-bueyes">
+                    <i class="fa fa-money fa-4x"></i><br />Gastos
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="/core/plan-de-inversion/?inversion__anio=2015&inversion__periodo=&inversion__municipio=134">
+                    <i class="fa fa-cogs fa-4x"></i><br />Inversi&oacute;n
+                    </a>
+                </div>
             </div>
         </div>
 {% endblock %}
@@ -119,7 +147,7 @@
 {% block main_content %}
         <div class="clear"></div>
         <div class="text-center">
-            <h2 class="titular">Consolidado de Presupuestos Municipales 2015</h2>
+            <h2 class="titularp">Consolidado de Presupuestos Municipales 2015</h2>
             <hr />
         </div>
         {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
