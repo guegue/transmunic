@@ -229,7 +229,8 @@ tr th, .center { text-align: center !important;}
 .link-info { color: #0FF; text-decoration: underline;}
 .consultap a, .consultap:hover, .link-info:hover { color: #fff;}
 .consultap { background-color: #EC6706 !important;padding-top:15px;padding-bottom:65px;}
-.consultap a { font-size: 17px;font-weight: bold;font-family: "Fjalla One";} 
+.consultap a { font-size: 17px;font-weight: bold;font-family: "Fjalla One"; cursor: pointer;} 
+.consultap .modal-content {color: #5A5A5A;text-align: justify;}
 .intro {
     font-family: "Josefin Sans";
     font-size: 25px;
