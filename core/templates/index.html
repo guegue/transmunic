@@ -40,9 +40,32 @@
         <!--presupuesto de consulta muelle de los buelles -->
         <div class="row consultap">
             <div class="container text-center">
-                <h2 class="titularp">Ahora disponible el presupuesto de consulta de Muelle de los Buelyes</h2>
+                <h2 class="titularp">Ahora disponible el presupuesto en consulta de Muelle de los Bueyes</h2>
                 <br />
-                <div class="col-md-offset-1 col-md-3">
+                <div class="col-md-2">
+                <a data-toggle="modal" data-target="#consultamb">
+                    <i class="fa fa-question fa-4x"></i><br />Consulta presupeustaria?
+                </a>
+                <!-- INICIA modal MB -->
+                <div class="modal fade" id="consultamb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">{{ desc_consultamb.nombre }}</h4>
+                          </div>
+                          <div class="modal-body">
+                              {{ desc_consultamb.descripcion|safe|linebreaks }}
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN modal MB -->
+                </div>
+                <div class="col-md-2">
                 <a href="">
                     <i class="fa fa-calendar fa-4x"></i><br />Calendario de Consulta
                 </a>
@@ -64,7 +87,7 @@
                 </div>
                 <div class="col-md-2">
                     <a href="/core/plan-de-inversion/?inversion__anio=2015&inversion__periodo=&inversion__municipio=134">
-                    <i class="fa fa-question fa-4x"></i><br />Consultas?
+                    <i class="fa fa-comments fa-4x"></i><br />Enmiendas y Consultas Ciudadanas
                     </a>
                 </div>
             </div>
