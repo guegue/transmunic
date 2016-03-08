@@ -4,11 +4,11 @@
 {% load mathfilters %}
 {% load core_extras %} 
 {% block titulo %}
-Ahorro corriente de inversion  {{ municipio }} 
+Ahorro corriente para inversiones  {{ municipio }} 
 {% endblock %}
 {% block main_content %}
 	{% descargar_excel "aci-all" %}
-    <h2 class="titular">Ahorro corriente de inversión  {{ municipio }} {{ year }}</h2>
+    <h2 class="titular">Ahorro corriente para inversión  {{ municipio }} {{ year }}</h2>
     {{ charts|load_charts:"chart" }}
 
     <form method="GET">
@@ -91,14 +91,14 @@ Ahorro corriente de inversion  {{ municipio }}
                         <tr>
                         {% endif %}
                             <td>{{ row.nombre }}</td>
-                            <td>{{ row.inicial_asignado|floatformat:2 }}%</td>
-                            <td>{{ row.ejecutado|floatformat:2 }}%</td>
+                            <td class="text-right">{{ row.asignado|floatformat:2 }}%</td>
+                            <td class="text-right">{{ row.ejecutado|floatformat:2 }}%</td>
                         </tr>
                     {% endfor %}
                     <tr class="success">
                         <td>TOTAL</td>
-                        <td>{{ otros|total_sum:'inicial_asignado'|floatformat:2 }}</td>
-                        <td>{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                        <td class="text-right">{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
+                        <td class="text-right">{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
                     </tr>
                 </table>
             </div>
