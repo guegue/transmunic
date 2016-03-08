@@ -336,7 +336,7 @@
 		    <div class="panel panel-success">
 			    <div class="panel-heading">
                     <h3>Inversión mínima por sector priorizado
-                    <button type="button" class="btn btn-primary btn-xs question" data-toggle="modal" data-target="#inversion-minima">
+                    <button type="button" class="btn btn-primary btn-xs question" data-toggle="modal" data-target="#inversion-sector">
                     
                    </button>
                    </h3>    
@@ -352,10 +352,10 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionisector.nombre }}</h4>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionsector.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_inversionisector.descripcion|safe|linebreaks }}
+                          {{ desc_inversionsector.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
