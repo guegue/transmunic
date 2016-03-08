@@ -12,8 +12,8 @@ class SubTipoIngresoAdmin(admin.ModelAdmin):
     list_filter = ['tipoingreso']
 
 class SubSubTipoIngresoAdmin(admin.ModelAdmin):
-    list_display = ('codigo','subtipoingreso','nombre')
-    list_filter = ['subtipoingreso']
+    list_display = ('codigo','subtipoingreso','nombre','origen')
+    list_filter = ['origen','subtipoingreso']
 
 class GastoDetalleInline(admin.TabularInline):
     model = GastoDetalle
