@@ -52,7 +52,7 @@ Ejecución presupuestaria municipal {{ municipio }}
             </div>
         </div>
         <!-- maribel 30/07 aci-tabla1 nacional -->
-        {% if not municipio %}
+        {% if not municipio and ep %}
                 <div class="col-md-5">
                 	{% descargar_excel "ep1" %}
                     <h3>Ejecución presupuestaria municipal </h2>
@@ -71,7 +71,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         {% endif%}
         <!-- /fin aci-tabla1 nacional-->
         <!-- maribel 30/07 aci-tabla4-municipal -->
-        {% if municipio %}
+        {% if municipio and ep %}
             <div class="col-md-5">
             {% descargar_excel "ep2" %}
                 <h3>Ejecución presupuestaria municipal</h3>
