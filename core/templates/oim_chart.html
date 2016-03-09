@@ -251,9 +251,17 @@
                     {% endfor %}
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
-                        <td class="text-right">{{ otros|total_sum:'asignado_percent'|floatformat:2|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                         {% if year != '2016' %}
-                        <td class="text-right">{{ otros|total_sum:'ejecutado_percent'|floatformat:2|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                         {% endif %}
                         <td></td>
                     </tr>

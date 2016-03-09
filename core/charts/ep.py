@@ -170,11 +170,11 @@ def ep_chart(request):
         #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # the new way... re-haciendo "porclasep"
-        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL)
+        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         ingresos = dictfetchall(cursor)
-        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL,)
+        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         gastos = dictfetchall(cursor)
@@ -228,7 +228,7 @@ def ep_chart(request):
         data = {'charts': (bar, ), \
             'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros} 
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response('ep.html',{'charts': (bar, ), \

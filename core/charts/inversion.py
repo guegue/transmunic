@@ -80,7 +80,7 @@ def inversion_chart(municipio=None):
 
 ##############################################################################
 #
-# Inversion charts /core/iversion-categoria FIXME: yep, mal nombre...
+# Inversion charts /core/inversion-categoria FIXME: yep, mal nombre...
 #
 ##############################################################################
 def inversion_categoria_chart(municipio=None, year=None, portada=False):
@@ -106,7 +106,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
 
-        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__anio__gt=year_list[-3]). \
+        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__anio__gt=year_list[-6]). \
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
@@ -228,7 +228,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         tipos_final = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('catinversion__nombre')
         sources = glue(tipos_inicial, tipos_final, 'catinversion__nombre')
         source_clase = None
-        source_ultimos = Proyecto.objects.filter(inversion__anio__gt=year_list[-3]). \
+        #source_ultimos = Proyecto.objects.values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_ultimos = Proyecto.objects.filter(inversion__anio__gt=year_list[-6]). \
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
@@ -522,6 +523,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         porano_table[label] = {}
         for ayear in year_list:
             value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
+            print "%s - %s - %s " % (ayear, label, value, )
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
             periodo = PERIODO_FINAL
