@@ -183,8 +183,16 @@
                     {% endfor %}
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
-                        <td class="text-right">{{ otros|total_sum:'asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ otros|total_sum:'ejecutado'|million|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                     </tr>
                 </table>
             </div>
