@@ -30,7 +30,7 @@ def home(request):
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
-    desc_inversionisector = Grafico.objects.get(pk='inversion')
+    desc_inversionsector = Grafico.objects.get(pk='inversion')
     #fin de descripcion de graficos de portada
     # consulta sobre consulta presupuestaria muelle de los bueyes
     desc_consultamb = Grafico.objects.get(pk='consultamb')
@@ -69,7 +69,7 @@ def home(request):
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,'desc_consultamb':desc_consultamb,
+    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
@@ -95,7 +95,7 @@ def municipio(request, slug):
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
-    desc_inversionisector = Grafico.objects.get(pk='inversion')
+    desc_inversionsector = Grafico.objects.get(pk='inversion')
     #fin de descripcion de graficos de portada
     departamentos = Departamento.objects.all()
 
@@ -126,7 +126,7 @@ def municipio(request, slug):
     inversion_categoria = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year, ). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionisector':desc_inversionisector,
+    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],

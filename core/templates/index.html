@@ -31,67 +31,13 @@
         {% endfor %}
       </div>
 </div><!-- /.carousel -->
-        <!-- finaliza muelle de los buelles -->
         <div class="row intro">
             <div class="container text-center">
                 <div class="col-md-12">En este sitio encontrará información de los presupuestos de los 153 municipios del país a manera de indicadores de gestion para hacer seguimiento a la ejecución presupuestaria.</div>
             </div>
+            <br clear="all" />
         </div>
         <!--presupuesto de consulta muelle de los buelles -->
-        <div class="row consultap">
-            <div class="container text-center">
-                <h2 class="titularp">Ahora disponible el presupuesto en consulta de Muelle de los Bueyes</h2>
-                <br />
-                <div class="col-md-2">
-                <a data-toggle="modal" data-target="#consultamb">
-                    <i class="fa fa-question fa-4x"></i><br />Consulta presupuestaria?
-                </a>
-                <!-- INICIA modal MB -->
-                <div class="modal fade" id="consultamb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">{{ desc_consultamb.nombre }}</h4>
-                          </div>
-                          <div class="modal-body">
-                              {{ desc_consultamb.descripcion|safe|linebreaks }}
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FIN modal MB -->
-                </div>
-                <div class="col-md-2">
-                <a href="{% static 'Calendario-consulta.pdf' %}" target="_blank">
-                    <i class="fa fa-calendar fa-4x"></i><br />Calendario de Consulta
-                </a>
-                </div>
-                <div class="col-md-2">
-                    <a href="/core/oim?year=2016&municipio=muelle-de-lod-bueyes" target="_blank">
-                    <i class="fa fa-cog fa-4x"></i><br />Ingresos
-                    </a>
-                </div>
-                <div class="col-md-2">
-                    <a href="/core/ogm?year=2016&municipio=muelle-de-lod-bueyes" target="_blank">
-                    <i class="fa fa-money fa-4x"></i><br />Gastos
-                    </a>
-                </div>
-                <div class="col-md-2">
-                    <a href="/core/plan-de-inversion/?inversion__anio=2016&inversion__periodo=&inversion__municipio=134" target="_blank">
-                    <i class="fa fa-cogs fa-4x"></i><br />Inversi&oacute;n
-                    </a>
-                </div>
-                <div class="col-md-2">
-                    <a href="http://consulta.mipresupuestomunicipal.org/" target="_blank">
-                    <i class="fa fa-comments fa-4x"></i><br />Enmiendas y Consultas Ciudadanas
-                    </a>
-                </div>
-            </div>
-        </div>
 {% endblock %}
 {% block cajas_portada %}
     <section id="recuadros" style="margin-bottom: -60px;">
@@ -336,7 +282,7 @@
 		    <div class="panel panel-success">
 			    <div class="panel-heading">
                     <h3>Inversión mínima por sector priorizado
-                    <button type="button" class="btn btn-primary btn-xs question" data-toggle="modal" data-target="#inversion-minima">
+                    <button type="button" class="btn btn-primary btn-xs question" data-toggle="modal" data-target="#inversion-sector">
                     
                    </button>
                    </h3>    
@@ -352,10 +298,10 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionisector.nombre }}</h4>
+                        <h4 class="modal-title" id="myModalLabel">{{ desc_inversionsector.nombre }}</h4>
                       </div>
                       <div class="modal-body">
-                          {{ desc_inversionisector.descripcion|safe|linebreaks }}
+                          {{ desc_inversionsector.descripcion|safe|linebreaks }}
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
