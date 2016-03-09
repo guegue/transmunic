@@ -166,8 +166,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         for row in otros:
             total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
                     .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if row['ejecutado'] and total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if row['asignado'] and total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # source base
@@ -493,8 +493,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     # tabla: get total and percent
     total = {}
-    total['ejecutado'] = sum(item['ejecutado'] for item in sources)
-    total['asignado'] = sum(item['asignado'] for item in sources)
+    # sum if not None
+    total['ejecutado'] = sum(item['ejecutado'] for item in sources if item['ejecutado'])
+    total['asignado'] = sum(item['asignado'] for item in sources if item['asignado'])
     for row in sources:
         row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
         row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
@@ -523,7 +524,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         porano_table[label] = {}
         for ayear in year_list:
             value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
-            print "%s - %s - %s " % (ayear, label, value, )
             porano_table[label][ayear] = value if value else ''
         if municipio and year:
             periodo = PERIODO_FINAL
