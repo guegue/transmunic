@@ -127,10 +127,10 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                     <td>TOTAL</td>                                                          
                     <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                     <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
-                    {% with sum_asignado=rubros|total_sum:'row_asignado' %}
-                        <td class="text-right">
+                    {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                        <td class="text-right class="text-right"">
                             {% if sum_asignado %}
-                                {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
+                                {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}%
                             {% endif %}
                         </td>
                     {% endwith %}
@@ -163,7 +163,7 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                     {% with sum_asignado=rubrosg|total_sum:'inicial_asignado' %}
                         <td class="text-right class="text-right"">
                             {% if sum_asignado %}
-                                {{ rubrosg|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}
+                                {{ rubrosg|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}%
                             {% endif %}
                         </td>
                     {% endwith %}
