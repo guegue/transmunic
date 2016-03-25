@@ -5,7 +5,7 @@ from core.models import PERIODO_CHOICES
 import datetime
 class DetallePresupuestoForm(forms.Form): 
     MODELS = (
-              ("InversionFuente",u"Inversión"),
+              ("Inversion",u"Inversión"),
               ("Ingreso",u"Ingreso"),
               ("Gasto",u"Gasto")    
               )
@@ -34,4 +34,3 @@ class DetallePresupuestoForm(forms.Form):
                                     ),
                              required = True
                               )
-    

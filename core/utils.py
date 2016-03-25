@@ -654,17 +654,25 @@ def descargar_detalle_excel(form, request):
     from core.models import PERIODO_VERBOSE
     from string import lower    
     MODEL_FIELDS = {
+              "Inversion":["fecha","anio",
+                                 "periodo","departamento","municipio"
+                                 ],
               "InversionFuente":["fecha","anio",
                                  "periodo","departamento","municipio"
                                  ],
-                "Ingreso":["fecha","anio",
+              "Ingreso":["fecha","anio",
                                  "periodo","departamento","municipio",
                                  "descripcion"
                                  ],                    
-                "Gasto":["fecha","anio",
+              "Gasto":["fecha","anio",
                                  "periodo","departamento","municipio",
                                  "descripcion"
                                  ],           
+              "Proyecto":[
+                                 "catinversion",
+                                 "asignado",
+                                 "ejecutado"
+                                 ],
               "InversionFuenteDetalle":[
                                  "tipofuente",
                                  "fuente",
@@ -700,28 +708,40 @@ def descargar_detalle_excel(form, request):
     titulo = "reporte"
     
     model = get_model(app_label='core', model_name=tipo)
-    try:        
-        obj = model.objects.get(periodo=periodo,
-                                    anio=year,
-                                    municipio = municipio
-                                    )
-        subtitulo = "para {2} periodo: {0} , Año:{1}".format(
-                                             PERIODO_VERBOSE[periodo],
-                                             year,
-                                             unicode(municipio)                
-                                             )
-        qs  = getattr(obj, "{0}detalle_set".format(lower(tipo) ))     
-        queryset = qs.all()        
-    except:
-        obj = None
-        queryset = []
+    import sys
+    #try:
+    obj = model.objects.get(periodo=periodo,
+                                anio=year,
+                                municipio = municipio
+                                )
+    subtitulo = "para {2} periodo: {0} , Año:{1}".format(
+                                            PERIODO_VERBOSE[periodo],
+                                            year,
+                                            unicode(municipio)
+                                            )
+    if tipo == 'Inversion':
+        qs  = getattr(obj, "inversion")
+    else:
+        qs  = getattr(obj, "{0}detalle_set".format(lower(tipo) ))
+    queryset = qs.all()
+    #except:
+    #    obj = None
+    #    queryset = []
+    #    print sys.exc_info()[0]
                                     
     if queryset:        
-        titulo = "Detalle {0}".format(tipo)        
-        encabezados = MODEL_FIELDS["{0}Detalle".format(tipo)]
-        celdas = MODEL_FIELDS["{0}Detalle".format(tipo)]
-        tipo_totales = []
-        crear_hoja_excel(libro, tipo, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
+        if tipo == 'Inversion':
+            titulo = "Detalle {0}".format(tipo)
+            encabezados = MODEL_FIELDS['Proyecto']
+            celdas = MODEL_FIELDS['Proyecto']
+            tipo_totales = []
+            crear_hoja_excel(libro, tipo, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
+        else:
+            titulo = "Detalle {0}".format(tipo)
+            encabezados = MODEL_FIELDS["{0}Detalle".format(tipo)]
+            celdas = MODEL_FIELDS["{0}Detalle".format(tipo)]
+            tipo_totales = []
+            crear_hoja_excel(libro, tipo, queryset, titulo,subtitulo,encabezados,celdas, tipo_totales)
     else:
         return None
                                 
