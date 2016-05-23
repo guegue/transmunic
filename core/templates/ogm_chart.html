@@ -8,7 +8,6 @@
 {% endblock %}
 {% block main_content %}
 {% descargar_excel "ogm-all" %}
-    {% if year == '2016' %}<h2 class="enconsulta text-center">Presupuesto en consulta {% if year %}{{ year }}{% endif %}</h1>{% endif %}
     <h2 class="titular">Destino de los gastos  {% if municipio %}{{ municipio }} {% endif %}{% if year %}{{ year }} {% else %}2015 {% endif %}</h2>
     <form method="GET">
     <select name="year">

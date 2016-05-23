@@ -654,7 +654,7 @@ def descargar_detalle_excel(form, request):
     from core.models import PERIODO_VERBOSE
     from string import lower    
     MODEL_FIELDS = {
-              "InversionFuente":["fecha","anio",
+                "InversionFuente":["fecha","anio",
                                  "periodo","departamento","municipio"
                                  ],
                 "Ingreso":["fecha","anio",
@@ -665,13 +665,13 @@ def descargar_detalle_excel(form, request):
                                  "periodo","departamento","municipio",
                                  "descripcion"
                                  ],           
-              "InversionFuenteDetalle":[
+                "InversionFuenteDetalle":[
                                  "tipofuente",
                                  "fuente",
                                  "asignado",
                                  "ejecutado"
                                  ],
-              "GastoDetalle":[
+                "GastoDetalle":[
                                  "codigo",
                                  "tipogasto",
                                  "subtipogasto",
@@ -680,7 +680,7 @@ def descargar_detalle_excel(form, request):
                                  "asignado",
                                  "ejecutado"
                                  ],
-              "IngresoDetalle":[
+                "IngresoDetalle":[
                                  "codigo",
                                  "tipoingreso",
                                  "subtipoingreso",

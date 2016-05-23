@@ -78,7 +78,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
-                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejectuado=Sum('ejecutado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosp_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
                 values('subsubtipogasto__codigo','subsubtipogasto__nombre').order_by('subsubtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))

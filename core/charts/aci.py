@@ -99,7 +99,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipoingreso=TipoIngreso.CORRIENTE, mi_clase=mi_clase.clasificacion_id)
+        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo, tipoingreso=TipoIngreso.CORRIENTE, mi_clase=mi_clase.clasificacion_id)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)

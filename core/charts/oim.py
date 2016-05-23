@@ -79,7 +79,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO, \
                 subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejectuado=Sum('ejecutado'))
+                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosp_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, \
                 subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
                 values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))

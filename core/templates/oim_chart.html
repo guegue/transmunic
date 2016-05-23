@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block main_content %}
-    {% if year == '2016' %}<h2 class="enconsulta text-center">Presupuesto en consulta {% if year %}{{ year }}{% endif %}</h1>{% endif %}
 	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% else %}2015 {% endif %}</h2>
     <form method="GET">
@@ -235,7 +234,8 @@
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
                     <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th>{% if year != '2016' %}<th>Ejecución</th>{% endif %}</tr>
-                    {% for row in otros %}
+                    {% if ejecutado <= 0 %}
+                      {% for row in otros|dictsortreversed:"asignado_percent" %}
                         {% if municipio.slug == row.ingreso__municipio__slug%}
                         <tr class="info">
                         {% else %}
@@ -248,7 +248,24 @@
                                 <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
                             {% endif %}
                         </tr>
-                    {% endfor %}
+                      {% endfor %}
+                    {% else %}
+                      {% for row in otros %}
+                        {% if municipio.slug == row.ingreso__municipio__slug%}
+                        <tr class="info">
+                        {% else %}
+                        <tr>
+                        {% endif %}
+                            <td class="text-center"> {{forloop.counter}} </td>
+                            <td>{{ row.ingreso__municipio__nombre }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% if year != '2016' %}
+                                <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                        </tr>
+                      {% endfor %}
+		    {% endif %}
+
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
                         <td class="text-right">
