@@ -49,11 +49,11 @@ def ep_chart(request):
         with open ("core/charts/ep_otros.sql", "r") as query_file:
             sql_tpl=query_file.read()
 
-        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL)
+        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         ingresos = dictfetchall(cursor)
-        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL,)
+        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", mi_clase=mi_clase.clasificacion.id, year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         gastos = dictfetchall(cursor)
@@ -88,7 +88,7 @@ def ep_chart(request):
         # calculo de La Ejecución presupuestaria alcanzó el: 
         # FIXME incial_asignado? o asignado (periodo) ? misma pregunta sobre final_ejecutado.
         ep_ingresos = sum(item['inicial_asignado'] for item in rubros_inicial)
-        ep_gastos = sum(item['final_ejecutado'] for item in rubrosg_final)
+        ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
         if ep_ingresos:
             ep = round(ep_gastos / ep_ingresos * 100, 1)
         else:
@@ -142,10 +142,10 @@ def ep_chart(request):
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
-        # calculo de La Ejecución presupuestaria alcanzó el: 
+        # calculo de La Ejecución presupuestaria alcanzó el:
         ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
         ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
-        if ep_ingresos == 0: #FIXME: only way to avoud ZeroDivisionError ?
+        if ep_ingresos == 0: #FIXME: only way to avoid ZeroDivisionError ?
             ep = 0
         else:
             ep = round(ep_gastos / ep_ingresos * 100, 1)
@@ -170,11 +170,11 @@ def ep_chart(request):
         #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # the new way... re-haciendo "porclasep"
-        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL)
+        sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         ingresos = dictfetchall(cursor)
-        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=PERIODO_FINAL,)
+        sql = sql_tpl.format(var='gasto', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         cursor = connection.cursor()
         cursor.execute(sql)
         gastos = dictfetchall(cursor)
@@ -228,7 +228,7 @@ def ep_chart(request):
         data = {'charts': (bar, ), \
             'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros} 
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response('ep.html',{'charts': (bar, ), \

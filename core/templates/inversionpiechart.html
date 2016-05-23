@@ -166,7 +166,7 @@
             <div class="col-md-5">
             	{% descargar_excel "icat4" %}
                 <h3>Ranquin de municipio de misma categoría municipal</h3>
-                <h4 class="text-info">Millones de córdobas corrientes por habitante</h4>
+                <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
                     <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
                     {% for row in otros %}
@@ -183,8 +183,16 @@
                     {% endfor %}
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
-                        <td class="text-right">{{ otros|total_sum:'asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ otros|total_sum:'ejecutado'|million|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -235,7 +243,9 @@
                     {% endif %}
 
                     <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="danger text-right">
+                    {% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}
+                    </td>
                     <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
                         <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>

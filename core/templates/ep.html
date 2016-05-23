@@ -52,7 +52,7 @@ Ejecución presupuestaria municipal {{ municipio }}
             </div>
         </div>
         <!-- maribel 30/07 aci-tabla1 nacional -->
-        {% if not municipio %}
+        {% if not municipio and ep %}
                 <div class="col-md-5">
                 	{% descargar_excel "ep1" %}
                     <h3>Ejecución presupuestaria municipal </h2>
@@ -71,7 +71,7 @@ Ejecución presupuestaria municipal {{ municipio }}
         {% endif%}
         <!-- /fin aci-tabla1 nacional-->
         <!-- maribel 30/07 aci-tabla4-municipal -->
-        {% if municipio %}
+        {% if municipio and ep %}
             <div class="col-md-5">
             {% descargar_excel "ep2" %}
                 <h3>Ejecución presupuestaria municipal</h3>
@@ -109,18 +109,18 @@ Ejecución presupuestaria municipal {{ municipio }}
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.tipoingreso__clasificacion }}</td>                                    
-                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>                                    
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
                     <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                    {% if row.asignado %}                                                   
-                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% if row.inicial_asignado %}                                                   
+                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
                     {% endif %}                                                             
                 </tr>                                                                       
                 {% endfor %}                                                                
                 <tr class="success bold">                                                   
                     <td>TOTAL</td>                                                          
-                    <td class="text-right">{{ rubros|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                     <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
-                    {% with sum_asignado=rubros|total_sum:'asignado' %}
+                    {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
                         <td class="text-right">
                             {% if sum_asignado %}
                                 {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:1|intcomma}}

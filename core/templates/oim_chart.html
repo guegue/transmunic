@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block main_content %}
-    {% if year == '2016' %}<h2 class="enconsulta text-center">Presupuesto en consulta {% if year %}{{ year }}{% endif %}</h1>{% endif %}
 	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% else %}2015 {% endif %}</h2>
     <form method="GET">
@@ -235,7 +234,8 @@
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
                     <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th>{% if year != '2016' %}<th>Ejecución</th>{% endif %}</tr>
-                    {% for row in otros %}
+                    {% if ejecutado <= 0 %}
+                      {% for row in otros|dictsortreversed:"asignado_percent" %}
                         {% if municipio.slug == row.ingreso__municipio__slug%}
                         <tr class="info">
                         {% else %}
@@ -248,12 +248,37 @@
                                 <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
                             {% endif %}
                         </tr>
-                    {% endfor %}
+                      {% endfor %}
+                    {% else %}
+                      {% for row in otros %}
+                        {% if municipio.slug == row.ingreso__municipio__slug%}
+                        <tr class="info">
+                        {% else %}
+                        <tr>
+                        {% endif %}
+                            <td class="text-center"> {{forloop.counter}} </td>
+                            <td>{{ row.ingreso__municipio__nombre }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% if year != '2016' %}
+                                <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                        </tr>
+                      {% endfor %}
+		    {% endif %}
+
                     <tr class="success">
                         <td colspan="2">TOTAL</td>
-                        <td class="text-right">{{ otros|total_sum:'asignado_percent'|floatformat:2|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                         {% if year != '2016' %}
-                        <td class="text-right">{{ otros|total_sum:'ejecutado_percent'|floatformat:2|intcomma }}</td>
+                        <td class="text-right">
+                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                        {{ numerator|div:denominator|floatformat:2|intcomma }}
+                        {% endwith %}
+                        </td>
                         {% endif %}
                         <td></td>
                     </tr>
@@ -374,7 +399,7 @@
         <!-- /fin oim-tabla5 -->
         <!-- maribeli 20/07 oim-tabla6 -->
         {% descargar_excel "oim5" %}
-        <h3>Modificacion al presupuesto municipal del ingreso - Recaudación municipal</h3>
+        <h3>Modificaciones al presupuesto municipal del ingreso - Recaudación municipal</h3>
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
             <tr><td></td><td></td><td colspan="4" class="success text-center"><h4>Modificación al {{ year_data.actualizado }}</h4></td><td colspan="4" class="danger"><h4>Modificación al {{ year_data.final }}</h4></td></tr>

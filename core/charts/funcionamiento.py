@@ -87,7 +87,7 @@ def gf_chart(request):
             total = {}
             total['asignado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,\
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(asignado=Sum('asignado'))['asignado']
-            total['ejecutado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,\
+            total['ejecutado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo,\
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
             row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
             row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
@@ -380,13 +380,13 @@ def gf_chart(request):
         # comparativo con promedio de clasificacion para un año específico
         inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
             gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('asignado')))
+            order_by('gasto__periodo').values('gasto__periodo').annotate(municipio=Sum('asignado')))
         actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO, \
             gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+            order_by('gasto__periodo').values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
         final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
             gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+            order_by('gasto__periodo').values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
         comparativo3 = list(chain(inicial, actualizado, final))
         comparativo2 = list(chain(inicial, final, ))
         for d in comparativo3:
@@ -627,13 +627,13 @@ def gf_chart(request):
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        
+
         data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
-                 
-        return obtener_excel_response(reporte=reporte, data=data)        
-        
+
+        return obtener_excel_response(reporte=reporte, data=data)
+
     return render_to_response('funcionamiento.html',
             {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \

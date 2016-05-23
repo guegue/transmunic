@@ -80,7 +80,7 @@ def inversion_chart(municipio=None):
 
 ##############################################################################
 #
-# Inversion charts /core/iversion-categoria FIXME: yep, mal nombre...
+# Inversion charts /core/inversion-categoria FIXME: yep, mal nombre...
 #
 ##############################################################################
 def inversion_categoria_chart(municipio=None, year=None, portada=False):
@@ -106,7 +106,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
 
-        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__anio__gt=year_list[-3]). \
+        source_ultimos = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__anio__gt=year_list[-6]). \
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
@@ -164,10 +164,15 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         otros = glue(municipios_inicial, municipios_final, 'inversion__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de gastos
         for row in otros:
-            total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
-                    .aggregate(poblacion=Sum('poblacion'))['poblacion']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion * 100, 1) if total_poblacion > 0 else 0
+            #total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
+            #        .aggregate(poblacion=Sum('poblacion'))['poblacion']
+            try:
+                total_poblacion = Poblacion.objects.get(anio=year, municipio__slug=row['inversion__municipio__slug']).poblacion
+            except:
+                total_poblacion = 0
+            row['poblacion'] = total_poblacion
+            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion, 1) if row['ejecutado'] and total_poblacion > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total_poblacion, 1) if row['asignado'] and total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # source base
@@ -228,7 +233,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         tipos_final = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('catinversion__nombre')
         sources = glue(tipos_inicial, tipos_final, 'catinversion__nombre')
         source_clase = None
-        source_ultimos = Proyecto.objects.filter(inversion__anio__gt=year_list[-3]). \
+        #source_ultimos = Proyecto.objects.values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_ultimos = Proyecto.objects.filter(inversion__anio__gt=year_list[-6]). \
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
@@ -492,8 +498,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     # tabla: get total and percent
     total = {}
-    total['ejecutado'] = sum(item['ejecutado'] for item in sources)
-    total['asignado'] = sum(item['asignado'] for item in sources)
+    # sum if not None
+    total['ejecutado'] = sum(item['ejecutado'] for item in sources if item['ejecutado'])
+    total['asignado'] = sum(item['asignado'] for item in sources if item['asignado'])
     for row in sources:
         row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
         row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
