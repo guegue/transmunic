@@ -64,14 +64,14 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                         {% for row in porclasep %}
                         <tr>
                             <td>{{ row.clasificacion }}</td>
-                            <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
-                            <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                            <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}%</td>
+                            <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}%</td>
                         </tr>
                         {% endfor %}
                         <tr class="success">
                             <td><strong>TOTAL</strong></td>
-                            <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                            <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
+                            <td class="text-right"><strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
+                            <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
                         </tr>
                     </table>
                 </div>
@@ -98,8 +98,8 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                     {% endfor %}
                     <tr class="success">
                         <td>TOTAL</td>
-                        <td>{{ otros|total_sum:'asignado'|floatformat:2 }}</td>
-                        <td>{{ otros|total_sum:'ejecutado'|floatformat:2 }}</td>
+                        <td>{{ otros|total_avg:'asignado'|floatformat:2 }}%</td>
+                        <td>{{ otros|total_avg:'ejecutado'|floatformat:2 }}%</td>
                     </tr>
                 </table>
             </div>
