@@ -89,8 +89,8 @@ def gf_chart(request):
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(asignado=Sum('asignado'))['asignado']
             total['ejecutado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo,\
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
-            row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+            row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 2) if total['ejecutado'] > 0 else 0
+            row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 2) if total['asignado'] > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
@@ -233,9 +233,9 @@ def gf_chart(request):
         source_barra_final = source_barra # FIXME este es un work-around
 
         # chart: porcentage gastos de funcionamiento
-        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         source_pgf_asignado['nombre'] = 'Funcionamiento'
-        otros_asignado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
+        otros_asignado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo).exclude(tipogasto__clasificacion=TipoGasto.CORRIENTE).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
     else:
