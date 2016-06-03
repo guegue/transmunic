@@ -654,14 +654,10 @@ def descargar_detalle_excel(form, request):
     from core.models import PERIODO_VERBOSE
     from string import lower    
     MODEL_FIELDS = {
-<<<<<<< HEAD
               "Inversion":["fecha","anio",
                                  "periodo","departamento","municipio"
                                  ],
               "InversionFuente":["fecha","anio",
-=======
-                "InversionFuente":["fecha","anio",
->>>>>>> b9129380f4be3075b41815ae0fddc024da5a324c
                                  "periodo","departamento","municipio"
                                  ],
               "Ingreso":["fecha","anio",
@@ -672,22 +668,18 @@ def descargar_detalle_excel(form, request):
                                  "periodo","departamento","municipio",
                                  "descripcion"
                                  ],           
-<<<<<<< HEAD
               "Proyecto":[
                                  "catinversion",
                                  "asignado",
                                  "ejecutado"
                                  ],
               "InversionFuenteDetalle":[
-=======
-                "InversionFuenteDetalle":[
->>>>>>> b9129380f4be3075b41815ae0fddc024da5a324c
                                  "tipofuente",
                                  "fuente",
                                  "asignado",
                                  "ejecutado"
                                  ],
-                "GastoDetalle":[
+              "GastoDetalle":[
                                  "codigo",
                                  "tipogasto",
                                  "subtipogasto",
@@ -696,7 +688,7 @@ def descargar_detalle_excel(form, request):
                                  "asignado",
                                  "ejecutado"
                                  ],
-                "IngresoDetalle":[
+              "IngresoDetalle":[
                                  "codigo",
                                  "tipoingreso",
                                  "subtipoingreso",
