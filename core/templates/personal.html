@@ -105,8 +105,8 @@
             {% endfor %}
             <tr class="success">
                 <td><strong>PROMEDIO</strong></td>
-                <td class="text-right"><strong>{{ porclasep|total_avg:'asignado'|floatformat:1 }}%</strong></td>
-                <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:1 }}%</strong></td>
+                <td class="text-right"><strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
+                <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
             </tr>
         </table>
         <!-- /fin gftabla1 nacional-->
@@ -136,8 +136,8 @@
     {% endfor %}
     <tr class="success">
         <td colspan=2>PROMEDIO</td>
-        <td>{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
-        <td>{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+        <td>{{ otros|total_avg:'asignado_percent'|floatformat:2 }}%</td>
+        <td>{{ otros|total_avg:'ejecutado_percent'|floatformat:2 }}%</td>
     </tr>
     </table>
     <!-- /fin gftabla1 -->
@@ -165,7 +165,7 @@
         <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
         <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.inicial_asignado %}
-            <td class="text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
+            <td class="text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
@@ -173,7 +173,7 @@
         <td>TOTAL</td>
         <td class="text-right">{{ asignado|million|intcomma }}</td>
         <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-        <td class="text-right">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>
+        <td class="text-right">{{ ejecutado|div:asignado|mul:100|floatformat:2 }}%</td></tr>
     </table>
     <!-- /fin gftabla2 -->
     <h3>Gastos de personal {% if municipio %}municipal{% endif %}</h3>
@@ -233,7 +233,7 @@
             {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
           <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
           {% if row.actualizado_asignado %}
-            <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+            <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:2|intcomma }}%</td>
           {% else %}
             <td class="success montos">0</td>
           {% endif %}
@@ -242,7 +242,7 @@
             {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
           <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
           {% if row.final_asignado %}
-             <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+             <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:2|intcomma }}%</td>
           {% endif %}
         </tr>
       {% endfor %}
@@ -263,7 +263,7 @@
                 {% with sum_actualizado=rubros|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -282,7 +282,7 @@
                 {% with sum_actualizado=rubros|total_sum:'final_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -324,7 +324,7 @@
             {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
           <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
           {% if row.actualizado_asignado %}
-            <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+            <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:2|intcomma }}%</td>
           {% else %}
             <td class="success montos">0</td>
           {% endif %}
@@ -333,7 +333,7 @@
             {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
           <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
           {% if row.final_asignado %}
-             <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+             <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:2|intcomma }}%</td>
           {% endif %}
       </tr>
     {% endfor %}
@@ -354,7 +354,7 @@
                 {% with sum_actualizado=porclase|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ porclase|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ porclase|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -373,7 +373,7 @@
                 {% with sum_actualizado=porclase|total_sum:'final_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ porclase|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ porclase|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -420,7 +420,7 @@
           {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
         <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
         {% if row.actualizado_asignado %}
-          <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+          <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:2|intcomma }}%</td>
         {% else %}
           <td class="success montos">0</td>
         {% endif %}
@@ -429,7 +429,7 @@
           {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
         <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
         {% if row.final_asignado %}
-           <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+           <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:2|intcomma }}%</td>
         {% endif %}
       </tr>
     {% endfor %}
@@ -450,7 +450,7 @@
                 {% with sum_actualizado=otros|total_sum:'actualizado_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ otros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ otros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -469,7 +469,7 @@
                 {% with sum_actualizado=otros|total_sum:'final_asignado' %}
                     <td class="montos text-right">
                         {% if sum_actualizado %}
-                        {{ otros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {{ otros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:2|intcomma}}%
                         {% endif %}
                     </td>
                 {% endwith %}
@@ -509,7 +509,7 @@
         <td class="text-right">{{ row.asignado|million|intcomma }}</td>
         <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
         {% if row.asignado %}
-        <td class="text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+        <td class="text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:2 }}%</td>
         {% endif %}
     </tr>
     {% endfor %}
@@ -519,7 +519,7 @@
         <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
         {% if municipio %}
             {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
-            <td class="text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+            <td class="text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:2 }}%</td>
             {% endwith %}
         {% endif %}
     </tr>
