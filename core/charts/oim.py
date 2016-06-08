@@ -644,6 +644,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
+                porano_table[label][ayear] = "%s %s" % (value, '*Actualizado*')
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
