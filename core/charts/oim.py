@@ -597,9 +597,9 @@ def oim_chart(municipio=None, year=None, portada=False):
             chart_options =
               {
                   'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
     ejecutado_pie = Chart(
@@ -616,8 +616,8 @@ def oim_chart(municipio=None, year=None, portada=False):
               {
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'title': {'text': ' '},
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35, }},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               }
     )
 
@@ -644,6 +644,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
+            if periodo == 'A':
                 porano_table[label][ayear] = "%s %s" % (value, '*Actualizado*')
         if municipio and year:
             periodo = PERIODO_FINAL

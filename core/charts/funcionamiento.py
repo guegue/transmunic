@@ -465,7 +465,7 @@ def gf_chart(request):
                 chart_options = {
                     'title': { 'text': ' '},
                     'subtitle': { 'text': u' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
                     'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                     'xAxis': { 'title': {'text': u'Gastos de funcionamiento'} },
                     },
@@ -489,7 +489,7 @@ def gf_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': u'Nivel de ejecución %s' % (year,)},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
                     }
                 )
         gf_comparativo_anios = RawDataPool(
@@ -551,7 +551,7 @@ def gf_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': ' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
                 }
                 )
 
@@ -570,8 +570,8 @@ def gf_chart(request):
             chart_options = {
                 'title': {'text': ' ' },
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
             },
     )
     data_barra = DataPool(

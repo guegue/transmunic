@@ -242,7 +242,7 @@ def gpersonal_chart(request):
 
         source = source_inicial
         #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
-            
+
         # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
         source_barra = GastoDetalle.objects.filter( gasto__periodo=PERIODO_INICIAL, \
             tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
@@ -490,7 +490,7 @@ def gpersonal_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': u' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
                     }
                 )
         gf_comparativo_anios = RawDataPool(
@@ -552,7 +552,7 @@ def gpersonal_chart(request):
                     }],
                 chart_options = {
                     'title': { 'text': ' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.1f}%</b>' },
+                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
                 }
                 )
 
@@ -593,8 +593,8 @@ def gpersonal_chart(request):
             chart_options = {
                 'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
             },
     )
     data_barra = DataPool(

@@ -184,9 +184,9 @@ def fuentes_chart(municipio=None, year=None, portada=False):
               }],
             chart_options = {
                 'title': {'text': u' '},
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
             }
     )
     asignado_portada = Chart(
@@ -197,9 +197,9 @@ def fuentes_chart(municipio=None, year=None, portada=False):
               }],
             chart_options = {
                 'title': {'text': u' '},
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
     return {'charts': (asignado, asignado_portada), 'year_list': year_list, 'municipio_list': municipio_list}
 
@@ -446,8 +446,8 @@ def old_gpersonal_chart(request):
             chart_options = {
                 'title': {'text': 'Gastos de personal %s %s ' % (municipio, year,)},
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.1f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>' },
+                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
+                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
             },
     )
     data_ejecutado = PivotDataPool(
