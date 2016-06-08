@@ -2,6 +2,19 @@
 
 import collections
 
+def getPeriods(model): # ;)
+    "Gets all years and their period with data from a model.anio"
+
+    from models import Anio
+    years = model.objects.values_list('anio').order_by('anio').distinct('anio')
+    years = [x[0] for x in years]
+    alist = {}
+    for year in years:
+        alist[year] = Anio.objects.get(anio=year).periodo
+    #return {x[0]:x[1] for x in years}
+    return alist
+
+
 def getYears(model):
     "Gets all years with data from a model.anio"
 

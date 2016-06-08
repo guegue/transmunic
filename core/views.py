@@ -211,7 +211,7 @@ def oim_view(request):
     return render_to_response(template_name, { \
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
+            'totales': data['totales'], 'charts': data['charts'], 'periodo_list': data['periodo_list'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \

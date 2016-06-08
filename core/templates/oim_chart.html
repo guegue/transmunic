@@ -525,7 +525,8 @@
             <tr class="info">
               <th></th>
               {% for year in year_list %}
-                <th class="text-center">{{ year }}</th>
+              <th class="text-center">{{ year }}
+                  {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
               {% endfor %}
             </tr>
             {% for key, data in porano.items %}

@@ -18,12 +18,14 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, TipoIngreso, OrigenRecurso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
 from lugar.models import Poblacion
 
 def oim_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
+    periodo_list = getPeriods(Ingreso)
+    print periodo_list
     if not year:
         year = year_list[-2]
 
@@ -644,8 +646,6 @@ def oim_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = value if value else ''
-            if periodo == 'A':
-                porano_table[label][ayear] = "%s %s" % (value, '*Actualizado*')
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
@@ -666,5 +666,5 @@ def oim_chart(municipio=None, year=None, portada=False):
     return {'charts': charts, \
             'year_data': year_data, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
+            'ejecutado': ejecutado, 'asignado': asignado, 'periodo_list': periodo_list, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}
