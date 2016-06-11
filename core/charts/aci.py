@@ -110,8 +110,12 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         otros = glue(inicial, final, 'nombre', actualizado=actualizado)
 
         with open ("core/charts/aci_municipio.sql", "r") as query_file:
-            sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [municipio, municipio, municipio, municipio, municipio, municipio, year_list])
+            sql_tpl=query_file.read()
+        sql = sql_tpl.format(municipio=municipio, year_list=year_list)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        source = dictfetchall(cursor)
+
     else:
         #
         # no municipio
@@ -187,9 +191,14 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         with open ("core/charts/aci.sql", "r") as query_file:
-            sql=query_file.read()
-        year_list.pop()
-        source = IngresoDetalle.objects.raw(sql, [year_list]) # FIXME: pop removes '2016'
+            sql_tpl=query_file.read()
+        sql = sql_tpl.format(year_list=year_list)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        source = dictfetchall(cursor)
+
+
+
     data = RawDataPool(
            series=
             [{'options': {'source': source },
@@ -211,7 +220,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                   }}],
             chart_options = {
                 'title': {
-                  'text': u' '},
+                  'text': u'XXXXXXXXXXXXXXXXXXXXXXXXXXX'},
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                  'xAxis': { 'title': {'text': u'Años'} },
                 },
