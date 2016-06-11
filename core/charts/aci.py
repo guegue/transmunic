@@ -220,7 +220,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                   }}],
             chart_options = {
                 'title': {
-                  'text': u'XXXXXXXXXXXXXXXXXXXXXXXXXXX'},
+                  'text': u' '},
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                  'xAxis': { 'title': {'text': u'Años'} },
                 },
@@ -235,13 +235,13 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = {'charts': (bar, ), \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
+            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'source': source, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
 
-    return render_to_response('aci.html',{'charts': (bar, ), \
+    return render_to_response('aci.html',{'charts': (bar, ), 'source': source, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
