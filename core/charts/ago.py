@@ -112,8 +112,12 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         otros = glue(inicial, final, 'nombre', actualizado=actualizado)
 
         with open ("core/charts/ago_municipio.sql", "r") as query_file:
-            sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql.format(municipio=municipio), [year_list])
+            sql_tpl=query_file.read()
+        sql = sql_tpl.format(municipio=municipio, year_list=year_list)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        source = dictfetchall(cursor)
+
     else:
         #
         # no municipio
@@ -189,8 +193,14 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         with open ("core/charts/ago.sql", "r") as query_file:
-            sql=query_file.read()
-        source = IngresoDetalle.objects.raw(sql, [year_list])
+            sql_tpl=query_file.read()
+        sql = sql_tpl.format(municipio=municipio, year_list=year_list)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        source = dictfetchall(cursor)
+
+
+
     data = RawDataPool(
            series=
             [{'options': {'source': source },
@@ -224,14 +234,14 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        data = {'charts': (bar, ), \
+        data = {'charts': (bar, ), 'source': source, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros} 
         return obtener_excel_response(reporte=reporte, data=data)
 
 
-    return render_to_response('ago.html',{'charts': (bar, ), \
+    return render_to_response('ago.html',{'charts': (bar, ), 'source': source, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\

@@ -33,5 +33,5 @@ SELECT ROW_NUMBER() OVER(ORDER BY anio) AS id, periodo.anio,
           WHERE core_gasto.anio = periodo.anio AND core_tipogasto.clasificacion = 0 AND lugar_municipio.slug = '{municipio}'), 0)
         )
     -1 ) * 100 AS asignado
-   FROM core_ingreso periodo WHERE anio = ANY( %s )
+   FROM core_ingreso periodo WHERE anio = ANY( ARRAY[{year_list}] )
   GROUP BY periodo.anio

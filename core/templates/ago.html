@@ -358,6 +358,19 @@ Dependencia para asumir gastos corrientes {{ municipio }}
         </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="aciorigen" aria-labelledby="aciorigen-tab">
+
+        <!-- javier 10/junio/2016 FIXME -->
+        <table border="1">
+        <tr>
+            <th>Año</th> <th>Inicial</th> <th>Ejecutado</th>
+        </tr>
+        {% for s in source %}
+        <tr>
+            <td>{{ s.anio }}</td> <td>{{ s.asignado|floatformat:2 }}%</td> <td>{{ s.ejecutado|floatformat:2 }}%</td>
+        </tr>
+        {% endfor %}
+        </table>
+
         <!--maribel 20/07 oim-tabla 7 -->
         <div class="col-md-6">
         {% descargar_excel "ago7" %}
