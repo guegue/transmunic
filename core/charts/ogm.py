@@ -89,14 +89,14 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subsubtipogasto__origen__nombre')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -277,17 +277,17 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos de gastos en ditintos rubros
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, ).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
+                values('subsubtipogasto__codigo','subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subsubtipogasto__origen__nombre')
 
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,).\
             values('gasto__anio').order_by('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))

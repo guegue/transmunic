@@ -110,7 +110,7 @@
                 <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th>{% if year != '2016' %} <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>{% endif %}</tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
-                    <td>{{ row.tipogasto__nombre }}</td>                                    
+                    <td>{{ row.subsubtipogasto__origen__nombre }}</td>                                    
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
                     {% if year != '2016' %}
                         <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
