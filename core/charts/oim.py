@@ -112,12 +112,12 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos de municipios de la misma clase
         municipios_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, ingreso__municipio__clase__anio=year, \
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
+                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
                 values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
         municipios_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, ingreso__municipio__clase__anio=year, \
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
+                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
                 values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
-        municipios_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ingreso__municipio__clase__anio=year, \
+        municipios_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ingreso__municipio__clase__anio=year,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, \
                 ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
                 values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
         otros = glue(municipios_inicial, municipios_final, 'ingreso__municipio__nombre', actualizado=municipios_actualizado)
