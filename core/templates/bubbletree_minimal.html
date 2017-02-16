@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Minimal BubbleTree Demo</title>
+
+	<script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.tooltip.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+	<script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css" />
+	<script type="text/javascript" src="{% static 'css/cofog.js' %}"></script>
+
+	<script type="text/javascript">
+
+		$(function() {
+			var data = {
+				label: 'Total',
+				amount: 100,
+				color: '#0066bb',  // color for root node, will be inherited by children
+				children: [
+					{ label: 'First child', amount: 30 },
+					{ label: 'Second child', amount: 40 },
+					{ label: 'Third child', amount: 30, color: '#ff3300' }
+				]
+			};
+
+			new BubbleTree({
+				data: data,
+				container: '.bubbletree'
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<div class="bubbletree-wrapper">
+		<div class="bubbletree"></div>
+	</div>
+</body>
+</html>
