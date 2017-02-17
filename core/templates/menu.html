@@ -1,0 +1,71 @@
+			<div class="xs-menu-cont">
+			<a id="menutoggle"><i class="fa fa-align-justify"></i> </a>
+				<nav class="xs-menu displaynone">
+					<ul>
+						<li class="active">
+							<a href="#">Home</a>
+						</li>
+						<li>
+							<a href="#">About</a>
+						</li>
+						<li>
+							<a href="#">Services</a>
+						</li>
+						<li>
+							<a href="#">Team</a>
+						</li>
+						<li>
+							<a href="#">Portfolio</a>
+						</li>
+						<li>
+							<a href="#">Blog</a>
+						</li>
+						<li>
+							<a href="#">Contact</a>
+						</li>
+
+					</ul>
+				</nav>
+			</div>
+			<nav class="menu">
+				<ul>
+					<li class="active">
+						<a href="#">Inicio</a>
+					</li>
+					<li class="drop-down">
+						<a href="#">El Observatorio</a>
+					    <div class="nav-expand"> 
+						<div class="mega-menu fadeIn animated">
+							<div class="mm-3column">
+								<span class="left-images menuconsolidado">
+								<p>Presupuesto municipal consolidado </p>
+                				</span>
+							</div>
+							{% regroup municipios by depto as departamentos %}
+							{% for departamento in departamentos %}
+								<div class="col-md-2 pull-left">
+									<span class="categories-list">
+										<span> {{ departamento.grouper }}</span>
+										<ul>
+             								{% for item in departamento.list %}
+							                 <li>{{ item.nombre }}</li>
+								             {% endfor %}
+								        </ul>
+									</span>
+							    </div>
+							{% endfor %}
+						</div>
+				        </div>
+					</li>
+					<li>
+						<a href="#">Presupuesto</a>
+					</li>
+					<li>
+						<a href="#">Consulta</a>
+					</li>
+					<li>
+						<a href="#">Descarga</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
