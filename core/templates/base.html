@@ -31,7 +31,7 @@
     <link href="{% static 'css/custom.css' %}" rel="stylesheet">
     <link href="{% static 'css/menu.css' %}" rel="stylesheet">
     <script src="{% static 'jquery-1.11.2.min.js' %}"></script>
-    <script src="{% static 'highcharts.js' %}"></script>
+    <!-- <script src="{% static 'highcharts.js' %}"></script> -->
     <script src="{% static 'js/jquery.imagemapster.js' %}"></script>
 
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -46,25 +46,31 @@
     ga('send', 'pageview');
 
     </script>
+    {% block head_extra %}
+    {% endblock %}
   </head>
 <!-- NAVBAR
 ================================================== -->
 <body>
-<div class="encabezado">
-   <div class="container-fluid">
-     <div class="row">
-        <div class="col-md-4">
-            <h1>Presupuestos Municipales Abiertos</h1>
+    <header>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 pull-left logo">
+                    <h1><span class="text-azul">Presupuestos Municipales</span><br />
+                        <span class="text-aqua"> Abiertos</span>
+                    </h1>
+                </div>
+                <nav class="navbar navbar-toggleable-md fixed-top text-right">
+                    {% include "menu.html"%}
+                </nav>
+            </div>
         </div>
-        <div class="col-md-8">
-            <p>Consulta presupuestaria el 15 de Febrero</p>
-        </div>
-        <div class="col-md-12">
+        {% comment %}
+        <nav class="navbar navbar-toggleable-md fixed-top">
             {% include "menu.html"%}
-        </div>
-    </div>
-  </div>
- </div>
+        </nav>
+        {% endcomment %}
+    </header>
     <!-- Carousel
     ================================================== -->
     {% block slide_portada %}
@@ -74,9 +80,12 @@
     {% block buscador_portada %}                                                   
     {% endblock %}
     
-    {% block main_content %}
-    {% endblock %}
-
+    <section id="main">
+        <div class="container-fluid buscador">
+            {% block main_content %}
+            {% endblock %}
+        </div>
+    </section>
     {% block inversiones_portada %}
     {% endblock %}
 
@@ -108,7 +117,7 @@
     <!-- script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script -->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
-    <script src="http://code.highcharts.com/4.1.1/highcharts-3d.js"></script>
+    <!-- <script src="http://code.highcharts.com/4.1.1/highcharts-3d.js"></script> -->
 	<!-- Empieza el slider. Tomado de http://bootsnipp.com -->
     <script type="text/javascript">
 (function( $ ) {

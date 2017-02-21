@@ -5,10 +5,148 @@
 {% block titulo %}
 {{ obj.nombre }}
 {% endblock %}
+{% block head_extra %}
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
+
+<script type="text/javascript">
+$(function () {
+
+    // Prepare demo data
+    var data = [
+        {
+            "hc-key": "ni-as",
+            "value": 0
+        },
+        {
+            "hc-key": "ni-an",
+            "value": 1
+        },
+        {
+            "hc-key": "ni-224",
+            "value": 2
+        },
+        {
+            "hc-key": "ni-6330",
+            "value": 3
+        },
+        {
+            "hc-key": "ni-ca",
+            "value": 4
+        },
+        {
+            "hc-key": "ni-gr",
+            "value": 5
+        },
+        {
+            "hc-key": "ni-ji",
+            "value": 6
+        },
+        {
+            "hc-key": "ni-le",
+            "value": 7
+        },
+        {
+            "hc-key": "ni-mn",
+            "value": 8
+        },
+        {
+            "hc-key": "ni-ms",
+            "value": 9
+        },
+        {
+            "hc-key": "ni-ci",
+            "value": 10
+        },
+        {
+            "hc-key": "ni-es",
+            "value": 11
+        },
+        {
+            "hc-key": "ni-md",
+            "value": 12
+        },
+        {
+            "hc-key": "ni-mt",
+            "value": 13
+        },
+        {
+            "hc-key": "ni-ns",
+            "value": 14
+        },
+        {
+            "hc-key": "ni-bo",
+            "value": 15
+        },
+        {
+            "hc-key": "ni-co",
+            "value": 16
+        }
+    ];
+
+    // Initiate the chart
+    $('#nic-map-container').highcharts('Map', {
+        chart : {
+            backgroundColor: "#01c083"
+        },
+        title : {
+            text : ''
+        },
+
+        subtitle : {
+            text : ''
+        },
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+
+        colorAxis: {
+            min: 0
+        },
+
+        series : [{
+            data : data,
+            mapData: Highcharts.maps['countries/ni/ni-all'],
+            joinBy: 'hc-key',
+            name: 'Random data',
+            states: {
+                hover: {
+                    color: '#a4edba'
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}'
+            }
+        }],
+        legend : { enabled: false }
+    });
+});
+</script>
+<style>
+#container {
+    height: 300px; 
+    min-width: 310px; 
+    max-width: 800px; 
+    margin: 0 auto; 
+}
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+}
+</style>
+
+{% endblock %}
 
 {% block slide_portada %}
 <div class="row">
-    <div class="col-md-8 col-sm-8 pull-left slider-portada">
+    <div class="col-md-7 col-sm-8 pull-left slider-portada">
 
 
 <div id="first-slider">
@@ -30,7 +168,7 @@
              </div> 
             <!-- Item 2 -->
             <div class="item slide2">
-                    <div class="col-md-7 text-right pull-right">
+                    <div class="col-md-7 text-right pull-right info">
                         <img style="max-width: 120px;"  data-animation="animated zoomInLeft" src="/static/img/inversion.png">
                         <h3 data-animation="animated bounceInDown">Participemos en la consulta del presupuesto municipal</h3>
                         <h4 data-animation="animated bounceInUp">Informémonos dónde y cuándo sera </h4>
@@ -73,17 +211,15 @@
         </div>
         {% endcomment %}
     </div>
-	<div class="col-md-4 col-sm-4">
-          <div class="panel panel-default verde">
-                <div class="panel-body">
-                    <h4>PRESUPUESTOS MUNICIPALES</h4>
-                    <button type="button" class="btn btn-default">Leer más</button>
-                 </div>
+	<div class="col-md-5 col-sm-4">
+          <div class="panel panel-default verde mapa">
+                    <h4>PRESUPUESTO MUNICIPAL</h4>
+                    <div id="nic-map-container"></div>
           </div> 
+          <div class="clearafter"></div>
           <div class="panel panel-default celeste">
                 <div class="panel-body">
                     <h4>PRESUPUESTO CONSOLIDADO</h4>
-                    <button type="button" class="btn btn-default">Leer más</button>
                 </div>
           </div>  
     </div>
@@ -91,7 +227,7 @@
 
 {% endblock %}
 
-{% block buscador_portada %} 
+{% block buscador_portada2 %} 
 <section>
 <div class="container-fluid buscador">
     <div class="col-md-12 col-sm-12">
@@ -100,12 +236,12 @@
                 <div class="col-md-3 col-sm-3">   
                     <select name="municipio" class="btn btn-defaul btn-lg  dropdown-toggle" data-toggle="dropdown">                                                   
                     <option value="">Consolidado</option>                             
-                       {% for amunicipio in municipio_list %}                                      
-                           <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+                       {% for municipio in municipios %}                                      
+                           <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{ municipio.slug}}">{{ municipio.nombre }}</option>
                        {% endfor %}                                                                
                     </select>         
                </div>
-               <div class="col-md-3 col-sm-3">                                                       
+               <div class="col-md-2 col-sm-2">                                                       
                    <select name="year" class="btn btn-defaul btn-lg  dropdown-toggle" data-toggle="dropdown">                                                        
                     <option value="">Año</option>                                             
                         {% for ayear in year_list %}                                                
@@ -113,9 +249,18 @@
                         {% endfor %}                                                                
                    </select>
                </div>  
-              <div class="col-md-3 col-sm-3">
+              <div class="col-md-4 col-sm-4">
                   <select name="indicador" class="btn btn-defaul btn-lg  dropdown-toggle" data-toggle="dropdown">
                       <option value="">Indicador</option>
+                      <option value="">Origen de los ingresos del municipio</option>
+                      <option value="">Destino del gasto municipal</option>
+                      <option value="">Gastos de funcionamiento</option>
+                      <option value="">Gastos de personal</option>
+                      <option value="">Dependencia para asumir gastos corrientes</option>
+                      <option value="">Ahorro corriente para inversiones</option>
+                      <option value="">Ejecuci&oacute;n del presupuesto</option>
+                      <option value="">Inversiones</option>
+                      <option value="">Descargar Detalle Presupuesto</option>
                   </select>  
               </div>
               <div class="col-md-3 col-sm-3">  
@@ -127,209 +272,42 @@
 </div>
 </section> 
 {% endblock %} 
-{% block cajas_portada %}
-    <section id="recuadros" style="margin-bottom: -60px;">
-        <div class="container">
-            <div class="col-md-5">
-              <div style="background-color: #fff;clear: both; width: 500px; height: 50px;display:inline;" id="selections"></div>
-              {% load i18n flatpages %}
-              {% get_flatpages '/transferencias-presupuestarias/' as pages %}
-              {% for page in pages %}
-                <h3>{{ page.title }}</h3>
-                <p class="text-justify col-md-11" style="margin-left:-15px;">{{ page.content|safe|truncatewords:80 }}<a href="{{ page.url }}" class="text-primary"> leer m&aacute;s</a></p>
-              {% endfor %}
-              <h4 class="text-info" style="margin-top:20px;">Consulte</h4>
-              <a href="{% url 'documento_by_tipo' 'marco-legal' %}"><button class="recuadro btn btn-primary">
-                <span class="recuadro-icon">
-                    <img src="{% static 'img/balanzab.png' %}" />
-                </span>
-                <div class="recuadro-text pull-left">
-                    <h4>Marco Legal</h4>
-                    <span class="cifra">Municipal</span>
-                </div>
-              </button></a>
-              <a href="/ciclo-presupuestario/"><button class="recuadro btn btn-success">
-                <span class="recuadro-icon">
-                    <img src="{% static 'img/ciclob.png' %}" />
-                </span>
-                <div class="recuadro-text pull-left">
-                    <h4>Ciclo Presupuestario</h4>
-                    <span class="cifra">Municipal</span>
-                </div>
-              </button></a>
-              <a href="{% url 'documento_by_tipo' 'analisis-presupuestario' %}"><button class="recuadro col-sm-4 col-xs-12 btn btn-danger">
-                <span class="recuadro-icon">
-                    <img src="{% static 'img/analisis.png' %}" />
-                </span>
-                <div class="recuadro-text pull-left">
-                    <h4>Análisis Presupuestario</h4>
-                    <span class="dolar"></span>
-                    <span class="cifra">Municipal</span>
-                </div>
-              </button></a>
-              <a href="/core/organizaciones"><button class="recuadro col-sm-4 col-xs-12 btn btn-info">
-                <span class="recuadro-icon">
-                    <img src="{% static 'img/participacionb.png' %}" />
-                </span>
-                <div class="recuadro-text pull-left">
-                    <h4>Participación Ciudadana</h4>
-                    <span class="dolar"></span>
-                    <span class="cifra">Gestion Municipal</span>
-                </div>
-              </button></a>
-        </div>
-        <div class="col-md-7 hidden-xs">
-            <h3>Informaci&oacute;n por Municipio</h3>
-            <img src="/static/img/nicaragua.png" width="500" usemap="#nicaragua-image" >
-            <map id="nicaragua-image" name="nicaragua-image">
-            <area shape="poly" coords="15,234,37,246,6,248,67,304,102,254,107,242,101,227,102,207,94,201,84,200,80,210,78,231,65,239,51,237,36,243,28,245,14,233,7,246,9,251,12,240,14,244,10,247,15,240,15,234,15,236,18,239,15,236,16,235" alt="Municipios Chinandega" target="Municipios=chinandega" href="#" municipio="chinandega"/>
-            <area shape="poly" coords="68,305,84,324,93,330,106,349,129,322,115,317,111,309,112,299,122,306,135,294,141,274,148,264,137,252,128,239,122,219,113,222,103,228,107,237,108,246,97,263,76,293,66,305" alt="Municipios de León" target="Municipios=Leon" href="#" municipio="leon" />
-            <area shape="poly" coords="141,251,164,235,160,220,149,218,149,203,148,189,141,187,131,192,120,188,109,200,101,208,101,219,103,227,121,221,126,229,130,242,140,252" alt="Municipios de Estelí" target="Municipios=Esteli" href="#" municipio="esteli" />
-            <area shape="poly" coords="101,206,98,181,99,160,110,166,122,172,136,168,147,164,161,169,166,174,165,185,153,190,144,186,132,188,124,187,103,205" alt="Municipios de Madriz" target="Municipios=Madriz" href="#" municipio="madriz" />
-            <area shape="poly" coords="100,163,99,147,132,151,150,130,170,111,172,128,188,137,197,140,195,155,192,172,188,181,180,180,168,178,162,168,151,164,138,167,134,171,123,170,101,163" alt="Municipios de Nueva Segovia" target="Municipios=NuevaSegovia" href="#NuevaSegovia" municipio="nuevasegovia" />
-            <area shape="poly" coords="151,191,149,206,157,222,167,236,177,238,222,190,233,169,232,162,237,155,251,150,255,145,265,151,285,119,285,101,287,85,283,81,275,76,274,54,267,51,251,68,249,72,255,82,255,87,251,92,244,91,223,108,207,118,199,124,197,135,198,141,190,179,179,182,170,179,163,188,153,193,152,193,151,194" alt="Municipios de Jinotega" target="Municipios=Jinotega" href="#Jinotega" municipio="jinotega" />
-            <area shape="poly" coords="222,195,239,218,259,219,279,218,291,221,300,212,317,209,337,207,361,204,391,204,400,214,410,224,420,233,422,233,419,205,423,158,431,123,447,98,452,75,447,50,444,29,455,4,421,5,408,20,384,31,356,34,333,45,311,47,297,37,289,25,273,35,267,50,273,56,277,62,275,70,280,80,290,89,288,106,287,121,277,138,269,153,257,148,244,153,235,157,236,165,233,175,225,188,222,195,225,195" alt="Municipios de RAAN" target="Municipios=RAAN" href="#RAAN" municipio="raan" />
-            <area shape="poly" coords="141,254,148,262,149,266,144,275,157,283,173,289,182,289,186,278,203,275,222,269,228,266,239,268,254,279,261,263,254,256,253,244,265,227,267,217,240,218,220,196,208,209,195,221,184,233,177,239,169,238,165,233,141,252" alt="Municipios de Matagalpa" target="Municipios=Matagalpa" href="#Matagalpa" municipio="matagalpa"/>
-            <area shape="poly" coords="106,348,127,385,140,363,143,359,152,359,153,347,154,336,171,333,180,326,191,323,186,311,181,301,170,290,159,284,146,276,141,275,138,285,137,293,143,299,149,308,151,317,160,317,162,323,150,332,140,330,143,319,138,316,130,320,109,346" target="Municipios=Managua" href="#Managua" municipio="managua" />
-            <area shape="poly" coords="175,291,187,310,194,327,198,345,209,345,211,327,215,312,229,316,245,312,255,302,264,304,279,275,270,260,264,259,258,274,256,281,243,272,230,268,213,274,198,276,188,277,178,291" alt="Municipios de Boaco" target="Municipio=Boaco" href="#Boaco" municipio="boaco" />
-            <area shape="poly" coords="155,339,154,353,153,359,157,365,163,372,172,360,173,346,175,337,171,334,164,336,158,336,155,341" alt="Municipios de Masaya" target="Municipios=Masaya" href="#Masaya" municipio="masaya"/>
-            <area shape="poly" coords="130,383,154,407,163,395,159,389,161,383,165,378,162,372,155,362,147,361,139,358,135,371,129,380,127,382,128,381,131,382" alt="Municipios de Carazo" target="Municipios=Carazo" href="#Carazo" municipio="carazo" />
-            <area shape="poly" coords="163,374,163,384,162,393,163,397,178,390,186,385,187,369,181,362,181,348,183,342,194,339,191,324,181,327,175,333,173,342,173,353,169,366,165,373,163,386" alt="Municiapios de Granada" target="Municipios=Granada" href="#Granada" municipio="granada" />
-            <area shape="poly" coords="211,342,227,363,234,365,264,390,292,365,298,364,317,368,323,366,309,354,301,353,299,328,291,306,287,286,278,280,275,290,266,304,255,303,247,313,234,314,227,317,222,314,212,314,209,330,209,341,215,347" alt="Municipios de Chontales" target="Municipio=Chontales" href="#Chontales" municipio="chontales"/>
-            <area shape="poly" coords="157,405,166,421,185,437,204,460,215,444,257,461,250,453,216,439,227,409,213,396,195,405,188,395,186,387,177,393,169,397,164,399,159,407,160,406,160,407,161,407,160,406" alt="Municipios de Rivas" target="Municipios=Rivas" href="#Rivas" municipio="rivas"/>
-            <area shape="poly" coords="259,455,258,462,280,470,289,469,302,456,308,452,329,462,346,468,359,480,365,491,384,497,401,492,413,480,408,471,398,456,388,454,371,455,358,447,346,433,323,409,323,391,319,377,312,366,296,365,277,378,266,390,267,394,284,415,295,435,301,445,298,450,293,462,275,461,260,456" alt="Municipios de Rio San Juan" target="Municipios=RioSanJuan" href="#RioSanJuan" municipio="riosanjuan" />
-            <area shape="poly" coords="270,218,258,236,253,248,259,264,268,261,277,275,282,287,295,302,298,325,304,350,321,365,324,376,324,390,325,414,356,444,381,456,400,460,391,427,395,405,411,395,412,374,400,354,411,320,427,298,423,277,421,230,409,228,389,205,357,207,316,211,295,217,270,220,260,233" alt="Municipios de la RAAS" target="Municipios=RAAS" href="#RAAS" municipio="raas"/>
-            </map>
-            <p class="text-warning">Click en el departamento para acceder a sus municipios</p>
-            {%  include "mapas.html" %}
-        </div>
-    </div>
-    </section>
-{% endblock %}
 {% block main_content %}
-        {% comment %}
-        <div class="clear"></div>
-        <div class="text-center">
-            <h2 class="titularp">Consolidado de Presupuestos Municipales 2016</h2>
-            <hr />
-        </div>
-        {{ charts|load_charts:"oim_ejecutado, ogm_ejecutado, inversion, inversion_area, fuentes" }}
-        <div class="col-md-4 col-sm-4">
-            <h2>&iquest;Cuánto ingresa <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#oim-desc"> </button></h2>
-            <div id='oim_ejecutado'></div>
-            <!-- OIM modal -->
-            <div class="modal fade" id="oim-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{{ desc_oim_chart.nombre }}</h4>
-                      </div>
-                      <div class="modal-body">
-                          {{ desc_oim_chart.descripcion|safe|linebreaks }}
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <h2>&iquest;En qué se gasta <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#ogm-desc"> </button></h2>
-            <div id='ogm_ejecutado'></div>
-            <!-- OGM modal -->
-            <div class="modal fade" id="ogm-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{{ desc_ogm_chart.nombre }}</h4>
-                      </div>
-                      <div class="modal-body">
-                          {{ desc_ogm_chart.descripcion|safe|linebreaks }}
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <h2>&iquest;C&oacute;mo se financian las inversiones? <button type="button" class="btn btn-success btn-xs question" data-toggle="modal" data-target="#inversion-fuentes-desc">  </button></h2>
-            <div id='fuentes'></div>
-            <!-- GF modal -->
-            <div class="modal fade" id="inversion-fuentes-desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{{ desc_invfuentes_chart.nombre }}</h4>
-                      </div>
-                      <div class="modal-body">
-                          {{ desc_invfuentes_chart.descripcion|safe|linebreaks }}
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endcomment %}
 {% endblock %}
 
 {% block inversiones_portada %}
     <section id="inversiones" class="main">
         <div class="container">
             <div class="row">
-                <div class="text-center">
-                    <h2 class="titular" style="margin-bottom:0px;">Inversi&oacute;n Municipal 2016</h2>
-                    <!--FIXME: Una vez se cargue el ejecutado cambiar
-                    Presupuesto por Ejecucion --!>
-                     <p><span class="text-info"><strong>* Invertido en el periodo</strong></p>
-                     <p><span class="text-danger"><strong>** Mínimo por ley>:</strong>
-                        Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados:<br>
-                     <p><span class="text-danger"><strong>Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</strong></p>
-                </div>
-                <div class="clearfix" style="margin-bottom:60px;">
-                        <div class="pull-right">
-                            <a class="prev" href="#myCarousel" data-slide="prev"><i class="icon-angle-left icon-large"></i></a> <a class="next" href="#myCarousel" data-slide="next"><i class="icon-angle-right icon-large"></i></a>
-                        </div>
-                </div> <!--/.claarfix -->
-		  <div class="container">
-          <div class="col-md-12 col-sm-12">
-    		    <div id="carousel-inv" class="carousel slide" data-ride="carousel">
-                       <!-- Indicators -->
-                        <div class="carousel-inner" role="listbox">
+                <div class="col-md-12 col-sm-12">
+                    <div class="text-center">
+                        <h2 class="titular text-verde" >Inversi&oacute;n Municipal 2016</h2>
+                    </div>
+                    <div class="invierte">
                         {% for i in inversion_categoria %}
-                            {% if forloop.first or forloop.counter0|divisibleby:4 %}
-                            <div class="item inversion {% if forloop.first %}active{% endif %}" style="background-color: #{{ banner.color }}">
-
-                                <ul class="thumbnails" style="background-color: #{{ banner.color }}">
-                            {% endif %}
-                                <li class="col-md-3 col-sm-3 col-xs-6">
-                                  <img src="{% static 'img/'|add:i.catinversion__slug|add:'.png' %}" class="img-responsive" alt="" />
-                                  <div class="cifra text-info"> 
-                                      <a href="#">{{ i.catinversion__nombre }}</a>
-                                      <span class="count">* {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% </span><br>
-                                  </div>
-                                </li>
-                            {% if forloop.last or forloop.counter|divisibleby:4 %}
-                                </ul>
-                            </div>
-                            {% endif %}
+				                <div class="col-md-2 pull-left text-center" style="min-height: 200px;">
+                					<svg height="100px" width="100px" id="graph">
+				                	<!-- pattern -->
+                						<defs>
+                                        <pattern x="3%" y="18%" id="{{ i.catinversion__slug }}" height="100%" width="100%" viewBox="0 0 512 512">
+                                            <image x="40%" height="312" width="400" y="0%" xlink:href="{% static 'images/icons/'|add:i.catinversion__slug|add:'.svg' %}"></image>
+				                		    </pattern>
+                						</defs>
+				                		<circle stroke="none" class="circle_celeste" cx="50%" r="43%" cy="52%"></circle>
+                                        <circle cx="50%" r="40%" cy="52%" id="sd" class="medium" fill="url(#{{ i.catinversion__slug }})" stroke-dasharray="4" stroke="#fff" fill="none" stroke-width="1%"></circle>
+                					</svg>
+                                    <h4 class="titrubro">{{ i.catinversion__nombre }}</h4>
+                                    <div class="cifrarubro_portada">Inicial: 9.2%</div>
+                                    <div class="cifrarubro2_portada">Ejecutado: 9.2%</div>
+                				</div>
                         {% endfor %}
-                        </div><!--/.carousel-inner-->
-                        <a class="left carousel-control" href="#carousel-inv" role="button" data-slide="prev">
-                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="right carousel-control" href="#carousel-inv" role="button" data-slide="next">
-                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
+                    </div>
+                    <br clear="all">
+                    <div class="text-center">
+                         <p><span class="text-danger"><strong>Mínimo por ley:</strong>
+                            Los gobiernos municipales, asignarán anualmente de las transferencias de inversión los porcentajes mínimos para los siguientes sectores priorizados:<br>
+                          <p><span class="text-danger"><strong>Salud 5%, Educación 5%, Medio Ambiente 5%, Agua y Saneamiento 7.5%.</strong></p>
+                    </div>
                 </div><!-- /.carousel -->
             </div> <!--/.col-md-->
           </div> <!--/.container-->

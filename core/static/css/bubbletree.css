@@ -1,9 +1,11 @@
-
+.bubbletree-container{
+   min-height: 400px; 
+   position:relative;
+}
 .bubbletree-wrapper {
 	width: 100%;
 	height: 100%;
-	position: absolute;
-}
+	position: absolute;cofog-}
 
 .bubbletree {
 	background: #fff;

@@ -7,6 +7,64 @@
 {{ municipio }}
 {% endblock %}
 
+{% block head_extra %}
+	<script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.tooltip.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+	<script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
+	<script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript">
+    $(function() {
+       var $tooltip = $('<div class="tooltip">Tooltip</div>');
+			$('.bubbletree').append($tooltip);
+			$tooltip.hide();
+
+			var tooltip = function(event) {
+				if (event.type == 'SHOW') {
+					// show tooltip
+					vis4.log(event);
+					$tooltip.css({
+						left: event.mousePos.x + 4,
+						top: event.mousePos.y + 4
+					});
+					$tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
+					var bubble = event.target;
+
+					$tooltip.show();
+				} else {
+					// hide tooltip
+					$tooltip.hide();
+				}
+			};
+
+        var data = {
+            label: 'Total',
+            amount: {{ asignado|million }},
+            color: '#0066bb',  // color for root node, will be inherited by children
+            children: [
+            {% for row in rubros %}                                                     
+                { label: '{{ row.subsubtipoingreso__origen__nombre}}', amount: {{ row.inicial_asignado|million }}, color: vis4color.fromHSL({{ forloop.counter }}/{{ rubros|length }}*360, .7, .5).x }{% if not forloop.last %},{% endif %}
+            {% endfor %}                                                                
+            ]
+        };
+
+        new BubbleTree({
+            data: data,
+            container: '.bubbletree',
+            bubbleType: 'icon',
+            formatValue: function(value) {
+                return 'C$ ' + value.toString() + ' millones';
+            }
+
+        });
+    });
+    </script>
+{% endblock %}
+
 {% block main_content %}
 	{% descargar_excel "oim-all" %}
     <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% else %}2015 {% endif %}</h2>
@@ -63,31 +121,14 @@
         <div class="separador"></div>
     <!--Fin de resumen-->
           <!--maribel 20/07 ogim-tabla1 -->
-          <div class="col-md-5">
+          <div class="row">
+          <div class="col-md-6">
               <h3>Ingresos del período</h3>
-              <h4 class="text-info">Porcentaje del ingreso total
-              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsepastel"  aria-expanded="false" aria-controls="collapseExample">Ver gráfico </a>
-              </h4>
-              <hr />
-              <div class="collapse col-md-4" id="collapsepastel">
-                <div class="well">
-                <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
-                </div>
+              <div class="bubbletree-container">
+              <div class="bubbletree-wrapper">
+                  <div class="bubbletree"></div>
               </div>
-                <table class="table">
-                    <tr class="info"> <th colspan="2">Rubros de ingresos</th><th>Inicial</th> {% if year != '2016' %}<th>Ejecutado</th> {% endif %}</tr>
-                  {% for total in totales %}
-                  <tr>
-                    <td><img src="/static/img/{{ total.subsubtipoingreso__origen__nombre }}.png" class="pull-left" height="40" alt="{{ total.subsubtipoingreso__origen__nombre }}" />
-                    </td>
-                    <td> <h4>{{ total.subsubtipoingreso__origen__nombre }}</h4> </td>
-                    <td><span class="btn btn-info col-md-12 cifra">{{ total.asignado_percent|floatformat:1 }}%</span></td>
-                    {% if year != '2016' %}
-                    <td><span class="btn btn-info col-md-12 cifra">{{ total.ejecutado_percent|floatformat:1 }}%</span></td>
-                    {% endif %}
-                  </tr>
-                {% endfor %}
-             </table>
+              </div>
           </div> 
           
         <!-- maribel 20/07- oim-tabla2 -->
@@ -137,6 +178,7 @@
                     {% endif %}
             </table>                                                                    
         </div>
+          </div>
         <!-- /fin oim-tabla2 -->                                                      
        <hr />
         <div class="col-md-12 alert alert-success"  role="alert">
@@ -556,6 +598,8 @@
 </div>
 
 
+
+
 {% endblock %}
 
 
@@ -571,3 +615,4 @@ $(document).ready(function(){
                     });
         });)
 </script>
+

@@ -18,33 +18,36 @@ table {
 	border-spacing: 0;
 }
 nav.menu {
-	background: coral;
 	position: relative;
-	min-height: 45px;
+	min-height: 35px;
 	height: 100%;
+    margin-top: 20px;
 }
 .menu > ul > li {
 	list-style: none;
 	display: inline-block;
 	color: #fff;
+    padding: 0 34px;
 	line-height: 45px;
     margin-left: 0px;    
 }
 .menu > ul li a, .xs-menu li a {
 	text-decoration: none;
-	color: #fff;
+	color: #005278;
+    font-size: 18px;
 	 display:block;
-	 padding: 0px 24px;
 }
 .menu > ul li a:hover {
-	background:#444;
-	color: #fff;
+	color: #1891ac;
 	transition-duration: 0.3s;
 	-moz-transition-duration: 0.3s;
 	-webkit-transition-duration: 0.3s;
 }
 .menu .active{
-	background:#444;
+    background:#1891ac; 
+}
+.menu .active a, .menu .active a:hover {
+    color: #fff;
 }
 .displaynone{
 	display: none;
@@ -78,10 +81,11 @@ text-decoration:none;
 }
 
 .mega-menu {
-    z-index: 1 !important;	
-    background: none repeat scroll 0 0 #888;
+    z-index: 100 !important;	
+    background: none repeat scroll 0 0 #fff;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
     left: 0;
-    margin-top: 3px;
+    margin-top: 0px;
     position: absolute;
     width: 100%;
 	padding:15px;
@@ -215,3 +219,17 @@ margin-left: 5px;
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
 }
+.carousel-control.left, .carousel-control.left:hover,.carousel-control.right, .carousel-control.right:hover { background: transparent;}
+a.left, a.right { color: #aaa5a5 !important;text-shadow:none;}
+.carousel-control {width: 4%; text-shadow: none;}
+#carousel-menu .item { margin: 0 5%;}
+.municipios li { letter-spacing: 1px;line-height: 25px !important;} 
+.mega-menu .municipios li a, .xs-menu li ul li a { color: #000 !important; font-size: 16px;}
+.titseccion { 
+    color: #1c8ea7;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid #1c8ea7;
+    text-align: left;
+}
+.navbar { margin-bottom: 0px;}
