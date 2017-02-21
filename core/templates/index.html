@@ -8,125 +8,139 @@
 {% block head_extra %}
 <script src="https://code.highcharts.com/maps/highmaps.js"></script>
 <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/maps/modules/drilldown.js"></script>
 <script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
 
 <script type="text/javascript">
-$(function () {
+/*
+TODO:
+- Check data labels after drilling. Label rank? New positions?
+- Not US Mainland text
+- Separators
+*/
+$(function() {
+var data = Highcharts.geojson(Highcharts.maps['countries/ni/ni-all']),
+    // Some responsiveness
+    small = $('#nic-map-container').width() < 400;
 
-    // Prepare demo data
-    var data = [
-        {
-            "hc-key": "ni-as",
-            "value": 0
-        },
-        {
-            "hc-key": "ni-an",
-            "value": 1
-        },
-        {
-            "hc-key": "ni-224",
-            "value": 2
-        },
-        {
-            "hc-key": "ni-6330",
-            "value": 3
-        },
-        {
-            "hc-key": "ni-ca",
-            "value": 4
-        },
-        {
-            "hc-key": "ni-gr",
-            "value": 5
-        },
-        {
-            "hc-key": "ni-ji",
-            "value": 6
-        },
-        {
-            "hc-key": "ni-le",
-            "value": 7
-        },
-        {
-            "hc-key": "ni-mn",
-            "value": 8
-        },
-        {
-            "hc-key": "ni-ms",
-            "value": 9
-        },
-        {
-            "hc-key": "ni-ci",
-            "value": 10
-        },
-        {
-            "hc-key": "ni-es",
-            "value": 11
-        },
-        {
-            "hc-key": "ni-md",
-            "value": 12
-        },
-        {
-            "hc-key": "ni-mt",
-            "value": 13
-        },
-        {
-            "hc-key": "ni-ns",
-            "value": 14
-        },
-        {
-            "hc-key": "ni-bo",
-            "value": 15
-        },
-        {
-            "hc-key": "ni-co",
-            "value": 16
-        }
-    ];
+// Set drilldown pointers
+$.each(data, function(i) {
+    this.drilldown = this.properties['hc-key'];
+    this.value = i; // Non-random bogus data
+});
 
-    // Initiate the chart
-    $('#nic-map-container').highcharts('Map', {
-        chart : {
-            backgroundColor: "#01c083"
-        },
-        title : {
-            text : ''
-        },
+// Instanciate the map
+Highcharts.mapChart('nic-map-container', {
+    chart: {
+        backgroundColor: "#01c083",
+        events: {
+            drilldown: function(e){
+                if (!e.seriesOptions){
+                    var chart = this;
+                    mapkey = '/static/maps/' + e.point.drilldown + "-all";
+                    $.get(mapkey + '.json', function(data) {
 
-        subtitle : {
-            text : ''
-        },
+                        $.each(data, function (i) {
+                            this.value = i;
+                        });
 
-        mapNavigation: {
-            enabled: true,
-            buttonOptions: {
-                verticalAlign: 'bottom'
+                        chart.showLoading('<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>');
+
+                        setTimeout(function () {
+                            chart.hideLoading();
+                            chart.addSeriesAsDrilldown(e.point, {
+                                name: e.point.name,
+                                data: data.data,
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '{point.name}'
+                                },
+                                allowPointSelect: true,
+                                states: {
+                                    hover: {
+                                        color: '#a4edba'
+                                    }
+                                }
+                            });
+                        }, 1000);
+
+                    });
+                }
+
+
+                this.setTitle(null, {
+                    text: e.point.name
+                });
+            },
+            drillup: function() {
+                this.setTitle(null, {
+                    text: 'NI'
+                });
             }
-        },
+        }
+    },
 
-        colorAxis: {
-            min: 0
-        },
+    title: {
+        text: ''
+    },
 
-        series : [{
-            data : data,
-            mapData: Highcharts.maps['countries/ni/ni-all'],
-            joinBy: 'hc-key',
-            name: 'Random data',
+    subtitle: {
+        text: 'Nicaragua',
+        floating: true,
+        align: 'right',
+        y: 50,
+        style: {
+            fontSize: '16px'
+        }
+    },
+
+    legend: small ? {} : {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+    mapNavigation: {
+        enabled: true,
+        buttonOptions: {
+            verticalAlign: 'bottom'
+        }
+    },
+
+    plotOptions: {
+        map: {
             states: {
                 hover: {
-                    color: '#a4edba'
+                    color: '#ffffff'
                 }
-            },
-            dataLabels: {
-                enabled: true,
-                format: '{point.name}'
             }
-        }],
-        legend : { enabled: false }
-    });
+        }
+    },
+
+    series: [{
+        data: data,
+        name: 'Ni',
+        dataLabels: {
+            enabled: true,
+            format: '{point.properties.postal-code}'
+        }
+    }],
+
+    drilldown: {
+        activeDataLabelStyle: {
+            color: '#FFFFFF',
+            textDecoration: 'none',
+            textOutline: '1px #000000'
+        },
+        drillUpButton: {
+            relativeTo: 'spacingBox',
+            position: {
+                x: 0,
+                y: 60
+            }
+        }
+    }
 });
+})
 </script>
 <style>
 #container {

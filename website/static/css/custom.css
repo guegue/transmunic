@@ -554,3 +554,20 @@ footer {
 .cifrarubro_portada { color: #2ab300;}
 .cifrarubro2-portada { color: #d54d0d; }
 #nic-map-container {height: 330px;} 
+.list-indicadores { right:0;
+    background: rgb(242, 242, 242) none repeat scroll 0% 0%;
+}
+.list-indicadores .borde-celeste {
+    padding-left: 10px;
+}
+.list-indicadores .borde-verde {
+    padding-left: 10px;
+}
+.list-indicadores ul li {
+    margin: 10px 0;
+}
+.list-indicadores ul li a {
+    color: #393F4B;
+    font-size: 16px;
+}
+.portada { margin-top: 10px;}

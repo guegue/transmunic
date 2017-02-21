@@ -34,13 +34,15 @@
     </section>
 {% endblock %}
 {% block main_content %}
-        <div class="text-center">
-            <h2 class="titular">Presupuesto Consolidado Municipal {{ object.nombre }}</h2>
+        <div class="text-center" style="background-image: url('/static/images/icons/1635.jpg');">
+            <h2 class="titular blanco">Presupuesto Consolidado Municipal {{ object.nombre }}</h2>
             <hr />
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="ingresos">
-                <h1>Origen de los Ingresos </h1>
+                <div class="text-center">
+                   <h2 class="titular text-verde" >Origen de los Ingresos</h2>
+                </div>
 				<!-- Codigo temporal-->
 				<div class="col-md-2 pull-left text-center">
 					<svg height="100px" width="100px" id="graph">
@@ -133,9 +135,11 @@
                     <div class="cifrarubro2">Ejecutado: 9.2%</div>
 				</div>
             </div>
-			<br clear="all">
+            <br clear="all"><br />
             <div class="gastos">
-                <h1>Destino de los gastos </h1>
+                <div class="text-center">
+                   <h2 class="titular text-celeste">Destino de los Gastos</h2>
+                </div>
 				<!-- Codigo temporal-->
 				<div class="col-md-2 pull-left text-center">
 					<svg height="100px" width="100px" id="graph">
@@ -245,8 +249,5 @@
                         {% endfor %}
             {% endcomment %}
         </div>
-        <div class="col-md-4">
-                <h1>Indicadores</h1>
-                <p>Grafico de burbuja</p>
-        </div>
+        {% include 'menu-indicadores.html' %}
 {% endblock %}
