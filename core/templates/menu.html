@@ -3,7 +3,7 @@
 				<nav class="xs-menu displaynone">
 					<ul>
 						<li class="active">
-							<a href="/">Home</a>
+							<a href="{% url 'home' %}">Home</a>
 						</li>
 						<li>
 							<a href="#">About</a>
@@ -68,8 +68,24 @@
 						</div>
 				        </div>
 					</li>
-					<li>
+					<li class="drop-down">
 						<a href="#">Presupuesto</a>
+					    <div class="nav-expand"> 
+						<div class="mega-menu fadeIn animated">
+                            <ul>
+                                <li><a href="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</a></li>
+                                <li><a href="{%url 'origen_gastos'%}">Destino del gasto municipal</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{%url 'gastos_funcion'%}">Gastos de funcionamiento</a></li>
+                                <li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
+                                <li><a href="{%url 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</a></li>
+                                <li><a href="{%url 'ahorro_corriente'%}">Ahorro corriente para inversiones</a></li>
+                                <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
+                                <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
+                                <li><a href="{%url 'detalle_presupuesto'%}">Descargar Detalle Presupuesto</a></li>
+                            </ul>
+						</div>
+				        </div>
 					</li>
 					<li>
 						<a href="#">Consulta</a>

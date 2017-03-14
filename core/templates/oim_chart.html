@@ -40,7 +40,7 @@
 					$tooltip.hide();
 				}
 			};
-
+        /*
         var data = {
             label: 'Total',
             amount: {{ asignado|million }},
@@ -51,6 +51,15 @@
             {% endfor %}                                                                
             ]
         };
+        ^*/
+        var data = {{ bubble_data|safe }}
+		$.each( data['children'], function( key, value ) {
+ 			data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+ 			var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+			$.each(data['children'][key]['children'], function(j, val){
+ 				data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
+			});
+		});
 
         new BubbleTree({
             data: data,
