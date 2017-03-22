@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from itertools import chain
 from datetime import datetime, time
 from operator import itemgetter
@@ -41,7 +41,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(level_0_sql, [year_data.anio, municipio_id])
         totals = dictfetchall(cursor)
-        data = {'label':"Ingreos Totales", 'amount': int(round(totals[0]['ejecutado']/1000000))}
+        data = {'label':"Ingresos Totales", 'amount': int(round(totals[0]['ejecutado']/1000000))}
 
         child_l1 = []
         level_1_sql = "select sum(sd.asignado) as asignado, sum(sd.ejecutado) as \
@@ -59,7 +59,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             color = ""
-            source_data = {'id': source['id'], 'label': source['nombre'], 'amount': int(round(source['ejecutado']/1000000)), 'color': color }
+            source_data = { 'taxonomy': "cofog", 'name': source['id'], 'id': source['id'], 'label': source['nombre'], 'amount': int(round(source['ejecutado']/1000000)), 'color': color }
 
             child_l2 = []
             level_2_sql="select sum(sd.asignado) as asignado, sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo \
@@ -112,7 +112,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(level_0_sql, [year_data.anio])
         totals = dictfetchall(cursor)
-        data = {'label':"Ingreos Totales", 'amount': int(round(totals[0]['ejecutado']/1000000))}
+        data = {'label':"Ingresos Totales", 'amount': int(round(totals[0]['ejecutado']/1000000))}
 
         child_l1 = []
         level_1_sql = "select sum(sd.asignado) as asignado, sum(sd.ejecutado) as \
@@ -129,7 +129,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             color = ""
-            source_data = {'id': source['id'], 'label': source['nombre'], 'amount': int(round(source['ejecutado']/1000000)), 'color': color }
+            source_data = {'taxonomy': "cofog", 'name': source['id'], 'id': source['id'], 'label': source['nombre'], 'amount': int(round(source['ejecutado']/1000000)), 'color': color }
+            logging.error(source_data)
 
             child_l2 = []
             level_2_sql="select sum(sd.asignado) as asignado, sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo \
@@ -168,5 +169,5 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             source_data['children'] = child_l2
             child_l1.append(source_data)
         data['children'] = child_l1
-
+    logging.error(data)
     return json.dumps(data)

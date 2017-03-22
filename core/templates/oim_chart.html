@@ -1,76 +1,69 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
-{% load humanize %} 
+{% load humanize %}
 {% load mathfilters %}
-{% load core_extras %} 
+{% load core_extras %}
 {% block titulo %}
 {{ municipio }}
 {% endblock %}
 
 {% block head_extra %}
-	<script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/jquery.tooltip.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
-	<script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script src="{% static 'highcharts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.tooltip.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
-	<script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bar-chart.css' %}" />
+    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bar-chart.js' %}"></script>
     <script type="text/javascript">
-    $(function() {
-       var $tooltip = $('<div class="tooltip">Tooltip</div>');
-			$('.bubbletree').append($tooltip);
-			$tooltip.hide();
+$(function() {
+    var $tooltip = $('<div class="tooltip">Tooltip</div>');
+    $('.bubbletree').append($tooltip);
+    $tooltip.hide();
 
-			var tooltip = function(event) {
-				if (event.type == 'SHOW') {
-					// show tooltip
-					vis4.log(event);
-					$tooltip.css({
-						left: event.mousePos.x + 4,
-						top: event.mousePos.y + 4
-					});
-					$tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
-					var bubble = event.target;
+    var tooltip = function(event) {
+        if (event.type == 'SHOW') {
+            // show tooltip
+            vis4.log(event);
+            $tooltip.css({
+                left: event.mousePos.x + 4,
+                top: event.mousePos.y + 4
+            });
+            $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
+            var bubble = event.target;
 
-					$tooltip.show();
-				} else {
-					// hide tooltip
-					$tooltip.hide();
-				}
-			};
-        /*
-        var data = {
-            label: 'Total',
-            amount: {{ asignado|million }},
-            color: '#0066bb',  // color for root node, will be inherited by children
-            children: [
-            {% for row in rubros %}                                                     
-                { label: '{{ row.subsubtipoingreso__origen__nombre}}', amount: {{ row.inicial_asignado|million }}, color: vis4color.fromHSL({{ forloop.counter }}/{{ rubros|length }}*360, .7, .5).x }{% if not forloop.last %},{% endif %}
-            {% endfor %}                                                                
-            ]
-        };
-        ^*/
-        var data = {{ bubble_data|safe }}
-		$.each( data['children'], function( key, value ) {
- 			data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
- 			var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
-			$.each(data['children'][key]['children'], function(j, val){
- 				data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
-			});
-		});
-
-        new BubbleTree({
-            data: data,
-            container: '.bubbletree',
-            bubbleType: 'icon',
-            formatValue: function(value) {
-                return 'C$ ' + value.toString() + ' millones';
-            }
-
+            $tooltip.show();
+        } else {
+            // hide tooltip
+            $tooltip.hide();
+        }
+    };
+    var data = {{ bubble_data|safe }}
+    $.each( data['children'], function( key, value ) {
+        data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+        var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+        $.each(data['children'][key]['children'], function(j, val){
+            data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
         });
     });
+
+    new BubbleTree({
+        data: data,
+        container: '.bubbletree',
+        bubbleType: 'icon',
+        bubbleStyles: {
+            'cofog': BubbleTree.Styles.Cofog
+        },
+        formatValue: function(value) {
+            return 'C$ ' + value.toString() + 'M';
+        }
+    });
+});
     </script>
 {% endblock %}
 
@@ -98,11 +91,13 @@
         {% endif %}
         <li role="presentation"><a href="#oimorigen" aria-controls="oimorigen" role="tab" data-toggle="tab">Informaci&oacute;n hist&oacute;rica</a></li>
     </ul>
+    <!--
     {% if municipio and charts.4 %}
         {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
         {{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
+    -->
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
         <!--maribel 20/07 - ingresos resumen -->
@@ -138,10 +133,10 @@
                   <div class="bubbletree"></div>
               </div>
               </div>
-          </div> 
-          
+          </div>
+
         <!-- maribel 20/07- oim-tabla2 -->
-        <div class="col-md-6">
+        <div class="col-md-5">
         	{% descargar_excel "oim1" %}
             <h3>Ingresos del período</h3>
             <h4>Ingresos en millones de córdobas corrientes  <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -157,38 +152,38 @@
                     {% endif %}
                 </div>
             </div>
-            <table class="table table-condensed">                                       
-                <tr class="info"> 
-                    <th>Rubros de ingresos</th> 
-                    <th>Inicial</th> 
+            <table class="table table-condensed">
+                <tr class="info">
+                    <th>Rubros de ingresos</th>
+                    <th>Inicial</th>
                     {% if year != '2016' %}
-                    <th>Ejecutado</th> 
+                    <th>Ejecutado</th>
                     <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
                     {% endif %}
                 </tr>
-                {% for row in rubros %}                                                     
-                <tr>                                                                        
-                    <td>{{ row.subsubtipoingreso__origen__nombre}}</td>                                    
+                {% for row in rubros %}
+                <tr>
+                    <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     {% if year != '2016' %}
                         <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                        {% if row.inicial_asignado %}                                                   
+                        {% if row.inicial_asignado %}
                             <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                        {% endif %}                                                             
+                        {% endif %}
                     {% endif %}
-                </tr>                                                                       
-                {% endfor %}                                                                
-                <tr class="success bold">                                                   
-                    <td>TOTAL</td>                                                          
-                    <td class="text-right">{{ asignado|million|intcomma }}</td>                                        
+                </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
+                    <td class="text-right">{{ asignado|million|intcomma }}</td>
                     {% if year != '2016' %}
-                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>                                       
+                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
                     {% if asignado %}<td class="montos">{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%</td></tr>{% endif %}
                     {% endif %}
-            </table>                                                                    
+            </table>
         </div>
           </div>
-        <!-- /fin oim-tabla2 -->                                                      
+        <!-- /fin oim-tabla2 -->
        <hr />
         <div class="col-md-12 alert alert-success"  role="alert">
             <div class="center-block center"><h2>Eficiencia en recaudación municipal</h2></div>
@@ -210,37 +205,37 @@
                 <div class="well">
                 			{% descargar_excel "oim2" %}
                             <h4>Recaudación en millones de córdobas corrientes</h3>
-                            <table class="table table-condensed">                                       
-                                <tr class="info"> 
-                                    <th>Rubros de ingresos</th> 
-                                    <th>Inicial</th> 
+                            <table class="table table-condensed">
+                                <tr class="info">
+                                    <th>Rubros de ingresos</th>
+                                    <th>Inicial</th>
                                     {% if year != '2016' %}
-                                        <th>Ejecutado</th> 
+                                        <th>Ejecutado</th>
                                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
                                     {% endif %}
                                 </tr>
-                                {% for row in rubrosp %}                                                     
-                                <tr>                                                                        
-                                    <td>{{ row.subtipoingreso__nombre }}</td>                                    
-                                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
+                                {% for row in rubrosp %}
+                                <tr>
+                                    <td>{{ row.subtipoingreso__nombre }}</td>
+                                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                                     {% if year != '2016' %}
-                                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                                        {% if row.inicial_asignado %}                                                   
+                                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                                        {% if row.inicial_asignado %}
                                             <td class="montos text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                                        {% endif %}                                                             
+                                        {% endif %}
                                     {% endif %}
-                                </tr>                                                                       
-                                {% endfor %}                                                                
-                                <tr class="success bold">                                                   
-                                    <td>TOTAL</td>                                                          
-                                    <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>                                        
+                                </tr>
+                                {% endfor %}
+                                <tr class="success bold">
+                                    <td>TOTAL</td>
+                                    <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>
                                     {% if year != '2016' %}
-                                    <td class="text-right">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</td>                                        
+                                    <td class="text-right">{{ rubrosp|total_sum:'ejecutado'|million|intcomma }}</td>
                                     <td class="montos">{{ rubrosp|div:asignado|mul:100|floatformat:1 }}</td>
                                     {% endif %}
-                                </tr>       
-                            </table>                                                                    
-                           <!-- /fin oim-tabla3 -->                                                      
+                                </tr>
+                            </table>
+                           <!-- /fin oim-tabla3 -->
                 </div>
               </div>
         </div>
@@ -275,13 +270,29 @@
             <!-- /fin oim-tabla4 nacional-->
             <!-- maribel 20/07 oim-tabla4-municipal -->
             {% if municipio %}
-                <div class="col-md-7">
+
+                <div class="col-md-6">
+                <div class="progress-container horizontal rounded">
+                  <h2>Recaudación por habitante</h2>
+                {% for row in otros|dictsortreversed:"asignado_percent" %}
+                  <div class="horizontal">{{ row.ingreso__municipio__nombre}}</div>
+                  <div class="progress_bar horizontal">
+                    <div class="progress-track">
+                      <div class="progress-fill">
+                        <span>{{ row.comparative_percent }}%</span>
+                      </div>
+                    </div>
+                  </div>
+                 {% endfor %}
+                </div>
+                </div>
+                <div class="col-md-6">
                 	{% descargar_excel "oim8" %}
                     {% if year == '2016' %}
                         <h3>Recaudación por habitante</h3>
                     {% else %}
                         <h3>Ranquin de recaudación por habitante categoría municipal "{{ mi_clase.clasificacion }}"</h3>
-                    {% endif %}        
+                    {% endif %}
                 <h4 class="text-info">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed">
                     <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th>{% if year != '2016' %}<th>Ejecución</th>{% endif %}</tr>
@@ -366,7 +377,7 @@
                 <td></td>
                 <td></td>
                 <td colspan="4" class="success text-center">
-                    <h4>Modificación intermedia 
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
                     </h4>
                 </td>
@@ -376,7 +387,7 @@
                     </h4>
                 </td>
             </tr>
-            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
             </tr>
@@ -454,7 +465,7 @@
         <h4 class="text-info">Millones de córdobas corrientes</h4>
         <table class="table table-condensed">
             <tr><td></td><td></td><td colspan="4" class="success text-center"><h4>Modificación al {{ year_data.actualizado }}</h4></td><td colspan="4" class="danger"><h4>Modificación al {{ year_data.final }}</h4></td></tr>
-            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
             </tr>
@@ -532,7 +543,7 @@
         	{% descargar_excel "oim6" %}
             <h3>Ejecución presupuestaria del ingreso total. {% if not municipio %}Consolidado municipal {% endif %}</h3>
             <h4 class="text-info">Millones de córdobas corrientes
-                <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">ver gráfico</a>  
+                <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">ver gráfico</a>
             </h4>
 
             <div class="collapse" id="collapsehistorico">
@@ -617,7 +628,7 @@ $('#oimTab a').click(function (e) {
   e.preventDefault()
     $(this).tab('show')
     }
-    
+
 $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip({
                         placement : 'top'
