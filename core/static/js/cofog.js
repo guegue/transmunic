@@ -9,7 +9,7 @@ BubbleTree.Styles = BubbleTree.Styles || {};
 
 BubbleTree.Styles.Cofog = {
     '1': {
-        icon: '/static/images/icons/dolar.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#C75746'
     },
     '2': {
