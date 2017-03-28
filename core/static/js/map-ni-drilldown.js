@@ -43,7 +43,13 @@ $(function() {
                                         enabled: true,
                                         format: '{point.name}'
                                     },
-                                    allowPointSelect: true,
+                                    events: {
+                                        click: function (e) {
+                                            console.log(e.point);
+                                            // location.href = 'https://en.wikipedia.org/wiki/' + e.point.name;
+                                        }
+                                    },
+                                    allowPointSelect: false,
                                     states: {
                                         hover: {
                                             color: '#1891ac'
