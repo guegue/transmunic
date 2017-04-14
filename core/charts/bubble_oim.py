@@ -25,6 +25,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         year = year_list[-2]
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
+    # todo: add core_ingreso.periodo to the query filter
+    # optimize: try to use query api
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
