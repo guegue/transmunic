@@ -19,7 +19,7 @@ from core.forms import DetallePresupuestoForm
 
 # Create your views here.
 def home(request):
-    template_name = 'index.html'
+    template_name = 'home.html'
     banners = Banner.objects.all()
 
     #cleans session vars

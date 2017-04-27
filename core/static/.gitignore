@@ -1,0 +1,8 @@
+# Ignore compresed and map files
+*.map
+*.min.*
+.sass-cache
+# *.js
+# *.css
+
+!vendor/**

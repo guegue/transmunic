@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Presupuestos Municipales Abiertos</title>
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pma.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-fixed-top" role="navigation">
+        <!-- El logotipo y el icono que despliega el menú se agrupan
+       para mostrarlos mejor en los dispositivos móviles -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Desplegar navegación</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <span id="brand-01">PRESUPUESTOS</span>
+                <span id="brand-02">MUNICIPALES </span>
+                <span id="brand-03">ABIERTOS </span>
+            </a>
+        </div>
+
+        <!-- Agrupar los enlaces de navegación, los formularios y cualquier
+       otro elemento que se pueda ocultar al minimizar la barra -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right pma-navbar">
+                <li><a href="#">INICIO</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+         EL OBSERVATORIO <b class="caret"></b>
+        </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Acción #1</a>
+                        </li>
+                        <li><a href="#">Acción #2</a>
+                        </li>
+                        <li><a href="#">Acción #3</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#">Acción #4</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#">Acción #5</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+         PRESUPUESTO <b class="caret"></b>
+        </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Acción #1</a>
+                        </li>
+                        <li><a href="#">Acción #2</a>
+                        </li>
+                        <li><a href="#">Acción #3</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#">Acción #4</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#">Acción #5</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#">CONSULTA</a>
+                </li>
+                <li class="active"><a href="#">DESCARGA</a>
+                </li>
+                <li><a href="#"><span class="glyphicon glyphicon-search"></span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="jumbotron pma-gradient pma-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h3 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h3>
+                    <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
+                </div>
+                <div class="col-md-5">
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <div class="container pma-illustration">
+            <div class="illustration-index">
+                <img src="static/images/illustration-index.png" alt="..." class="">
+            </div>
+        </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3> <strong>Sobre</strong> este sitio.</h3>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <small> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit</small>
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#">Leer más...</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img class="img-responsive" src="static/images/illustration-all-icons.png" alt="Sobre este sitio">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="pma-gradient pma-summary">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3> <strong>Consolidado</strong> de la Inversión Municipal 2017.</h3>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4> <strong>Rubros de la Inversión</strong></h4>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore
+                                magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3> <strong>Distribución</strong><br> por Categorías de Ley.</h3>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src="images/espacio%20grafico.jpg" alt="..." class="img-rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3> <strong>PRESUPUESTOS <br> MUNICIPALES <br> ABIERTOS</strong></h3>
+                    <small> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation </small>
+                    <a href="#"><strong>POLÍTICAS DE PRIVACIDAD</strong></a>
+                </div>
+                <div class="col-md-6">
+                    <h3> <strong>Nuestros</strong> Aliados.</h3>
+                    <hr>
+                    <img class="img-responsive" src="images/usaid.png" alt="USAID">
+                    <img class="img-responsive" src="images/guegue.png" alt="GUEGUE">
+                    <img class="img-responsive" src="images/global.png" alt="GLOBAL">
+                </div>
+            </div>
+            <div class="row">
+                <p>2017 Todos los derechos reservados</p>
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Librería jQuery requerida por los plugins de JavaScript -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+
+    <!-- Todos los plugins JavaScript de Bootstrap (también puedes
+         incluir archivos JavaScript individuales de los únicos
+         plugins que utilices) -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
