@@ -23,7 +23,7 @@ $(function() {
     // Instanciate the map
     Highcharts.mapChart('nic-map-container', {
         chart: {
-            backgroundColor: "#01c083",
+            backgroundColor: "rgba(255,255,255,0)",
             events: {
                 drilldown: function(e) {
                     if (!e.seriesOptions) {

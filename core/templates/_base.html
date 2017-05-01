@@ -54,10 +54,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">
-                <span id="brand-01">PRESUPUESTOS</span>
-                <span id="brand-02">MUNICIPALES </span>
-                <span id="brand-03">ABIERTOS </span>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <span id="brand-01">Presupuestos</span>
+                <span id="brand-02">Municipales </span>
+                <span id="brand-03">Abiertos </span>
             </a>
         </div>
 
@@ -65,11 +65,11 @@
        otro elemento que se pueda ocultar al minimizar la barra -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav navbar-right pma-navbar">
-                <li><a href="#">INICIO</a>
+                <li><a href="#">Inicio</a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-         EL OBSERVATORIO <b class="caret"></b>
+         El Observatorio <b class="caret"></b>
         </a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Acción #1</a>
@@ -91,23 +91,24 @@
          PRESUPUESTO <b class="caret"></b>
         </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Acción #1</a>
-                        </li>
-                        <li><a href="#">Acción #2</a>
-                        </li>
-                        <li><a href="#">Acción #3</a>
-                        </li>
+                        <li><a href="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Acción #4</a>
-                        </li>
+                        <li><a href="{%url 'origen_gastos'%}">Destino del gasto municipal</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Acción #5</a>
-                        </li>
+                        <li><a href="{%url 'gastos_funcion'%}">Gastos de funcionamiento</a></li>
+                        <li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{%url 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</a></li>
+                        <li><a href="{%url 'ahorro_corriente'%}">Ahorro corriente para inversiones</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
+                        <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
+                        <li><a href="{%url 'detalle_presupuesto'%}">Descargar Detalle Presupuesto</a></li>
                     </ul>
                 </li>
-                <li><a href="#">CONSULTA</a>
+                <li><a href="#">Consulta</a>
                 </li>
-                <li class="active"><a href="#">DESCARGA</a>
+                <li class="active"><a href="#">Descarga</a>
                 </li>
                 <li><a href="#"><span class="glyphicon glyphicon-search"></span></a>
                 </li>
@@ -127,9 +128,9 @@
                 <div class="col-md-6">
                     <h3> <strong>Nuestros</strong> Aliados.</h3>
                     <hr>
-                    <img class="img-responsive" src="images/usaid.png" alt="USAID">
-                    <img class="img-responsive" src="images/guegue.png" alt="GUEGUE">
-                    <img class="img-responsive" src="images/global.png" alt="GLOBAL">
+                    <img class="img-responsive" src="/static/images/logo_usaid.png" alt="USAID">
+                    <img class="img-responsive" src="/static/images/logo_guegue.png" alt="GUEGUE">
+                    <img class="img-responsive" src="/static/images/logo_global_communities.png" alt="GLOBAL">
                 </div>
             </div>
             <div class="row">

@@ -1,8 +1,7 @@
-// Type Scale
 // http://type-scale.com/?size=14&scale=1.200&text=A%20Visual%20Type%20Scale&webfont=Relaway&font-family=%27Raleway%27%2C%20sans-serif%3B&font-weight=400&font-family-headers=%27Raleway%27%2C%20sans-serif%3B&font-weight-headers=inherit&background-color=white&font-color=%23333
 html {
     font-size: 0.875em;
-}
+}i
 body {
     background-color: white;
     font-family: 'Raleway', sans-serif;
@@ -51,8 +50,14 @@ small,
     position: absolute;
     top: -386px;
 }
+.pma-navbar.navbar-nav {
+    padding-top: 20px;
+}
 .pma-navbar.navbar-nav > li > a {
     color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
     font-weight: bold;
 }
 .pma-summary {
@@ -73,10 +78,26 @@ small,
 }
 
 .navbar-brand{
-    border-left: #fefefe solid 1px;
+    border-left: #70b0cb solid 1px;
     margin-left: 15px;
+    margin-top: 15px;
+    padding: 0px 0px 0px 5px;
+    height: auto !important;
+    color: #fff;
+}
+.navbar-brand:hover, .navbar-brand:focus{
+    color: #fff;
 }
 .navbar-brand #brand-01, .navbar-brand #brand-02, .navbar-brand #brand-03{
     display:block;
     clear: left;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: bold;
+}
+.navbar-brand #brand-03{
+    color: #64eaf3;
+}
+.gray-box{
+    background-color: #f8f9fa;
 }
