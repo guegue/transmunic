@@ -43,6 +43,9 @@ small,
 .pma-hero {
     height: 644px;
 }
+.jumbotron.pma-hero {
+    background-color: transparent;
+}
 .pma-illustration {
     position: relative;
 }
@@ -59,6 +62,12 @@ small,
     text-transform: uppercase;
     font-size: 12px;
     font-weight: bold;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+}
+.pma-navbar.navbar-nav > li > a:hover {
+    background-color: #008bb4;
 }
 .pma-summary {
     height: 530px;
@@ -67,11 +76,11 @@ small,
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b7ab3+0,00a7b2+100 */
     background: rgb(43, 122, 179);
     /* Old browsers */
-    background: -moz-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 100%);
+    background: -moz-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
     /* FF3.6-15 */
-    background: -webkit-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 100%);
+    background: -webkit-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
     /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(135deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 100%);
+    background: linear-gradient(135deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
     /* IE6-9 fallback on horizontal gradient */

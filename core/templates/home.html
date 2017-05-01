@@ -1,6 +1,6 @@
 {% extends "_base.html" %}
-{% block content %}
-<div class="jumbotron pma-gradient pma-hero">
+{% block header %}
+<div class="jumbotron pma-hero">
     <div class="container">
         <div class="row">
             <div class="col-md-7">
@@ -13,10 +13,11 @@
         </div>
     </div>
 </div>
-    <div class="container pma-illustration">
-        <div class="illustration-index">
-            <img src="static/images/illustration-index.png" alt="..." class="">
-        </div>
+{% endblock %}
+{% block content %}
+<div class="container pma-illustration">
+    <div class="illustration-index">
+        <img src="static/images/illustration-index.png" alt="..." class="img-responsive center-block">
     </div>
 </div>
 <div class="container">

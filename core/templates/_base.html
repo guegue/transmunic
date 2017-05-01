@@ -21,30 +21,13 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <script src="{% static 'jquery-1.11.2.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/tooltip.js' %}"></script>
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-68619423-1', 'auto');
-        ga('send', 'pageview');
-    </script>
-    <!-- Highcharts -->
-    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/drilldown.js"></script>
-    <script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
-    <script type="text/javascript" src="{% static 'maps/ni-custom-all.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/map-ni-drilldown.js' %}"></script>
+    
 </head>
 
 <body>
     <!-- Header -->
-    <nav class="navbar navbar-fixed-top" role="navigation">
+    <header class="pma-gradient">
+    <nav class="navbar" role="navigation">
         <!-- El logotipo y el icono que despliega el menú se agrupan
        para mostrarlos mejor en los dispositivos móviles -->
         <div class="navbar-header">
@@ -115,8 +98,11 @@
             </ul>
         </div>
     </nav>
-{% block content %}
-{% endblock %}
+    {% block header %}
+    {% endblock %}
+    </header>
+    {% block content %}
+    {% endblock %}
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -146,7 +132,24 @@
     <!-- Todos los plugins JavaScript de Bootstrap (también puedes
          incluir archivos JavaScript individuales de los únicos
          plugins que utilices) -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
+    <!-- Highcharts -->
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
+    <script type="text/javascript" src="{% static 'maps/ni-custom-all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/map-ni-drilldown.js' %}"></script>
+    <!-- Google Analytics -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-68619423-1', 'auto');
+        ga('send', 'pageview');
+    </script>
 </body>
 
 </html>
