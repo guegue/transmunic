@@ -10,7 +10,7 @@
 
     <!-- CSS de Bootstrap -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstra    p-theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/pma.css' %}">
     <!-- Custom Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
@@ -21,7 +21,7 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+
 </head>
 
 <body>
@@ -48,7 +48,7 @@
        otro elemento que se pueda ocultar al minimizar la barra -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav navbar-right pma-navbar">
-                <li><a href="#">Inicio</a>
+                <li><a href="{% url 'home' %}">Inicio</a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

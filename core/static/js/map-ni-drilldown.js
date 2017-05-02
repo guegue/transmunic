@@ -52,14 +52,14 @@ $(function() {
                                     allowPointSelect: false,
                                     states: {
                                         hover: {
-                                            color: '#1891ac'
+                                            color: '#f8f9fa'
                                         }
                                     }
                                 });
                             }, 1000);
                         });
                     }
-                    this.setTitle('Rergesar a ', {
+                    this.setTitle('Regresar a ', {
                         text: e.point.name
                     });
                 },
@@ -71,22 +71,29 @@ $(function() {
             }
         },
         title: {
-            text: ''
+            text: '<b>Presupuesto</b> Municipal',
+            floating: false,
+            align: 'left',
+            style: {
+                color: '#ffffff',
+                fontSize: '18px'
+            }
         },
         subtitle: {
-            text: 'Nicaragua',
+            text: 'Haga click en su municipio para<br/> revisar el presuspuesto',
             floating: true,
-            align: 'right',
+            align: 'left',
             y: 50,
             style: {
-                fontSize: '16px'
+                color: '#ffffff',
+                fontSize: '14px'
             }
         },
         legend: {
             enabled: false
         },
         mapNavigation: {
-            enabled: true,
+            enabled: false,
             buttonOptions: {
                 verticalAlign: 'bottom'
             }
@@ -95,7 +102,7 @@ $(function() {
             map: {
                 states: {
                     hover: {
-                        color: '#1891ac'
+                        color: '#f8f9fa'
                     }
                 }
             }
@@ -114,6 +121,26 @@ $(function() {
                     y: 60
                 }
             }
+        },
+        lang: {
+            contextButtonTitle: "Menú contextual del gráfico",
+            decimalPoint: ".",
+            downloadJPEG: "Descargar imágen JPEG",
+            downloadPDF: "Descargar documento PDF",
+            downloadPNG: "Descargar imágen PNG",
+            downloadSVG: "Descargar SVG",
+            drillUpText: "↩ Regresar",
+            loading: "Cargando...",
+            months: [ "January" , "February" , "March" , "April" , "May" , "June" , "July" , "August", "September" , "October" , "November" , "December"],
+            noData: "No hay datos que mostrar",
+            numericSymbolMagnitude: 1000,
+            numericSymbols: [ "k" , "M" , "G" , "T" , "P" , "E"],
+            printChart: "Imprimir gráfico",
+            resetZoom: "Restablecer zoom",
+            resetZoomTitle: "Restablecer nivel de zoom 1:1",
+            shortMonths: [ "Jan" , "Feb" , "Mar" , "Apr" , "May" , "Jun" , "Jul" , "Aug" , "Sep" , "Oct" , "Nov" , "Dec"],
+            thousandsSep: " ",
+            weekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         }
     });
 })
