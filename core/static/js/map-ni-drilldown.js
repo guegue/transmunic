@@ -24,6 +24,9 @@ $(function() {
     Highcharts.mapChart('nic-map-container', {
         chart: {
             backgroundColor: "rgba(255,255,255,0)",
+            style: {
+                fontFamily: '"Raleway",sans-serif'
+            },
             events: {
                 drilldown: function(e) {
                     if (!e.seriesOptions) {

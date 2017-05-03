@@ -4,7 +4,7 @@ html {
 body {
     background-color: white;
     font-family: 'Raleway', sans-serif;
-    ;
+    font-size: 16px;
     font-weight: 400;
     line-height: 1.45;
     color: #333;
@@ -35,7 +35,6 @@ h3 {
 h4 {
     font-size: 1.2em;
 }
-
 small,
 .font_small {
     font-size: 0.833em;
@@ -58,7 +57,7 @@ small,
     top: -386px;
 }
 .pma-navbar.navbar-nav {
-    padding-top: 20px   ;
+    padding-top: 20px;
 }
 .pma-navbar.navbar-nav > li > a {
     color: #fff;
@@ -79,6 +78,7 @@ small,
     height: 530px;
 }
 .pma-gradient {
+    color: #fff !important;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b7ab3+0,00a7b2+100 */
     background: rgb(43, 122, 179);
     /* Old browsers */
@@ -91,8 +91,7 @@ small,
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
     /* IE6-9 fallback on horizontal gradient */
 }
-
-.navbar-brand{
+.navbar-brand {
     border-left: #70b0cb solid 1px;
     margin-left: 15px;
     margin-top: 15px;
@@ -100,19 +99,68 @@ small,
     height: auto !important;
     color: #fff;
 }
-.navbar-brand:hover, .navbar-brand:focus{
-    color: #fff;
+.footer-brand {
+    display: block;
+    margin: 1.414em 0 0.5em;
+    padding: 0px 0px 0px 5px;
+    height: auto !important;
+    color: #000;
 }
-.navbar-brand #brand-01, .navbar-brand #brand-02, .navbar-brand #brand-03{
-    display:block;
+.navbar-brand:hover,
+.navbar-brand:focus {
+    color: #000;
+}
+.footer-brand:hover,
+.footer-brand:focus {
+    color: #000;
+    text-decoration: none;
+}
+.navbar-brand #brand-01,
+.navbar-brand #brand-02,
+.navbar-brand #brand-03,
+.footer-brand #brand-01,
+.footer-brand #brand-02,
+.footer-brand #brand-03 {
+    display: block;
     clear: left;
     text-transform: uppercase;
     font-size: 16px;
     font-weight: bold;
 }
-.navbar-brand #brand-03{
+.navbar-brand #brand-03 {
     color: #64eaf3;
 }
-.gray-box{
+.footer-brand #brand-03 {
+    color: #337ab7;
+}
+.gray-box {
     background-color: #f8f9fa;
+    padding: 0.1em 3em 4em 3em;
+}
+hr.pma-line-1 {
+    border: 0;
+    border-bottom: 2px solid #67e3be;
+    width: 50px;
+    margin: 20px 0;
+}
+hr.pma-line-2 {
+    border: 0;
+    border-bottom: 2px solid #d4d4d4;
+    width: 50px;
+    margin: 20px 0;
+}
+hr.pma-line-3 {
+    border: 0;
+    border-bottom: 2px solid #00a7b3;
+    width: 50px;
+    margin: 20px 0;
+}
+.pma-thumbnail {
+    display: inline-block;
+}
+.pma-spacing-bottom{
+    margin-bottom: 2em;
+}
+.pma-spacing-top{
+    margin-top: 2em;
 }
