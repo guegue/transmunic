@@ -102,7 +102,7 @@ small,
 .footer-brand {
     display: block;
     margin: 1.414em 0 0.5em;
-    padding: 0px 0px 0px 5px;
+    padding: 0;
     height: auto !important;
     color: #000;
 }
@@ -163,4 +163,19 @@ hr.pma-line-3 {
 }
 .pma-spacing-top{
     margin-top: 2em;
+}
+a.pma-special-link{
+    color: #848f98;
+    font-weight: bold;
+    text-decoration: none;
+}
+a.pma-special-link:hover{
+    text-decoration: none;
+}
+footer{
+    padding-top: 50px;
+    padding-bottom: 85px;
+}
+footer .copyright{
+    color: #c2c7cb;
 }
