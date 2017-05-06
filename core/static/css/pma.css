@@ -40,7 +40,7 @@ small,
     font-size: 0.833em;
 }
 .pma-hero {
-    height: 644px;
+    /*height: 644px;*/
 }
 .jumbotron.pma-hero {
     background-color: transparent;
@@ -178,4 +178,55 @@ footer{
 }
 footer .copyright{
     color: #c2c7cb;
+}
+.pma-summary-box{
+    background-color: #00a7b2;
+    display: block;
+    width: 175px;
+    height: 75px;
+    padding: 14px;
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    color: #fff;
+    font-weight: bold;
+}
+.info-box {
+	display: block;
+	min-height: 90px;
+	background: #fff;
+	width: 100%;
+	box-shadow: 0 1px 1px #0000001a;
+	border-radius: 2px;
+	margin-bottom: 15px;
+}
+.info-box-icon {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 2px;
+	display: block;
+	float: left;
+	height: 90px;
+	width: 90px;
+	text-align: center;
+	font-size: 45px;
+	line-height: 90px;
+	background: #0003;
+}
+.info-box-content {
+	padding: 5px 10px;
+	margin-left: 90px;
+}
+.progress-description, .info-box-text {
+	display: block;
+	font-size: 14px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.info-box-number {
+	display: block;
+	font-weight: bold;
+	font-size: 18px;
 }

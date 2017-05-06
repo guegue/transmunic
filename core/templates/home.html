@@ -1,11 +1,12 @@
 {% extends "_base.html" %}
 {% block header %}
-<div class="jumbotron pma-hero">
+<div class="pma-hero">
     <div class="container">
         <div class="row">
             <div class="col-md-7">
                 <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
                 <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
+                <img src="static/images/illustration-index.png" alt="..." class="img-responsive">
             </div>
             <div class="col-md-5">
                 <div id="nic-map-container"></div>
@@ -15,11 +16,6 @@
 </div>
 {% endblock %}
 {% block content %}
-<div class="container pma-illustration">
-    <div class="illustration-index col-md-7">
-        <img src="static/images/illustration-index.png" alt="..." class="img-responsive center-block">
-    </div>
-</div>
 <div class="container">
     <div class="row">
         <div class="col-md-6">
@@ -58,27 +54,26 @@
 <div class="container">
     <div class="row pma-spacing-top pma-spacing-bottom">
         <div class="col-md-6">
-        <div class="gray-box">
-            <h2>Origen<br/>de los Ingresos</h2>
-            <hr class="pma-line-2">
-            <ul>
-                <li>Lorem ipsum dolor sit amet torquent.</li>
-                <li>Lorem sapien metus adipiscing purus sed.</li>
-                <li>Facilisi aliquam justo consequat senectus nunc gravida eleifend tellus lacus sit viverra.</li>
-                <li>Morbi sagittis sed metus illum nisl purus vivamus mauris tempor scelerisque feugiat fusce tempor porttitor et scelerisque feugiat justo justo facilisi porttitor dolor amet vestibulum curae ante elementum et id.</li>
-                <li>Porta volutpat amet sed sem non.</li>
-                <li>Torquent quis dapibus scelerisque nullam vel pellentesque adipiscing augue sequi elit donec turpis wisi faucibus porta ullamcorper integer nulla congue vehicula lobortis ipsum eu diam pellentesque at orci blandit praesent ipsum quisque nec amet lobortis
-                    duis.</li>
-                <li>Nulla nulla leo laoreet pulvinar ut.</li>
-                <li>Nullam lorem mollis turpis vivamus sit ligula vestibulum adipiscing duis rhoncus a vestibulum risus phasellus purus in vestibulum.</li>
-                <li>Rutrum etiam velit amet wisi ipsum.</li>
-                <li>Neque ante etiam semper purus dapibus.</li>
-                <li>Ipsum mus nulla odio est auctor habitasse ipsum wisi nullam imperdiet elit ultrices curae condimentum orci et commodo.</li>
-                <li>Ligula egestas elementum magna viverra lacus curabitur sed tincidunt enim sodales risus eleifend etiam eget primis unde in.</li>
-                <li>Sit suscipit scelerisque risus et nisl.</li>
-                <li>Maecenas a tempus ad mi mi.</li>
-            </ul>
-        </div>
+            <div class="gray-box">
+                <div class="pma-summary-box">
+                    <span class="font_small">Asignado:</span><span class="font_small">9 millones</span>
+                    <span class="font_small">Ejecutado:</span><span class="font_small">7 millones</span>
+                </div>
+                <h2>Origen<br/>de los Ingresos</h2>
+                <hr class="pma-line-2">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-files-o"></i></span>
+
+                        <div class="info-box-content">
+                        <span class="info-box-text">Uploads</span>
+                        <span class="info-box-number">13,648</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
         <div class="gray-box">
