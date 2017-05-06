@@ -1,3 +1,8 @@
+@media (min-width: 1200px) {
+  .container {
+    width: 1400px;
+  }
+}
 html {
     font-size: 0.875em;
 }
@@ -193,40 +198,34 @@ footer .copyright{
 }
 .info-box {
 	display: block;
-	min-height: 90px;
-	background: #fff;
 	width: 100%;
-	box-shadow: 0 1px 1px #0000001a;
-	border-radius: 2px;
 	margin-bottom: 15px;
 }
 .info-box-icon {
-	border-top-left-radius: 2px;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 2px;
 	display: block;
 	float: left;
-	height: 90px;
-	width: 90px;
+	height: 55px;
+	width: 55px;
 	text-align: center;
-	font-size: 45px;
-	line-height: 90px;
-	background: #0003;
+	line-height: 60px;
 }
 .info-box-content {
 	padding: 5px 10px;
-	margin-left: 90px;
+	margin-left: 55px;
 }
 .progress-description, .info-box-text {
-	display: block;
+	display: inline-block;
 	font-size: 14px;
-	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis;
 }
 .info-box-number {
-	display: block;
+	display: inline-block;
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 14px;
+}
+.pma-green{
+    color: #00a7b2;
+}
+.pma-blue{
+    color: #007cb6;
 }
