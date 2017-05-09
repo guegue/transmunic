@@ -1,12 +1,14 @@
 {% extends "_base.html" %}
 {% block header %}
 <div class="pma-hero">
-    <div class="container">
+    <div class="container ">
         <div class="row">
             <div class="col-md-7">
                 <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
                 <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
-                <img src="static/images/illustration-index.png" alt="..." class="img-responsive">
+                <div>
+                    <img src="static/images/illustration-index.png" alt="..." class="pma-illustration">
+                </div>
             </div>
             <div class="col-md-5">
                 <div id="nic-map-container"></div>
@@ -21,24 +23,14 @@
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    <h3> <strong>Sobre</strong> este sitio.</h3>
+                    {% load i18n flatpages %}
+                    {% get_flatpages '/transferencias-presupuestarias/' as pages %}
+                    {% for page in pages %}
+                    <h3>{{ page.title }}</h3>
                     <hr class="pma-line-3">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit</p>
-                </div>
-                <div class="col-md-4">
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="#">Leer más...</a>
+                    <p>{{ page.content|safe|truncatewords:80 }}</p>
+                    <p><a href="{{ page.url }}"> Leer m&aacute;s</a></p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -67,7 +59,6 @@
                             <span class="info-box-icon">
                                 <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
                             </span>
-
                             <div class="info-box-content">
                                 <span class="info-box-text">Lorem ipsum dolor sit amet</span>
                                 <span class="info-box-number pma-blue">Inicial: 45%</span>
@@ -82,7 +73,6 @@
                             <span class="info-box-icon">
                                 <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
                             </span>
-
                             <div class="info-box-content">
                                 <span class="info-box-text">Lorem ipsum dolor sit amet</span>
                                 <span class="info-box-number pma-blue">Inicial: 45%</span>

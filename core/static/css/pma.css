@@ -39,6 +39,10 @@ small,
 .font_small {
     font-size: 0.833em;
 }
+.pma-header{
+    overflow: visible;
+    margin-bottom: 50px;
+}
 .pma-hero {
     /*height: 644px;*/
 }
@@ -51,6 +55,7 @@ small,
 }
 .pma-illustration {
     position: relative;
+    margin-bottom: -28px;
 }
 .illustration-index {
     position: absolute;
@@ -135,7 +140,7 @@ small,
 }
 .gray-box {
     background-color: #f8f9fa;
-    padding: 0.1em 3em 4em 3em;
+    padding: 0.1em .18em 2em 1.8em;
 }
 hr.pma-line-1 {
     border: 0;
@@ -158,28 +163,28 @@ hr.pma-line-3 {
 .pma-thumbnail {
     display: inline-block;
 }
-.pma-spacing-bottom{
+.pma-spacing-bottom {
     margin-bottom: 2em;
 }
-.pma-spacing-top{
+.pma-spacing-top {
     margin-top: 2em;
 }
-a.pma-special-link{
+a.pma-special-link {
     color: #848f98;
     font-weight: bold;
     text-decoration: none;
 }
-a.pma-special-link:hover{
+a.pma-special-link:hover {
     text-decoration: none;
 }
-footer{
+footer {
     padding-top: 50px;
     padding-bottom: 85px;
 }
-footer .copyright{
+footer .copyright {
     color: #c2c7cb;
 }
-.pma-summary-box{
+.pma-summary-box {
     background-color: #00a7b2;
     display: block;
     width: 175px;
@@ -192,35 +197,36 @@ footer .copyright{
     font-weight: bold;
 }
 .info-box {
-	display: block;
-	width: 100%;
-	margin-bottom: 15px;
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
 }
 .info-box-icon {
-	display: block;
-	float: left;
-	height: 55px;
-	width: 55px;
-	text-align: center;
-	line-height: 60px;
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    line-height: 60px;
 }
 .info-box-content {
-	padding: 5px 10px;
-	margin-left: 55px;
+    padding: 5px 10px;
+    margin-left: 55px;
 }
-.progress-description, .info-box-text {
-	display: inline-block;
-	font-size: 14px;
-	overflow: hidden;
+.progress-description,
+.info-box-text {
+    display: inline-block;
+    font-size: 14px;
+    overflow: hidden;
 }
 .info-box-number {
-	display: inline-block;
-	font-weight: bold;
-	font-size: 14px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 12px;
 }
-.pma-green{
+.pma-green {
     color: #00a7b2;
 }
-.pma-blue{
+.pma-blue {
     color: #007cb6;
 }

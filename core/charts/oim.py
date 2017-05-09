@@ -22,6 +22,8 @@ from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
 from lugar.models import Poblacion
 
 def oim_chart(municipio=None, year=None, portada=False):
+    # TODO: Dividir en Partes este código kilometrico
+    # XXX: Split series de datos, agregaciones
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
     periodo_list = getPeriods(Ingreso)
