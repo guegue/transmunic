@@ -53,100 +53,29 @@
                 </div>
                 <h2>Origen<br/>de los Ingresos</h2>
                 <hr class="pma-line-2">
+                {% for origen in totales_oim %}
+                {% if forloop.counter|divisibleby:2 %}
+                {% else %}
                 <div class="row">
+                {% endif %}
                     <div class="col-md-6">
                         <div class="info-box">
                             <span class="info-box-icon">
                                 <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
                             </span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
+                                <span class="info-box-text">{{origen.subsubtipoingreso__origen__nombre}}</span>
+                                <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
+                                <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
                         <!-- /.info-box -->
                     </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
+                {% if forloop.counter|divisibleby:2 %}
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                </div>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
         <div class="col-md-6">
@@ -157,102 +86,29 @@
                 </div>
                 <h2>Destino<br/>de los Gastos</h3>
                 <hr class="pma-line-2">
+                {% for gasto in totales_ogm %}
+                {% if forloop.counter|divisibleby:2 %}
+                {% else %}
                 <div class="row">
+                {% endif %}
                     <div class="col-md-6">
                         <div class="info-box">
                             <span class="info-box-icon">
                                 <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
                             </span>
-
                             <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
+                                <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
+                                <span class="info-box-number pma-blue">Inicial: {{ gasto.asignado_percent }}%</span>
+                                <span class="info-box-number pma-green">Final: {{ gasto.ejecutado_percent }}%</span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
                         <!-- /.info-box -->
                     </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
+                {% if forloop.counter|divisibleby:2 %}
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="info-box-icon">
-                                <img src="/static/images/icons/building.png" alt="Origen" class="center-block">
-                            </span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Lorem ipsum dolor sit amet</span>
-                                <span class="info-box-number pma-blue">Inicial: 45%</span>
-                                <span class="info-box-number pma-green">Final: 13%</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                </div>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
     </div>

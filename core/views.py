@@ -26,7 +26,7 @@ def home(request):
     request.session['year'] = None
     request.session['municipio'] = None
 
-    #descripcion de graficos de portada 
+    #descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
@@ -69,12 +69,12 @@ def home(request):
     total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
-
+    # import pdb; pdb.set_trace()
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
-            #data_inversion['charts'][0], 
+            #data_inversion['charts'][0],
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
             data_inversion_minima_porclase['charts'][0],
@@ -83,6 +83,8 @@ def home(request):
         'inversion_categoria': inversion_categoria,
         'total_inversion': total_inversion,
         'departamentos': departamentos,
+        'totales_oim': data_oim['totales'],
+        'totales_ogm': data_ogm['totales'],
         'home': 'home',
     }, context_instance=RequestContext(request))
 
@@ -91,7 +93,7 @@ def municipio(request, slug):
     template_name = 'municipio.html'
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
-    #descripcion de graficos de portada 
+    #descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
@@ -131,7 +133,7 @@ def municipio(request, slug):
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
-            #data_inversion['charts'][0], 
+            #data_inversion['charts'][0],
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
             data_inversion_minima_porclase['charts'][0],
@@ -267,4 +269,3 @@ def descargar_detalle(request):
                                },
                               context_instance=RequestContext(request)
                               )
-

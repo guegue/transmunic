@@ -215,7 +215,7 @@ footer .copyright {
 }
 .progress-description,
 .info-box-text {
-    display: inline-block;
+    display: block;
     font-size: 14px;
     overflow: hidden;
 }
