@@ -59,7 +59,6 @@ def home(request):
 
     #FIXME no 'quesumar'? usa asignado y ejecutado
     #data_inversion = inversion_chart()
-
     #FIXME no 'quesumar'? solo usa ejecutado
     #data_inversion_area = inversion_area_chart()
 
