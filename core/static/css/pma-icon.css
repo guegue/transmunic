@@ -23,6 +23,10 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+.pma-icon:before{
+    font-size: 55px;
+    color: #00a7b2;
+}
 /* Origen Recurso - Icon font*/
 /* 2 - Transferencias de Ley */
 .transferencias-de-ley:before {
