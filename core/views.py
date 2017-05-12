@@ -85,6 +85,8 @@ def home(request):
         'totales_oim': data_oim['totales'],
         'totales_ogm': data_ogm['totales'],
         'rubros': data_oim['rubros'],
+        'data_oim': data_oim,
+        'data_ogm': data_ogm,
         'home': 'home',
     }, context_instance=RequestContext(request))
 

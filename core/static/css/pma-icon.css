@@ -26,6 +26,7 @@
 .pma-icon:before{
     font-size: 55px;
     color: #00a7b2;
+	content: "\e64f";
 }
 /* Origen Recurso - Icon font*/
 /* 2 - Transferencias de Ley */

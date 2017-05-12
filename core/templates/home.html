@@ -1,4 +1,5 @@
 {% extends "_base.html" %}
+{% load core_extras %}
 {% block header %}
 <div class="pma-hero">
     <div class="container ">
@@ -44,12 +45,12 @@
     </div>
 </div>
 <div class="container">
-    <div class="row pma-spacing-top pma-spacing-bottom">
-        <div class="col-md-6">
+    <div class="row row-eq-height pma-spacing-top pma-spacing-bottom">
+        <div class="col-md-6 col-eq-height">
             <div class="gray-box">
                 <div class="pma-summary-box">
-                    <span class="font_small">Asignado:</span><span class="font_small">9 millones</span>
-                    <span class="font_small">Ejecutado:</span><span class="font_small">7 millones</span>
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span>
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
                 </div>
                 <h2>Origen<br/>de los Ingresos</h2>
                 <hr class="pma-line-2">
@@ -77,11 +78,11 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-eq-height">
             <div class="gray-box">
                 <div class="pma-summary-box">
-                    <span class="font_small">Asignado:</span><span class="font_small">9 millones</span>
-                    <span class="font_small">Ejecutado:</span><span class="font_small">7 millones</span>
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span>
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ajecutado|million }} millones</span>
                 </div>
                 <h2>Destino<br/>de los Gastos</h3>
                 <hr class="pma-line-2">

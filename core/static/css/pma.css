@@ -187,7 +187,7 @@ footer .copyright {
 .pma-summary-box {
     background-color: #00a7b2;
     display: block;
-    width: 175px;
+    width: 220px;
     height: 75px;
     padding: 14px;
     position: absolute;
@@ -229,4 +229,10 @@ footer .copyright {
 }
 .pma-blue {
     color: #007cb6;
+}
+.row-eq-height{
+    display: table;
+}
+.col-eq-height{
+    display: table-cell;
 }
