@@ -1,14 +1,18 @@
-{% extends "base.html" %}
+{% extends "_page.html" %}
 {% load static thumbnail chartit %}
 {% load humanize %}
 {% load mathfilters %}
 {% load core_extras %}
+{# TODO: Replace this by django-seo2 #}
 {% block titulo %}
 {{ municipio }}
 {% endblock %}
 
-{% block head_extra %}
-    <script src="{% static 'highcharts.js' %}"></script>
+{% block custom_header_links %}
+   <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
+   <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
+{% endblock %}
+{% block custom_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.tooltip.min.js' %}"></script>
@@ -16,60 +20,94 @@
     <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
     <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bar-chart.css' %}" />
     <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bar-chart.js' %}"></script>
     <script type="text/javascript">
-$(function() {
-    var $tooltip = $('<div class="tooltip">Tooltip</div>');
-    $('.bubbletree').append($tooltip);
-    $tooltip.hide();
-
-    var tooltip = function(event) {
-        if (event.type == 'SHOW') {
-            // show tooltip
-            vis4.log(event);
-            $tooltip.css({
-                left: event.mousePos.x + 4,
-                top: event.mousePos.y + 4
-            });
-            $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
-            var bubble = event.target;
-
-            $tooltip.show();
-        } else {
-            // hide tooltip
+        $(function() {
+            var $tooltip = $('<div class="tooltip">Tooltip</div>');
+            $('.bubbletree').append($tooltip);
             $tooltip.hide();
-        }
-    };
-    var data = {{ bubble_data|safe }}
-    $.each( data['children'], function( key, value ) {
-        data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
-        var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
-        $.each(data['children'][key]['children'], function(j, val){
-            data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
-        });
-    });
 
-    new BubbleTree({
-        data: data,
-        container: '.bubbletree',
-        bubbleType: 'icon',
-        bubbleStyles: {
-            'cofog': BubbleTree.Styles.Cofog
-        },
-        formatValue: function(value) {
-            return 'C$ ' + value.toString() + 'M';
+            var tooltip = function(event) {
+                if (event.type == 'SHOW') {
+                    // show tooltip
+                    vis4.log(event);
+                    $tooltip.css({
+                        left: event.mousePos.x + 4,
+                        top: event.mousePos.y + 4
+                    });
+                    $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
+                    var bubble = event.target;
+
+                    $tooltip.show();
+                } else {
+                    // hide tooltip
+                    $tooltip.hide();
+                }
+            };
+            var data = {{ bubble_data|safe }}
+            $.each( data['children'], function( key, value ) {
+                data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+                var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
+                $.each(data['children'][key]['children'], function(j, val){
+                    data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
+                });
+            });
+
+            new BubbleTree({
+                data: data,
+                container: '.bubbletree',
+                bubbleType: 'icon',
+                bubbleStyles: {
+                    'cofog': BubbleTree.Styles.Cofog
+                },
+                formatValue: function(value) {
+                    return 'C$ ' + value.toString() + 'M';
+                }
+            });
+        });
+    </script>
+    <script>
+    $('#oimTab a').click(function (e) {
+    e.preventDefault()
+        $(this).tab('show')
         }
-    });
-});
+    $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                            placement : 'top'
+                        });
+            });
     </script>
 {% endblock %}
 
-{% block main_content %}
+    {% block header %}
+    <div class="pma-hero">
+        <div class="container ">
+            <div class="row">
+                <div class="col-md-7">
+                    <h2 class="text-center"> Origen de los ingresos {% if municipio %}<strong> {{ municipio }} </strong>{% endif %}</h2>
+                    <h4 class="text-center">{% if year %}{{ year }}{% else %}2015 {% endif %}</h4>
+                    <div>
+                        {% block illustration %}
+                        <div class="bubbletree-container">
+                            <div class="bubbletree-wrapper">
+                                <div class="bubbletree"></div>
+                            </div>
+                        </div>
+                        {% endblock %}
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div id="nic-map-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% block page_content %}
 	{% descargar_excel "oim-all" %}
-    <h2 class="titular">Origen de los ingresos {% if municipio %} {{ municipio }} {% endif %}{% if year %}{{ year }}{% else %}2015 {% endif %}</h2>
+    <h2 class="titular"></h2>
     <form method="GET">
     <select name="year">
     {% for ayear in year_list %}
@@ -128,11 +166,6 @@ $(function() {
           <div class="row">
           <div class="col-md-6">
               <h3>Ingresos del período</h3>
-              <div class="bubbletree-container">
-              <div class="bubbletree-wrapper">
-                  <div class="bubbletree"></div>
-              </div>
-              </div>
           </div>
 
         <!-- maribel 20/07- oim-tabla2 -->
@@ -616,23 +649,4 @@ $(function() {
       </div>
     </div>
 </div>
-
-
-
-
 {% endblock %}
-
-
-<script>
-$('#oimTab a').click(function (e) {
-  e.preventDefault()
-    $(this).tab('show')
-    }
-
-$(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip({
-                        placement : 'top'
-                    });
-        });)
-</script>
-

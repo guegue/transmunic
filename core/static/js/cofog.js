@@ -13,23 +13,23 @@ BubbleTree.Styles.Cofog = {
         color: '#C75746'
     },
     '2': {
-        icon: '/static/images/icons/transferencias.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#0AB971'
     },
     '3': {
-        icon: '/static/images/icons/gobierno-centralv2.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#EC2406'
     },
     '4': {
-        icon: '/static/images/icons/donaciones.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#790586'
     },
     '5': {
-        icon: '/static/images/icons/prestamosv4.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#2A3A03'
     },
     '6': {
-        icon: '/static/images/icons/otros.svg',
+        icon: '/static/images/icons/dollar.svg',
         color: '#D33673'
     }
 };

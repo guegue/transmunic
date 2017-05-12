@@ -96,6 +96,7 @@ small,
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
     /* IE6-9 fallback on horizontal gradient */
+    margin-bottom: 4em;
 }
 .navbar-brand {
     border-left: #70b0cb solid 1px;
