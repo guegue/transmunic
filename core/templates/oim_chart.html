@@ -83,13 +83,16 @@
     {% block header_left_title %}
     <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %} Origen de los ingresos <strong>{% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h2>
     {% endblock %}
-    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto{% if year != '2016'%} inicial{% endif %}</h3>
-    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
+    <span class="pma-icon pe-7s-target white large"></span>
+    <h3>Presupuesto{% if year != '2016'%} inicial{% endif %}</h3>
+    <span class="">{{ asignado|million|intcomma }}</span>
     {% if year != '2016' %}
-    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
+    <span class="pma-icon pe-7s-config white large"></span>
+    <h3>Ejecutado </h3><span>{{ ejecutado|million|intcomma }}</span>
     {% endif %}
     {% if municipio %}
-    <h3>Categor&iacute;a de municipio </h3><span class="cifra text-success grande">{{ mi_clase.clasificacion }}</span>
+    <span class="pma-icon pe-7s-ticket white large"></span>
+    <h3>Categor&iacute;a de municipio </h3><span>{{ mi_clase.clasificacion }}</span>
     {% endif %}
 {% endblock %}
 
