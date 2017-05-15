@@ -46,18 +46,36 @@
 	content: "\e66d";
 }
 /* 3 - Otros */
-.otros-gastos{}
+.otros-gastos:before{
+    content: "\e617";	
+}
 /* 5 - Préstamos */
-.prestamos{}
+.prestamos:before{
+    content: "\e69d";	
+}
 /* 5 - Materiales y Sumistros */
-.materiales-y-sumistros{}
+.materiales-y-sumistros:before{
+    content: "\e622";
+}
 /* 3 - Otras transferencias del gobierno central */
-.otras-transferencias-del-gobierno-central{}
+.otras-transferencias-del-gobierno-central:before{
+    content: "\e6a8";
+}
 /* 1 - Gastos de Personal */
-.gastos-de-funcionamiento{}
+.gastos-de-funcionamiento:before{
+    content: "\e68c";
+}
 /* 6 - Otros origenes */
-.otros-origenes{}
+.otros-origenes:before{
+    content: "\e695";
+}
+
 /* 2 - Servicios No Personales */
-.inversion{}
+.inversion :before{
+    content: "\e64d";
+	
+}
 /* 4 - Bienes de Uso/Inversión */
-.servicios-no-personaler{}
+.servicios-no-personaler:before{
+    content: "\e60a";
+}
