@@ -79,25 +79,19 @@
     </script>
 {% endblock %}
 
-    {% block header %}
-    <div class="pma-hero">
-        <div class="container ">
-            <div class="row">
-                <div class="col-md-7">
-                    <h2 class="text-center"> Origen de los ingresos {% if municipio %}<strong> {{ municipio }} </strong>{% endif %}</h2>
-                    <h4 class="text-center">{% if year %}{{ year }}{% else %}2015 {% endif %}</h4>
-                    <div>
-                        {% block illustration %}
-
-                        {% endblock %}
-                    </div>
-                </div>
-                <div class="col-md-5">
-                </div>
-            </div>
-        </div>
-    </div>
+{% block header_left %}
+    {% block header_left_title %}
+    <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %} Origen de los ingresos <strong>{% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h2>
     {% endblock %}
+    <h3 class="titular" data-toggle="popover" title="Presupuestado" data-content="Indica el Porcentaje que Los Municipios  a nivel nacional destinaron para cubrir los ingresos de administración y prestación de los">Presupuesto{% if year != '2016'%} inicial{% endif %}</h3>
+    <span class="cifra grande text-primary">{{ asignado|million|intcomma }}</span>
+    {% if year != '2016' %}
+    <h3>Ejecutado </h3><span class="cifra text-warning grande">{{ ejecutado|million|intcomma }}</span>
+    {% endif %}
+    {% if municipio %}
+    <h3>Categor&iacute;a de municipio </h3><span class="cifra text-success grande">{{ mi_clase.clasificacion }}</span>
+    {% endif %}
+{% endblock %}
 
 {% block section1 %}
                         <div class="bubbletree-container">
