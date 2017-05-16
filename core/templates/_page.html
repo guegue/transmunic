@@ -1,6 +1,10 @@
 {% extends "_base.html" %}
 {% load core_extras %}
 
+{% block custom_header_links %}
+<link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
+{% endblock %}
+
 {% block header_left_title %}
                 <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
                 <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
