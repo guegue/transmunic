@@ -1,0 +1,70 @@
+{% extends "_base.html" %}
+{% load core_extras %}
+
+{% load staticfiles %}
+{% block custom_header_links %}
+<link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
+{% endblock %}
+
+{% block header_left_title %}
+                <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
+                <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
+{% endblock %}
+{% block header %}
+<div class="pma-hero">
+    <div class="container ">
+        <div class="row">
+            <div class="col-md-12">
+                {% block header_title %}
+                <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
+                <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
+                {% endblock %}
+                <div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% block header_summary %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %}
+
+{% block section1 %}
+<div class="container">
+{% block pagecontent %}
+{% endblock %}
+</div>
+{% endblock %}
+
+{% block section2 %}
+<div class="container">
+</div>
+{% endblock %}
+
+{% block section3 %}
+<div class="pma-gradient pma-summary">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2> <strong>Consolidado</strong> <br/>de la Inversión Municipal 2017.</h2>
+                <hr class="pma-line-1">
+            </div>
+            <div class="col-md-4">
+                <h2> <strong>Distribución</strong><br> por Categorías de Ley.</h2>
+                <hr class="pma-line-1">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endblock %}
+
+{% block custom_footer_scripts %}
+{% endblock %}

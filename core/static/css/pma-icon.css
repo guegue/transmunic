@@ -1,81 +1,97 @@
 @font-face {
-	font-family: 'Pe-icon-7-stroke';
-	src:url('../fonts/Pe-icon-7-stroke.eot?d7yf1v');
-	src:url('../fonts/Pe-icon-7-stroke.eot?#iefixd7yf1v') format('embedded-opentype'),
-		url('../fonts/Pe-icon-7-stroke.woff?d7yf1v') format('woff'),
-		url('../fonts/Pe-icon-7-stroke.ttf?d7yf1v') format('truetype'),
-		url('../fonts/Pe-icon-7-stroke.svg?d7yf1v#Pe-icon-7-stroke') format('svg');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'Pe-icon-7-stroke';
+    src: url('../fonts/Pe-icon-7-stroke.eot?d7yf1v');
+    src: url('../fonts/Pe-icon-7-stroke.eot?#iefixd7yf1v') format('embedded-opentype'), url('../fonts/Pe-icon-7-stroke.woff?d7yf1v') format('woff'), url('../fonts/Pe-icon-7-stroke.ttf?d7yf1v') format('truetype'), url('../fonts/Pe-icon-7-stroke.svg?d7yf1v#Pe-icon-7-stroke') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
-
-[class^="pma-icon"], [class*=" pma-icon"] {
-	display: inline-block;
-	font-family: 'Pe-icon-7-stroke';
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+[class^="pma-icon"],
+[class*=" pma-icon"] {
+    display: inline-block;
+    font-family: 'Pe-icon-7-stroke';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
-.pma-icon:before{
+.pma-icon:before {
     font-size: 55px;
-    color: #00a7b2;
-	content: "\e64f";
+    content: "\e64f";
 }
 /* Origen Recurso - Icon font*/
+
 /* 2 - Transferencias de Ley */
+
 .transferencias-de-ley:before {
-	content: "\e616";
+    content: "\e616";
 }
 /* 4 - Transferencias y donaciones */
+
 .transferencias-y-donaciones:before {
-	content: "\e6a1";
+    content: "\e6a1";
 }
 /* 6 - Transferencias */
+
 .transferencias:before {
-	content: "\e616";
+    content: "\e616";
 }
 /* 1 - Recaudación */
+
 .recaudacion:before {
-	content: "\e66d";
+    content: "\e66d";
 }
 /* 3 - Otros */
-.otros-gastos:before{
-    content: "\e617";	
+
+.otros-gastos:before {
+    content: "\e617";
 }
 /* 5 - Préstamos */
-.prestamos:before{
-    content: "\e69d";	
+
+.prestamos:before {
+    content: "\e69d";
 }
 /* 5 - Materiales y Sumistros */
-.materiales-y-sumistros:before{
+
+.materiales-y-sumistros:before {
     content: "\e622";
 }
 /* 3 - Otras transferencias del gobierno central */
-.otras-transferencias-del-gobierno-central:before{
+
+.otras-transferencias-del-gobierno-central:before {
     content: "\e6a8";
 }
 /* 1 - Gastos de Personal */
-.gastos-de-funcionamiento:before{
+
+.gastos-de-funcionamiento:before {
     content: "\e68c";
 }
 /* 6 - Otros origenes */
-.otros-origenes:before{
+
+.otros-origenes:before {
     content: "\e695";
 }
-
 /* 2 - Servicios No Personales */
-.inversion :before{
+
+.inversion:before {
     content: "\e64d";
-	
 }
 /* 4 - Bienes de Uso/Inversión */
-.servicios-no-personaler:before{
+
+.servicios-no-personaler:before {
     content: "\e60a";
+}
+
+.initial:before{
+    content: "\e60d";
+}
+.executed:before{
+    content: "\e666";
+}
+.municipality-category:before{
+    content: "\e60c";
 }

@@ -1,4 +1,4 @@
-{% extends "_page.html" %}
+{% extends "_indicator.html" %}
 {% load static thumbnail chartit %}
 {% load humanize %}
 {% load mathfilters %}
@@ -79,29 +79,67 @@
     </script>
 {% endblock %}
 
-{% block header_left %}
-    {% block header_left_title %}
+    {% block header_title %}
     <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %} Origen de los ingresos <strong>{% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h2>
     {% endblock %}
-    <span class="pma-icon pe-7s-target white large"></span>
-    <h3>Presupuesto{% if year != '2016'%} inicial{% endif %}</h3>
-    <span class="">{{ asignado|million|intcomma }}</span>
-    {% if year != '2016' %}
-    <span class="pma-icon pe-7s-config white large"></span>
-    <h3>Ejecutado </h3><span>{{ ejecutado|million|intcomma }}</span>
-    {% endif %}
-    {% if municipio %}
-    <span class="pma-icon pe-7s-ticket white large"></span>
-    <h3>Categor&iacute;a de municipio </h3><span>{{ mi_clase.clasificacion }}</span>
-    {% endif %}
-{% endblock %}
+
+    {% block header_summary %}
+    <div class="col-md-4 pma-fg-white">
+        <div class="info-box">
+            <span class="info-box-icon pma-icon executed">
+            </span>
+            <div class="info-box-content">
+                <span class="info-box-text">
+                {% if year != '2016' %}
+                Ejecutado {{ ejecutado|million|intcomma }}
+                {% endif %}
+                </span>
+                <span class="info-box-number pma-green"></span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-md-4">
+        <div class="info-box">
+            <span class="info-box-icon pma-icon initial">
+            </span>
+            <div class="info-box-content">
+                <span class="info-box-text">Presupuesto{% if year != '2016'%} inicial{% endif %}</span>
+                <span class="info-box-number pma-green">{{ asignado|million|intcomma }}</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-md-4">
+        <div class="info-box">
+            <span class="info-box-icon pma-icon municipality-category">
+            </span>
+            <div class="info-box-content">
+                {% if municipio %}
+                {% endif %}
+                <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
+                <span class="info-box-number pma-green"></span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    {% endblock %}
 
 {% block section1 %}
-                        <div class="bubbletree-container">
-                            <div class="bubbletree-wrapper">
-                                <div class="bubbletree"></div>
-                            </div>
-                        </div>
+<div class="container">
+    <div class="row">
+        <div class="bubbletree-container col-md-6">
+            <div class="bubbletree-wrapper">
+                <div class="bubbletree"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 table-responsive grey-box">
+    </div>
+</div>
 {% endblock %}
 {% block section2 %}
 <div class="row">
@@ -112,7 +150,6 @@
                     <th>Rubros de ingresos</th>
                     <th class="text-right">Inicial</th>
                     <th class="text-right">Ejecutado</th>
-                    <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>
                 </tr>
             </thead>
             {% for row in rubros %}
@@ -120,7 +157,6 @@
                 <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
                 <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                 <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
-                <td class="">{% if asignado %}{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1|default:"0" }}%{% endif %}</td>
             </tr>
             {% endfor %}
             <tfoot>
@@ -128,7 +164,6 @@
                     <td>TOTAL</td>
                     <td class="text-right">{{ asignado|million|intcomma }}</td>
                     <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
-                    <td class="">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
                 </tr>
             </tfoot>
         </table>

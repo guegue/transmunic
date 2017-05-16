@@ -225,15 +225,17 @@ footer .copyright {
     font-weight: bold;
     font-size: 12px;
 }
-.pma-green {
+
+/* color schema styles */
+.pma-fg-green {
     color: #00a7b2;
 }
-.pma-blue {
+.pma-fg-blue {
     color: #007cb6;
 }
-.row-eq-height{
-    display: table;
+.pma-fg-white{
+    color: #ffffff;
 }
-.col-eq-height{
-    display: table-cell;
+.pma-bg-gray{
+    background-color: #f8f9fa;
 }
