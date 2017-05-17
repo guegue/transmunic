@@ -43,7 +43,7 @@
 /* 1 - Recaudación */
 
 .recaudacion:before {
-    content: "\e66d";
+    content: "\e6c0";
 }
 /* 3 - Otros */
 
@@ -95,3 +95,14 @@
 .municipality-category:before{
     content: "\e60c";
 }
+/*Medio Ambiente*/
+.medio-ambiente:before{
+    content: "\e6b8";
+}
+/*Participacion ciudadana */
+.participacion-ciudadana:before{
+    content: "\e6a9";
+}
+/*seguridad alimentaria */
+.seguridad-alimentaria:before{
+    content: "\e6b8";
