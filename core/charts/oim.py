@@ -625,6 +625,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
+                  'colors':  ['#FEFFFE', '#494440', '#E7D1B9', '#A89284', '#F6F0EA', '#7E634E',
+                      '#DD7E72', '#36B3D4', '#FCE367', '#8FC43F'],
               }
     )
 
