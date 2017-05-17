@@ -78,6 +78,7 @@
                         });
             });
     </script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
     {% if municipio and charts.4 %}
     {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
@@ -143,6 +144,7 @@
                     <div class="bubbletree"></div>
                 </div>
             </div>
+            <div id="ejecutado"> Chart will be rendered here </div>
             <div class="chart-update">
                     <span class="pma-icon pe-7s-graph pma-fg-blue" aria-hidden="true"></span>
                     <span class="pma-icon pe-7s-graph3 pma-fg-blue" aria-hidden="true"></span>
