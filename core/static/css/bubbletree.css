@@ -1,11 +1,13 @@
-.bubbletree-container {
-    height: 400px;
-    position: relative;
-}
 .bubbletree-wrapper {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+.bubbletree {
+	background: #fff;
+	position: relative;
+	height: 100%;
+	overflow: hidden;
 }
 .bubbletree {
     position: relative;
@@ -36,11 +38,15 @@
     margin-top: 5px;
 }
 .bubbletree .bubbletree-label2 span {
-    background: #fff;
+    background: transparent;
 }
 .loading {
     z-index: 1000;
     position: absolute;
     width: 700px;
     height: 400px;
+}
+.bubbletree-container {
+    min-height: 400px;
+    position: relative;
 }

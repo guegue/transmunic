@@ -9,14 +9,15 @@
 {% endblock %}
 
 {% block custom_header_links %}
-   <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
-   <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
 {% endblock %}
 {% block custom_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript  " src="{% static 'js/Tween.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
     <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
     <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
@@ -131,9 +132,25 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <div class="bubbletree-container col-md-6">
-            <div class="bubbletree-wrapper">
-                <div class="bubbletree"></div>
+        <div class="col-md-6">
+            <div class="bubbletree-container">
+                <div class="bubbletree-wrapper">
+                    <div class="bubbletree"></div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-lg" aria-label="Left Align">
+                    <span class=" pe-7s-graph" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default" aria-label="Center Align">
+                    <span class=" pe-7s-graph3" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default" aria-label="Right Align">
+                    <span class=" pe-7s-graph2" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default" aria-label="Justify">
+                    <span class=" pe-7s-graph1" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
         <div class="col-md-6 table-responsive">

@@ -225,6 +225,16 @@ footer .copyright {
     font-weight: bold;
     font-size: 12px;
 }
+/* margins */
+.wide{
+
+}
+.medium{
+
+}
+.narrow{
+    
+}
 
 /* color schema styles */
 .pma-fg-green {
