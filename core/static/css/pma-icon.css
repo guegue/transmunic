@@ -20,7 +20,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 .pma-icon:before {
-    font-size: 55px;
+    /* font-size: 55px; */
     content: "\e64f";
 }
 /* Origen Recurso - Icon font*/

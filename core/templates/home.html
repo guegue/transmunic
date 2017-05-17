@@ -20,17 +20,17 @@
 {% endblock %}
 {% block main_content %}
 <div class="container">
-    <div class="row">
+    <div class="row acerca">
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
                     {% load i18n flatpages %}
-                    {% get_flatpages '/transferencias-presupuestarias/' as pages %}
+                    {% get_flatpages '/intro/' as pages %}
                     {% for page in pages %}
                     <h3>{{ page.title }}</h3>
                     <hr class="pma-line-3">
                     <p>{{ page.content|safe|truncatewords:80 }}</p>
-                    <p><a href="{{ page.url }}"> Leer m&aacute;s</a></p>
+                    <p><a href="/transferencias-presupuestarias/"> Leer m&aacute;s</a></p>
                     {% endfor %}
                 </div>
             </div>
@@ -44,7 +44,7 @@
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container pma-index-icons">
     <div class="row row-eq-height pma-spacing-top pma-spacing-bottom">
         <div class="col-md-6 col-eq-height">
             <div class="gray-box">
@@ -52,12 +52,12 @@
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span>
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
                 </div>
-                <h2>Origen<br/>de los Ingresos</h2>
+                <h2><strong>Origen</strong><br/>de los Ingresos</h2>
                 <hr class="pma-line-2">
                 {% for origen in totales_oim %}
                 {% if forloop.counter|divisibleby:2 %}
                 {% else %}
-                <div class="row">
+                <div class="row info-index">
                 {% endif %}
                     <div class="col-md-6">
                         <div class="info-box">
@@ -84,7 +84,7 @@
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span>
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ajecutado|million }} millones</span>
                 </div>
-                <h2>Destino<br/>de los Gastos</h3>
+                <h2><strong>Destino</strong><br/>de los Gastos</h3>
                 <hr class="pma-line-2">
                 {% for gasto in totales_ogm %}
                 {% if forloop.counter|divisibleby:2 %}
