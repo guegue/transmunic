@@ -1,5 +1,5 @@
 {% extends "_base.html" %}
-{% load core_extras %}
+{% load core_extras static %}
 {% block header %}
 <div class="pma-hero">
     <div class="container ">
@@ -112,10 +112,10 @@
         </div>
     </div>
 </div>
-<div class="pma-gradient pma-summary">
+<div class="pma-gradient pma-summary pma-index-inversion-icons">
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
                         <h2> <strong>Consolidado</strong> <br/>de la Inversión Municipal 2017.</h2>
@@ -132,28 +132,16 @@
                         </p>
                         <p>&nbsp;</p>
                     </div>
-                    <div class="col-md-2">
-                        <img src="/static/images/icons/heart.png" alt="Salud" class="img-responsive center-block">
-                        <h4 class="text-center"><strong>Salud</strong></h4>
+                    {% for i in inversion_categoria %}
+                    <div class="col-md-2 text-center">
+                        <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}">
+                        </span>
+                        <h5 class="text-center"><strong>{{ i.catinversion__nombre }}</strong></h5>
                     </div>
-                    <div class="col-md-2">
-                        <img src="/static/images/icons/book.png" alt="Educación" class="img-responsive center-block">
-                        <h4 class="text-center"><strong>Educación</strong></h4>
-                    </div>
-                    <div class="col-md-3">
-                        <img src="/static/images/icons/network.png" alt="Participación Ciudadana" class="img-responsive center-block">
-                        <h4 class="text-center"><strong>Participación<br/>Ciudadana</strong></h4>
-                    </div>
-                    <div class="col-md-3">
-                        <img src="/static/images/icons/water.png" alt="Agua y Saneamiento" class="img-responsive center-block">
-                        <h4 class="text-center"><strong>Agua y<br/> Saneamiento</strong></h4>
-                    </div>
-                    <div class="col-md-2">
-                        <img src="/static/images/icons/vermas.png" alt="Participación Ciudadana" class="img-responsive center-block">
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            <div class="col-md-4">
+            <!--div class="col-md-4">
                 <div class="row">
                     <div class="col-md-12">
                         <h2> <strong>Distribución</strong><br> por Categorías de Ley.</h2>
@@ -165,7 +153,7 @@
                         <img src="images/espacio%20grafico.jpg" alt="..." class="img-rounded">
                     </div>
                 </div>
-            </div>
+            </div-->
         </div>
     </div>
 </div>
