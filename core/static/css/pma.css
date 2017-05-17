@@ -81,7 +81,7 @@ small,
     background-color: #008bb4;
 }
 .pma-summary {
-    height: 530px;
+    height: 775px;
 }
 .pma-gradient {
     color: #fff !important;
@@ -243,6 +243,9 @@ footer .copyright {
 .pma-fg-green {
     color: #00a7b2;
 }
+.pma-fg-light-green {
+    color: #5edab8;
+}
 .pma-fg-blue {
     color: #007cb6;
 }
@@ -269,4 +272,11 @@ footer .copyright {
 }
 .acerca {
     margin-top: 50px;
+}
+.pma-index-inversion-icons .pma-icon{
+    font-size: 50px;
+
+}
+.pma-index-inversion-icons .info-box-icon {
+    float: none;
 }
