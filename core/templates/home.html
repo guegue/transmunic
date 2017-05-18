@@ -132,13 +132,19 @@
                         </p>
                         <p>&nbsp;</p>
                     </div>
+                    <div class="row">
                     {% for i in inversion_categoria %}
-                    <div class="col-md-2 text-center">
-                        <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}">
-                        </span>
-                        <h5 class="text-center"><strong>{{ i.catinversion__nombre }}</strong></h5>
+                        <div class="col-md-2 text-center">
+                            <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}">
+                            </span>
+                            <h5 class="text-center"><strong>{{ i.catinversion__nombre }}</strong></h5>
+                        </div>
+                    {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
+                    <div class="row">
+                    {% endif %}
                     {% endfor %}
+                    </div>
                 </div>
             </div>
             <!--div class="col-md-4">
