@@ -222,3 +222,69 @@
     </div>
 </div>
 {% endblock %}
+{% block section4 %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6 table-responsive">
+            {% if year == '2016' %}
+            <h3>Recaudación por habitante</h3>
+            {% else %}
+            <h3>Ranquin de recaudación por habitante categoría municipal "{{ mi_clase.clasificacion }}"</h3>
+            {% endif %}
+            <hr class="pma-line-1">
+            <h4 class="text-info">Córdobas corrientes por habitante</h4>
+            <table class="table table-condensed">
+                <tr class="">
+                    <th>Posición</th>
+                    <th>Municipios</th>
+                    <th>P. Inicial</th>{% if year != '2016' %}
+                    <th>Ejecución</th>{% endif %}</tr>
+                {% if ejecutado <= 0 %}
+                {% for row in otros|dictsortreversed:"asignado_percent" %}
+                {% if municipio.slug == row.ingreso__municipio__slug%} <tr class="info">
+                    {% else %}
+                    <tr>
+                        {% endif %}
+                        <td class="text-center"> {{forloop.counter}} </td>
+                        <td>{{ row.ingreso__municipio__nombre }}</td>
+                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                        {% if year != '2016' %}
+                        <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    {% for row in otros %}
+                    {% if municipio.slug == row.ingreso__municipio__slug%}
+                    <tr class="info">
+                        {% else %}
+                        <tr>
+                            {% endif %}
+                            <td class="text-center"> {{forloop.counter}} </td>
+                            <td>{{ row.ingreso__municipio__nombre }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% if year != '2016' %}
+                            <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %} {% endif %}
+
+                        <tr class="">
+                            <td colspan="2">TOTAL</td>
+                            <td class="text-right">
+                                {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                            </td>
+                            {% if year != '2016' %}
+                            <td class="text-right">
+                                {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                            </td>
+                            {% endif %}
+                            <td></td>
+                        </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

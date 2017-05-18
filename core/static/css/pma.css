@@ -255,6 +255,9 @@ footer .copyright {
 .pma-bg-gray{
     background-color: #f8f9fa;
 }
+.pma-bg-blue {
+    background-color: #007cb6;
+}
 
 /* Chart Update options after render - Icons Styles */
 .chart-update{
