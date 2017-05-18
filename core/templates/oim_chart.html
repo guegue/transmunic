@@ -79,12 +79,13 @@
             });
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
-    {% if municipio and charts.4 %}
-    {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, asignado_barra, barra" }}
-    {% else %}
-    {{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
-    {% endif %}
     <script src="{% static 'js/pma.js' %}"></script>
+    {% if municipio and charts.4 %}
+    {{ charts|load_charts:"ejecutado" }}
+    {% else %}
+    {{ charts|load_charts:"ejecutado" }}
+    {% endif %}
+    
 {% endblock %}
 
     {% block header_title %}
@@ -141,7 +142,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="bubbletree-container chart-container">
-                <div id="chart-bubble-1" class="bubbletree-wrapper view-main">
+                <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
                 <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
