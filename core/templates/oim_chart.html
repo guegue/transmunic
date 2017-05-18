@@ -223,6 +223,22 @@
     </div>
 </div>
 {% endblock %}
+{% block section3 %}
+<div class="pma-gradient">
+    <div class="container wide">
+        <div class="row">
+            <div class="col-md-12 text-center">
+            {% if year == '2016' %}
+            <h2>Recaudación por habitante</h2>
+            {% else %}
+            <h2>Ranking de recaudación por habitante categoría municipal 
+                "{{ mi_clase.clasificacion }}"</h2>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 {% block section4 %}
 <div class="container">
     <div class="row">
@@ -336,12 +352,6 @@
             </ul>
         </div>
         <div class="col-md-6 table-responsive">
-            {% if year == '2016' %}
-            <h3>Recaudación por habitante</h3>
-            {% else %}
-            <h3>Ranquin de recaudación por habitante categoría municipal "{{ mi_clase.clasificacion }}"</h3>
-            {% endif %}
-            <hr class="pma-line-1">
             <h4 class="text-info">Córdobas corrientes por habitante</h4>
             <table class="table table-condensed table-striped">
                 <tr class="">
