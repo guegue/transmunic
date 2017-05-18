@@ -84,6 +84,7 @@
     {% else %}
     {{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
+    <script src="{% static 'js/pma.js' %}"></script>
 {% endblock %}
 
     {% block header_title %}
@@ -138,21 +139,23 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <div class="bubbletree-container">
-                <div class="bubbletree-wrapper">
+        <div class="col-md-8">
+            <div class="bubbletree-container chart-container">
+                <div id="chart-bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
+                <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
+                Rubros </div>
             </div>
-            <div id="ejecutado"> Chart will be rendered here </div>
             <div class="chart-update">
-                    <span class="pma-icon pe-7s-graph pma-fg-blue" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph3 pma-fg-blue" aria-hidden="true"></span>
+                    <span class="pma-icon pe-7s-graph pma-fg-blue"
+                        aria-hidden="true" id="chart-bubble-1"></span>
+                    <span id="chart-pie-1" class="pma-icon pe-7s-graph3 pma-fg-blue" aria-hidden="true"></span>
                     <span class="pma-icon pe-7s-graph2 pma-fg-blue" aria-hidden="true"></span>
                     <span class="pma-icon pe-7s-graph1 pma-fg-blue" aria-hidden="true"></span>
             </div>
         </div>
-        <div class="col-md-6 table-responsive">
+        <div class="col-md-4 table-responsive">
                 <h2> <strong>Ingresos del período</strong> <br/></h2>
                 <hr class="pma-line-1">
             <table class="table table-striped table-hover">

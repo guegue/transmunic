@@ -280,3 +280,19 @@ footer .copyright {
 .pma-index-inversion-icons .info-box-icon {
     float: none;
 }
+/* charts */
+
+.chart-container {
+    position: relative;
+}
+.chart-container
+[class^="view-"],
+[class*=" view-"] {
+    position: absolute;
+}
+.chart-container .view-alternative {
+    display: none;
+}
+.chart-container .view-main {
+    display: block;
+}
