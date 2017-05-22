@@ -64,7 +64,7 @@
                     'cofog': BubbleTree.Styles.Cofog
                 },
                 formatValue: function(value) {
-                    return 'C$ ' + value.toString() + 'M';
+                    return 'C$ ' + value + 'M';
                 }
             });
         });
@@ -87,7 +87,7 @@
     {% else %}
 	{{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
-    
+
 {% endblock %}
 
     {% block header_title %}
@@ -237,7 +237,7 @@
             {% if year == '2016' %}
             <h2>Recaudación por habitante</h2>
             {% else %}
-            <h2>Ranking de recaudación por habitante categoría municipal 
+            <h2>Ranking de recaudación por habitante categoría municipal
                 "{{ mi_clase.clasificacion }}"</h2>
             {% endif %}
             </div>
