@@ -1,12 +1,17 @@
 $(function() {
     $("#chart-pie-1").click(function(){
-        $(".chart-container [class*=' view-']").toggleClass( "view-main" )
-        $("#bubble-1").hide("slow");
-        $("#ejecutado").show("slow");
+        $(".chart-container .view-main").hide("slow");
+        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative"); 
+        $("#ejecutado").show("slow").addClass("view-main");
     });
     $("#chart-bubble-1").click(function(){
-        $(".chart-container [class*=' view-']").toggleClass( "view-main" )
-        $("#ejecutado").hide("slow");
-        $("#bubble-1").show("slow");
+        $(".chart-container .view-main").hide("slow");
+        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative"); 
+        $("#bubble-1").show("slow").addClass("view-main");
+    });
+    $("#chart-bar-1").click(function(){
+        $(".chart-container .view-main").hide("slow");
+        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative"); 
+        $("#comparativo2").show("slow").addClass("view-main");
     });
 });

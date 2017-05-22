@@ -81,7 +81,7 @@ small,
     background-color: #008bb4;
 }
 .pma-summary {
-    height: 775px;
+    height: 725px;
 }
 .pma-gradient {
     color: #fff !important;
@@ -217,7 +217,7 @@ footer .copyright {
 .progress-description,
 .info-box-text {
     display: block;
-    font-size: 14px;
+    font-size: 18px;
     overflow: hidden;
 }
 .info-box-number {
@@ -227,8 +227,8 @@ footer .copyright {
 }
 /* margins */
 .wide{
-    margin-bottom: 1.414em;
-    margin-top: 1.414em;
+    margin-bottom: 1.2em;
+    margin-top: 2em;
 }
 .medium{
     margin-bottom: 1.3em;
@@ -240,7 +240,7 @@ footer .copyright {
 }
 
 /* color schema styles */
-.pma-fg-green {
+.pma-fg-green, .pma-blue {
     color: #00a7b2;
 }
 .pma-fg-light-green {
@@ -252,6 +252,12 @@ footer .copyright {
 .pma-fg-white{
     color: #ffffff;
 }
+.pma-fg-orange{
+    color: #c05800;
+}
+.pma-fg-gray{
+    color: #49494a;
+}
 .pma-bg-gray{
     background-color: #f8f9fa;
 }
@@ -261,6 +267,9 @@ footer .copyright {
 
 /* Chart Update options after render - Icons Styles */
 .chart-update{
+    z-index: 10000;
+    margin-top: 56px;
+    padding: 0;
 }
 .chart-update .pma-icon {
     font-size: 36px;
@@ -298,4 +307,13 @@ footer .copyright {
 }
 .chart-container .view-main {
     display: block;
+}
+.list-icons-inversion {
+    margin-top: 12px;
+}
+.pma-index-inversion-icons h5{
+    margin-top: 0px;
+}
+.chart-update .pma-icon {
+    cursor: pointer;
 }

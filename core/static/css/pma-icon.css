@@ -106,3 +106,46 @@
 /*seguridad alimentaria */
 .seguridad-alimentaria:before{
     content: "\e6b8";
+}
+.educacion-escuelas-alfabetizacion-becas:before {
+    content: "\e60f";
+}
+.agua-y-saneamiento:before {
+    content: "\e65a";
+}
+.viviendas:before {
+    content: "\e648";
+}
+.cultura-y-deporte:before {
+    content: "\e679";
+}
+.calles-aceras-y-andenes:before {
+    content: "\e68e";
+}
+.ninez-adolescencia-y-mujer-tercera-edad-grupos-vul:before {
+    content: "\e693";
+}
+.seguridad-alimentaria:before {
+    content: "\e60e";
+}
+.energia-domiciliar-y-publica:before {
+    content: "\e69a";
+}
+.salud:before {
+    content: "\e642";
+}
+.drenaje-pluvial:before {
+    content: "\e66a";
+}
+.caminos-puentes-y-alcantarillado:before {
+    content: "\e614";
+}
+.otros:before {
+    content: "\e64d";
+}
+.fortalecimiento-institucional-municipal:before {
+    content: "\e65e";
+}
+.parques-plazas-y-ornato:before {
+    content: "\e676";
+}

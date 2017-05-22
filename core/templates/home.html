@@ -98,7 +98,7 @@
                             <div class="info-box-content">
                                 <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
                                 <span class="info-box-number pma-blue">Inicial: {{ gasto.asignado_percent }}%</span>
-                                <span class="info-box-number pma-green">Final: {{ gasto.ejecutado_percent }}%</span>
+                                <span class="info-box-number pma-orange">Final: {{ gasto.ejecutado_percent }}%</span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
@@ -141,7 +141,7 @@
                         </div>
                     {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
-                    <div class="row">
+                    <div class="row list-icons-inversion">
                     {% endif %}
                     {% endfor %}
                     </div>

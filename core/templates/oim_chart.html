@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block custom_header_links %}
+    <link rel="stylesheet" href="{% static 'css/linea_basic.css' %}">
     <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
@@ -82,9 +83,9 @@
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/pma.js' %}"></script>
     {% if municipio and charts.4 %}
-    {{ charts|load_charts:"ejecutado" }}
+    {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
-    {{ charts|load_charts:"ejecutado" }}
+	{{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
     
 {% endblock %}
@@ -94,6 +95,17 @@
     {% endblock %}
 
     {% block header_summary %}
+    <div class="col-md-4">
+        <div class="info-box">
+            <span class="info-box-icon pma-icon initial">
+            </span>
+            <div class="info-box-content">
+                <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
     <div class="col-md-4 pma-fg-white">
         <div class="info-box">
             <span class="info-box-icon pma-icon executed">
@@ -105,18 +117,6 @@
                 {% endif %}
                 </span>
                 <span class="info-box-number pma-green"></span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <div class="col-md-4">
-        <div class="info-box">
-            <span class="info-box-icon pma-icon initial">
-            </span>
-            <div class="info-box-content">
-                <span class="info-box-text">Presupuesto{% if year != '2016'%} inicial{% endif %}</span>
-                <span class="info-box-number pma-green">{{ asignado|million|intcomma }}</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -141,25 +141,31 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
-            <div class="bubbletree-container chart-container">
+        <h2> <strong>Ingresos del período</strong> <br/></h2>
+        <hr class="pma-line-1">
+        <div class="col-md-7">
+            <div class="chart-update col-md-1 float-left">
+                    <span class="pma-icon pe-7s-bubble pma-fg-gray"
+                        aria-hidden="true" id="chart-bubble-1"></span>
+                    <span id="chart-pie-1" class="pma-icon pe-7s-graph
+                        pma-fg-gray" aria-hidden="true"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray" aria-hidden="true"></span>
+                    <span class="pma-icon pe-7s-graph2 pma-fg-gray"
+                        aria-hidden="true" id="icons"></span>
+            </div>
+            <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
                 <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
                 Rubros </div>
-            </div>
-            <div class="chart-update">
-                    <span class="pma-icon pe-7s-graph pma-fg-blue"
-                        aria-hidden="true" id="chart-bubble-1"></span>
-                    <span id="chart-pie-1" class="pma-icon pe-7s-graph3 pma-fg-blue" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-blue" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph1 pma-fg-blue" aria-hidden="true"></span>
+                <div id="comparativo2" class="view-alternative"> Chart will be rendered here
+                </div>
+                <div id="icons" class="view-alternative">
+                </div>
             </div>
         </div>
-        <div class="col-md-4 table-responsive">
-                <h2> <strong>Ingresos del período</strong> <br/></h2>
-                <hr class="pma-line-1">
+        <div class="col-md-5 table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="">
@@ -336,6 +342,8 @@
                 </li> -->
                 {% for row in otros|dictsortreversed:"asignado_percent" %}
                 <li{% if forloop.counter|divisibleby:2 %} class="timeline-inverted"{% endif %}>
+                    <div class="timeline-badge primary"><i class="icon
+                            icon-basic-gunsight"></i></div>
                     <div class="timeline-panel">
                         <div class="timeline-heading">
                             <h4 class="timeline-title">{{ row.ingreso__municipio__nombre }}</h4>
@@ -392,17 +400,161 @@
                         <tr class="">
                             <td colspan="2">TOTAL</td>
                             <td class="text-right">
-                                {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                {% if numerador > 0 %}
+                                    {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                {% endif %}
                             </td>
                             {% if year != '2016' %}
                             <td class="text-right">
-                                {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                {% if denominador > 0 %}
+                                    {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                {% endif %}
                             </td>
                             {% endif %}
                             <td></td>
                         </tr>
             </table>
         </div>
+    </div>
+</div>
+{% endblock %}
+{% block section5 %}
+<div class="pma-gradient">
+    <div class="container wide">
+        <div class="row">
+            <div class="col-md-12 text-center">
+            <h2>Información histórica
+                "{{ mi_clase.clasificacion }}"</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block section6 %}
+<div class="container">
+    <div class="row">
+        <h2> <strong>Modificaciones al presupuesto municipal de ingresos</strong> <br/></h2>
+        <hr class="pma-line-1">
+        <h5 class="text-info">Datos en millones de córdobas corrientes
+        </h5>
+         <div class="collapse" id="collapsemodificacion">
+            <div class="well">
+                <div class="col-md-3 pull-left">Las transferencias se asigna cada año según los criterios establecido en la ley de transferencias y están distribuidas en gatos corrientes y capital.<p></div>
+                <div class="col-md-7"><div id='comparativo3'> Chart will be rendered here </div></div>
+            </div>
+        </div>
+        <div class="col-md-11">
+        <table class="table table-condensed">
+            <tr>
+                <td></td>
+                <td></td>
+                <td colspan="4" class="warning text-center">
+                    <h4>Modificación intermedia
+                        <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
+                    </h4>
+                </td>
+                <td colspan="4" class="danger text-center">
+                    <h4>Modificación al cierre
+                        <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
+                    </h4>
+                </td>
+            </tr>
+            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th>
+                <th class="warning"> Actualizado</th> <th
+                    class="warning">Modificación</th> <th
+                    class="warning">Ejecutado</th> <th class="warning"><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+            </tr>
+            {% for row in rubros %}
+                <tr>
+                    <td class="pull-left">{{ row.subsubtipoingreso__origen__nombre}}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+
+                    <td class="warning text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="warning text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="warning text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    {% if row.actualizado_asignado %}
+                        <td class="warning montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% else %}
+                        <td class="success montos">0</td>
+                    {% endif %}
+
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    {% if row.final_asignado %}
+                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+            <tr class="success bold">
+                <td>TOTAL</td>
+                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'actualizado_asignado' %}
+                        {{ rubros|total_sum:'actualizado_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubros|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'actualizado_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+                <!-- totales periodo final -->
+                <td class="text-right">{{ rubros|total_sum:'final_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'final_asignado' %}
+                        {{ rubros|total_sum:'final_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'final_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            </tr>
+        </table>
+        <h2> <strong>Ejecución presupuestaria del ingreso total. {% if not municipio %}Consolidado municipal {% endif %}</strong> <br/></h2>
+        <hr class="pma-line-1">
+        <h5 class="text-info">Datos en millones de córdobas corrientes
+        </h5>
+            <table class="table table-condensed">
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
+                {% for row in anuales %}
+                <tr>
+                    <td>{{ row.ingreso__anio }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% if row.asignado %}
+                        <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:2 }}%</td>
+                    {% endif %}
+                 </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
+                    <td class="text-right">{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
+                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
+                    <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:2 }}%</td>
+                    {% endwith %}
+                </tr>
+            </table>
     </div>
 </div>
 {% endblock %}
