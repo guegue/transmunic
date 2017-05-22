@@ -317,3 +317,8 @@ footer .copyright {
 .chart-update .pma-icon {
     cursor: pointer;
 }
+
+/* Numeric data format, tables */
+.numeric_data, .tabular_data {
+    font-family: 'Roboto', sans-serif;
+}

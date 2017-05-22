@@ -6,12 +6,21 @@
 <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
 {% endblock %}
 
-{% block header_left_title %}
-                <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
-                <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
-{% endblock %}
+
 {% block header %}
-<div class="pma-hero">
+    <div class="pma-search-bar pma-bg-blue ">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-12">
+                <p>Municipio,  Ano, Indicador</p>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+<div class="pma-bg-gray">
     <div class="container ">
         <div class="row">
             <div class="col-md-12">
@@ -29,9 +38,6 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block main_content %}
 
 {% block section1 %}
 <div class="container">
