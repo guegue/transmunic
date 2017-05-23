@@ -613,7 +613,9 @@ def oim_chart(municipio=None, year=None, portada=False):
             datasource = oimdata,
             series_options =
               [{'options':{
-                  'type': 'pie',
+                  'type': 'column',
+                  'colorByPoint': True,
+                  'showInLegend': False,
                   'stacking': False},
                 'terms':{
                   'subsubtipoingreso__origen__nombre': [
@@ -624,9 +626,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
-                  'colors':  ['#FEFFFE', '#494440', '#E7D1B9', '#A89284', '#F6F0EA', '#7E634E',
-                      '#DD7E72', '#36B3D4', '#FCE367', '#8FC43F'],
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.value:.2f}%</b>' },
+                  'colors':  ['#4C4642', '#898F45', '#A69083', '#DB736E', '#F6F0EB', '#36B1D2', '#F3DCBD', '#D7C1AF', '#FDE071'],
               }
     )
 
