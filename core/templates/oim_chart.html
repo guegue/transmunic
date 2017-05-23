@@ -83,9 +83,9 @@
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/pma.js' %}"></script>
     {% if municipio and charts.4 %}
-    {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
+    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
-	{{ charts|load_charts:"ejecutado,comparativo2,tipo,comparativo3,comparativo_anios" }}
+	{{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
 
 {% endblock %}
@@ -158,6 +158,8 @@
                     <div class="bubbletree"></div>
                 </div>
                 <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
+                Rubros </div>
+                <div id="ejecutado_column" class="view-alternative"> Barras Ejecucion por
                 Rubros </div>
                 <div id="comparativo2" class="view-alternative"> Chart will be rendered here
                 </div>

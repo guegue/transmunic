@@ -12,6 +12,6 @@ $(function() {
     $("#chart-bar-1").click(function(){
         $(".chart-container .view-main").hide("slow");
         $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative"); 
-        $("#comparativo2").show("slow").addClass("view-main");
+        $("#ejecutado_column").show("slow").addClass("view-main");
     });
 });

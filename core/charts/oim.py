@@ -613,7 +613,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             datasource = oimdata,
             series_options =
               [{'options':{
-                  'type': 'column',
+                  'type': 'pie',
                   'colorByPoint': True,
                   'showInLegend': False,
                   'stacking': False},
@@ -626,7 +626,29 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.value:.2f}%</b>' },
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f} %</b>' },
+                  'colors':  ['#4C4642', '#898F45', '#A69083', '#DB736E', '#F6F0EB', '#36B1D2', '#F3DCBD', '#D7C1AF', '#FDE071'],
+              }
+    )
+
+    ejecutado_column = Chart(
+            datasource = oimdata,
+            series_options =
+              [{'options':{
+                  'type': 'column',
+                  'colorByPoint': True,
+                  'showInLegend': False,
+                  'stacking': False},
+                'terms':{
+                  'subsubtipoingreso__origen__nombre': [
+                    quesumar]
+                  }}],
+            chart_options =
+              {
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'title': {'text': ' '},
+                  'plotOptions': { 'column': { 'dataLabels': { 'enabled': False, 'format': '{point.y:.2f}' }, 'showInLegend': True, 'depth': 35, }},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f} </b>' },
                   'colors':  ['#4C4642', '#898F45', '#A69083', '#DB736E', '#F6F0EB', '#36B1D2', '#F3DCBD', '#D7C1AF', '#FDE071'],
               }
     )
@@ -667,7 +689,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado_pie, )
     elif municipio:
-        charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
     else:
         charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
 
