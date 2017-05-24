@@ -322,3 +322,9 @@ footer .copyright {
 .numeric_data, .tabular_data {
     font-family: 'Roboto', sans-serif;
 }
+
+/* section header */
+.pma-section-header{
+    padding: 20px 0 40px; 
+    font-family: 'Roboto', sans-serif;
+}
