@@ -39,6 +39,12 @@ small,
 .font_small {
     font-size: 0.833em;
 }
+.pma-number,
+table td {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* custom pma classes */
 .pma-header{
     overflow: visible;
     margin-bottom: 50px;
@@ -84,7 +90,7 @@ small,
     height: 725px;
 }
 .pma-gradient {
-    color: #fff !important;
+    color: #fff;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b7ab3+0,00a7b2+100 */
     background: rgb(43, 122, 179);
     /* Old browsers */
@@ -96,6 +102,9 @@ small,
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
     /* IE6-9 fallback on horizontal gradient */
+}
+.pma-gradient table{
+    color: #333;
 }
 .navbar-brand {
     border-left: #70b0cb solid 1px;
@@ -263,6 +272,9 @@ footer .copyright {
 }
 .pma-bg-blue {
     background-color: #007cb6;
+}
+.pma-bg-white{
+    background-color: #ffffff;
 }
 
 /* Chart Update options after render - Icons Styles */

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/timeline-horizontal.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/horizontal-timeline.css' %}" />
 {% endblock %}
 {% block custom_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
@@ -82,12 +82,12 @@
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/pma.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
     {% if municipio and charts.4 %}
     {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
     {% else %}
-	{{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
+    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
     {% endif %}
-
 {% endblock %}
 
     {% block header_title %}
@@ -231,7 +231,148 @@
     </div>
 </div>
 {% endblock %}
+
 {% block section3 %}
+<section class="cd-horizontal-timeline loaded">
+    <div class="timeline">
+        <div class="events-wrapper">
+            <div class="events" style="width: 1800px;">
+                <ol>
+                    <!--
+                    <li><a href="#0" data-date="16/01/2014" class="selected" style="left: 120px;">16 Jan</a></li>
+                    <li><a href="#0" data-date="28/02/2014" style="left: 300px;">28 Feb</a></li>
+                    <li><a href="#0" data-date="20/04/2014" style="left: 480px;">20 Mar</a></li>
+                    <li><a href="#0" data-date="20/05/2014" style="left: 600px;">20 May</a></li>
+                    <li><a href="#0" data-date="09/07/2014" style="left: 780px;">09 Jul</a></li>
+                    <li><a href="#0" data-date="30/08/2014" style="left: 960px;">30 Aug</a></li>
+                    <li><a href="#0" data-date="15/09/2014" style="left: 1020px;">15 Sep</a></li>
+                    <li><a href="#0" data-date="01/11/2014" style="left: 1200px;">01 Nov</a></li>
+                    <li><a href="#0" data-date="10/12/2014" style="left: 1380px;">10 Dec</a></li>
+                    <li><a href="#0" data-date="19/01/2015" style="left: 1500px;">29 Jan</a></li>
+                    <li><a href="#0" data-date="03/03/2015" style="left: 1680px;">3 Mar</a></li>
+                    -->
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                    <li><a href="#0" data-date="" style="left: {{ forloop.counter|mul:120 }}px;">{{ row.ingreso__municipio__nombre }}</a></li>
+                    {% endfor %}
+                </ol>
+
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+
+    <div class="events-content">
+        <ol>
+            <!--
+            <li class="selected" data-date="16/01/2014">
+                <h2>Horizontal Timeline</h2>
+                <em>January 16th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="28/02/2014">
+                <h2>Event title here</h2>
+                <em>February 28th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="20/04/2014">
+                <h2>Event title here</h2>
+                <em>March 20th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="20/05/2014">
+                <h2>Event title here</h2>
+                <em>May 20th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="09/07/2014">
+                <h2>Event title here</h2>
+                <em>July 9th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="30/08/2014">
+                <h2>Event title here</h2>
+                <em>August 30th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="15/09/2014">
+                <h2>Event title here</h2>
+                <em>September 15th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="01/11/2014">
+                <h2>Event title here</h2>
+                <em>November 1st, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="10/12/2014">
+                <h2>Event title here</h2>
+                <em>December 10th, 2014</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="19/01/2015">
+                <h2>Event title here</h2>
+                <em>January 19th, 2015</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li>
+
+            <li data-date="03/03/2015">
+                <h2>Event title here</h2>
+                <em>March 3rd, 2015</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li> 
+            -->
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                    <li><a href="#0" data-date="" style="left: {{ forloop.counter|mul:120 }}px;">{{ row.ingreso__municipio__nombre }}</a></li>
+            <li data-date="">
+                <h2>{{ row.ingreso__municipio__nombre }}</h2>
+                <em>March 3rd, 2015</em>
+                <p>	
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+                </p>
+            </li> 
+                    {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+</section>
+{% endblock %}
+
+{% block section4 %}
 <div class="pma-gradient">
     <div class="container wide">
         <div class="row">
@@ -245,106 +386,19 @@
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
-{% block section4 %}
-<div class="container">
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-  </ol>
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner" role="listbox">
-    <div class="item active">
-        <ul class="timeline timeline-horizontal">
-            {% for row in otros|dictsortreversed:"asignado_percent" %}
-            <li class="timeline-item">
-                <div class="timeline-badge primary"><i class="glyphicon glyphicon-screenshot"></i></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4 class="timeline-title">{{ row.ingreso__municipio__nombre }}</h4>
-                    </div>
-                    <div class="timeline-body">
-                        <p>Asignado: {{ row.asignado_percent|intcomma }}</p>
-                    {% if year != '2016' %}
-                    <p>ejecutado: {{ row.ejecutado_percent|intcomma }}</p>
-                    {% endif %}
-                    </div>
-                </div>
-            </li>
-            {% if not foorloop.last and forloop.counter|divisibleby:4 %}
-        </ul>
-    </div>
-    <div class="item">
-        <ul class="timeline timeline-horizontal">
-            {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-  </div>
-  <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-</div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <ul class="timeline">
-                {% for row in otros|dictsortreversed:"asignado_percent" %}
-                <li{% if forloop.counter|divisibleby:2 %} class="timeline-inverted"{% endif %}>
-                    <div class="timeline-badge primary"><i class="icon
-                            icon-basic-gunsight"></i></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4 class="timeline-title">{{ row.ingreso__municipio__nombre }}</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p>Asignado: {{ row.asignado_percent|intcomma }}</p>
-                        {% if year != '2016' %}
-                        <p>ejecutado: {{ row.ejecutado_percent|intcomma }}</p>
-                        {% endif %}
-                        </div>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-md-6 table-responsive">
-            <h4 class="text-info">Córdobas corrientes por habitante</h4>
-            <table class="table table-condensed table-striped">
-                <tr class="">
-                    <th>Posición</th>
-                    <th>Municipios</th>
-                    <th>P. Inicial</th>{% if year != '2016' %}
-                    <th>Ejecución</th>{% endif %}</tr>
-                {% if ejecutado <= 0 %}
-                {% for row in otros|dictsortreversed:"asignado_percent" %}
-                {% if municipio.slug == row.ingreso__municipio__slug%} <tr class="info">
-                    {% else %}
-                    <tr>
-                        {% endif %}
-                        <td class="text-center"> {{forloop.counter}} </td>
-                        <td>{{ row.ingreso__municipio__nombre }}</td>
-                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                        {% if year != '2016' %}
-                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    {% for row in otros %}
-                    {% if municipio.slug == row.ingreso__municipio__slug%}
-                    <tr class="info">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 table-responsive">
+                <h4 class="text-info">Córdobas corrientes por habitante</h4>
+                <table class="table table-condensed table-striped pma-bg-white">
+                    <tr class="">
+                        <th>Posición</th>
+                        <th>Municipios</th>
+                        <th>P. Inicial</th>{% if year != '2016' %}
+                        <th>Ejecución</th>{% endif %}</tr>
+                    {% if ejecutado <= 0 %}
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                    {% if municipio.slug == row.ingreso__municipio__slug%} <tr class="info">
                         {% else %}
                         <tr>
                             {% endif %}
@@ -355,25 +409,39 @@
                             <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                             {% endif %}
                         </tr>
-                        {% endfor %} {% endif %}
-
-                        <tr class="">
-                            <td colspan="2">TOTAL</td>
-                            <td class="text-right">
-                                {% if numerador > 0 %}
-                                    {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                        {% endfor %}
+                        {% else %}
+                        {% for row in otros %}
+                        {% if municipio.slug == row.ingreso__municipio__slug%}
+                        <tr class="info">
+                            {% else %}
+                            <tr>
                                 {% endif %}
-                            </td>
-                            {% if year != '2016' %}
-                            <td class="text-right">
-                                {% if denominador > 0 %}
-                                    {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                <td class="text-center"> {{forloop.counter}} </td>
+                                <td>{{ row.ingreso__municipio__nombre }}</td>
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                {% if year != '2016' %}
+                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                                 {% endif %}
-                            </td>
-                            {% endif %}
-                            <td></td>
-                        </tr>
-            </table>
+                            </tr>
+                            {% endfor %} {% endif %}
+                            <tr class="">
+                                <td colspan="2">TOTAL</td>
+                                <td class="text-right">
+                                    {% if numerador > 0 %}
+                                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    {% endif %}
+                                </td>
+                                {% if year != '2016' %}
+                                <td class="text-right">
+                                    {% if denominador > 0 %}
+                                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
