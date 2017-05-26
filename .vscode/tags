@@ -119,7 +119,7 @@ PERIODO_ACTUALIZADO	../core/models.py	/^PERIODO_ACTUALIZADO = 'A'$/;"	kind:varia
 PERIODO_CHOICES	../core/models.py	/^PERIODO_CHOICES = ($/;"	kind:variable	line:20
 PERIODO_FINAL	../core/models.py	/^PERIODO_FINAL = 'F'$/;"	kind:variable	line:17
 PERIODO_INICIAL	../core/models.py	/^PERIODO_INICIAL = 'I'$/;"	kind:variable	line:15
-PERIODO_VERBOSE	../core/models.py	/^PERIODO_VERBOSE = {'I': ' P. Inicial', 'A': 'Actualizado', 'F': 'Ejecutado'}$/;"	kind:variable	line:19
+PERIODO_VERBOSE	../core/models.py	/^PERIODO_VERBOSE = {'I': 'P. Inicial', 'A': 'Actualizado', 'F': 'Ejecutado'}$/;"	kind:variable	line:19
 PERSONAL	../core/models.py	/^    PERSONAL = '1000000'$/;"	kind:variable	line:87
 PERSONAL_PERMANENTE	../core/models.py	/^    PERSONAL_PERMANENTE = '1100000'$/;"	kind:variable	line:88
 PlanInversionModelReport	../core/reports.py	/^class PlanInversionModelReport(ReportAdmin):$/;"	kind:class	line:25

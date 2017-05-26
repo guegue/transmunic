@@ -47,7 +47,7 @@
                     $tooltip.hide();
                 }
             };
-            var data = {{ bubble_data|safe }}
+            var data = {{ bubble_data|safe }};
             $.each( data['children'], function( key, value ) {
                 data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
                 var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
@@ -236,23 +236,10 @@
 <section class="cd-horizontal-timeline loaded">
     <div class="timeline">
         <div class="events-wrapper">
-            <div class="events" style="width: 1800px;">
+            <div class="events" style="width: {{ otros|length|mul:300 }}px;">
                 <ol>
-                    <!--
-                    <li><a href="#0" data-date="16/01/2014" class="selected" style="left: 120px;">16 Jan</a></li>
-                    <li><a href="#0" data-date="28/02/2014" style="left: 300px;">28 Feb</a></li>
-                    <li><a href="#0" data-date="20/04/2014" style="left: 480px;">20 Mar</a></li>
-                    <li><a href="#0" data-date="20/05/2014" style="left: 600px;">20 May</a></li>
-                    <li><a href="#0" data-date="09/07/2014" style="left: 780px;">09 Jul</a></li>
-                    <li><a href="#0" data-date="30/08/2014" style="left: 960px;">30 Aug</a></li>
-                    <li><a href="#0" data-date="15/09/2014" style="left: 1020px;">15 Sep</a></li>
-                    <li><a href="#0" data-date="01/11/2014" style="left: 1200px;">01 Nov</a></li>
-                    <li><a href="#0" data-date="10/12/2014" style="left: 1380px;">10 Dec</a></li>
-                    <li><a href="#0" data-date="19/01/2015" style="left: 1500px;">29 Jan</a></li>
-                    <li><a href="#0" data-date="03/03/2015" style="left: 1680px;">3 Mar</a></li>
-                    -->
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
-                    <li><a href="#0" data-date="" style="left: {{ forloop.counter|mul:120 }}px;">{{ row.ingreso__municipio__nombre }}</a></li>
+                    <li><a href="#0" data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}" {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:300 }}px;">{{ row.ingreso__municipio__nombre }}</a></li>
                     {% endfor %}
                 </ol>
 
@@ -268,98 +255,8 @@
 
     <div class="events-content">
         <ol>
-            <!--
-            <li class="selected" data-date="16/01/2014">
-                <h2>Horizontal Timeline</h2>
-                <em>January 16th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="28/02/2014">
-                <h2>Event title here</h2>
-                <em>February 28th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="20/04/2014">
-                <h2>Event title here</h2>
-                <em>March 20th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="20/05/2014">
-                <h2>Event title here</h2>
-                <em>May 20th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="09/07/2014">
-                <h2>Event title here</h2>
-                <em>July 9th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="30/08/2014">
-                <h2>Event title here</h2>
-                <em>August 30th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="15/09/2014">
-                <h2>Event title here</h2>
-                <em>September 15th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="01/11/2014">
-                <h2>Event title here</h2>
-                <em>November 1st, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="10/12/2014">
-                <h2>Event title here</h2>
-                <em>December 10th, 2014</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="19/01/2015">
-                <h2>Event title here</h2>
-                <em>January 19th, 2015</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li>
-
-            <li data-date="03/03/2015">
-                <h2>Event title here</h2>
-                <em>March 3rd, 2015</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li> 
-            -->
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
-                    <li><a href="#0" data-date="" style="left: {{ forloop.counter|mul:120 }}px;">{{ row.ingreso__municipio__nombre }}</a></li>
-            <li data-date="">
+                    <li{% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
                 <h2>{{ row.ingreso__municipio__nombre }}</h2>
                 <em>March 3rd, 2015</em>
                 <p>	
@@ -370,9 +267,7 @@
         </ol>
     </div> <!-- .events-content -->
 </section>
-{% endblock %}
 
-{% block section4 %}
 <div class="pma-gradient">
     <div class="container wide">
         <div class="row">
@@ -446,14 +341,14 @@
     </div>
 </div>
 {% endblock %}
-{% block section5 %}
-<div class="pma-gradient">
-    <div class="container wide">
-        <div class="row">
-            <div class="col-md-12 text-center">
-            <h2>Información histórica
-                "{{ mi_clase.clasificacion }}"</h2>
-            </div>
+
+{% block section4 %}
+<div class="container wide">
+    <div class="row">
+        <div class="col-md-12 text-center">
+        <h2>Información histórica
+            "{{ mi_clase.clasificacion }}"</h2>
+        <hr class="pma-line-4" />
         </div>
     </div>
 </div>

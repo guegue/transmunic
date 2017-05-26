@@ -170,6 +170,12 @@ hr.pma-line-3 {
     width: 50px;
     margin: 20px 0;
 }
+hr.pma-line-4 {
+    border: 0;
+    border-bottom: 2px solid #d4d4d4;
+    width: 100px;
+    margin: 20px auto;
+}
 .pma-thumbnail {
     display: inline-block;
 }
