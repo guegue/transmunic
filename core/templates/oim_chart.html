@@ -91,7 +91,12 @@
 {% endblock %}
 
     {% block header_title %}
-    <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %} Origen de los ingresos <strong>{% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h2>
+    <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %}</h2>
+<hr class="pma-line-5"/>
+        <h4 class="text-center"><strong>Origen de los Ingresos {% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h4>
+
+        <p class="text-center metric-description container"> Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos</p>
+
     {% endblock %}
 
     {% block header_summary %}
@@ -141,8 +146,8 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <h2> <strong>Ingresos del período</strong> <br/></h2>
-        <hr class="pma-line-1">
+        <h2> <strong>Detalle de Ingresos</strong> <br/> del período</h2>
+        <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1 float-left">
                     <span class="pma-icon pe-7s-bubble pma-fg-gray"
@@ -257,38 +262,38 @@
         <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     <li{% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-                <h2>{{ row.ingreso__municipio__nombre }}</h2>
-                <em>March 3rd, 2015</em>
-                <p>	
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-                </p>
-            </li> 
+                <h4>{{ row.ingreso__municipio__nombre }}</h4>
+            </li>
                     {% endfor %}
         </ol>
     </div> <!-- .events-content -->
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-12">
             {% if year == '2016' %}
             <h2>Recaudación por habitante</h2>
             {% else %}
-            <h2>Ranking de recaudación por habitante categoría municipal
+            <h2><strong>Ranking de recaudación </strong> <br>
+                por habitante categoría municipal
                 "{{ mi_clase.clasificacion }}"</h2>
             {% endif %}
+            <hr class="pma-line-3" />
             </div>
         </div>
     </div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <h4 class="text-info">Córdobas corrientes por habitante</h4>
+                <h4 class="text-info text-info-ranking">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed table-striped pma-bg-white">
-                    <tr class="">
-                        <th>Posición</th>
-                        <th>Municipios</th>
-                        <th>P. Inicial</th>{% if year != '2016' %}
-                        <th>Ejecución</th>{% endif %}</tr>
+                    <thead class="thead-inverse">
+                        <tr class="bg-primary">
+                        <th class="text-center"><strong>Posición</strong></th>
+                        <th class="text-center"><strong>Municipios</strong></th>
+                        <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
+                        <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                    </thead>
                     {% if ejecutado <= 0 %}
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     {% if municipio.slug == row.ingreso__municipio__slug%} <tr class="info">
@@ -318,6 +323,7 @@
                                 {% endif %}
                             </tr>
                             {% endfor %} {% endif %}
+<!--
                             <tr class="">
                                 <td colspan="2">TOTAL</td>
                                 <td class="text-right">
@@ -333,6 +339,7 @@
                                 </td>
                                 {% endif %}
                             </tr>
+                        -->
                 </table>
             </div>
         </div>
@@ -344,7 +351,7 @@
 <div class="container wide">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2>Información histórica
+            <h2><strong>Información</strong> <br> Histórica
                 "{{ mi_clase.clasificacion }}"</h2>
             <hr class="pma-line-4" />
             <section class="cd-horizontal-timeline loaded">
@@ -353,7 +360,7 @@
                         <div class="events" style="width: {{ otros|length|mul:300 }}px;">
                             <ol>
                                 {% for history_year in year_list %}
-                                <li><a href="#0" data-date="01/01/{{ history_year }}" 
+                                <li><a href="#0" data-date="01/01/{{ history_year }}"
                                 {% if history_year = year|add:"0" %} class="selected" {% endif %}
                                 style="left:{{ forloop.counter|mul:300 }}px;">{{ history_year }}</a></li>
                                 {% endfor %}
@@ -397,7 +404,7 @@
                              </tr>
                            {% endfor %}
                           </table>
-                        </li> 
+                        </li>
                         {% endfor %}
                     </ol>
                 </div> <!-- .events-content -->
@@ -413,16 +420,26 @@
 {% block section7 %}
 <div class="pma-gradient">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h2><strong>Otros Indicadores</strong><br/>
-                que puedes consultar</h2>
+        <div class="row" id="other-metrics-links">
+            <div class="col-md-3">
+                <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
+                que podés consultar</h3>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 container-metrics-links">
+                <a href="">Origen de Gastos </a>
+                <br>
+                <a href="">Destinos de Inversión</a>
+
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 container-metrics-links">
+                <a href="">Gastos de Funcionamiento </a>
+                <br>
+                <a href="">Ahorro Corriente de Inversión</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 container-metrics-links">
+                <a href="">Gastos de Personal </a>
+                <br>
+                <a href="">Ejecución Presupuestaria</a>
             </div>
         </div>
     </div>

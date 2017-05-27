@@ -36,7 +36,7 @@ h4 {
     font-size: 1.2em;
 }
 small,
-.font_small {
+.class="pma-line-4"font_small {
     font-size: 0.833em;
 }
 .pma-number,
@@ -164,6 +164,27 @@ hr.pma-line-2 {
     width: 50px;
     margin: 20px 0;
 }
+.text-info-ranking{
+    color: #fff;
+    margin-top: 0.5em;
+}
+.other-metrics-title{
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+#other-metrics-links a{
+    display: block;
+    width: 100%;
+    color: #c0f7ed;
+    font-weight: bold;
+    text-decoration: none;
+}
+#other-metrics-links a:hover{
+    text-decoration: underline;
+}
+.container-metrics-links{
+    margin: 1.5em 0;
+}
 hr.pma-line-3 {
     border: 0;
     border-bottom: 2px solid #00a7b3;
@@ -175,6 +196,16 @@ hr.pma-line-4 {
     border-bottom: 2px solid #d4d4d4;
     width: 100px;
     margin: 20px auto;
+}
+hr.pma-line-5 {
+    border: 0;
+    border-bottom: 2px solid #22aae2;
+    width: 70px;
+    margin: 20px auto;
+}
+.metric-description{
+    width: 50%;
+
 }
 .pma-thumbnail {
     display: inline-block;
@@ -343,6 +374,6 @@ footer .copyright {
 
 /* section header */
 .pma-section-header{
-    padding: 20px 0 40px; 
+    padding: 20px 0 40px;
     font-family: 'Roboto', sans-serif;
 }
