@@ -33,7 +33,7 @@ Main Components
   position: relative;
   height: 100px;
   width: 90%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .cd-horizontal-timeline .events-wrapper {
@@ -54,15 +54,15 @@ Main Components
 .cd-horizontal-timeline .events-wrapper::before {
   left: 0;
   /*
-  background-image: -webkit-linear-gradient( left , #f8f8f8, rgba(248, 248, 248, 0));
-  background-image: linear-gradient(to right, #f8f8f8, rgba(248, 248, 248, 0));
+  background-image: -webkit-linear-gradient( left , #ffffff, rgba(248, 248, 248, 0));
+  background-image: linear-gradient(to right, #ffffff, rgba(248, 248, 248, 0));
   */
 }
 .cd-horizontal-timeline .events-wrapper::after {
   right: 0;
   /*
-  background-image: -webkit-linear-gradient( right , #f8f8f8, rgba(248, 248, 248, 0));
-  background-image: linear-gradient(to left, #f8f8f8, rgba(248, 248, 248, 0));
+  background-image: -webkit-linear-gradient( right , #ffffff, rgba(248, 248, 248, 0));
+  background-image: linear-gradient(to left, #ffffff, rgba(248, 248, 248, 0));
   */
 }
 .cd-horizontal-timeline .events {
@@ -73,7 +73,7 @@ Main Components
   top: 49px;
   height: 2px;
   /* width will be set using JavaScript */
-  background: #dfdfdf;
+  background: #f8f9fa;
   -webkit-transition: -webkit-transform 0.4s;
   -moz-transition: -moz-transform 0.4s;
   transition: transform 0.4s;
@@ -86,7 +86,7 @@ Main Components
   top: 0;
   height: 100%;
   width: 100%;
-  background-color: #7b9d6f;
+  background-color: #333333;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
   -ms-transform: scaleX(0);
@@ -108,7 +108,7 @@ Main Components
   text-align: center;
   font-size: 1.3rem;
   padding-bottom: 15px;
-  color: #383838;
+  color: #333333;
   /* fix bug on Safari - text flickering while timeline translates */
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -131,25 +131,25 @@ Main Components
   height: 12px;
   width: 12px;
   border-radius: 50%;
-  border: 2px solid #dfdfdf;
-  background-color: #f8f8f8;
+  border: 2px solid #f8f9fa;
+  background-color: #ffffff;
   -webkit-transition: background-color 0.3s, border-color 0.3s;
   -moz-transition: background-color 0.3s, border-color 0.3s;
   transition: background-color 0.3s, border-color 0.3s;
 }
 .no-touch .cd-horizontal-timeline .events a:hover::after {
-  background-color: #7b9d6f;
-  border-color: #7b9d6f;
+  background-color: #333333;
+  border-color: #333333;
 }
 .cd-horizontal-timeline .events a.selected {
   pointer-events: none;
 }
 .cd-horizontal-timeline .events a.selected::after {
-  background-color: #7b9d6f;
-  border-color: #7b9d6f;
+  background-color: #333333;
+  border-color: #333333;
 }
 .cd-horizontal-timeline .events a.older-event::after {
-  border-color: #7b9d6f;
+  border-color: #333333;
 }
 @media only screen and (min-width: 1100px) {
   .cd-horizontal-timeline {
@@ -175,7 +175,7 @@ Main Components
   height: 34px;
   width: 34px;
   border-radius: 50%;
-  border: 2px solid #dfdfdf;
+  border: 2px solid #f8f9fa;
   /* replace text with an icon */
   overflow: hidden;
   color: transparent;
@@ -214,7 +214,7 @@ Main Components
   right: 0;
 }
 .no-touch .cd-timeline-navigation a:hover {
-  border-color: #7b9d6f;
+  border-color: #333333;
 }
 .cd-timeline-navigation a.inactive {
   cursor: not-allowed;
@@ -223,7 +223,7 @@ Main Components
   background-position: 0 -16px;
 }
 .no-touch .cd-timeline-navigation a.inactive:hover {
-  border-color: #dfdfdf;
+  border-color: #f8f9fa;
 }
 
 .cd-horizontal-timeline .events-content {
@@ -282,7 +282,7 @@ Main Components
   animation-direction: reverse;
 }
 .cd-horizontal-timeline .events-content li > * {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .cd-horizontal-timeline .events-content h2 {
@@ -302,7 +302,7 @@ Main Components
 }
 .cd-horizontal-timeline .events-content p {
   font-size: 1.4rem;
-  color: #959595;
+  color: #f8f9fa;
 }
 .cd-horizontal-timeline .events-content em, .cd-horizontal-timeline .events-content p {
   line-height: 1.6;

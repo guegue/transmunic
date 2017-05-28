@@ -273,16 +273,16 @@ footer .copyright {
 }
 /* margins */
 .wide{
-    margin-bottom: 1.2em;
-    margin-top: 2em;
+    padding-bottom: 1.2em;
+    padding-top: 2em;
 }
 .medium{
-    margin-bottom: 1.3em;
-    margin-top: 1.3em;
+    padding-bottom: 1.3em;
+    padding-top: 1.3em;
 }
 .narrow{
-    margin-bottom: 0.833em;
-    margin-top: 0.833em;
+    padding-bottom: 0.833em;
+    padding-top: 0.833em;
 }
 
 /* color schema styles */
@@ -376,4 +376,9 @@ footer .copyright {
 .pma-section-header{
     padding: 20px 0 40px;
     font-family: 'Roboto', sans-serif;
+}
+
+/* hidden elements */
+#detail-1, #detail-2{
+    display: none;
 }
