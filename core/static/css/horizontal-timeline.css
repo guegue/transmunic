@@ -31,7 +31,7 @@ Main Components
 }
 .cd-horizontal-timeline .timeline {
   position: relative;
-  height: 100px;
+  height: 150px;
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
@@ -70,10 +70,10 @@ Main Components
   position: absolute;
   z-index: 1;
   left: 0;
-  top: 49px;
+  top: 74px;
   height: 2px;
   /* width will be set using JavaScript */
-  background: #f8f9fa;
+  background: #333;
   -webkit-transition: -webkit-transform 0.4s;
   -moz-transition: -moz-transform 0.4s;
   transition: transform 0.4s;
@@ -106,7 +106,7 @@ Main Components
   bottom: 0;
   z-index: 2;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
   padding-bottom: 15px;
   color: #333333;
   /* fix bug on Safari - text flickering while timeline translates */
@@ -131,8 +131,8 @@ Main Components
   height: 12px;
   width: 12px;
   border-radius: 50%;
-  border: 2px solid #f8f9fa;
-  background-color: #ffffff;
+  border: 2px solid #333;
+  background-color: #fff;
   -webkit-transition: background-color 0.3s, border-color 0.3s;
   -moz-transition: background-color 0.3s, border-color 0.3s;
   transition: background-color 0.3s, border-color 0.3s;
@@ -175,7 +175,7 @@ Main Components
   height: 34px;
   width: 34px;
   border-radius: 50%;
-  border: 2px solid #f8f9fa;
+  border: 2px solid #333;
   /* replace text with an icon */
   overflow: hidden;
   color: transparent;
@@ -223,7 +223,7 @@ Main Components
   background-position: 0 -16px;
 }
 .no-touch .cd-timeline-navigation a.inactive:hover {
-  border-color: #f8f9fa;
+  border-color: #333;
 }
 
 .cd-horizontal-timeline .events-content {
@@ -287,8 +287,6 @@ Main Components
 }
 .cd-horizontal-timeline .events-content h2 {
   font-weight: bold;
-  font-size: 2.6rem;
-  font-family: "Playfair Display", serif;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -301,8 +299,7 @@ Main Components
   content: '- ';
 }
 .cd-horizontal-timeline .events-content p {
-  font-size: 1.4rem;
-  color: #f8f9fa;
+  color: #333;
 }
 .cd-horizontal-timeline .events-content em, .cd-horizontal-timeline .events-content p {
   line-height: 1.6;
@@ -394,4 +391,43 @@ Main Components
     -o-transform: translateX(0%);
     transform: translateX(0%);
   }
+}
+
+/* inverted */
+.cd-horizontal-timeline.inverted .events {
+  background: #fff;
+}
+.cd-horizontal-timeline.inverted .filling-line {
+  background-color: #fff;
+}
+.cd-horizontal-timeline.inverted .events a {
+  color: #fff;
+}
+.cd-horizontal-timeline.inverted .events a::after {
+  border-color: #fff;
+  background-color: #333;
+}
+
+.no-touch .cd-horizontal-timeline.inverted .events a:hover::after {
+  background-color: #fff;
+  border-color: #fff;
+}
+.cd-horizontal-timeline.inverted .events a.selected::after {
+  background-color: #fff;
+  border-color: #fff;
+}
+.cd-horizontal-timeline.inverted .events a.older-event::after {
+  border-color: #fff;
+}
+.cd-timeline-navigation a {
+    border-color: #fff;
+}
+.no-touch .inverted .cd-timeline-navigation a:hover {
+  border-color: #fff;
+}
+.no-touch .inverted .cd-timeline-navigation a.inactive:hover {
+  border-color: #fff;
+}
+.cd-horizontal-timeline .events-content p {
+  color: #fff;
 }

@@ -15,26 +15,19 @@
     <div class="container">
         <div class="row">
         <div class="col-md-12">
-            <form method="GET" class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Año <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                    {% for ayear in year_list %}
-                      <li><a href="#" ref="{{ayear}}">{{ayear}}</a></li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Municipio <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                    {% for amunicipio in municipio_list %}
-                      <li><a href="#" ref="{{amunicipio.slug}}">{{amunicipio}}</a></li>
-                    {% endfor %}
-                    </ul>
-                </div><!-- /btn-group -->
-                <button type="submit" class="btn btn-default">Buscar</button>
-            </div><!-- /input-group -->
+            <form method="GET">
+            <select name="year">
+            {% for ayear in year_list %}
+                <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+            {% endfor %}
+            </select>
+            <select name="municipio">
+            <option value="">Consolidado Municipal</option>
+            {% for amunicipio in municipio_list %}
+                <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+            {% endfor %}
+            </select>
+            <input type="submit" value="Buscar" class="btn btn-primary"/>
             </form>
         </div>
         </div>

@@ -150,7 +150,7 @@
 {% endblock %}
 
 {% block section3 %}
-<div class="cd-horizontal-timeline loaded pma-gradient">
+<div class="cd-horizontal-timeline loaded pma-gradient inverted">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -170,7 +170,16 @@
             <div class="events" style="width: {{ otros|length|mul:300 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
-                    <li><a href="#0" data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}" {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:300 }}px;">{{ row.ingreso__municipio__nombre }}</a>
+                    <li>
+                        <a href="#0" 
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}" 
+                            {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} 
+                            style="left: {{ forloop.counter|mul:300 }}px;">{{ row.ingreso__municipio__nombre }}
+                            <br/>
+                            <span> Asignado: {{ row.asignado_percent|intcomma }}
+                            </span><br/>
+                            <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                        </a>
                     </li>
                     {% endfor %}
                 </ol>
@@ -187,10 +196,10 @@
         <ol>
         {% for row in otros|dictsortreversed:"asignado_percent" %}
         <li{% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-        <!-- <h4>{{ row.ingreso__municipio__nombre }}</h4> -->
+        <!-- <h4>{{ row.ingreso__municipio__nombre }}</h4>
         <span> Asignado: {{ row.asignado_percent|intcomma }}
         </span><br/>
-        <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+        <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
         </li>
         {% endfor %}
         </ol>
@@ -279,12 +288,17 @@
             <section class="cd-horizontal-timeline loaded">
                 <div class="timeline">
                     <div class="events-wrapper">
-                        <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+                        <div class="events" style="{{ anuales|length|mul:"200" }}px">
                             <ol>
-                                {% for history_year in year_list %}
-                                <li><a href="#0" data-date="01/01/{{ history_year }}"
-                                {% if history_year = year|add:"0" %} class="selected" {% endif %}
-                                style="left:{{ forloop.counter|mul:300 }}px;">{{ history_year }}</a></li>
+                                {% for row in anuales %}
+                                <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }}"
+                                {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
+                                style="left:{{ forloop.counter|mul:"200" }}px;">{{ row.ingreso__anio }}
+                                <br/>
+                                Asignado: <span>{{ row.asignado|million|intcomma }}</span>
+                                <br/>
+                                Ejecutado: <span>{{ row.ejecutado|million|intcomma }}</span>
+                                </a></li>
                                 {% endfor %}
                             </ol>
 
