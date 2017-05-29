@@ -8,141 +8,52 @@
 {{ municipio }}
 {% endblock %}
 
-{% block custom_header_links %}
-    <link rel="stylesheet" href="{% static 'css/linea_basic.css' %}">
-    <link rel="stylesheet" href="{% static 'css/linea_software.css' %}">
-    <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/horizontal-timeline.css' %}" />
-{% endblock %}
-{% block custom_footer_scripts %}
-    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
-    <script type="text/javascript  " src="{% static 'js/Tween.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
-    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
-    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bar-chart.js' %}"></script>
-    <script type="text/javascript">
-        $(function() {
-            var $tooltip = $('<div class="tooltip">Tooltip</div>');
-            $('.bubbletree').append($tooltip);
-            $tooltip.hide();
-
-            var tooltip = function(event) {
-                if (event.type == 'SHOW') {
-                    // show tooltip
-                    vis4.log(event);
-                    $tooltip.css({
-                        left: event.mousePos.x + 4,
-                        top: event.mousePos.y + 4
-                    });
-                    $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
-                    var bubble = event.target;
-
-                    $tooltip.show();
-                } else {
-                    // hide tooltip
-                    $tooltip.hide();
-                }
-            };
-            var data = {{ bubble_data|safe }};
-            $.each( data['children'], function( key, value ) {
-                data['children'][key]['color'] =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
-                var node_color =  vis4color.fromHSL(key/data.children.length*360, .7, .5).x;
-                $.each(data['children'][key]['children'], function(j, val){
-                    data['children'][key]['children'][j]['color'] =  vis4color.fromHex(node_color).lightness('*'+(.5+Math.random()*.5)).x;
-                });
-            });
-
-            new BubbleTree({
-                data: data,
-                container: '.bubbletree',
-                bubbleType: 'icon',
-                bubbleStyles: {
-                    'cofog': BubbleTree.Styles.Cofog
-                },
-                formatValue: function(value) {
-                    return 'C$ ' + value + 'M';
-                }
-            });
-        });
-    </script>
-    <script>
-    $('#oimTab a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show')
-    });
-    $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({
-                            placement : 'top'
-                        });
-            });
-    </script>
-    <script src="{% static 'js/highcharts.js' %}"></script>
-    <script src="{% static 'js/pma.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
-    {% if municipio and charts.4 %}
-    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
-    {% else %}
-    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
-    {% endif %}
-{% endblock %}
-
-    {% block header_title %}
-    <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %}</h2>
+{% block indicator_title %}
+<h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %}</h2>
 <hr class="pma-line-5"/>
-        <h4 class="text-center"><strong>Origen de los Ingresos {% if year %}{{ year }}{% else %}2015 {% endif %}</strong></h4>
+<h4 class="text-center">
+    <strong>Origen de los Ingresos {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
+</h4>
+<p class="text-center metric-description container"> Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos</p>
+{% endblock %}
 
-        <p class="text-center metric-description container"> Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos</p>
-
-    {% endblock %}
-
-    {% block header_summary %}
-    <div class="col-md-4">
-        <div class="info-box">
-            <span class="info-box-icon pma-icon initial">
-            </span>
-            <div class="info-box-content">
-                <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
-            </div>
-            <!-- /.info-box-content -->
+{% block indicator_summary %}
+<div class="col-md-4">
+    <div class="info-box">
+        <span class="info-box-icon pma-icon initial">
+        </span>
+        <div class="info-box-content">
+            <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
         </div>
-        <!-- /.info-box -->
     </div>
-    <div class="col-md-4">
-        <div class="info-box">
-            <span class="info-box-icon pma-icon executed">
+</div>
+<div class="col-md-4">
+    <div class="info-box">
+        <span class="info-box-icon pma-icon executed">
+        </span>
+        <div class="info-box-content">
+            <span class="info-box-text">
+            {% if year != '2016' %}
+            Ejecutado {{ ejecutado|million|intcomma }}
+            {% endif %}
             </span>
-            <div class="info-box-content">
-                <span class="info-box-text">
-                {% if year != '2016' %}
-                Ejecutado {{ ejecutado|million|intcomma }}
-                {% endif %}
-                </span>
-                <span class="info-box-number pma-green"></span>
-            </div>
-            <!-- /.info-box-content -->
+            <span class="info-box-number pma-green"></span>
         </div>
-        <!-- /.info-box -->
     </div>
-    <div class="col-md-4">
-        <div class="info-box">
-            <span class="info-box-icon pma-icon municipality-category">
-            </span>
-            <div class="info-box-content">
-                {% if municipio %}
-                {% endif %}
-                <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
-                <span class="info-box-number pma-green"></span>
-            </div>
-            <!-- /.info-box-content -->
+</div>
+<div class="col-md-4">
+    <div class="info-box">
+        <span class="info-box-icon pma-icon municipality-category">
+        </span>
+        <div class="info-box-content">
+            {% if municipio %}
+            {% endif %}
+            <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
+            <span class="info-box-number pma-green"></span>
         </div>
-        <!-- /.info-box -->
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
 
 {% block section1 %}
 <div class="container">
@@ -604,30 +515,32 @@
 </div>
 {% endblock %}
 
-{% block section7 %}
-<div class="pma-gradient">
-    <div class="container">
-        <div class="row" id="other-metrics-links">
-            <div class="col-md-3">
-                <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
-                que puedes consultar</h3>
-            </div>
-            <div class="col-md-3 container-metrics-links">
-                <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen de Gastos </a>
-                <br>
-                <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos de Inversión</a>
-            </div>
-            <div class="col-md-3 container-metrics-links">
-                <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Funcionamiento </a>
-                <br>
-                <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro Corriente de Inversión</a>
-            </div>
-            <div class="col-md-3 container-metrics-links">
-                <a href="{% url 'gastos_personal' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Personal </a>
-                <br>
-                <a href="{% url 'ejecucion_presupuesto' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ejecución Presupuestaria</a>
-            </div>
-        </div>
-    </div>
-</div>
+{% block extra_footer_scripts %}
+    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bar-chart.js' %}"></script>
+    <script type="text/javascript">
+            var data = {{ bubble_data|safe }};
+    </script>
+    <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                            placement : 'top'
+                        });
+            });
+    </script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/pma.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
+    {% if municipio and charts.4 %}
+    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
+    {% else %}
+    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
+    {% endif %}
 {% endblock %}

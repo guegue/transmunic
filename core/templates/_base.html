@@ -25,6 +25,9 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    {% block extra_header_links %}
+    {% endblock %}
+
     {% block custom_header_links %}
     {% endblock %}
 
@@ -133,8 +136,10 @@
     </div>
     {% endblock %}
     </header>
+
     {% block main_content %}
     {% endblock %}
+
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -193,7 +198,7 @@
     </script>
     {% endblock %}
 
-    {% block custom_footer_scripts %}
+    {% block extra_footer_scripts %}
     <!-- Highcharts -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
@@ -201,6 +206,9 @@
     <script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
     <script type="text/javascript" src="{% static 'maps/ni-custom-all.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/map-ni-drilldown.js' %}"></script>
+    {% endblock %}
+
+    {% block custom_scripts %}
     {% endblock %}
 </body>
 
