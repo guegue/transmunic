@@ -64,19 +64,12 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
          El Observatorio <b class="caret"></b>
         </a>
+                {% load flatpages %}
+                {% get_flatpages as flatpages %}
                     <ul class="dropdown-menu">
-                        <li><a href="#">Acción #1</a>
-                        </li>
-                        <li><a href="#">Acción #2</a>
-                        </li>
-                        <li><a href="#">Acción #3</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="#">Acción #4</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="#">Acción #5</a>
-                        </li>
+                        {% for page in flatpages %}
+                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                            {% endfor %}
                     </ul>
                 </li>
                 <li class="dropdown">
