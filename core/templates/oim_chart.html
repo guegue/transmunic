@@ -114,7 +114,7 @@
 {% endblock %}
 
 {% block section2 %}
-<div class="container">
+<div class="container" id="section2">
     <div class="row">
         <div class="col-md-6">
         </div>
@@ -515,29 +515,7 @@
 </div>
 {% endblock %}
 
-{% block extra_footer_scripts %}
-    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
-    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
-    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bar-chart.js' %}"></script>
-    <script type="text/javascript">
-            var data = {{ bubble_data|safe }};
-    </script>
-    <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
-    <script>
-    $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({
-                            placement : 'top'
-                        });
-            });
-    </script>
-    <script src="{% static 'js/highcharts.js' %}"></script>
-    <script src="{% static 'js/pma.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
+{% block custom_scripts %}
     {% if municipio and charts.4 %}
     {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
     {% else %}

@@ -14,6 +14,7 @@ from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
 from charts.bubble_oim import oim_bubble_chart_data
+from charts.bubble_ogm import ogm_bubble_chart_data
 from website.models import Banner
 from core.forms import DetallePresupuestoForm
 
@@ -189,6 +190,7 @@ def ogm_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
+    bubble_data = ogm_bubble_chart_data(municipio=municipio, year=year)
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
@@ -200,7 +202,7 @@ def ogm_view(request):
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
             'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
             'rubrosp': data['rubrosp'], 'otros': data['otros'],\
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data}, \
             context_instance=RequestContext(request))
 
 def oim_view(request):

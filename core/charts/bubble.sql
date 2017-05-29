@@ -60,3 +60,26 @@ where i.anio = %s
 and i.municipio_id = %s
 and ssti.subtipoingreso_id = %s) as sd
 group by sd.nombre, sd.codigo
+
+
+select sum(sd.asignado) as asignado, sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo
+from (select id.asignado, id.ejecutado, id.gasto_id, id.subsubtipogasto_id,
+i.municipio_id, i.periodo, i.anio, ssti.subtipogasto_id as codigo, ssti.origen_id,
+sti.nombre
+from core_gastodetalle as id left join core_gasto as i on id.gasto_id = i.id
+left join core_subsubtipogasto as ssti on id.subsubtipogasto_id=ssti.codigo
+left join core_subtipogasto as sti on sti.codigo= to_char(ssti.subtipogasto_id,'9999999')
+where i.anio = 2015
+and i.periodo = 'A'
+and i.municipio_id = 55
+and ssti.origen_id = '3') as sd
+group by sd.nombre, sd.codigo
+
+select id.asignado, id.ejecutado, id.gasto_id, id.subsubtipogasto_id, i.municipio_id, i.periodo, i.anio, ssti.subtipogasto_id as codigo, ssti.origen_id
+from core_gastodetalle as id left join core_gasto as i on id.gasto_id = i.id
+left join core_subsubtipogasto as ssti on id.subsubtipogasto_id=ssti.codigo
+left join core_subtipogasto as sti on sti.codigo= to_char(ssti.subtipogasto_id,'9999999')
+where i.anio = 2015
+and i.periodo = 'A'
+and i.municipio_id = 55
+and ssti.origen_id = '3'
