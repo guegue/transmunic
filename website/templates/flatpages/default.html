@@ -8,12 +8,14 @@
             <h1>{{ flatpage.title }}</h1>
             {% if flatpage.url == '/transferencias-presupuestarias/' %}<div class="text-center" style="margin-right: 20px;"><iframe width="700" height="415" src="https://www.youtube.com/embed/AzoSRHR5aEA" frameborder="0" allowfullscreen></iframe></div>{% endif %}
             {% if flatpage.url == '/ciclo-presupuestario/' %}
-                <div class="text-center" style="margin-bottom: 20px;"><iframe width="700" height="415" src="https://www.youtube.com/watch?v=dzXfb1JXHTI&rel=0" frameborder="0" allowfullscreen></iframe></div>
+                <div class="text-center" style="margin-bottom: 20px;">
+                <iframe width="700" height="415" src="https://www.youtube.com/embed/dzXfb1JXHTI" frameborder="0" allowfullscreen></iframe>
+                </div>
                 <div class="text-justify col-md-12">
                 {{ flatpage.content|urlize|linebreaks }}
                 </div>
                 <div class="text-center">
-                <img src="{% static 'img/ciclo.jpg' %}" alt="ciclo presupuestario" />
+                <img src="{% static 'images/ciclo-presupuestario.png' %}" alt="ciclo presupuestario" />
                 </div>
             {% else %}
                 <div class="text-justify col-md-12">
