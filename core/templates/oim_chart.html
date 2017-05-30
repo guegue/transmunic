@@ -171,9 +171,9 @@
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     <li>
-                        <a href="#0" 
-                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}" 
-                            {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %} 
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:300 }}px;">{{ row.ingreso__municipio__nombre }}
                             <br/>
                             <span> Asignado: {{ row.asignado_percent|intcomma }}
@@ -282,60 +282,74 @@
 <div class="container wide">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2>Información Histórica<br> 
+            <h2>Información Histórica<br>
             <strong>Ejecución Presupuestaria por fuente de ingresos {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
             <hr class="pma-line-4" />
-            <section class="cd-horizontal-timeline loaded">
-                <div class="timeline">
-                    <div class="events-wrapper">
-                        <div class="events" style="{{ anuales|length|mul:"200" }}px">
-                            <ol>
-                                {% for row in anuales %}
-                                <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }}"
-                                {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
-                                style="left:{{ forloop.counter|mul:"200" }}px;">{{ row.ingreso__anio }}
-                                <br/>
-                                Asignado: <span>{{ row.asignado|million|intcomma }}</span>
-                                <br/>
-                                Ejecutado: <span>{{ row.ejecutado|million|intcomma }}</span>
-                                </a></li>
-                                {% endfor %}
-                            </ol>
+        </div>
+    </div>
+</div>
+<div class="cd-horizontal-timeline loaded">
+    <div class="timeline container">
+        <div class="events-wrapper">
+            <div class="events" style="{{anuales|length|mul:"150"}}px">
+                <ol>
+                    {% for row in anuales %}
+                    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }}"
+                    {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
+                    style="left:{{ forloop.counter|mul:"150" }}px;">{{ row.ingreso__anio }}
+                    <br/>
+                    Asignado: <span>{{ row.asignado|million|intcomma }}</span>
+                    <br/>
+                    Ejecutado: <span>{{ row.ejecutado|million|intcomma }}</span>
+                    </a></li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
 
-                            <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                        </div> <!-- .events -->
-                    </div> <!-- .events-wrapper -->
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->   
 
-                    <ul class="cd-timeline-navigation">
-                        <li><a href="#0" class="prev inactive">Prev</a></li>
-                        <li><a href="#0" class="next">Next</a></li>
-                    </ul> <!-- .cd-timeline-navigation -->
-                </div> <!-- .timeline -->
-
-                <div class="events-content">
-                    <ol>
-                        {% for history_year in year_list %}
-                        <li data-date="01/01/{{ history_year }}"
-                            {% if history_year = year|add:"0" %} class="selected" {% endif %}>
-                            <h4>{{ municipio }} {{ history_year }}</h2>
-                          <table class="table table-striped">
-                            <tr class="info">
-                              <th></th>
-                              <th class="text-center">{{ history_year }}
-                                  {% if periodo_list|keyvalue:history_year == 'A' %}*Actualizado*{% endif %}</th>
-                            </tr>
-                            {% for key, data in porano.items %}
-                             <tr>
-                               <td class="text-left">{{ key }}</td>
-                               <td class="text-right">{{ data|keyvalue:history_year|million|intcomma }}</td>
-                             </tr>
-                           {% endfor %}
-                          </table>
-                        </li>
+    <div class="events-content">
+        <ol>
+            <li data-date="01/01/{{ history_year }}"
+                {% if history_year = year|add:"0" %} class="selected" {% endif %}>
+            </li>
+        </ol>
+    </div> <!-- .events-content -->
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button id="show-detail-3" class="btn btn-default" type="submit">
+            Ver dealles en Tabla</button>
+        </div>
+    </div>
+</div>
+<div id="detail-3" class="container">
+    <div class="row">
+        <div class="col-md-12 table-responsive">
+            <table class="table table-condensed">
+                <tr class="info">
+                    <th></th>
+                    {% for year in year_list %}
+                    <th class="text-center">{{ year }}
+                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
                         {% endfor %}
-                    </ol>
-                </div> <!-- .events-content -->
-            </section>
+                    </tr>
+                    {% for key, data in porano.items %}
+                    <tr>
+                        <td class="text-left">{{ key }}</td>
+                        {% for year in year_list %}
+                        <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                        {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 </div>
@@ -345,7 +359,7 @@
 <div class="container wide">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2><strong>Modificaciones al presupuesto municipal de ingresos</strong><br> 
+            <h2><strong>Modificaciones al presupuesto municipal de ingresos</strong><br>
             Millones de córdobas corrientes </h2>
         </div>
     </div>

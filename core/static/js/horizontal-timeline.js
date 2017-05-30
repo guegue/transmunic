@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
     var timelines = $('.cd-horizontal-timeline'),
-        eventsMinDistance = 60;
+        eventsMinDistance = 150;
 
     (timelines.length > 0) && initTimeline(timelines);
 
@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
         timelines.each(function() {
             var timeline = $(this),
                 timelineComponents = {};
-            //cache timeline components 
+            //cache timeline components
             timelineComponents['timelineWrapper'] = timeline.find('.events-wrapper');
             timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
             timelineComponents['fillingLine'] = timelineComponents['eventsWrapper'].children('.filling-line');
@@ -70,7 +70,7 @@ jQuery(document).ready(function($) {
         //retrieve translateX value of timelineComponents['eventsWrapper']
         var translateValue = getTranslateValue(timelineComponents['eventsWrapper']),
             wrapperWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', ''));
-        //translate the timeline to the left('next')/right('prev') 
+        //translate the timeline to the left('next')/right('prev')
         (string == 'next') ? translateTimeline(timelineComponents, translateValue - wrapperWidth + eventsMinDistance, wrapperWidth - timelineTotWidth): translateTimeline(timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
     }
 

@@ -379,6 +379,6 @@ footer .copyright {
 }
 
 /* hidden elements */
-#detail-1, #detail-2{
+#detail-1, #detail-2, #detail-3{
     display: none;
 }
