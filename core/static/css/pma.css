@@ -62,7 +62,7 @@ table td {
 .pma-illustration {
     position: relative;
     margin-bottom: -22px;
-    z-index: 9999;
+    z-index: 900;
 }
 .illustration-index {
     position: absolute;
@@ -316,7 +316,7 @@ footer .copyright {
 
 /* Chart Update options after render - Icons Styles */
 .chart-update{
-    z-index: 10000;
+    z-index: 600;
     margin-top: 56px;
     padding: 0;
 }

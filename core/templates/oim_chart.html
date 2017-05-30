@@ -14,7 +14,9 @@
 <h4 class="text-center">
     <strong>Origen de los Ingresos {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
 </h4>
-<p class="text-center metric-description container"> Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos</p>
+<p class="text-center metric-description container"> {% block indicator_description %} Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos
+{% endblock %}
+</p>
 {% endblock %}
 
 {% block indicator_summary %}
@@ -312,7 +314,7 @@
             <li><a href="#0" class="prev inactive">Prev</a></li>
             <li><a href="#0" class="next">Next</a></li>
         </ul> <!-- .cd-timeline-navigation -->
-    </div> <!-- .timeline -->   
+    </div> <!-- .timeline -->
 
     <div class="events-content">
         <ol>

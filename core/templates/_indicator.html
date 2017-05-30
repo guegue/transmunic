@@ -1,6 +1,12 @@
 {% extends "_base.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %}
+{% load mathfilters %}
 {% load core_extras %}
-{% load staticfiles %}
+{# TODO: Replace this by django-seo2 #}
+{% block titulo %}
+{{ municipio }}
+{% endblock %}
 {% block extra_header_links %}
     <link rel="stylesheet" href="{% static 'css/linea_basic.css' %}">
     <link rel="stylesheet" href="{% static 'css/linea_software.css' %}">
@@ -41,11 +47,54 @@
         <div class="row">
             <div class="col-md-12">
                 {% block indicator_title %}
+                <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}Consolidado{% endif %}</h2>
+                <hr class="pma-line-5"/>
+                <h4 class="text-center">
+                    <strong>{% block indicator_title_text %}{{indicator_name}}{% endblock %} {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
+                </h4>
+                <p class="text-center metric-description container"> {% block indicator_description %} Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos
+                {% endblock %}
+                </p>
                 {% endblock %}
             </div>
         </div>
         <div class="row pma-header-summary wide">
             {% block indicator_summary %}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon initial">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon executed">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">
+                        {% if year != '2016' %}
+                        Ejecutado {{ ejecutado|million|intcomma }}
+                        {% endif %}
+                        </span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% if municipio %}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon municipality-category">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             {% endblock %}
         </div>
     </div>
@@ -71,6 +120,9 @@
 {% block section6 %}
 {% endblock %}
 
+{% endblock %}
+
+{% block custom_body_blocks %}
 {% block section7 %}
 <div class="pma-gradient">
     <div class="container">

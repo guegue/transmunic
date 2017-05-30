@@ -161,6 +161,7 @@ def inversion_categoria_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = inversion_categoria_chart(municipio=municipio, year=year)
+    indicator_name = "Inversión municipal"
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
@@ -179,6 +180,7 @@ def inversion_categoria_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response(template_name, { \
+            'indicator_name': indicator_name, \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
@@ -190,6 +192,7 @@ def ogm_view(request):
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = ogm_chart(municipio=municipio, year=year)
+    indicator_name = "Destino de los gastos"
     bubble_data = ogm_bubble_chart_data(municipio=municipio, year=year)
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
@@ -197,6 +200,7 @@ def ogm_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response(template_name, { \
+            'indicator_name': indicator_name, \
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
@@ -209,6 +213,7 @@ def oim_view(request):
     template_name = 'oim_chart.html'
     municipio = getVar('municipio', request)
     year = getVar('year', request)
+    indicator_name = "Origen de los ingresos"
     data = oim_chart(municipio=municipio, year=year)
     bubble_data = oim_bubble_chart_data(municipio=municipio, year=year)
     reporte = request.POST.get("reporte","")
@@ -217,6 +222,7 @@ def oim_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response(template_name, { \
+            'indicator_name': indicator_name, \
             'year_data': data['year_data'], \
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'totales': data['totales'], 'charts': data['charts'], 'periodo_list': data['periodo_list'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \

@@ -83,3 +83,5 @@ where i.anio = 2015
 and i.periodo = 'A'
 and i.municipio_id = 55
 and ssti.origen_id = '3'
+
+select sum(sd.asignado) as asignado, sum(sd.ejecutado) as         ejecutado from (select id.asignado, id.ejecutado, id.ingreso_id,         id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio, ssti.subtipoingreso_id, ssti.origen_id         from core_ingresodetalle as id left join core_ingreso as i on id.ingreso_id = i.id         left join core_subsubtipoingreso as ssti on id.subsubtipoingreso_id=ssti.codigo         where i.anio = %s         and i.periodo = %s         and i.municipio_id = %s         and origen_id is not null) as sd         left join core_origenrecurso as o on sd.origen_id=o.id
