@@ -8,7 +8,7 @@ from django.conf import settings
 from model_report.report import reports, ReportAdmin
 from model_report.utils import (usd_format, avg_column, sum_column, count_column)
 
-from models import Proyecto
+from models import Proyecto, CatInversion
 
 
 def intcomma(value, instance):
@@ -58,7 +58,7 @@ class PlanInversionModelReport(ReportAdmin):
         #'ficha': link_to_media,
     }
     list_filter = ('inversion__anio', 'inversion__periodo',
-            'inversion__municipio','catinversion__nombre')
+            'inversion__municipio','catinversion', 'nombre')
     list_order_by = ('nombre',)
     type = 'report'
 
