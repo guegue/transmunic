@@ -23,7 +23,7 @@ from core.charts.misc import getVar
 
 
 def gf_chart(request):
-
+    # XXX: why this is not a view?
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
@@ -225,7 +225,7 @@ def gf_chart(request):
 
         source = source_inicial
         #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
-            
+
         # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
         source_barra = GastoDetalle.objects.filter( gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
@@ -634,8 +634,9 @@ def gf_chart(request):
 
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('funcionamiento.html',
+    return render_to_response('expenses.html',
             {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
+            'indicator_name': "Gastos de funcionamiento", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))

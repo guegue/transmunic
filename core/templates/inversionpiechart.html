@@ -11,26 +11,30 @@
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1 float-left">
-                    <span class="pma-icon pe-7s-bubble pma-fg-gray"
-                        aria-hidden="true" id="chart-bubble-1"></span>
+                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray" aria-hidden="true"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray"
+                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="tipo"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true"></span>
+                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
                         aria-hidden="true" id="icons"></span>
             </div>
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
-                <div id="pie-1" class="view-alternative"> Pastel Ejecucion por
+                <div id="pie-1" class="view-alternative"> Pastel por
+                categorias </div>
+                <div id="asignado_portada" class="view-alternative"> Pastel por
+                categorias </div>
+                <div id="chart-bar-1" class="view-alternative"> Barras por
                 Rubros </div>
-                <div id="chart-bar-1" class="view-alternative"> Barras Ejecucion por
-                Rubros </div>
-                <div id="chart-lines-1" class="view-alternative"> Chart will be rendered here
+                <div id="chart-lines-1" class="view-alternative"> Lineas
                 </div>
-                <div id="icons" class="view-alternative">
-                </div>
+                <div id='fuente_pie' class="view-alternative"> Chart will be rendered here </div>
+                <div id='asignado' class="view-alternative"> Chart will be rendered here </div>
+                <div id='ejecutado' class="view-alternative"> Chart will be rendered here </div>
+                <div id='tipo' class="view-alternative"> Chart will be rendered here </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -40,290 +44,341 @@
                         <th>Clasificación</th>
                         <th class="text-right">Inicial</th>
                         <th class="text-right">Ejecutado</th>
+                        <th class="text-right">% Ejecutado</th>
                     </tr>
                 </thead>
-                {% for row in totales %}
+                {% for row in cat %}
                 <tr>
-                    <td>{{ row.catinversion__nombre}}</td>
-                    <td class="text-right">{{ row.asignado_percent|million|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado_percent|million|intcomma|default:"0" }}</td>
+                    <td class="text-left">{{ row.catinversion__nombre }}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    <td class="text-right">
+                        {% if row.inicial_asignado %}
+                        <span class="label label-warning">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tfoot>
+                    <tr class="">
+                        <td>TOTAL</td>
+                        <td class="text-right">{{ asignado|million|intcomma }}</td>
+                        <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                        <td class="text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block section2 %}
+<div class="cd-horizontal-timeline loaded pma-gradient inverted">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            {% if year == '2016' %}
+            <h2>Inversión municipal por población</h2>
+            {% else %}
+            <h2><strong>Ranquin de municipio</strong> <br>
+                por habitante categoría municipal
+                "{{ mi_clase.clasificacion }}"</h2>
+            {% endif %}
+            <hr class="pma-line-3" />
+            </div>
+        </div>
+    </div>
+    <div class="timeline container">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+                <ol>
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:300 }}px;">{{ row.inversion__municipio__nombre }}
+                            <br/>
+                            <span> Asignado: {{ row.asignado_percent|intcomma }}
+                            </span><br/>
+                            <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in otros|dictsortreversed:"asignado_percent" %}
+        <li{% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        <!-- <h4>{{ row.inversion__municipio__nombre }}</h4>
+        <span> Asignado: {{ row.asignado_percent|intcomma }}
+        </span><br/>
+        <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button id="show-detail-1" class="btn btn-default" type="submit">
+                Ver dealles en Tabla</button>
+            </div>
+        </div>
+    </div>
+    <div id="detail-1" class="container">
+        <div class="row">
+            <div class="col-md-12 table-responsive">
+                <h4 class="text-info text-info-ranking">Córdobas corrientes por habitante</h4>
+                <table class="table table-condensed table-striped pma-bg-white">
+                    <thead class="thead-inverse">
+                        <tr class="bg-primary">
+                        <th class="text-center"><strong>Posición</strong></th>
+                        <th class="text-center"><strong>Municipios</strong></th>
+                        <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
+                        <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                    </thead>
+                    {% if ejecutado <= 0 %}
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                    {% if municipio.slug == row.inversion__municipio__slug %} <tr class="info">
+                        {% else %}
+                        <tr>
+                            {% endif %}
+                            <td class="text-center"> {{forloop.counter}} </td>
+                            <td>{{ row.inversion__municipio__nombre }}</td>
+                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% if year != '2016' %}
+                            <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% for row in otros %}
+                        {% if municipio.slug == row.inversion__municipio__slug %}
+                        <tr class="info">
+                            {% else %}
+                            <tr>
+                                {% endif %}
+                                <td class="text-center"> {{forloop.counter}} </td>
+                                <td>{{ row.inversion__municipio__nombre }}</td>
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                {% if year != '2016' %}
+                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %} {% endif %}
+<!--
+                            <tr class="">
+                                <td colspan="2">TOTAL</td>
+                                <td class="text-right">
+                                    {% if numerador > 0 %}
+                                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    {% endif %}
+                                </td>
+                                {% if year != '2016' %}
+                                <td class="text-right">
+                                    {% if denominador > 0 %}
+                                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %} {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            </tr>
+                        -->
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block section4 %}
+<div class="container wide">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>Información Histórica<br>
+            <strong>Comportamiento histórico de las inversiones anuales {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
+            <hr class="pma-line-4" />
+        </div>
+    </div>
+</div>
+<div class="cd-horizontal-timeline loaded">
+    <div class="timeline container">
+        <div class="events-wrapper">
+            <div class="events" style="{{anuales|length|mul:"150"}}px">
+                <ol>
+                    {% for row in anuales %}
+                    <li><a href="#0" data-date="01/01/{{ row.inversion__anio }}"
+                    {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}
+                    style="left:{{ forloop.counter|mul:"150" }}px;">{{ row.inversion__anio }}
+                    <br/>
+                    Asignado: <span>{{ row.asignado|million|intcomma }}</span>
+                    <br/>
+                    Ejecutado: <span>{{ row.ejecutado|million|intcomma }}</span>
+                    </a></li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+
+    <div class="events-content">
+        <ol>
+            <li data-date="01/01/{{ row.inversion__anio }}"
+                {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}>
+            </li>
+        </ol>
+    </div> <!-- .events-content -->
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button id="show-detail-3" class="btn btn-default" type="submit">
+            Ver dealles en Tabla</button>
+        </div>
+    </div>
+</div>
+<div id="detail-3" class="container">
+    <div class="row">
+        <div class="col-md-12 table-responsive">
+            <table class="table table-condensed">
+                <tr class="info">
+                    <th></th>
+                    {% for year in year_list %}
+                    <th class="text-center">{{ year }}
+                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for key, data in porano.items %}
+                    <tr>
+                        <td class="text-left">{{ key }}</td>
+                        {% for year in year_list %}
+                        <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                        {% endfor %}
                 </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
-{% block main_content_previous %}
-    <!-- tabla4 -->
-    <div id="invTabContent" class="tab-content">
-      <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">
-
-        <div class="col-md-5">
-            <!--maribel 21/07- tabla1 inversion municipal -->
-            {% descargar_excel "icat1" %}
-            <h3>Inversión municipal</h3>
-            <h4 class="text-info">Porcentaje por clasificación
-              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsepastel2"  aria-expanded="false" aria-controls="collapsePastel2">Ver gráfico</a>
-            </h4>
-            <div class="collapse" id="collapsepastel1">
-                <div class="well col-md-8">
-                    <h3>Destino del gastos</h3>
-                    <div id='fuente_pie' class="col-md-8"> Chart will be rendered here </div>
-                    <br clear="all" />
-                </div>
-            </div>
-            <div class="collapse" id="collapsepastel2">
-                <div class="well">
-                    <div id='asignado' class="col-md-4"> Chart will be rendered here </div>
-                </div>
-            </div>
-            <div class="collapse" id="collapsepastel">
-                <div class="well">
-                    <h3>Destino del gastos</h3>
-                    <div id='ejecutado' class="col-md-4"> Chart will be rendered here </div>
-                </div>
-            </div>
-            <div class="collapse" id="collapsebarra">
-                <div class="well">
-                    <div id='tipo' class="col-md-5"> Chart will be rendered here </div>
-                </div>
-            </div>
-            <table class="table">
-            <tr class="info"><th colspan="2">Clasificación</th><th>Inicial</th><th>Ejecutado</th></tr>
-            {% for total in totales %}
-              <tr>
-                <td class="text-left"><img src="/static/img/{{ total.catinversion__nombre }}.png" class="pull-left" width="50" alt="{{ total.catinversion__nombre }}" /></td>
-                <td><h4>{{ total.catinversion__nombre }}</h4></td>
-                <td><span class="btn btn-info col-md-12 cifra">{{ total.asignado_percent }}%</span></td>
-                <td><span class="btn btn-info col-md-12 cifra">{{ total.ejecutado_percent }}%</span></td>
-              </tr>
-            {% endfor %}
-            </table>
-         <!-- tabla1 -->
+{% block section5 %}
+<div class="container wide">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2><strong>Modificaciones al presupuesto municipal de inversiones</strong><br>
+            Millones de córdobas corrientes </h2>
         </div>
-        <div class="col-md-7">
-            <!--maribel 21/07 tabla2 inverson -->
-            {% descargar_excel "icat2" %}
-            <h3>Inversión municipal</h3>
-            <h4 class="text-info">Millones de córdobas corrientes</h4>
-            <table class="table table-bordered">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+        <table class="table table-condensed table-striped">
             <thead>
-                <tr class="info">
-                    <th>Clasificaci&oacute;n de la inversi&oacute;n</th>
-                    <th>Inicial</th>
-                    <th>Ejecutado</th>
-                    <th>% Ejecutado</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for total in cat %}
-              <tr>
-                <td class="text-left">{{ total.catinversion__nombre }}</td>
-                <td class="text-right">{{ total.inicial_asignado|million|intcomma }}</td>
-                <td class="text-right">{{ total.ejecutado|million|intcomma }}</td>
-                <td>
-                {% if total.inicial_asignado %}
-                    <span class="text-success">{{ total.ejecutado|div:total.inicial_asignado|mul:100|floatformat:2 }}%</span>
-                {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-              <tr class="success bold">
-                <td>TOTAL</td>
-                <td class="text-right">{{ asignado|million|intcomma }}</td>
-                <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-                <td class="montos text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
-              </tr>
-            </tbody>
-            </table>
-        </div>
-        {% if not municipio %}
-        <!--maribel 21/07 tabla3 inversion - nacional -->
-        <div class="col-md-7">
-        {% descargar_excel "icat3" %}
-            <h3>Inversión municipal por población</h3>
-            <h4 class="text-info">por categoría de municipios en córdobas corrientes</h3>
-            <table class="table table-condensed">
-                <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
-                {% for row in porclasep %}
-                <tr>
-                    <td>{{ row.clasificacion }}</td>
-                    <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
-                    <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
-                </tr>
-                {% endfor %}
-                <tr class="success">
-                    <td><strong>TOTAL</strong></td>
-                    <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                    <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
-                </tr>
-            </table>
-        </div>
-        <!-- /fin inversion tabla3 nacional -->
-        {% endif %}
-        <!-- maribel 21/07 inversion-tabla3-municipal -->
-        {% if municipio %}
-            <div class="col-md-5">
-            	{% descargar_excel "icat4" %}
-                <h3>Ranquin de municipio de misma categoría municipal</h3>
-                <h4 class="text-info">Córdobas corrientes por habitante</h4>
-                <table class="table table-condensed">
-                    <tr class="info"><th>Posición</th><th>Municipios</th> <th>P. Inicial</th> <th>Ejecución</th></tr>
-                    {% for row in otros %}
-                        {% if municipio.slug == row.inversion__municipio__slug%}
-                        <tr class="info">
-                        {% else %}
-                        <tr>
-                        {% endif %}
-                            <td> {{forloop.counter}} </td>
-                            <td>{{ row.inversion__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                            <td class="info text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tr class="success">
-                        <td colspan="2">TOTAL</td>
-                        <td class="text-right">
-                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
-                        {{ numerator|div:denominator|floatformat:2|intcomma }}
-                        {% endwith %}
-                        </td>
-                        <td class="text-right">
-                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
-                        {{ numerator|div:denominator|floatformat:2|intcomma }}
-                        {% endwith %}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        {% endif %}
-        <br clear="all">
-        <div class="col-md-6"><h2>Fuentes de Inversión</h2><div id='fuentes'>Fuentes will be rendered here.</div></div>
-        <!-- /fin inversion-tabla3-municipal -->
-    </div>
-    <div role="tabpanel" class="tab-pane fade" id="invmodificacion" aria-labelledby="invmodificacion-tab">
-
-        <div class="col-md-10">
-        <!-- maribel 21/07  inversion tabla4 -->
-        	{% descargar_excel "icat5" %}
-            <h3>Modificaciones al presupuesto municipal</h3>
-            <h4>Inversiones en millones de córdobas corrientes</h4>
-            <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td colspan="4" class="success text-center">
-                        <h4>Modificación intermedia
+            <tr class="bg-primary">
+                <td></td>
+                <td></td>
+                <td colspan="4" class="text-center">
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
-                        </h4>
-                    </td>
-                    <td colspan="4" class="danger text-center">
-                        <h4>Modificación al cierre
-                            <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
-                        </h4>
-                    </td>
-                </tr>
-                <tr class="info"> <th>Rubros de inversión</th> <th>Inicial</th>
-                    <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
-                    <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
-                </tr>
-                {% for row in cat %}
+                    </h4>
+                </td>
+                <td colspan="4" class="text-center">
+                    <h4>Modificación al cierre
+                        <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
+                    </h4>
+                </td>
+            </tr>
+            <tr  class="bg-primary"> <th>Rubros de inversión</th> <th>Inicial</th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+            </tr>
+            </thead>
+            {% for row in cat %}
                 <tr>
-                    <td class="text-left">{{ row.catinversion__nombre }}</td>
+                    <td class="text-left">{{ row.catinversion__nombre}}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-
-                    <td class="success text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                    <td class="success text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
                     {% if row.actualizado_asignado %}
-                        <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    <td class="montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
-                        <td class="success montos">0</td>
+                    <td class="montos">0</td>
+                    {% endif %}
+                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    {% if row.final_asignado %}
+                    <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
 
-                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="danger text-right">
-                    {% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}
-                    </td>
-                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
-                    {% if row.final_asignado %}
-                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
-                    {% endif %}
                 </tr>
-                {% endfor %}
-            </tbody>
-            </table>
+            {% endfor %}
+            <tfoot>
+            <tr class="bold">
+                <td>TOTAL</td>
+                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'actualizado_asignado' %}
+                        {{ rubros|total_sum:'actualizado_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubros|total_sum:'actualizado_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'actualizado_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'actualizado_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+                <!-- totales periodo final -->
+                <td class="text-right">{{ rubros|total_sum:'final_asignado'|million|intcomma }}</td>
+                {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                    <td class="montosi text-right">
+                    {% if rubros|total_sum:'final_asignado' %}
+                        {{ rubros|total_sum:'final_asignado'|sub:sum_asignado|million|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                {% endwith %}
+                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                {% with sum_actualizado=rubros|total_sum:'final_asignado' %}
+                    <td class="montos text-right">
+                        {% if sum_actualizado %}
+                        {{ rubros|total_sum:'final_ejecutado'|div:sum_actualizado|mul:100|floatformat:1|intcomma}}%
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            </tr>
+            </tfoot>
+        </table>
         </div>
     </div>
-    <br clear="all">
-    <div role="tabpanel" class="tab-pane fade" id="invhistorico" aria-labelledby="invhistorico-tab">
-    	{% descargar_excel "icat6" %}
-        <h3>Comportamiento histórico de las inversiones anuales</h3>
-        <h4 class="text-info">En millones de córdobas corrientes
-              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsehistorico"  aria-expanded="false" aria-controls="collapsehistorico">Ver gráfico</a>
-        </h4>
-        <div class="collapse" id="collapsehistorico">
-           <div class="well col-md-8">
-                <div id='comparativo_anios' class="col-md-8"> Chart will be rendered here </div>
-           </div>
-        </div>
-        <div class="col-md-9">
-            <table class="table table-bordered">
-                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th></tr>
-                {% for row in anuales %}
-                <tr>
-                    <td class="text-left"><h4>{{ row.inversion__anio }}</h4></td>
-                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                    {% if row.asignado %}
-                        <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:2 }}%</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="col-md-10">
-        	{% descargar_excel "icat7" %}
-          <h3>Inversiones ejecutadas en los &uacute;ltimos a&ntilde;os</h3>
-          <table class="table table-condensed">
-            <tr class="info">
-              <th></th>
-              {% for year in year_list %}
-                   <th>{{ year }}</th>
-              {% endfor %}
-              <th>Promedio</th>
-            </tr>
-            {% for key, data in porano.items %}
-             <tr>
-               <td class="text-left">{{ key }}</td>
-               {% for year in year_list %}
-                 <td>{{ data|keyvalue:year|million|intcomma }}</td>
-               {% endfor %}
-               <td>{{ data.extra|intword }}</td>
-               <!-- old-fashioned way:
-               {% for subkey, subdata in data.items %}
-               <td>{{ subkey }} = {{ subdata|intcomma}}</td>
-               {% endfor %}
-                -->
-             </tr>
-           {% endfor %}
+</div>
 
-          </table>
-        </div>
-     </div>
-    <!-- tabla1 -->
-    <br clear="all"> <br />
-    <div class="clearfix"></div>
-    <div id='tipo' style="display:none;"> Chart will be rendered here </div>
-    <div id='area'  style="display:none;"> Chart will be rendered here </div>
-    <div id='fuente' style="display:none;"> Chart will be rendered here </div>
-    <!--div id='percapita_anios'> Inversion percapita  </div-->
-    <div id='ejecutado' style="display:none;">Inversion ejecutada </div>
-    <div id='ultimos' style="display:none;">Ultimos anios </div>
 {% endblock %}
 
 {% block custom_scripts %}

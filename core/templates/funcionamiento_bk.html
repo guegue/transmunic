@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "_indicator.html" %}
 {% load static thumbnail chartit humanize %}
 {% load mathfilters %}
-{% load core_extras %} 
+{% load core_extras %}
 {% block main_content %}
     <div class="col-md-12 text-centered">
         <div class="pull-left col-md-7">
@@ -207,7 +207,7 @@
         <td></td>
         <td></td>
         <td colspan="4" class="success text-center">
-           <h4>Modificación intermedia 
+           <h4>Modificación intermedia
            <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-     info">*</a>
            </h4>
         </td>
@@ -217,7 +217,7 @@
            </h4>
         </td>
       </tr>
-      <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> 
+      <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
       </tr>
@@ -287,7 +287,7 @@
     </table>
     <br />
     <!-- /fin gftabla3 -->
-    
+
     {% if not municipio %}
     <!-- javier 7/junio gftabla4 nacional -->
     {% descargar_excel "gf3" %}
@@ -298,7 +298,7 @@
         <td></td>
         <td></td>
         <td colspan="4" class="success text-center">
-           <h4>Modificación intermedia 
+           <h4>Modificación intermedia
            <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-     info">*</a>
            </h4>
         </td>
@@ -308,7 +308,7 @@
            </h4>
         </td>
       </tr>
-      <tr class="info"> <th>Categoria de Municipio</th> <th>Inicial</th> 
+      <tr class="info"> <th>Categoria de Municipio</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
       </tr>
@@ -379,7 +379,7 @@
     <!-- /fin gftabla4 nacional -->
 
     {% else %}
-    
+
     <!-- javier 7/junio gftabla4 -->
     {% descargar_excel "gf4" %}
     <h3>Modificación al presupuesto municipios categoría '{{ mi_clase.clasificacion }}'</h3>
@@ -389,7 +389,7 @@
         <td></td>
         <td></td>
         <td colspan="4" class="success text-center">
-           <h4>Modificación intermedia 
+           <h4>Modificación intermedia
            <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-     info">*</a>
            </h4>
         </td>
@@ -399,7 +399,7 @@
            </h4>
         </td>
       </tr>
-      <tr class="info"> <th>Municipio</th> <th>Inicial</th> 
+      <tr class="info"> <th>Municipio</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
       </tr>

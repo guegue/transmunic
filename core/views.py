@@ -17,6 +17,7 @@ from charts.bubble_oim import oim_bubble_chart_data
 from charts.bubble_ogm import ogm_bubble_chart_data
 from website.models import Banner
 from core.forms import DetallePresupuestoForm
+import json
 
 # Create your views here.
 def home(request):
@@ -169,6 +170,14 @@ def inversion_categoria_view(request):
     data_fuentes = fuentes_chart(year=year)
     data['charts'].append( fuentes_chart(year=year)['charts'][1] )
 
+    bubble_data = {'label':"Total", 'amount': round(data['asignado']/1000000, 2)}
+    child_l1 = []
+    for child in data['cat']:
+        child_data = {'label':child['catinversion__nombre'], 'amount': round(child['asignado']/1000000, 2)}
+        child_l1.append(child_data)
+    bubble_data['children'] = child_l1
+    bubble_source = json.dumps(bubble_data)
+
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
@@ -184,7 +193,7 @@ def inversion_categoria_view(request):
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
             'cat': data['cat'], 'anuales': data['anuales'], 'porclasep': data['porclasep'], 'otros': data['otros'], \
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}, \
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_source}, \
             context_instance=RequestContext(request))
 
 def ogm_view(request):

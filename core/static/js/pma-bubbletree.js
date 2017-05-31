@@ -24,9 +24,11 @@ $(function() {
     $.each(data['children'], function(key, value) {
         data['children'][key]['color'] = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
         var node_color = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
-        $.each(data['children'][key]['children'], function(j, val) {
-            data['children'][key]['children'][j]['color'] = vis4color.fromHex(node_color).lightness('*' + (.5 + Math.random() * .5)).x;
-        });
+        if(typeof data['children'][key]['children'] != 'undefined' ){
+            $.each(data['children'][key]['children'], function(j, val) {
+                data['children'][key]['children'][j]['color'] = vis4color.fromHex(node_color).lightness('*' + (.5 + Math.random() * .5)).x;
+            });
+        }
     });
 
     new BubbleTree({
