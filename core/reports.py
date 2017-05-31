@@ -34,7 +34,7 @@ class PlanInversionModelReport(ReportAdmin):
         'catinversion__nombre',
         'asignado',
         'ejecutado',
-        'ficha',
+        #'ficha',
         'self.porcentaje_ejecutado',
     ]
     years = [(year, year) for year in range(2010, 2017)]
@@ -49,15 +49,16 @@ class PlanInversionModelReport(ReportAdmin):
         'inversion__municipio__nombre': 'Municipio',
         'self.porcentaje_ejecutado': 'Porcentaje ejecutado',
         'catinversion__nombre': u'Categoría',
-        'ficha': 'Ficha del proyecto',
+        #'ficha': 'Ficha del proyecto',
         #'date__day': lambda x, y: _('Day'),
     }
     override_field_formats = {
         'asignado': intcomma,
         'ejecutado': intcomma,
-        'ficha': link_to_media,
+        #'ficha': link_to_media,
     }
-    list_filter = ('inversion__anio', 'inversion__periodo', 'inversion__municipio',)
+    list_filter = ('inversion__anio', 'inversion__periodo',
+            'inversion__municipio','catinversion__nombre')
     list_order_by = ('nombre',)
     type = 'report'
 
@@ -71,7 +72,7 @@ class PlanInversionModelReport(ReportAdmin):
             'asignado',
             'ejecutado',
             'self.porcentaje_ejecutado',
-            'ficha',
+            #'ficha',
         ]
         if request.GET.get('inversion__periodo') == 'F':
             self.fields.remove('asignado')

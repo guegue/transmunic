@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "_base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Report list" %}{% endblock %}
@@ -6,7 +6,7 @@
 {% block body_class %}reports{% endblock %}
 
 
-{% block content %}
+{% block section1 %}
     <h1>{% trans "Report list" %}</h1>
     <ul id="report-list">
         <li>

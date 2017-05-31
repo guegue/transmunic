@@ -1,4 +1,4 @@
-{% extends base_template_name %}
+{% extends "_indicator.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Report" %}: {{ report.get_title }}{% endblock %}
@@ -84,26 +84,29 @@
 {% endblock %}
 
 
-{% block content %}
-{% include "model_report/includes/report_title.html" %}
-{% include "model_report/includes/form_report.html" %}
-
-{% if report_rows %}
-<div id="data_container" style="clear:both; width: 100%;">
-
-    {% include "model_report/includes/report_chart.html" %}
-
-    {% if report_anchors %}
-        <select id="anchors">
-            <option>{% trans "Go to..." %}</option>
-            {% for anchor in report_anchors %}
-                <option value="{{ anchor|slugify }}">{{ anchor }}</option>
-            {% endfor %}
-        </select>
-    {% endif %}
-
-    {% include "model_report/includes/report_table.html" %}
-
+{% block indicator_summary %}
+{% endblock %}
+{% block indicator_title %}
+{% include "model_report/includes/report_title.html" %} 
+<div class="proyectos">{% include "model_report/includes/form_report.html" %}</div>
+{% endblock %}
+{% block section1 %}
+<div class="container proyectos">
+    <div class="row">
+        {% if report_rows %}
+            <div id="data_container" style="clear:both; width: 100%;">
+                {% include "model_report/includes/report_chart.html" %}
+                {% if report_anchors %}
+                    <select id="anchors">
+                    <option>{% trans "Go to..." %}</option>
+                    {% for anchor in report_anchors %}
+                        <option value="{{ anchor|slugify }}">{{ anchor }}</option>
+                    {% endfor %}
+                    </select>
+                {% endif %}
+                {% include "model_report/includes/report_table.html" %}
+            </div>
+        {% endif %}
+    </div>
 </div>
-{% endif %}
 {% endblock %}
