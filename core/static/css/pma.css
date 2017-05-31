@@ -305,7 +305,7 @@ footer .copyright {
     color: #49494a;
 }
 .pma-bg-gray{
-    background-color: #f8f9fa;
+    background-color: #f4f5f6;
 }
 .pma-bg-blue {
     background-color: #007cb6;
@@ -382,3 +382,8 @@ footer .copyright {
 #detail-1, #detail-2, #detail-3{
     display: none;
 }
+.proyectos fieldset { width: 70%; float:left;}
+.proyectos fieldset p { width: 33%; float:left;}
+.proyectos fieldset p label, .proyectos .actions { width: 100%; }
+.proyectos p.submit{ width: 10%;float:left;padding-top: 75px; }
+.proyectos .actions { clear: left;}
