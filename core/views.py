@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.views.generic.detail import DetailView
 from django.db.models import Sum, Max
 
-from models import Anio, Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico
+from models import Anio, Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico, CatInversion
 from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
 from tools import getYears
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
@@ -39,6 +39,8 @@ def home(request):
     desc_consultamb = Grafico.objects.get(pk='consultamb')
 
     departamentos = Departamento.objects.all()
+    categorias = CatInversion.objects.filter(destacar=True)
+    otras_categorias = CatInversion.objects.filter(destacar=False)
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
@@ -69,7 +71,9 @@ def home(request):
 
     total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
+    inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
     # import pdb; pdb.set_trace()
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
@@ -82,14 +86,19 @@ def home(request):
             data_fuentes['charts'][1],
             ),
         'inversion_categoria': inversion_categoria,
+        'inversion_categoria2': inversion_categoria2,
         'total_inversion': total_inversion,
         'departamentos': departamentos,
+        'categorias': categorias,
+        'otras_categorias': otras_categorias,
         'totales_oim': data_oim['totales'],
         'totales_ogm': data_ogm['totales'],
         'rubros': data_oim['rubros'],
         'data_oim': data_oim,
         'data_ogm': data_ogm,
         'home': 'home',
+        'year': year,
+        'periodo': periodo,
     }, context_instance=RequestContext(request))
 
 def municipio(request, slug):
