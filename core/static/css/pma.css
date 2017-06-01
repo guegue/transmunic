@@ -35,6 +35,7 @@ h3 {
 h4 {
     font-size: 1.2em;
 }
+.font_small { font-size: 13px;}
 small,
 .class="pma-line-4"font_small {
     font-size: 0.833em;
@@ -85,9 +86,6 @@ table td {
 }
 .pma-navbar.navbar-nav > li > a:hover {
     background-color: #008bb4;
-}
-.pma-summary {
-    height: 725px;
 }
 .pma-gradient {
     color: #fff;
@@ -204,8 +202,7 @@ hr.pma-line-5 {
     margin: 20px auto;
 }
 .metric-description{
-    width: 50%;
-
+    width: 70%;
 }
 .pma-thumbnail {
     display: inline-block;
@@ -273,12 +270,16 @@ footer .copyright {
 }
 /* margins */
 .wide{
-    padding-bottom: 1.2em;
+    padding-bottom: 3em;
     padding-top: 2em;
 }
 .medium{
     padding-bottom: 1.3em;
     padding-top: 1.3em;
+}
+.big {
+    padding-bottom: 2.3em;
+    padding-top: 3em;
 }
 .narrow{
     padding-bottom: 0.833em;
@@ -310,6 +311,9 @@ footer .copyright {
 .pma-bg-blue {
     background-color: #007cb6;
 }
+.pma-bg-light-green {
+    background: #5edab8;
+}
 .pma-bg-white{
     background-color: #ffffff;
 }
@@ -324,7 +328,7 @@ footer .copyright {
     font-size: 36px;
     margin-right: 15px;
 }
-.pma-index-icons .pma-icon{
+.pma-index-icons .pma-icon, .ver-mas .pma-icon{
     font-size: 45px;
 }
 
@@ -382,8 +386,33 @@ footer .copyright {
 #detail-1, #detail-2, #detail-3{
     display: none;
 }
-.proyectos fieldset { width: 70%; float:left;}
-.proyectos fieldset p { width: 33%; float:left;}
+.proyectos fieldset { width: 100%; float:left;}
+.proyectos fieldset p { width: 20%; float:left;}
+.proyectos fieldset p select { width: 80%; }
 .proyectos fieldset p label, .proyectos .actions { width: 100%; }
-.proyectos p.submit{ width: 10%;float:left;padding-top: 75px; }
-.proyectos .actions { clear: left;}
+.blanco { color: #fff;}
+.blanco:hover, .amarillo:hover, .blanco:focus, .amarillo:focus { color: yellow;text-decoration: none;}
+.categorias_inversion .well { background: none; border:0px;} 
+.otras-categorias { margin: 30px 0px; }
+.amarillo { color: yellow; }
+.pma-search-bar { padding: 10px;}
+.pma-search-bar select:focus {
+    outline: none;
+}
+.pma-search-bar select {
+    background: none;
+    border: transparent;
+    font-size: 20px;
+}
+.pma-search-bar .municipio {
+    width: 95%;
+}
+.titsearch { padding-left: 6px;}
+.pma-search-bar .buscar {
+    color: #fff;
+    margin-top: 15px;
+    background-color: #1a8cb3;
+    outline: none;
+}
+.cd-horizontal-timeline .events-content { margin: 0px !important;}
+.ver-mas { cursor: pointer;}

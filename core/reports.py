@@ -59,6 +59,8 @@ class PlanInversionModelReport(ReportAdmin):
     }
     list_filter = ('inversion__anio', 'inversion__periodo',
             'inversion__municipio','catinversion', 'nombre')
+    #list_filter_op = {'nombre': 'startswith'}
+    list_filter_op = {'nombre': 'icontains'}
     list_order_by = ('nombre',)
     type = 'report'
 

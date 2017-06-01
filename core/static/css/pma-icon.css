@@ -149,3 +149,6 @@
 .parques-plazas-y-ornato:before {
     content: "\e676";
 }
+.arrow_down:before {
+    content: "\e688";
+}

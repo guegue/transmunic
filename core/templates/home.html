@@ -49,7 +49,7 @@
         <div class="col-md-6 col-eq-height">
             <div class="gray-box">
                 <div class="pma-summary-box">
-                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span>
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
                 </div>
                 <h2><strong>Origen</strong><br/>de los Ingresos</h2>
@@ -81,7 +81,7 @@
         <div class="col-md-6 col-eq-height">
             <div class="gray-box">
                 <div class="pma-summary-box">
-                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span>
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ajecutado|million }} millones</span>
                 </div>
                 <h2><strong>Destino</strong><br/>de los Gastos</h3>
@@ -122,22 +122,17 @@
                         <hr class="pma-line-1">
                     </div>
                 </div>
-                <div class="row">
+                <div class="row categorias_inversion">
                     <div class="col-md-12">
-                        <h3> <strong>Rubros de la Inversión</strong></h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation
-                        </p>
+                        <p>Da clic en cada categoría de inversión para ver sus proyectos relacionados </p>
                         <p>&nbsp;</p>
                     </div>
                     <div class="row">
-                    {% for i in inversion_categoria %}
+                    {% for i in categorias %}
                         <div class="col-md-2 text-center">
-                            <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}">
-                            </span>
-                            <h5 class="text-center"><strong>{{ i.catinversion__nombre }}</strong></h5>
+                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
+                            </span></a>
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
                         </div>
                     {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
@@ -145,6 +140,27 @@
                     {% endif %}
                     {% endfor %}
                     </div>
+		    <div class="otras-categorias">
+	                    <div class="text-center">
+				<a class="ver-mas amarillo" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><strong>Otras categorías de inversión</strong> <i class="glyphicon glyphicon-chevron-down"></i></a>
+			    </div>
+			    <div class="collapse" id="collapseExample">
+			    	<div class="well">
+	        		       	<div class="row">
+    					{% for i in otras_categorias %}
+						<div class="col-md-2 text-center">
+							<a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
+				                      	<h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+						</div>
+		                                {% if foorloop.last or forloop.counter|divisibleby:6 %}
+						</div>
+						<div class="row list-icons-inversion">
+						{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+			    </div>
+			</div>
                 </div>
             </div>
             <!--div class="col-md-4">

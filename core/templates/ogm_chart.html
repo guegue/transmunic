@@ -119,7 +119,33 @@
 {% endblock %}
 
 {% block section3 %}
-<div class="cd-horizontal-timeline loaded pma-gradient">
+<div class="cd-horizontal-timeline inverted loaded pma-gradient">
+            {% if not municipio %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Gastos de personal por habitante en cada categoría municipal</h2>
+
+                <table class="table table-condensed pma-bg-white">
+                    <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                    {% for row in porclasep %}
+                    <tr>
+                        <td>{{ row.clasificacion }}</td>
+                        <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
+                        <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="success">
+                        <td><strong>TOTAL</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+	    {% else %}
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -236,6 +262,7 @@
             </div>
         </div>
     </div>
+{% endif %}
 </div>
 {% endblock %}
 
@@ -254,7 +281,10 @@
                                 {% for row in anuales %}
                                 <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
                                 {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}
-                                style="left:{{ forloop.counter|mul:300 }}px;">{{ row.gasto__anio }}</a></li>
+                                style="left:{{ forloop.counter|mul:300 }}px;">{{ row.gasto__anio }}
+                                <span class="text-right">{{ row.asignado|million|intcomma }}</td>
+                                <span class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                            </a></li>
                                 {% endfor %}
                             </ol>
 

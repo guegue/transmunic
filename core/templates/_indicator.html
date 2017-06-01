@@ -22,18 +22,24 @@
         <div class="row">
         <div class="col-md-12">
             <form method="GET">
-            <select name="year">
-            {% for ayear in year_list %}
-                <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
-            {% endfor %}
-            </select>
-            <select name="municipio">
-            <option value="">Consolidado Municipal</option>
-            {% for amunicipio in municipio_list %}
-                <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-            {% endfor %}
-            </select>
-            <input type="submit" value="Buscar" class="btn btn-primary"/>
+	    <div class="col-md-1">
+                    <span class="pma-fg-light-green titsearch"><strong>AÑO</strong></span>
+	            <select name="year">
+        	    {% for ayear in year_list %}
+                	<option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+	            {% endfor %}
+        	    </select>
+	    </div>
+	    <div class="col-md-3">
+                    <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
+	            <select name="municipio" class="municipio">
+        	    <option value="">Consolidado Municipal</option>
+	            {% for amunicipio in municipio_list %}
+        	        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+	            {% endfor %}
+	            </select>
+	    </div>
+            <input type="submit" value="Buscar" class="btn buscar"/>
             </form>
         </div>
         </div>
@@ -65,7 +71,7 @@
                     <span class="info-box-icon pma-icon initial">
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
+                        <span class="info-box-text"><strong>Inicial {{ asignado|million|intcomma }}</strong></span>
                     </div>
                 </div>
             </div>
@@ -75,9 +81,7 @@
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">
-                        {% if year != '2016' %}
-                        Ejecutado {{ ejecutado|million|intcomma }}
-                        {% endif %}
+                        <strong>Ejecutado {{ ejecutado|million|intcomma }}</strong>
                         </span>
                         <span class="info-box-number pma-green"></span>
                     </div>
@@ -89,7 +93,7 @@
                     <span class="info-box-icon pma-icon municipality-category">
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
+                        <span class="info-box-text"><strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong></span>
                         <span class="info-box-number pma-green"></span>
                     </div>
                 </div>

@@ -284,7 +284,8 @@ class Proyecto(models.Model):
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(TipoProyecto, related_name='tipo_proyecto', null=True,blank=True)
-    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion', null=True,blank=True)
+    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion',
+            null=True,blank=True, verbose_name=u"Categoría de Inversión")
     areageografica = models.CharField(choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)

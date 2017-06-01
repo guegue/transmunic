@@ -378,6 +378,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     #
     # chartit!
     #
+    colorschema =  ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1']
     if municipio:
         oim_comparativo_anios = RawDataPool(
             series=
@@ -414,8 +415,10 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
-                )
+                {
+                    'title': { 'text': ' ',},
+                    'colors':  colorschema,
+                })
         oim_comparativo2_column = Chart(
                 datasource = oim_comparativo2,
                 series_options =
@@ -606,13 +609,15 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
+
+
     ejecutado_pie = Chart(
             datasource = oimdata,
             series_options =
               [{'options':{
                   'type': 'pie',
                   'colorByPoint': True,
-                  'showInLegend': False,
+                  'showInLegend': True,
                   'stacking': False},
                 'terms':{
                   'subsubtipoingreso__origen__nombre': [
@@ -624,7 +629,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f} %</b>' },
-                  'colors':  ['#4C4642', '#898F45', '#A69083', '#DB736E', '#F6F0EB', '#36B1D2', '#F3DCBD', '#D7C1AF', '#FDE071'],
+                  'colors':  colorschema,
               }
     )
 
@@ -646,7 +651,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'title': {'text': ' '},
                   'plotOptions': { 'column': { 'dataLabels': { 'enabled': False, 'format': '{point.y:.2f}' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f} </b>' },
-                  'colors':  ['#4C4642', '#898F45', '#A69083', '#DB736E', '#F6F0EB', '#36B1D2', '#F3DCBD', '#D7C1AF', '#FDE071'],
+                  'colors':  colorschema,
               }
     )
 
