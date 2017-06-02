@@ -34,4 +34,8 @@ $(function() {
     $("#show-detail-3").click(function(){
         $("#detail-3").toggle("slow");
     });
+    $('#indicatorfilter').submit(function(){
+      var indicator_url = $("#indicator option").filter(":selected").val();;
+      $(this).attr('action', indicator_url);
+    }); 
 });
