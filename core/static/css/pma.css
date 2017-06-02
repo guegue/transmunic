@@ -1,0 +1,418 @@
+html {
+    font-size: 0.875em;
+}
+body {
+    background-color: white;
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #333;
+}
+p {
+    margin-bottom: 1.3em;
+}
+h1,
+h2,
+h3,
+h4 {
+    margin: 1.414em 0 0.5em;
+    font-family: 'Raleway', sans-serif;
+    ;
+    font-weight: inherit;
+    line-height: 1.2;
+}
+h1 {
+    margin-top: 0;
+    font-size: 2.074em;
+}
+h2 {
+    font-size: 1.728em;
+}
+h3 {
+    font-size: 1.44em;
+}
+h4 {
+    font-size: 1.2em;
+}
+.font_small { font-size: 13px;}
+small,
+.class="pma-line-4"font_small {
+    font-size: 0.833em;
+}
+.pma-number,
+table td {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* custom pma classes */
+.pma-header{
+    overflow: visible;
+    margin-bottom: 50px;
+}
+.pma-hero {
+    /*height: 644px;*/
+}
+.jumbotron.pma-hero {
+    background-color: transparent;
+    color: #ffffff;
+}
+.pma-hero h2 {
+    margin: 0 0.5em 0 0.5em;
+}
+.pma-illustration {
+    position: relative;
+    margin-bottom: -22px;
+    z-index: 900;
+}
+.illustration-index {
+    position: absolute;
+    top: -386px;
+}
+.pma-navbar.navbar-nav {
+    padding-top: 20px;
+}
+.pma-navbar.navbar-nav > li > a {
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.pma-navbar.navbar-nav > li > a:hover {
+    background-color: #008bb4;
+}
+.pma-gradient {
+    color: #fff;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b7ab3+0,00a7b2+100 */
+    background: rgb(43, 122, 179);
+    /* Old browsers */
+    background: -moz-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, rgba(43, 122, 179, 1) 0%, rgba(0, 167, 178, 1) 80%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
+    /* IE6-9 fallback on horizontal gradient */
+}
+.pma-gradient table{
+    color: #333;
+}
+.navbar-brand {
+    border-left: #70b0cb solid 1px;
+    margin-left: 15px;
+    margin-top: 15px;
+    padding: 0px 0px 0px 5px;
+    height: auto !important;
+    color: #fff;
+}
+.footer-brand {
+    display: block;
+    margin: 1.414em 0 0.5em;
+    padding: 0;
+    height: auto !important;
+    color: #000;
+}
+.navbar-brand:hover,
+.navbar-brand:focus {
+    color: #000;
+}
+.footer-brand:hover,
+.footer-brand:focus {
+    color: #000;
+    text-decoration: none;
+}
+.navbar-brand #brand-01,
+.navbar-brand #brand-02,
+.navbar-brand #brand-03,
+.footer-brand #brand-01,
+.footer-brand #brand-02,
+.footer-brand #brand-03 {
+    display: block;
+    clear: left;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: bold;
+}
+.navbar-brand #brand-03 {
+    color: #64eaf3;
+}
+.footer-brand #brand-03 {
+    color: #337ab7;
+}
+.gray-box {
+    background-color: #f8f9fa;
+    padding: 0.1em .18em 2em 1.8em;
+}
+hr.pma-line-1 {
+    border: 0;
+    border-bottom: 2px solid #67e3be;
+    width: 50px;
+    margin: 20px 0;
+}
+hr.pma-line-2 {
+    border: 0;
+    border-bottom: 2px solid #d4d4d4;
+    width: 50px;
+    margin: 20px 0;
+}
+.text-info-ranking{
+    color: #fff;
+    margin-top: 0.5em;
+}
+.other-metrics-title{
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+#other-metrics-links a{
+    display: block;
+    width: 100%;
+    color: #c0f7ed;
+    font-weight: bold;
+    text-decoration: none;
+}
+#other-metrics-links a:hover{
+    text-decoration: underline;
+}
+.container-metrics-links{
+    margin: 1.5em 0;
+}
+hr.pma-line-3 {
+    border: 0;
+    border-bottom: 2px solid #00a7b3;
+    width: 50px;
+    margin: 20px 0;
+}
+hr.pma-line-4 {
+    border: 0;
+    border-bottom: 2px solid #d4d4d4;
+    width: 100px;
+    margin: 20px auto;
+}
+hr.pma-line-5 {
+    border: 0;
+    border-bottom: 2px solid #22aae2;
+    width: 70px;
+    margin: 20px auto;
+}
+.metric-description{
+    width: 70%;
+}
+.pma-thumbnail {
+    display: inline-block;
+}
+.pma-spacing-bottom {
+    margin-bottom: 2em;
+}
+.pma-spacing-top {
+    margin-top: 2em;
+}
+a.pma-special-link {
+    color: #848f98;
+    font-weight: bold;
+    text-decoration: none;
+}
+a.pma-special-link:hover {
+    text-decoration: none;
+}
+footer {
+    padding-top: 50px;
+    padding-bottom: 85px;
+}
+footer .copyright {
+    color: #c2c7cb;
+}
+.pma-summary-box {
+    background-color: #00a7b2;
+    display: block;
+    width: 220px;
+    height: 75px;
+    padding: 14px;
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    color: #fff;
+    font-weight: bold;
+}
+.info-box {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.info-box-icon {
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    line-height: 60px;
+}
+.info-box-content {
+    padding: 5px 10px;
+    margin-left: 55px;
+}
+.progress-description,
+.info-box-text {
+    display: block;
+    font-size: 18px;
+    overflow: hidden;
+}
+.info-box-number {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 12px;
+}
+/* margins */
+.wide{
+    padding-bottom: 3em;
+    padding-top: 2em;
+}
+.medium{
+    padding-bottom: 1.3em;
+    padding-top: 1.3em;
+}
+.big {
+    padding-bottom: 2.3em;
+    padding-top: 3em;
+}
+.narrow{
+    padding-bottom: 0.833em;
+    padding-top: 0.833em;
+}
+
+/* color schema styles */
+.pma-fg-green, .pma-blue {
+    color: #00a7b2;
+}
+.pma-fg-light-green {
+    color: #5edab8;
+}
+.pma-fg-blue {
+    color: #007cb6;
+}
+.pma-fg-white{
+    color: #ffffff;
+}
+.pma-fg-orange{
+    color: #c05800;
+}
+.pma-fg-gray{
+    color: #49494a;
+}
+.pma-bg-gray{
+    background-color: #f4f5f6;
+}
+.pma-bg-blue {
+    background-color: #007cb6;
+}
+.pma-bg-light-green {
+    background: #5edab8;
+}
+.pma-bg-white{
+    background-color: #ffffff;
+}
+
+/* Chart Update options after render - Icons Styles */
+.chart-update{
+    z-index: 600;
+    margin-top: 56px;
+    padding: 0;
+}
+.chart-update .pma-icon {
+    font-size: 36px;
+    margin-right: 15px;
+}
+.pma-index-icons .pma-icon, .ver-mas .pma-icon{
+    font-size: 45px;
+}
+
+.pma-header-summary .pma-icon{
+    font-size: 36px;
+}
+.acerca {
+    margin-top: 50px;
+}
+.pma-index-inversion-icons .pma-icon{
+    font-size: 50px;
+
+}
+.pma-index-inversion-icons .info-box-icon {
+    float: none;
+}
+/* charts */
+
+.chart-container {
+    position: relative;
+}
+.chart-container
+[class^="view-"],
+[class*=" view-"] {
+    position: absolute;
+}
+.chart-container .view-alternative {
+    display: none;
+}
+.chart-container .view-main {
+    display: block;
+}
+.list-icons-inversion {
+    margin-top: 12px;
+}
+.pma-index-inversion-icons h5{
+    margin-top: 0px;
+}
+.chart-update .pma-icon {
+    cursor: pointer;
+}
+
+/* Numeric data format, tables */
+.numeric_data, .tabular_data {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* section header */
+.pma-section-header{
+    padding: 20px 0 40px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* hidden elements */
+#detail-1, #detail-2, #detail-3{
+    display: none;
+}
+.proyectos fieldset { width: 100%; float:left;}
+.proyectos fieldset p { width: 20%; float:left;}
+.proyectos fieldset p select { width: 80%; }
+.proyectos fieldset p label, .proyectos .actions { width: 100%; }
+.blanco { color: #fff;}
+.blanco:hover, .amarillo:hover, .blanco:focus, .amarillo:focus { color: yellow;text-decoration: none;}
+.categorias_inversion .well { background: none; border:0px;} 
+.otras-categorias { margin: 30px 0px; }
+.amarillo { color: yellow; }
+.pma-search-bar { padding: 10px;}
+.pma-search-bar select:focus {
+    outline: none;
+}
+.pma-search-bar select {
+    background: none;
+    border: transparent;
+    font-size: 20px;
+}
+.pma-search-bar .municipio {
+    width: 95%;
+}
+.titsearch { padding-left: 6px;}
+.pma-search-bar .buscar {
+    color: #fff;
+    margin-top: 15px;
+    background-color: #1a8cb3;
+    outline: none;
+}
+.cd-horizontal-timeline .events-content { margin: 0px !important;}
+.ver-mas { cursor: pointer;}

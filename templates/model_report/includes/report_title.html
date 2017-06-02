@@ -1,1 +1,8 @@
-{% load i18n %}{% load url from future %}<h2 class="titular">{{ report.get_title }}</h2>
+{% load i18n %}{% load url from future %}
+{% block indicator_title %}
+<h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% endif %}</h2>
+<hr class="pma-line-5"/>
+<h4 class="text-center">
+    <strong>Plan de Inversión Municipal</strong>
+</h4>
+{% endblock %}

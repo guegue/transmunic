@@ -1,0 +1,182 @@
+{% extends "_base.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %}
+{% load mathfilters %}
+{% load core_extras %}
+{# TODO: Replace this by django-seo2 #}
+{% block titulo %}
+{{ municipio }}
+{% endblock %}
+{% block extra_header_links %}
+    <link rel="stylesheet" href="{% static 'css/linea_basic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/linea_software.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pe-icon-7-stroke.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bubbletree.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/horizontal-timeline.css' %}" />
+{% endblock %}
+
+{% block header %}
+<div class="pma-search-bar pma-bg-blue ">
+    <div class="container">
+        <div class="row">
+        <div class="col-md-12">
+            <form method="GET">
+	    <div class="col-md-1">
+                    <span class="pma-fg-light-green titsearch"><strong>AÑO</strong></span>
+	            <select name="year">
+        	    {% for ayear in year_list %}
+                	<option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+	            {% endfor %}
+        	    </select>
+	    </div>
+	    <div class="col-md-3">
+                    <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
+	            <select name="municipio" class="municipio">
+        	    <option value="">Consolidado Municipal</option>
+	            {% for amunicipio in municipio_list %}
+        	        <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+	            {% endfor %}
+	            </select>
+	    </div>
+            <input type="submit" value="Buscar" class="btn buscar"/>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block main_content %}
+<div class="pma-bg-gray">
+    <div class="container ">
+        <div class="row">
+            <div class="col-md-12">
+                {% block indicator_title %}
+                <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}Consolidado{% endif %}</h2>
+                <hr class="pma-line-5"/>
+                <h4 class="text-center">
+                    <strong>{% block indicator_title_text %}{{indicator_name}}{% endblock %} {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
+                </h4>
+                <p class="text-center metric-description container"> {% block indicator_description %} Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos
+                {% endblock %}
+                </p>
+                {% endblock %}
+            </div>
+        </div>
+        <div class="row pma-header-summary wide">
+            {% block indicator_summary %}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon initial">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Inicial {{ asignado|million|intcomma }}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon executed">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">
+                        <strong>Ejecutado {{ ejecutado|million|intcomma }}</strong>
+                        </span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% if municipio %}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon municipality-category">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong></span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+{% block section1 %}
+{% endblock %}
+
+{% block section2 %}
+{% endblock %}
+
+{% block section3 %}
+{% endblock %}
+
+{% block section4 %}
+{% endblock %}
+
+<!-- ranking line -->
+{% block section5 %}
+{% endblock %}
+
+<!-- historic info -->
+{% block section6 %}
+{% endblock %}
+
+{% endblock %}
+
+{% block custom_body_blocks %}
+{% block section7 %}
+<div class="pma-gradient">
+    <div class="container">
+        <div class="row" id="other-metrics-links">
+            <div class="col-md-3">
+                <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
+                que puedes consultar</h3>
+            </div>
+            <div class="col-md-3 container-metrics-links">
+                <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen de Gastos </a>
+                <br>
+                <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos de Inversión</a>
+            </div>
+            <div class="col-md-3 container-metrics-links">
+                <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Funcionamiento </a>
+                <br>
+                <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro Corriente de Inversión</a>
+            </div>
+            <div class="col-md-3 container-metrics-links">
+                <a href="{% url 'gastos_personal' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Personal </a>
+                <br>
+                <a href="{% url 'ejecucion_presupuesto' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ejecución Presupuestaria</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endblock %}
+
+{% block extra_footer_scripts %}
+    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript">
+            var data = {{ bubble_data|safe }};
+    </script>
+    <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                            placement : 'top'
+                        });
+            });
+    </script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/pma.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
+{% endblock %}

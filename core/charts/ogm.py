@@ -47,8 +47,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         municipio_nombre = municipio_row.nombre
 
         source = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year).values('subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
-        tipos_inicial = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
-        tipos_final = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_inicial = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_final = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipogasto__origen__nombre')
         source_barra = GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=periodo, gasto__anio__gt=year_list[-3])
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__municipio__slug=municipio)
@@ -247,8 +247,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
 
         source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
-        tipos_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
-        tipos_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre','subsubtipogasto__origen__slug' ).annotate(asignado=Sum('asignado')).order_by('subsubtipogasto__origen__nombre')
+        tipos_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values('subsubtipogasto__origen__nombre','subsubtipogasto__origen__slug').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipogasto__origen__nombre')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipogasto__origen__nombre')
         source_pivot = GastoDetalle.objects.filter(gasto__periodo=periodo)
 

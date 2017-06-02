@@ -16,7 +16,7 @@ PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
 PERIODO_FINAL = 'F'
 # FIXME : ' P. Inicial' (leading space needed to be first)
-PERIODO_VERBOSE = {'I': ' P. Inicial', 'A': 'Actualizado', 'F': 'Ejecutado'}
+PERIODO_VERBOSE = {'I': 'P. Inicial', 'A': 'Actualizado', 'F': 'Ejecutado'}
 PERIODO_CHOICES = (
     (PERIODO_INICIAL, 'Inicial'),
     (PERIODO_ACTUALIZADO, 'Actualizado'),
@@ -31,7 +31,7 @@ class Organizacion(models.Model):
     correo = models.CharField(max_length=100, null=True, blank=True)
     web = models.CharField(max_length=200, null=True, blank=True)
     logo = ImageField(upload_to='organizacion', null=True, blank=True)
- 
+
     class Meta:
         verbose_name_plural = 'Organizaciones'
         ordering = ['nombre']
@@ -45,7 +45,7 @@ class Grafico(models.Model):
     notas = models.TextField(blank=True,null=True)
     imagen_objetivo = ImageField(upload_to='grafico',null=True,blank=True)
     imagen_actual = ImageField(upload_to='grafico',null=True,blank=True)
- 
+
     class Meta:
         verbose_name_plural = 'Graficos'
         ordering = ['nombre']
@@ -65,6 +65,7 @@ class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,blank=True)
+    destacar = models.BooleanField()
 
     class Meta:
         verbose_name_plural = 'Categorias de inversion'
@@ -98,7 +99,7 @@ class TipoGasto(models.Model):
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
     clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0, null=True)
- 
+
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
         ordering = ['codigo']
@@ -110,7 +111,7 @@ class SubTipoGasto(models.Model):
     tipogasto = models.ForeignKey(TipoGasto, related_name='tipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
- 
+
     class Meta:
         verbose_name_plural = 'Sub-Tipo de gastos'
         ordering = ['nombre']
@@ -123,7 +124,7 @@ class SubSubTipoGasto(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
- 
+
     class Meta:
         verbose_name_plural = 'Sub-Sub-Tipo de gastos'
         ordering = ['nombre']
@@ -155,7 +156,7 @@ class TipoIngreso(models.Model):
     slug = AutoSlugField(populate_from='nombre', null=True)
     #si no es ingreso corriente, entonces es de Capital
     clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0, null=True)
- 
+
     class Meta:
         verbose_name_plural = 'Tipo de ingreso'
         ordering = ['codigo']
@@ -180,7 +181,7 @@ class SubSubTipoIngreso(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True)
- 
+
     class Meta:
         verbose_name_plural = 'Sub-subtipos de ingresos'
         ordering = ['codigo']
@@ -251,7 +252,7 @@ class GastoDetalle(models.Model):
 class TipoProyecto(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
- 
+
     class Meta:
         verbose_name_plural = 'Tipo de proyectos'
         ordering = ['nombre']
@@ -283,7 +284,8 @@ class Proyecto(models.Model):
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(TipoProyecto, related_name='tipo_proyecto', null=True,blank=True)
-    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion', null=True,blank=True)
+    catinversion = models.ForeignKey(CatInversion, related_name='categoria_inversion',
+            null=True,blank=True, verbose_name=u"Categoría de Inversión")
     areageografica = models.CharField(choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(max_digits=12, decimal_places=2, blank=False, null=False)

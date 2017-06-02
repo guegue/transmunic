@@ -22,6 +22,8 @@ from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
 from lugar.models import Poblacion
 
 def oim_chart(municipio=None, year=None, portada=False):
+    # TODO: Dividir en Partes este código kilometrico
+    # XXX: Split series de datos, agregaciones
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
     periodo_list = getPeriods(Ingreso)
@@ -48,9 +50,9 @@ def oim_chart(municipio=None, year=None, portada=False):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
 
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipoingreso__origen__nombre')
-        tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__id')
-        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
+        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values('subsubtipoingreso__origen__id').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipoingreso__origen__nombre')
+        tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__id')
+        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipoingreso__origen__id')
         source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
@@ -133,9 +135,6 @@ def oim_chart(municipio=None, year=None, portada=False):
             row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion, 1) if total_poblacion > 0 else 0
             row['asignado_percent'] = round(row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
-        max_otros = otros[0]
-        for row in otros:
-            row['comparative_percent'] = row['ejecutado_percent']*100/max_otros['ejecutado_percent']
 
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
@@ -255,8 +254,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(**{quesumar: Sum(quesumar) })
-        tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__nombre')
-        tipos_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__nombre')
+        tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__slug').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__nombre')
+        tipos_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__nombre')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipoingreso__origen__nombre')
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
@@ -379,6 +378,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     #
     # chartit!
     #
+    colorschema =  ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1']
     if municipio:
         oim_comparativo_anios = RawDataPool(
             series=
@@ -415,8 +415,10 @@ def oim_chart(municipio=None, year=None, portada=False):
                     },
                     }],
                 chart_options =
-                {'title': { 'text': ' '}},
-                )
+                {
+                    'title': { 'text': ' ',},
+                    'colors':  colorschema,
+                })
         oim_comparativo2_column = Chart(
                 datasource = oim_comparativo2,
                 series_options =
@@ -607,11 +609,15 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
+
+
     ejecutado_pie = Chart(
             datasource = oimdata,
             series_options =
               [{'options':{
                   'type': 'pie',
+                  'colorByPoint': True,
+                  'showInLegend': True,
                   'stacking': False},
                 'terms':{
                   'subsubtipoingreso__origen__nombre': [
@@ -622,7 +628,30 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f} %</b>' },
+                  'colors':  colorschema,
+              }
+    )
+
+    ejecutado_column = Chart(
+            datasource = oimdata,
+            series_options =
+              [{'options':{
+                  'type': 'column',
+                  'colorByPoint': True,
+                  'showInLegend': False,
+                  'stacking': False},
+                'terms':{
+                  'subsubtipoingreso__origen__nombre': [
+                    quesumar]
+                  }}],
+            chart_options =
+              {
+                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
+                  'title': {'text': ' '},
+                  'plotOptions': { 'column': { 'dataLabels': { 'enabled': False, 'format': '{point.y:.2f}' }, 'showInLegend': True, 'depth': 35, }},
+                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f} </b>' },
+                  'colors':  colorschema,
               }
     )
 
@@ -662,7 +691,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado_pie, )
     elif municipio:
-        charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
     else:
         charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
 

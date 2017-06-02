@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from lugar.models import Municipio
-from core.models import PERIODO_CHOICES
+from core.models import PERIODO_CHOICES, CatInversion
 import datetime
 class DetallePresupuestoForm(forms.Form): 
     MODELS = (
@@ -23,6 +23,7 @@ class DetallePresupuestoForm(forms.Form):
                              required = True
                               )
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
+
                                        widget= forms.ModelChoiceField.widget(
                                     attrs={'class':"form-control required"},
                                     ),
@@ -34,3 +35,10 @@ class DetallePresupuestoForm(forms.Form):
                                     ),
                              required = True
                               )
+    catinversion = forms.ModelChoiceField(queryset=CatInversion.objects.all(),
+
+                                       widget= forms.ModelChoiceField.widget(
+                                    attrs={'class':"form-control required"},
+                                    ),
+                             required = True
+                                       )

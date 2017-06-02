@@ -1,0 +1,154 @@
+@font-face {
+    font-family: 'Pe-icon-7-stroke';
+    src: url('../fonts/Pe-icon-7-stroke.eot?d7yf1v');
+    src: url('../fonts/Pe-icon-7-stroke.eot?#iefixd7yf1v') format('embedded-opentype'), url('../fonts/Pe-icon-7-stroke.woff?d7yf1v') format('woff'), url('../fonts/Pe-icon-7-stroke.ttf?d7yf1v') format('truetype'), url('../fonts/Pe-icon-7-stroke.svg?d7yf1v#Pe-icon-7-stroke') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+[class^="pma-icon"],
+[class*=" pma-icon"] {
+    display: inline-block;
+    font-family: 'Pe-icon-7-stroke';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.pma-icon:before {
+    /* font-size: 55px; */
+    content: "\e64f";
+}
+/* Origen Recurso - Icon font*/
+
+/* 2 - Transferencias de Ley */
+
+.transferencias-de-ley:before {
+    content: "\e616";
+}
+/* 4 - Transferencias y donaciones */
+
+.transferencias-y-donaciones:before {
+    content: "\e6a1";
+}
+/* 6 - Transferencias */
+
+.transferencias:before {
+    content: "\e616";
+}
+/* 1 - Recaudación */
+
+.recaudacion:before {
+    content: "\e6c0";
+}
+/* 3 - Otros */
+
+.otros-gastos:before {
+    content: "\e617";
+}
+/* 5 - Préstamos */
+
+.prestamos:before {
+    content: "\e69d";
+}
+/* 5 - Materiales y Sumistros */
+
+.materiales-y-sumistros:before {
+    content: "\e622";
+}
+/* 3 - Otras transferencias del gobierno central */
+
+.otras-transferencias-del-gobierno-central:before {
+    content: "\e6a8";
+}
+/* 1 - Gastos de Personal */
+
+.gastos-de-funcionamiento:before {
+    content: "\e68c";
+}
+/* 6 - Otros origenes */
+
+.otros-origenes:before {
+    content: "\e695";
+}
+/* 2 - Servicios No Personales */
+
+.inversion:before {
+    content: "\e64d";
+}
+/* 4 - Bienes de Uso/Inversión */
+
+.servicios-no-personaler:before {
+    content: "\e60a";
+}
+
+.initial:before{
+    content: "\e60d";
+}
+.executed:before{
+    content: "\e666";
+}
+.municipality-category:before{
+    content: "\e60c";
+}
+/*Medio Ambiente*/
+.medio-ambiente:before{
+    content: "\e6b8";
+}
+/*Participacion ciudadana */
+.participacion-ciudadana:before{
+    content: "\e6a9";
+}
+/*seguridad alimentaria */
+.seguridad-alimentaria:before{
+    content: "\e6b8";
+}
+.educacion-escuelas-alfabetizacion-becas:before {
+    content: "\e60f";
+}
+.agua-y-saneamiento:before {
+    content: "\e65a";
+}
+.viviendas:before {
+    content: "\e648";
+}
+.cultura-y-deporte:before {
+    content: "\e679";
+}
+.calles-aceras-y-andenes:before {
+    content: "\e68e";
+}
+.ninez-adolescencia-y-mujer-tercera-edad-grupos-vul:before {
+    content: "\e693";
+}
+.seguridad-alimentaria:before {
+    content: "\e60e";
+}
+.energia-domiciliar-y-publica:before {
+    content: "\e69a";
+}
+.salud:before {
+    content: "\e642";
+}
+.drenaje-pluvial:before {
+    content: "\e66a";
+}
+.caminos-puentes-y-alcantarillado:before {
+    content: "\e614";
+}
+.otros:before {
+    content: "\e64d";
+}
+.fortalecimiento-institucional-municipal:before {
+    content: "\e65e";
+}
+.parques-plazas-y-ornato:before {
+    content: "\e676";
+}
+.arrow_down:before {
+    content: "\e688";
+}

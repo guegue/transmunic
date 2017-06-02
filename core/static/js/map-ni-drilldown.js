@@ -23,7 +23,10 @@ $(function() {
     // Instanciate the map
     Highcharts.mapChart('nic-map-container', {
         chart: {
-            backgroundColor: "#01c083",
+            backgroundColor: "rgba(255,255,255,0)",
+            style: {
+                fontFamily: '"Raleway",sans-serif'
+            },
             events: {
                 drilldown: function(e) {
                     if (!e.seriesOptions) {
@@ -46,20 +49,20 @@ $(function() {
                                     events: {
                                         click: function (e) {
                                             console.log(e.point);
-                                            // location.href = 'https://en.wikipedia.org/wiki/' + e.point.name;
+                                            location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
                                     },
                                     allowPointSelect: false,
                                     states: {
                                         hover: {
-                                            color: '#1891ac'
+                                            color: '#f8f9fa'
                                         }
                                     }
                                 });
                             }, 1000);
                         });
                     }
-                    this.setTitle('Rergesar a ', {
+                    this.setTitle('Regresar a ', {
                         text: e.point.name
                     });
                 },
@@ -71,22 +74,29 @@ $(function() {
             }
         },
         title: {
-            text: ''
+            text: '<b>Presupuesto</b> Municipal',
+            floating: false,
+            align: 'left',
+            style: {
+                color: '#ffffff',
+                fontSize: '18px'
+            }
         },
         subtitle: {
-            text: 'Nicaragua',
+            text: 'Haga click en su municipio para<br/> revisar el presuspuesto',
             floating: true,
-            align: 'right',
+            align: 'left',
             y: 50,
             style: {
-                fontSize: '16px'
+                color: '#ffffff',
+                fontSize: '14px'
             }
         },
         legend: {
             enabled: false
         },
         mapNavigation: {
-            enabled: true,
+            enabled: false,
             buttonOptions: {
                 verticalAlign: 'bottom'
             }
@@ -95,7 +105,7 @@ $(function() {
             map: {
                 states: {
                     hover: {
-                        color: '#1891ac'
+                        color: '#f8f9fa'
                     }
                 }
             }
@@ -114,6 +124,26 @@ $(function() {
                     y: 60
                 }
             }
+        },
+        lang: {
+            contextButtonTitle: "Menú contextual del gráfico",
+            decimalPoint: ".",
+            downloadJPEG: "Descargar imágen JPEG",
+            downloadPDF: "Descargar documento PDF",
+            downloadPNG: "Descargar imágen PNG",
+            downloadSVG: "Descargar SVG",
+            drillUpText: "↩ Regresar",
+            loading: "Cargando...",
+            months: [ "January" , "February" , "March" , "April" , "May" , "June" , "July" , "August", "September" , "October" , "November" , "December"],
+            noData: "No hay datos que mostrar",
+            numericSymbolMagnitude: 1000,
+            numericSymbols: [ "k" , "M" , "G" , "T" , "P" , "E"],
+            printChart: "Imprimir gráfico",
+            resetZoom: "Restablecer zoom",
+            resetZoomTitle: "Restablecer nivel de zoom 1:1",
+            shortMonths: [ "Jan" , "Feb" , "Mar" , "Apr" , "May" , "Jun" , "Jul" , "Aug" , "Sep" , "Oct" , "Nov" , "Dec"],
+            thousandsSep: " ",
+            weekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         }
     });
 })
