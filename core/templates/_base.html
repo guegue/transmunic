@@ -99,14 +99,22 @@
                 <li><a href="#"><span class="glyphicon glyphicon-search"></span></a>
                 </li>
             </ul>
-<select class="js-example-basic-single">
-  <option></option>
-  <optgroup label="Managua/Nicaragua">
+            <select class="listado-municipios">
+               <option></option>
+               <option class="amarillo">Consolidado Municipal</option>
+               {% regroup municipios by depto as departamentos %}
+               {% for departamento in departamentos %}
+                   <optgroup label="{{ departamento.grouper }}">
+                       {% for m in departamento.list %}
+                           <option value="{{ m.id}}">{{ m.nombre }}</option>
+                       {% endfor %}
+                   </optgroup>
+               {% endfor %}
+
     <option value="WY">Ciudad Sandino</option>
     <option value="WY">Tipitapa</option>
     <option value="WY">Managua</option>
     <option value="WY">Ticuantepe</option>
-  </optgroup>
   <optgroup label="Granada/Nicaragua">
     <option value="WY">Granada</option>
     <option value="WY">Diria</option>
@@ -226,12 +234,13 @@
     {% block custom_scripts %}
     {% endblock %}
     <script type="text/javascript">
-        $('select').select2();
+        $('select').select2({
+        });
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $(".js-example-basic-single").select2({
-			    placeholder: "Select a state",
+            $(".listado-municipios").select2({
+			    placeholder: "Presupuesto",
                 allowClear: true
 			});
         });
