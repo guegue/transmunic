@@ -1,23 +1,20 @@
-{% extends "_base.html" %}
+{% extends "base.html" %}
 {% load static thumbnail %}
 
-{% block main_content %}
-<div class="container">
+{% block content %}
     <h2 class="text-primary">Participación Ciudadana</h2>
-    <hr class="pma-line-2"/>
-    <div class="col-md-12">
+    <div class="col-md-10 col-md-offset-2">
         {% for object in object_list %}
-            <div class="col-md-6 organizaciones">
+            <div class="col-md-5 organizaciones">
                 {% if object.logo %}
                     {% thumbnail object.logo "120" as img %}
                     <img src="{{ img.url }}" alt="{{ logo }}" class="pull-left"/>
                     {% endthumbnail %}
                 {% endif %}
                 <h4>{{ object.nombre }}</h4>.
-                {{ object.correo }} {{ object.web|urlize }}
+                {{ object.correo }} {{ object.web|urlize }} 
             </div>
             {% if forloop.last or forloop.counter|divisibleby:2 %}<br clear="all" />{% endif %}
         {% endfor %}
     </div>
-</div>
 {% endblock %}
