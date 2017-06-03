@@ -32,7 +32,7 @@
         <div class="col-md-5 table-responsive">
             <table class="table table-striped table-hover" id="datatable-1">
                 <thead>
-                    <tr class="primary">
+                    <tr class="bg-primary">
                         <th class="text-left">Rubros de Gasto</th>
                         <th class="text-right">Inicial</th>
                         <th class="text-right">Ejecutado</th>
@@ -367,9 +367,9 @@
     Highcharts.chart('bar-1', {
         data: {
             table: 'datatable-1',
-            startRow: 0, endRow:{{rubros|length}},
-            startColumn:0,
-            endColumn:2
+            startRow: 1, endRow:{{rubros|length}},
+            startColumn:1,
+            endColumn:3
         },
         chart: {
             type: 'column'
