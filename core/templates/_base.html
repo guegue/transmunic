@@ -103,7 +103,7 @@
                {% for departamento in departamentos %}
                    <optgroup label="{{ departamento.grouper }}">
                        {% for m in departamento.list %}
-                           <option value="{{ m.id}}">{{ m.nombre }}</option>
+                           <option value="{{ m.slug}}">{{ m.nombre }}</option>
                        {% endfor %}
                    </optgroup>
                {% endfor %}
@@ -216,6 +216,9 @@
             $(".listado-municipios").select2({
                 placeholder: "Presupuesto",
                 allowClear: true
+            });
+            $('.listado-municipios').on("select2:selecting", function(e) {
+                window.location = e.params.args.data.id;
             });
         });
         $(".listado-municipios").on("select2:open", function() {
