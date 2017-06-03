@@ -364,11 +364,12 @@
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script>
+    /*
     Highcharts.chart('bar-1', {
         data: {
             table: 'datatable-1',
-            startRow: 0, endRow:{{rubros|length}},
-            startColumn:0,
+            startRow: 1, endRow:{{rubros|length}},
+            startColumn:1,
             endColumn:2
         },
         chart: {
@@ -416,5 +417,10 @@
             }
         }
     });
+    *:/
+    <script type="text/javascript">
+        $('select').select2({
+        });
+    </script>
     </script>
 {% endblock %}
