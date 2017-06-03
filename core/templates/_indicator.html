@@ -23,40 +23,40 @@
         <div class="row">
             <div class="col-md-12">
                 <form id="indicatorfilter" method="GET">
-                 <div class="col-md-1">
+                   <div class="col-xs-1 col-sm-2 col-md-1">
                     <span class="pma-fg-light-green titsearch"><strong>AÑO</strong></span>
                     <select name="year">
-                     {% for ayear in year_list %}
-                     <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
-                     {% endfor %}
-                 </select>
-             </div>
-             <div class="col-md-3">
+                       {% for ayear in year_list %}
+                       <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+               <div class="col-xs-3 col-sm-5 col-md-3">
                 <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
                 <select name="municipio" class="municipio">
-                 <option value="">Consolidado Municipal</option>
-                 {% for amunicipio in municipio_list %}
-                 <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-                 {% endfor %}
-             </select>
-         </div>
-         <div class="col-md-3">
-            <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
-            <select name="indicador" class="indicator" id="indicator">
-             <option value="">Consolidado Municipa</option>
-             <option value=""></option>
-             <option value="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</option>
-             <option value="{% absurl 'origen_gastos'%}">Destino del gasto municipal</option>
-             <option value="{% absurl 'inversion_categoria'%}">Inversiones</option>
-             <option value="{% absurl 'gastos_funcion'%}">Gastos de funcionamiento</option>
-             <option value="{% absurl 'gastos_personal'%}">Gastos de personal</option>
-             <option value="{% absurl 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</option>
-             <option value="{% absurl 'ahorro_corriente'%}">Ahorro corriente para inversiones</option>
-             <option value="{% absurl 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</option>
-         </select>
-     </div>
-     <div class="col-md-3">
-       <input type="submit" value="Buscar" class="btn buscar"/>
+                   <option value="">Consolidado Municipal</option>
+                   {% for amunicipio in municipio_list %}
+                   <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+                   {% endfor %}
+                    </select>
+                </div>
+               <div class="col-xs-3 col-sm-4 col-md-3">
+                <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
+                <select name="indicador" class="indicator" id="indicator">
+                   <option value="">Consolidado Municipa</option>
+                   <option value=""></option>
+                        <option value="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</option>
+                        <option value="{% absurl 'origen_gastos'%}">Destino del gasto municipal</option>
+                        <option value="{% absurl 'inversion_categoria'%}">Inversiones</option>
+                        <option value="{% absurl 'gastos_funcion'%}">Gastos de funcionamiento</option>
+                        <option value="{% absurl 'gastos_personal'%}">Gastos de personal</option>
+                        <option value="{% absurl 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</option>
+                        <option value="{% absurl 'ahorro_corriente'%}">Ahorro corriente para inversiones</option>
+                        <option value="{% absurl 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</option>
+                </select>
+            </div>
+            <div class="col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
+       </form>
    </div>
 </form>
 </div>
@@ -84,7 +84,7 @@
         </div>
         <div class="row pma-header-summary wide">
             {% block indicator_summary %}
-            <div class="col-md-4">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon initial">
                     </span>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon executed">
                     </span>
@@ -106,7 +106,7 @@
                 </div>
             </div>
             {% if municipio %}
-            <div class="col-md-4">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon municipality-category">
                     </span>
@@ -149,16 +149,16 @@
 <div class="pma-gradient">
     <div class="container">
         <div class="row" id="other-metrics-links">
-            <div class="col-md-3">
+            <div class="col-xs-3 col-sm-3 col-md-3">
                 <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
                 que puedes consultar</h3>
             </div>
-            <div class="col-md-3 container-metrics-links">
+            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
                 <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen de Gastos </a>
                 <br>
                 <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos de Inversión</a>
             </div>
-            <div class="col-md-3 container-metrics-links">
+            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
                 <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Funcionamiento </a>
                 <br>
                 <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro Corriente de Inversión</a>
