@@ -67,13 +67,13 @@ class PlanInversionModelReport(ReportAdmin):
 
     def __init__(self, parent_report=None, request=None):
         self.fields = [
-            'inversion__anio',
-            'inversion__municipio__nombre',
+            #'inversion__anio',
+            #'inversion__municipio__nombre',
             'nombre',
             'catinversion__nombre',
             'asignado',
             'ejecutado',
-            'self.porcentaje_ejecutado',
+            #'self.porcentaje_ejecutado',
             #'ficha',
         ]
         if request.GET.get('inversion__periodo') == 'F':
