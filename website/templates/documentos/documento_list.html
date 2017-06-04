@@ -1,179 +1,68 @@
-{% extends '_base.html' %}
-{% load static thumbnail chartit %}
-{% block main_content %}
+{% extends '_base.html' %} {% load static thumbnail chartit %} {% block main_content %}
 <div class="container">
-    <div class="left-panel">
-        <div class="col-xs-12 col-sm-6 col-lg-8">
+    {% if documento_list %}
+    <div class="row">
+        <h2 class="title">{% if tipodoc %}{{ tipodoc.titulo }} {% endif %}</h2>
+        <hr class="pma-line-2" />
+    </div>
+    <div class="row table-row">
+        {% for documento in documento_list %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <div class="thumbnail">
-                            <a href="#"><img src="http://www.istanbluegayrimenkul.com/wp-content/uploads/2014/05/image6.jpg" alt=""/></a>
-                        </div>
-                        <div class="icerik-bilgi">
-                            <a href="#"><h2>Lorem ipsum dolor sit amet</h2></a>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper. Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis, viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
-                            <div class="btn-group">
-                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
-                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
-                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
-                            </div>
-                            <a href="#">
-                                <button type="button" class="btn btn-primary">
-                                    <span class="btn btn-google">Read More <i class="fa fa-chevron-right"></i></span>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="left-panel">
-        <div class="col-xs-12 col-sm-6 col-lg-6">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-md-12">
-                        <div class="thumbnail">
-                            <a href="#"><img src="http://www.istanbluegayrimenkul.com/wp-content/uploads/2014/05/image6.jpg" alt=""/></a>
-                        </div>
-                        <div class="icerik-bilgi">
-                            <a href="#"><h2>Lorem ipsum dolor sit amet</h2></a>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper. Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis, viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
-                            <div class="btn-group">
-                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
-                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
-                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
-                            </div>
-                            <a href="#">
-                                <button type="button" class="btn btn-primary">
-                                    <span class="btn btn-google">Read More <i class="fa fa-chevron-right"></i></span>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="left-panel">
-        <div class="col-xs-12 col-sm-6 col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-md-12">
-                        <div class="thumbnail">
-                            <a href="#"><img src="http://www.istanbluegayrimenkul.com/wp-content/uploads/2014/05/image6.jpg" alt=""/></a>
-                        </div>
-                        <div class="icerik-bilgi">
-                            <a href="#"><h2>Lorem ipsum dolor sit amet</h2></a>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper. Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis, viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
-                            <div class="btn-group">
-                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
-                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
-                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
-                            </div>
-                            <a href="#">
-                                <button type="button" class="btn btn-primary">
-                                    <span class="btn btn-google">Read More <i class="fa fa-chevron-right"></i></span>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="left-panel">
-        <div class="col-xs-12 col-sm-6 col-lg-2">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-md-12">
-                        <div class="thumbnail">
-                            <a href="#"><img src="http://www.istanbluegayrimenkul.com/wp-content/uploads/2014/05/image6.jpg" alt=""/></a>
-                        </div>
-                        <div class="icerik-bilgi">
-                            <a href="#"><h2>Lorem ipsum dolor sit amet</h2></a>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper. Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis, viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
-                            <div class="btn-group">
-                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
-                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
-                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
-                            </div>
-                            <a href="#">
-                                <button type="button" class="btn btn-primary">
-                                    <span class="btn btn-google">Read More <i class="fa fa-chevron-right"></i></span>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Original List -->
-<div class="container">
-{% if documento_list %}
-<div class="row">
-    <h2 class="title">{% if tipodoc %}{{ tipodoc.titulo }} {% endif %}</h2>
-    <hr class="pma-line-2"/>
-    {% for documento in documento_list %}
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col-md-12">
-                    <div class="thumbnail">
                         {% thumbnail documento.imagen "250x180" crop='top' as img %}
-                        <a href="{{ documento.archivo.url }}">
+                        <div class="thumbnail">
+                            <a href="{{ documento.archivo.url }}">
                         <img src="{{ img.url }}" alt="{{ banner }}"/>
                         </a>
-                        {% endthumbnail %}
-                    </div>
-                    <div class="icerik-bilgi">
-                        {% if documento.archivo %}
-                        <a href="{{ documento.archivo.url }}" target="_blank"><h2>{{ documento }}</h2></a>
-                        {% else %}
-                        {{ documento }}
-                        {% endif %}
-                        <p class="fecha">{{ documento.tipo }}</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper. Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis, viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
-                        <div class="btn-group">
-                            <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
-                            <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
-                            <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
                         </div>
-                        {% if documento.archivo %}
-                        <a href="{{ documento.archivo.url }}" target="_blank">
+                        {% endthumbnail %}
+                        <div class="icerik-bilgi">
+                            {% if documento.archivo %}
+                            <a href="{{ documento.archivo.url }}" target="_blank">
+                                <h3>{{ documento }}</h3>
+                            </a>
+                            {% else %} {{ documento }} {% endif %}
+                            <p class="fecha">{{ documento.tipo }}</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper.
+                                Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis,
+                                viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis
+                                et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
+                            <div class="btn-group">
+                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
+                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
+                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
+                            </div>
+                            {% if documento.archivo %}
+                            <a href="{{ documento.archivo.url }}" target="_blank">
                             <button type="button" class="btn btn-primary">
                                 <i class="glyphicon glyphicon-download-alt"></i> Descargar
                             </button>
-                        </a>
-                        {% endif %}
+                        </a> {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% if forloop.counter|divisibleby:3 %}
     </div>
-    {% endfor %}
-</div>
-{% else %}
-    <i>No hay información relacionada a su búsqueda</i>
-{% endif %}
+    <div class="row table-row">
+        {% endif %} {% endfor %}
+    </div>
+    {% else %}
+    <i>No hay información relacionada a su búsqueda</i> {% endif %}
 </div>
 
-<div class="container-fluid pma-gradient">
-    <!--
-    <div class="col-md-3">
-        <div class="panel panel-success ft">
-            <div class="panel-heading"><h3>Documentos</h3></div>
-            <div class="panel-body">
-            {% for tipo in tipos %}
-                    <p class="secciones"><a href="{% url 'documento_by_tipo' tipo.slug %}" class="text-success"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> {{ tipo.titulo }}</a></p>
-            {% endfor %}
+<div class="pma-gradient">
+    <div class="container wide">
+        <div class="row">
+            <div class="col-md-12">
+                {% for tipo in tipos %}
+                <a href="{% url 'documento_by_tipo' tipo.slug %}" class="label label-success"><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> {{ tipo.titulo }}</a>                {% endfor %}
             </div>
         </div>
     </div>
-    -->
 </div>
+
 {% endblock %}
