@@ -1,0 +1,247 @@
+{% extends "_indicator.html" %}
+{% load static thumbnail chartit %}
+{% load humanize %}
+{% load mathfilters %}
+{% load core_extras %}
+{% load absurl %}
+{# TODO: Replace this by django-seo2 #}
+{% block titulo %}
+{{ municipio }}
+{% endblock %}
+
+{% block main_content %}
+<div class="pma-bg-gray">
+    <div class="container ">
+        <div class="row">
+            <div class="col-md-12">
+                {% block indicator_title %}
+                <h2 class="text-center"><strong>{{ municipio.nombre }}</strong><br/>Consolidado</h2>
+                <hr class="pma-line-5"/>
+                {% endblock %}
+            </div>
+        </div>
+        <div class="row pma-header-summary wide">
+            {% block indicator_summary %}
+            <div class="col-xs-4 col-sm-4 col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon initial">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Inicial {{ asignado|million|intcomma }}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon executed">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">
+                        <strong>Ejecutado {{ ejecutado|million|intcomma }}</strong>
+                        </span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% if municipio %}
+            <div class="col-xs-4 col-sm-4 col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon municipality-category">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong></span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+
+{% block section1 %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2> <strong>Origenes</strong> <br/> de Ingresos</h2>
+            <h4>Millones de Cordobas</h4>
+	        <hr class="pma-line-2">
+            <div class="bubbletree-container chart-container">
+                <div id="bubble-1" class="bubbletree-wrapper view-main">
+                    <div class="bubbletree"></div>
+                </div>
+                <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
+                Rubros </div>
+                <div id="ejecutado_column" class="view-alternative"> Barras Ejecucion por
+                Rubros </div>
+                    {% if not municipio %}
+                        <div id='comparativo2' class="view-alternative"> Chart will be rendered here </div>
+                    {% else %}
+                        <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
+                    {% endif %}
+                <div id="icons" class="view-alternative">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-eq-height pma-large-icons">
+            <h2><strong>Destino</strong><br/>de los Gastos</h2>
+            <h4>Millones de Cordobas</h4>
+            <hr class="pma-line-2">
+            {% for gasto in totales_ogm %}
+            {% if forloop.counter|divisibleby:2 %}
+            {% else %}
+            <div class="row wide">
+            {% endif %}
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="info-box">
+                        <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug}}">
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
+                            <span class="info-box-number pma-blue">Asignado: {{ gasto.asignado|million|intcomma }}</span>
+                            <span class="info-box-number pma-orange">Ejecutado: {{ gasto.ejecutado|million|intcomma }}</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+            {% if forloop.counter|divisibleby:2 %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block section2 %}
+<div class="pma-gradient pma-summary pma-index-inversion-icons">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2> <strong>Inversión Municipal</strong> <br/></h2>
+                        <hr class="pma-line-1">
+                    </div>
+                </div>
+                <div class="row categorias_inversion">
+                    <div class="col-md-12">
+                        <p>Da clic en cada categoría de inversión para ver sus proyectos relacionados </p>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="row col-xs-11 col-sm-11 col-md-11">
+                    {% for i in inversion_categoria %}
+                        <div class="col-xs-2 col-sm-2 col-md-2 text-center">
+                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
+                            </span></a>
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+                        </div>
+                    {% if foorloop.last or forloop.counter|divisibleby:6 %}
+                    </div>
+                    <div class="row list-icons-inversion">
+                    {% endif %}
+                    {% endfor %}
+			<div class="col-xs-1 col-sm-1 col-md-1">
+	                    <div class="text-center ver-mas">
+				<a class="blanco" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><strong>VER MAS</strong></a>
+			    </div>
+			</div>
+                    </div>
+		    <div class="otras-categorias col-md-11">
+			    <div class="collapse" id="collapseExample">
+			    	<div class="well">
+	        		       	<div class="row">
+    					{% for i in otras_categorias %}
+						<div class="col-xs-2 col-sm-2 col-md-2 text-center">
+							<a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
+				                      	<h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+						</div>
+		                                {% if foorloop.last or forloop.counter|divisibleby:6 %}
+						</div>
+						<div class="row list-icons-inversion">
+						{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+			    </div>
+			</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block section3 %}
+{% endblock %}
+
+{% block section4 %}
+{% endblock %}
+
+<!-- ranking line -->
+{% block section5 %}
+{% endblock %}
+
+<!-- historic info -->
+{% block section6 %}
+{% endblock %}
+
+{% endblock %}
+
+{% block custom_body_blocks %}
+{% block section7 %}
+<div class="pma-gradient">
+    <div class="container">
+        <div class="row" id="other-metrics-links">
+            <div class="col-xs-3 col-sm-3 col-md-3">
+                <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
+                que puedes consultar</h3>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
+                <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen de Gastos </a>
+                <br>
+                <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos de Inversión</a>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
+                <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Funcionamiento </a>
+                <br>
+                <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro Corriente de Inversión</a>
+            </div>
+            <div class="col-md-3 container-metrics-links">
+                <a href="{% url 'gastos_personal' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Personal </a>
+                <br>
+                <a href="{% url 'ejecucion_presupuesto' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ejecución Presupuestaria</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endblock %}
+
+{% block extra_footer_scripts %}
+    <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript">
+            var data = {{ bubble_data|safe }};
+    </script>
+    <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                            placement : 'top'
+                        });
+            });
+    </script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/pma.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/horizontal-timeline.js' %}"></script>
+{% endblock %}
