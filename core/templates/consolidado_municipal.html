@@ -133,41 +133,41 @@
                         <p>&nbsp;</p>
                     </div>
                     <div class="row col-xs-11 col-sm-11 col-md-11">
-                    {% for i in inversion_categoria %}
+                        {% for i in categorias %}
                         <div class="col-xs-2 col-sm-2 col-md-2 text-center">
                             <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
                             </span></a>
-                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}"
+                                    class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
                         </div>
-                    {% if foorloop.last or forloop.counter|divisibleby:6 %}
+                        {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
                     <div class="row list-icons-inversion">
-                    {% endif %}
-                    {% endfor %}
-			<div class="col-xs-1 col-sm-1 col-md-1">
-	                    <div class="text-center ver-mas">
-				<a class="blanco" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><strong>VER MAS</strong></a>
-			    </div>
-			</div>
+                        {% endif %} {% endfor %}
+                        <div class="col-xs-1 col-sm-1 col-md-1">
+                            <div class="text-center ver-mas">
+                                <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><strong>VER MAS</strong></a>
+                            </div>
+                        </div>
                     </div>
-		    <div class="otras-categorias col-md-11">
-			    <div class="collapse" id="collapseExample">
-			    	<div class="well">
-	        		       	<div class="row">
-    					{% for i in otras_categorias %}
-						<div class="col-xs-2 col-sm-2 col-md-2 text-center">
-							<a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
-				                      	<h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
-						</div>
-		                                {% if foorloop.last or forloop.counter|divisibleby:6 %}
-						</div>
-						<div class="row list-icons-inversion">
-						{% endif %}
-					{% endfor %}
-					</div>
-				</div>
-			    </div>
-			</div>
+                    <div class="otras-categorias col-md-11">
+                        <div class="collapse" id="collapseExample">
+                            <div class="well">
+                                <div class="row">
+                                    {% for i in otras_categorias %}
+                                    <div class="col-xs-2 col-sm-2 col-md-2 text-center">
+                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
+                                        <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"
+                                                class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+                                    </div>
+                                    {% if foorloop.last or forloop.counter|divisibleby:6 %}
+                                </div>
+                                <div class="row list-icons-inversion">
+                                    {% endif %} {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
