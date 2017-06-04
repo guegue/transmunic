@@ -59,6 +59,12 @@ wsgi.py
 # sftp configuration file
 sftp-config.json
 
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
 # Package control specific files
 Package Control.last-run
 Package Control.ca-list
