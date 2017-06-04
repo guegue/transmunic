@@ -503,3 +503,17 @@ footer .copyright {
 .select2-dropdown { width: 300px !important; }
 .nav .open > a, .nav .open > a:focus, .nav .open > a:hover {background-color: #107ca7; border-color: #337ab7;border-radius: 0px !important;} 
 .select2-container--default .select2-selection--single .select2-selection__rendered { color: inherit; text-transform: uppercase;}
+
+/* Make equal height with table styles */
+
+@media (min-width: 768px) {
+  .table-row {
+    display: table;
+    table-layout: fixed;
+  }
+
+  .table-row [class^="col-"::after] {
+    display: table-cell;
+    float: none;
+  }
+}
