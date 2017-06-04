@@ -22,29 +22,20 @@
         </div>
         <div class="row pma-header-summary wide">
             {% block indicator_summary %}
-            <div class="col-xs-4 col-sm-4 col-md-4">
+            <div class="col-xs-12 col-sm-6 col-md-6">
                 <div class="info-box">
-                    <span class="info-box-icon pma-icon initial">
-                    </span>
-                    <div class="info-box-content">
-                        <span class="info-box-text"><strong>Inicial {{ asignado|million|intcomma }}</strong></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-4 col-sm-4 col-md-4">
-                <div class="info-box">
-                    <span class="info-box-icon pma-icon executed">
+                    <span class="info-box-icon pma-icon pe-7s-date">
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">
-                        <strong>Ejecutado {{ ejecutado|million|intcomma }}</strong>
+                        <strong>Año {{ year }}</strong>
                         </span>
                         <span class="info-box-number pma-green"></span>
                     </div>
                 </div>
             </div>
             {% if municipio %}
-            <div class="col-xs-4 col-sm-4 col-md-4">
+            <div class="col-xs-12 col-sm-6 col-md-6">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon municipality-category">
                     </span>
@@ -192,32 +183,8 @@
 {% endblock %}
 
 {% block custom_body_blocks %}
+
 {% block section7 %}
-<div class="pma-gradient">
-    <div class="container">
-        <div class="row" id="other-metrics-links">
-            <div class="col-xs-3 col-sm-3 col-md-3">
-                <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
-                que puedes consultar</h3>
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
-                <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen de Gastos </a>
-                <br>
-                <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos de Inversión</a>
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 container-metrics-links">
-                <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Funcionamiento </a>
-                <br>
-                <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro Corriente de Inversión</a>
-            </div>
-            <div class="col-md-3 container-metrics-links">
-                <a href="{% url 'gastos_personal' %}?{% if municipio %}municipio={{municipio.slug}}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos de Personal </a>
-                <br>
-                <a href="{% url 'ejecucion_presupuesto' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ejecución Presupuestaria</a>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% endblock %}

@@ -105,7 +105,7 @@ def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
     municipio = get_object_or_404(Municipio, slug=slug)
     template_name = 'consolidado_municipal.html'
-    year = request.GET.get('year','')
+    year = request.GET.get('year','2015')
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
     #descripcion de graficos de portada
@@ -121,8 +121,7 @@ def municipio(request, slug):
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
-    if year is None:
-        year = year_list[-1]
+
     data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
     # obtiene periodo del año a ver
@@ -163,6 +162,7 @@ def municipio(request, slug):
             data_inversion_minima_porclase['charts'][0],
             data_fuentes['charts'][1],
             ),
+        'mi_clase': data_oim['mi_clase'],
         'bubble_data': bubble_oim,
         'inversion_categoria': inversion_categoria,
         'inversion_categoria2': inversion_categoria2,
