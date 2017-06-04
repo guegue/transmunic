@@ -103,7 +103,9 @@ def home(request):
 
 def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
-    template_name = 'municipio.html'
+    municipio = get_object_or_404(Municipio, slug=slug)
+    template_name = 'consolidado_municipal.html'
+    year = request.GET.get('year','2015')
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
     #descripcion de graficos de portada
@@ -114,15 +116,13 @@ def municipio(request, slug):
     desc_inversionsector = Grafico.objects.get(pk='inversion')
     #fin de descripcion de graficos de portada
     departamentos = Departamento.objects.all()
+    categorias = CatInversion.objects.filter(destacar=True)
+    otras_categorias = CatInversion.objects.filter(destacar=False)
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
-    year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
-    # obtiene último año
-    year_list = getYears(Inversion)
-    year = year_list[-1]
+    data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
     # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
@@ -133,16 +133,26 @@ def municipio(request, slug):
 
     data_oim = oim_chart(year=year, municipio=slug, portada=True)
     data_ogm = ogm_chart(year=year, municipio=slug, portada=True)
+    bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
     #data_inversion = inversion_chart(municipio=slug, portada=True)
     #data_inversion_area = inversion_area_chart(municipio=slug, portada=True)
     data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year, ). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,
+    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
+    inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
+            values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
+    # import pdb; pdb.set_trace()
+    return render_to_response(template_name, { 
+        'banners': banners,
+        'desc_oim_chart':desc_oim_chart,
+        'desc_ogm_chart':desc_ogm_chart,
+        'desc_invfuentes_chart':desc_invfuentes_chart,
+        'desc_inversionminima':desc_inversionminima,
+        'desc_inversionsector':desc_inversionsector,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
@@ -152,9 +162,19 @@ def municipio(request, slug):
             data_inversion_minima_porclase['charts'][0],
             data_fuentes['charts'][1],
             ),
+        'mi_clase': data_oim['mi_clase'],
+        'bubble_data': bubble_oim,
         'inversion_categoria': inversion_categoria,
+        'inversion_categoria2': inversion_categoria2,
+        'categorias': categorias,
+        'otras_categorias': otras_categorias,
         'total_inversion': total_inversion,
+        'totales_ogm': data_ogm['totales'],
         'departamentos': departamentos,
+        'municipio': obj,
+        'year_list': year_list,
+        'year': year,
+        'periodo': periodo,
         'home': 'home',
     }, context_instance=RequestContext(request))
 
