@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-md-12">
                 <form id="indicatorfilter" method="GET">
-                   <div class="col-xs-1 col-sm-2 col-md-1">
+                   <div class="col-xs-4 col-sm-2 col-md-1">
                     <span class="pma-fg-light-green titsearch"><strong>AÑO</strong></span>
                     <select name="year">
                        {% for ayear in year_list %}
@@ -31,31 +31,45 @@
                        {% endfor %}
                    </select>
                </div>
-               <div class="col-xs-3 col-sm-5 col-md-3">
-                <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                <select name="municipio" class="municipio">
-                   <option value="">Consolidado Municipal</option>
-                   {% for amunicipio in municipio_list %}
-                   <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-                   {% endfor %}
-                    </select>
-                </div>
-               <div class="col-xs-3 col-sm-4 col-md-3">
+               <div class="col-xs-8 col-sm-4 col-md-3">
+                  <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
+                  <select class="listado-municipios2 pull-right">
+                      <option></option>
+                      <option class="amarillo">Consolidado Municipal</option>
+                      {% regroup municipios by depto as departamentos %}
+                      {% for departamento in departamentos %}
+                          <optgroup label="{{ departamento.grouper }}">
+                              {% for m in departamento.list %}
+                                  <option value="{{ m.slug }}" {% if request.GET.my_var == m.id  %}selected="selected"{% endif %}>{{ m.nombre }}</option>
+                              {% endfor %}
+                          </optgroup>
+                      {% endfor %}
+                  </select>
+                  {% comment %}
+                  <select name="municipio" class="municipio" id="municipio">
+                      <option value="">Consolidado Municipal</option>
+                      {% for amunicipio in municipio_list %}
+                          <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
+                      {% endfor %}
+                  </select>
+                  {% endcomment %}
+               </div>
+               <div class="col-xs-9 col-sm-5 col-md-3">
                 <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
                 <select name="indicador" class="indicator" id="indicator">
                    <option value="">Consolidado Municipa</option>
                    <option value=""></option>
-                        <option value="oim">Origen de los ingresos del municipio</option>
-                        <option value="ogm">Destino del gasto municipal</option>
-                        <option value="inversion-categoria">Inversiones</option>
-                        <option value="gf">Gastos de funcionamiento</option>
-                        <option value="gpersonal">Gastos de personal</option>
-                        <option value="ago">Dependencia para asumir gastos corrientes</option>
-                        <option value="aci">Ahorro corriente para inversiones</option>
-                        <option value="ep">Ejecuci&oacute;n del presupuesto</option>
+                        <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de los ingresos del municipio</option>
+                        <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino del gasto municipal</option>
+                        <option value="inversion-categoria" {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>Inversiones</option>
+                        <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de funcionamiento</option>
+                        <option value="gpersonal" {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de personal</option>
+                        <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>Dependencia para asumir gastos corrientes</option>
+                        <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro corriente para inversiones</option>
+                        <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n del presupuesto</option>
                 </select>
             </div>
-            <div class="col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
+            <div class="col-xs-2 col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
        </form>
    </div>
 </form>

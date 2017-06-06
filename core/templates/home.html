@@ -63,7 +63,7 @@
                     {% for page in pages %}
                     <h3>{{ page.title }}</h3>
                     <hr class="pma-line-3">
-                    <img class="img-responsive" src="static/images/illustration-all-icons.png" alt="Sobre este sitio">
+                    <img class="visible-xs img-responsive" src="static/images/illustration-all-icons.png" alt="Sobre este sitio">
                     <p>{{ page.content|safe|truncatewords:80 }}</p>
                     <p><a href="/transferencias-presupuestarias/"> Leer m&aacute;s</a></p>
                     {% endfor %}
@@ -87,7 +87,7 @@
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
                 </div>
-                <h2><strong>Origen</strong><br/>de los Ingresos</h2>
+                <h2><strong>Origen</strong><br/>de los Ingresos {{ year }}</h2>
                 <hr class="pma-line-2">
                 {% for origen in totales_oim %}
                 {% if forloop.counter|divisibleby:2 %}

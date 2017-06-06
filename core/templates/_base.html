@@ -109,7 +109,6 @@
                        {% endfor %}
                    </optgroup>
                {% endfor %}
-
             </select>
             </form>
             <ul class="nav navbar-nav pma-navbar">
@@ -209,13 +208,14 @@
 
     <script type="text/javascript">
         $('select').select2({
+		minimumResultsForSearch: Infinity
         });
         $(document).ready(function() {
             $(".listado-municipios").select2({
                 placeholder: "Presupuesto",
                 allowClear: true
             });
-            $('.listado-municipios').on("select2:selecting", function(e) {
+            $('.listado-municipios2, .listado-municipios').on("select2:selecting", function(e) {
                 window.location = e.params.args.data.id;
             });
         });
@@ -229,9 +229,13 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $(".listado-municipios").select2({
-			    placeholder: "Presupuesto",
+	        placeholder: "Presupuesto",
                 allowClear: true
-			});
+	    });
+            $(".listado-municipios2").select2({
+	        placeholder: "Municipios",
+                allowClear: true
+	    });
         });
     </script>
     <!-- Google Analytics -->

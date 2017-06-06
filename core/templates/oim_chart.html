@@ -83,28 +83,31 @@
                 <thead>
                     <tr class="">
                         <th>Rubros de ingresos</th>
-			{% if periodo_list|keyvalue:year == 'A' %}
-                        <th class="text-right">Inicial</th>
+			{% if periodo_list|keyvalue:year == 'I' %}
+                            <th class="text-right">Inicial</th>
+			{% else %}
+                       	    <th class="text-right">Ejecutado</th>
 			{% endif %}
-                       	<th class="text-right">Ejecutado</th>
                     </tr>
                 </thead>
                 {% for row in rubros %}
                 <tr>
                     <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
-		    {% if periodo_list|keyvalue:year == 'A' %}
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+		    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    {% else %}
+                        <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                     {% endif %}
-                    <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                 </tr>
                 {% endfor %}
                 <tfoot>
                     <tr class="">
                         <td>TOTAL</td>
-		    	{% if periodo_list|keyvalue:year == 'A' %}
+		    	{% if periodo_list|keyvalue:year == 'I' %}
                             <td class="text-right">{{ asignado|million|intcomma }}</td>
+                        {% else %}
+                            <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
 			{% endif %}
-                        <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -115,22 +118,27 @@
 
 {% block section2 %}
 {% if not municipio %}
-<div class="cd-horizontal-timeline loaded">
+<div class="cd-horizontal-timeline loaded pma-gradient">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
             {% if year == '2016' %}
-            <h2>Recaudación por habitante</h2>
+                <h2>Recaudación por habitante</h2>
             {% else %}
-            <h2><strong>Ranking de recaudación </strong> <br>
-                por habitante categoría municipal
-                "{{ mi_clase.clasificacion }}"</h2>
+                <h2><strong>Ranking de recaudación </strong> <br>
+                {% if mi_clase.clasificacion%}
+                    por habitante categoría municipal "{{ mi_clase.clasificacion }}"
+                {% else %}
+                    según categoría de municipios
+                {% endif %}
+                </h2>
+                <h5>Córdobas corrientes {% if periodo_list|keyvalue:year == 'I' %}en base a ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
             {% endif %}
             <hr class="pma-line-3" />
             </div>
         </div>
     </div>
-    <div class="timeline container">
+    <div class="timeline container rankin">
         <div class="events-wrapper">
             <div class="events" style="width: {{ porclase|length|mul:180 }}px;">
                 <ol>
@@ -138,10 +146,13 @@
                     <li>
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                            {% if forloop.first %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:150 }}px;">{{ row.clasificacion }}<br/>
-                            <span> Asignado: {% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
-                            <span> Ejecutado: {% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% if forloop.first %}class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:150 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            {% else %}
+                                <span class="line-cifra">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}

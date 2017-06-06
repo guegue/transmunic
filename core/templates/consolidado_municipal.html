@@ -55,8 +55,10 @@
     <div class="row">
         <div class="col-md-6">
             <div class="pma-summary-box hidden-xs pma-summary-internal">
-                <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
-                <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                {% if periodo_list|keyvalue:year == 'I' %}<span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+		{% else %}
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                {% endif %}
             </div>
             <h2> <a href=""><strong>Origenes</strong> de Ingresos</a></h2>
             <h5>Millones de córdobas</h5>
@@ -77,11 +79,17 @@
                 <div id="icons" class="view-alternative">
                 </div>
             </div>
+            <div class="big text-center">
+                <a href="{%url 'origen_ingresos'%}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de ingresos</a> 
+            </div>
         </div>
         <div class="col-md-6 col-eq-height pma-large-icons">
             <div class="pma-summary-box hidden-xs pma-summary-internal">
-                <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
-                <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                {% if periodo_list|keyvalue:year == 'I' %}
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+                {% else %}
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                {% endif %}
             </div>
             <h2><strong>Destino</strong> de los Gastos</h2>
             <h5>Millones de córdobas</h5>
@@ -97,8 +105,11 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
-                            <span class="info-box-number pma-blue">Asignado: {{ gasto.asignado|million|intcomma }}</span>
-                            <span class="info-box-number pma-orange">Ejecutado: {{ gasto.ejecutado|million|intcomma }}</span>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="info-box-number pma-blue">Asignado: {{ gasto.asignado|million|intcomma }}</span>
+                            {% else %}
+                                <span class="info-box-number pma-orange">Ejecutado: {{ gasto.ejecutado|million|intcomma }}</span>
+                            {% endif %}
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -108,6 +119,9 @@
             </div>
             {% endif %}
             {% endfor %}
+            <div class="big text-center">
+                <a href="{%url 'origen_gastos' %}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de gastos</a> 
+            </div>
         </div>
     </div>
 </div>
@@ -131,17 +145,16 @@
                     </div>
                     <div class="row col-xs-11 col-sm-11 col-md-11">
                         {% for i in categorias %}
-                        <div class="col-xs-2 col-sm-2 col-md-2 text-center">
+                        <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
                             <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
                             </span></a>
-                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.catinversion__id }}"
-                                    class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
                         </div>
                         {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
                     <div class="row list-icons-inversion">
                         {% endif %} {% endfor %}
-                        <div class="col-xs-1 col-sm-1 col-md-1">
+                        <div class="icons-inversion col-xs-6 col-sm-1 col-md-1">
                             <div class="text-center ver-mas">
                                 <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><strong>VER MAS</strong></a>
                             </div>
@@ -152,7 +165,7 @@
                             <div class="well">
                                 <div class="row">
                                     {% for i in otras_categorias %}
-                                    <div class="col-xs-2 col-sm-2 col-md-2 text-center">
+                                    <div class="col-xs-6 col-sm-2 col-md-2 text-center icons-inversion">
                                         <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
                                         <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"
                                                 class="blanco"><strong>{{ i.nombre }}</strong></a></h5>

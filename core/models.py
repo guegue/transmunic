@@ -66,6 +66,7 @@ class CatInversion(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,blank=True)
     destacar = models.BooleanField(default=False)
+    color = models.CharField(max_length=8)
 
     class Meta:
         verbose_name_plural = 'Categorias de inversion'

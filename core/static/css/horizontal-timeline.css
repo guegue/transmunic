@@ -131,7 +131,6 @@ Main Components
   height: 12px;
   width: 12px;
   border-radius: 50%;
-  border: 2px solid #333;
   background-color: #fff;
   -webkit-transition: background-color 0.3s, border-color 0.3s;
   -moz-transition: background-color 0.3s, border-color 0.3s;
@@ -428,6 +427,9 @@ Main Components
 .no-touch .inverted .cd-timeline-navigation a.inactive:hover {
   border-color: #fff;
 }
-.cd-horizontal-timeline .events-content p {
+.cd-horizontal-timeline .events-content p, .line-cifra {
   color: #fff;
 }
+.rankin .events, .rankin .filling-line { background: #fff !important;}
+.posicion { font-size: 25px; color: #71ffe6;}
+.line-cifra { font-size: 14px;}
