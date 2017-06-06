@@ -60,8 +60,22 @@
     <div class="row">
         <div class="col-md-6">
             <h2> <strong>Ingresos</strong> <br/> Totales</h2>
-	    <hr class="pma-line-2">
-            <div class="col-md-12 bubbletree-container chart-container">
+	        <hr class="pma-line-2">
+            <div class="chart-update col-xs-1 col-sm-1 col-md-1 float-left">
+                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
+                    <span id="chart-pie-1" class="pma-icon pe-7s-graph
+                        pma-fg-gray toggle-chart" aria-hidden="true"
+                        data-chartcontainer="ejecutado"></span>
+                    {% if not municipio %}
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="comparativo2"></span>
+                    {% else %}
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="ejecutado_column"></span>
+                    {% endif %}
+                    <span class="pma-icon pe-7s-graph2 pma-fg-gray"
+                        aria-hidden="true" id="icons"></span>
+            </div>
+            <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
@@ -370,7 +384,7 @@
         <div class="col-md-offset-2 col-md-8">
         <table class="table table-condensed table-striped">
             <thead>
-            <tr  class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Actualizado</th><th>Ejecutado</th> 
+            <tr  class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Actualizado</th><th>Ejecutado</th>
             </tr>
             </thead>
             {% for row in rubros %}
