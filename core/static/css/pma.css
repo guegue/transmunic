@@ -16,9 +16,8 @@ h1,
 h2,
 h3,
 h4 {
-    margin: 1.414em 0 0.5em;
+    margin: 1.2em 0 0.5em;
     font-family: 'Raleway', sans-serif;
-    ;
     font-weight: inherit;
     line-height: 1.2;
 }
@@ -35,6 +34,7 @@ h3 {
 h4 {
     font-size: 1.2em;
 }
+h2 a { color: #333;}
 .font_small { font-size: 13px;}
 small,
 .class="pma-line-4"font_small {
@@ -260,7 +260,7 @@ footer .copyright {
 .progress-description,
 .info-box-text {
     display: block;
-    font-size: 18px;
+    font-size: 15px;
     overflow: hidden;
 }
 .info-box-number {
@@ -270,8 +270,7 @@ footer .copyright {
 }
 /* margins */
 .wide{
-    padding-bottom: 3em;
-    padding-top: 2em;
+    padding-top: 1em;
 }
 .medium{
     padding-bottom: 1.3em;
@@ -287,7 +286,7 @@ footer .copyright {
 }
 
 /* color schema styles */
-.pma-fg-green, .pma-blue {
+.pma-fg-green, .pma-blue, h2 a:hover {
     color: #00a7b2;
 }
 .pma-fg-light-green {
@@ -333,7 +332,7 @@ footer .copyright {
 }
 
 .pma-header-summary .pma-icon{
-    font-size: 36px;
+    font-size: 30px;
 }
 .acerca {
     margin-top: 50px;
@@ -522,3 +521,4 @@ footer .copyright {
     width: 28px;
 }
 .navbar-toggle { background-color: rgb(212, 87, 38) none repeat scroll 0% 0% !important;}
+.pma-summary-internal {  right: 50px !important; }

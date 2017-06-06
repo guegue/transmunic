@@ -15,14 +15,14 @@
         <div class="row">
             <div class="col-md-12">
                 {% block indicator_title %}
-                <h2 class="text-center"><strong>{{ municipio.nombre }}</strong><br/>Consolidado</h2>
+                <h2 class="text-center"><strong>{{ municipio.nombre }}</strong></h2>
                 <hr class="pma-line-5"/>
                 {% endblock %}
             </div>
         </div>
         <div class="row pma-header-summary wide">
             {% block indicator_summary %}
-            <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="col-md-offset-4 col-xs-12 col-sm-6 col-md-2">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon pe-7s-date">
                     </span>
@@ -30,18 +30,16 @@
                         <span class="info-box-text">
                         <strong>Año {{ year }}</strong>
                         </span>
-                        <span class="info-box-number pma-green"></span>
                     </div>
                 </div>
             </div>
             {% if municipio %}
-            <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="col-xs-12 col-sm-6 col-md-4">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon municipality-category">
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text"><strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong></span>
-                        <span class="info-box-number pma-green"></span>
                     </div>
                 </div>
             </div>
@@ -56,9 +54,13 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h2> <strong>Origenes</strong> <br/> de Ingresos</h2>
-            <h4>Millones de Cordobas</h4>
-	        <hr class="pma-line-2">
+            <div class="pma-summary-box hidden-xs pma-summary-internal">
+                <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+                <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+            </div>
+            <h2> <a href=""><strong>Origenes</strong> de Ingresos</a></h2>
+            <h5>Millones de córdobas</h5>
+	    <hr class="pma-line-2">
             <div class="bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
@@ -77,8 +79,12 @@
             </div>
         </div>
         <div class="col-md-6 col-eq-height pma-large-icons">
-            <h2><strong>Destino</strong><br/>de los Gastos</h2>
-            <h4>Millones de Cordobas</h4>
+            <div class="pma-summary-box hidden-xs pma-summary-internal">
+                <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+                <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+            </div>
+            <h2><strong>Destino</strong> de los Gastos</h2>
+            <h5>Millones de córdobas</h5>
             <hr class="pma-line-2">
             {% for gasto in totales_ogm %}
             {% if forloop.counter|divisibleby:2 %}
@@ -126,9 +132,9 @@
                     <div class="row col-xs-11 col-sm-11 col-md-11">
                         {% for i in categorias %}
                         <div class="col-xs-2 col-sm-2 col-md-2 text-center">
-                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
+                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
                             </span></a>
-                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}"
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.catinversion__id }}"
                                     class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
                         </div>
                         {% if foorloop.last or forloop.counter|divisibleby:6 %}
@@ -147,8 +153,8 @@
                                 <div class="row">
                                     {% for i in otras_categorias %}
                                     <div class="col-xs-2 col-sm-2 col-md-2 text-center">
-                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
-                                        <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"
+                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
+                                        <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&inversion__municipio={{municipio.id}}&catinversion={{ i.id }}"
                                                 class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
                                     </div>
                                     {% if foorloop.last or forloop.counter|divisibleby:6 %}

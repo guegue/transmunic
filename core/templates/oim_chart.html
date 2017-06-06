@@ -114,10 +114,72 @@
 {% endblock %}
 
 {% block section2 %}
-<div class="container" id="section2">
+{% if not municipio %}
+<div class="cd-horizontal-timeline loaded">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            {% if year == '2016' %}
+            <h2>Recaudación por habitante</h2>
+            {% else %}
+            <h2><strong>Ranking de recaudación </strong> <br>
+                por habitante categoría municipal
+                "{{ mi_clase.clasificacion }}"</h2>
+            {% endif %}
+            <hr class="pma-line-3" />
+            </div>
+        </div>
+    </div>
+    <div class="timeline container">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ porclase|length|mul:180 }}px;">
+                <ol>
+                    {% for row in porclasep %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.first %} class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:150 }}px;">{{ row.clasificacion }}<br/>
+                            <span> Asignado: {% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            <span> Ejecutado: {% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in porclasep %}
+        <li{% if forloop.first %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        <!-- 
+           <h4>{{ row.clasificacion }}</h4>
+        -->
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button id="show-detail-1" class="btn btn-default" type="submit">
+                Ver detalles en Tabla</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="detail-1">
     <div class="row">
         <div class="col-md-12 table-responsive">
-            {% if not municipio %}
+
             <h2><strong>Recaudación por habitante</strong><br/>Córdobas Corrientes</h2>
             <hr class="pma-line-1">
             <h3>  según categoría de municipios</h3>
@@ -141,10 +203,10 @@
                     <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
                 </tr>
             </table>
-            {% endif%}
         </div>
     </div>
 </div>
+{% endif%}
 {% endblock %}
 
 {% block section3 %}
@@ -358,6 +420,7 @@
 {% endblock %}
 
 {% block section5 %}
+{% if rubros|total_sum:'actualizado_asignado' > 0 %} <!--No mostramos tablas si no hay actualizacion --!>
 <div class="container wide">
     <div class="row">
         <div class="col-md-12">
@@ -572,6 +635,9 @@
         </div>
     </div>
 </div>
+{% else %}
+{% endif %}
+
 {% endblock %}
 
 {% block custom_scripts %}
