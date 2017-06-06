@@ -35,7 +35,7 @@ $(function() {
         $("#detail-3").toggle("slow");
     });
     $('#indicatorfilter').submit(function(){
-      var indicator_url = $("#indicator option").filter(":selected").val();;
-      $(this).attr('action', indicator_url);
+      var indicator = $("#indicator option").filter(":selected").val();;
+      location.href = '/'+ indicator + $(this).serialize();
     }); 
 });

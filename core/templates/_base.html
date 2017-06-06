@@ -72,9 +72,10 @@
                     <ul class="dropdown-menu">
                         {% for page in flatpages %}
                         <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-                            {% endfor %}
+                        {% endfor %}
                     </ul>
                 </li>
+                {% comment %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
          PRESUPUESTO TMP
@@ -94,6 +95,7 @@
                         <li><a href="{%url 'detalle_presupuesto'%}">Descargar Detalle Presupuesto</a></li>
                     </ul>
                 </li>
+                {% endcomment %}
             </ul>
             <form class="navbar-form navbar-left pma-navbar" role="search">
             <select class="listado-municipios pull-right">
@@ -103,7 +105,7 @@
                {% for departamento in departamentos %}
                    <optgroup label="{{ departamento.grouper }}">
                        {% for m in departamento.list %}
-                           <option value="{{ m.slug}}">{{ m.nombre }}</option>
+                           <option value="/{{ m.slug}}">{{ m.nombre }}</option>
                        {% endfor %}
                    </optgroup>
                {% endfor %}
@@ -113,9 +115,9 @@
             <ul class="nav navbar-nav pma-navbar">
                 <li><a href="#">Consulta</a>
                 </li>
-                <li class="active"><a href="#">Descarga</a>
-                </li>
-                <li><a href="#"><span class="glyphicon glyphicon-search"></span></a>
+                <!--li class="active"><a href="#">Descarga</a>
+                </li-->
+                <li><a href="#" class="hidden-xs"><span class="glyphicon glyphicon-search"></span></a>
                 </li>
             </ul>
             </div>
@@ -139,7 +141,7 @@
                     </div>
                     {% endblock %}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 mapa-container">
                     {% block header_right %}
                     <div id="nic-map-container"></div>
                     {% endblock %}
@@ -207,10 +209,6 @@
 
     <script type="text/javascript">
         $('select').select2({
-            ajax: {
-                url: "http://example.org/api/test",
-                cache: true
-            }
         });
         $(document).ready(function() {
             $(".listado-municipios").select2({

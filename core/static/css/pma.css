@@ -517,3 +517,8 @@ footer .copyright {
     float: none;
   }
 }
+.navbar-toggle .icon-bar {
+    border: 2px solid #fff;
+    width: 28px;
+}
+.navbar-toggle { background-color: rgb(212, 87, 38) none repeat scroll 0% 0% !important;}
