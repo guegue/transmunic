@@ -431,5 +431,7 @@ Main Components
   color: #fff;
 }
 .rankin .events, .rankin .filling-line, .rankin a.selected::after { background: #fff !important;}
-.posicion { font-size: 25px; color: #71ffe6;}
+.posicion {
+    font-size: 14px;
+}
 .line-cifra { font-size: 14px;}

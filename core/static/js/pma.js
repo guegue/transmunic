@@ -35,7 +35,13 @@ $(function() {
         $("#detail-3").toggle("slow");
     });
     $('#indicatorfilter').submit(function(){
-      var indicator = $("#indicator option").filter(":selected").val();;
-      location.href = '/'+ indicator + $(this).serialize();
-    }); 
+      var indicator = $("#indicator option").filter(":selected").val();
+      var municipio = $('.municipio').select2('data')[0].id;
+      if(municipio == "Consolidado Municipal"){
+          location.href = '/core/'+ indicator + $(this).serialize();
+      }
+      else if (indicator != "" and municipio != "Consolidado Municipal"){
+          location.href = '/'+ municipio + $(this).serialize();
+      }
+    });
 });
