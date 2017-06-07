@@ -140,14 +140,14 @@
     </div>
     <div class="timeline container rankin">
         <div class="events-wrapper">
-            <div class="events" style="width: {{ porclase|length|mul:180 }}px;">
+            <div class="events" style="width: {{ porclase|length|mul:130 }}px;">
                 <ol>
                     {% for row in porclasep %}
                     <li>
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if forloop.first %}class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:150 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
+                            style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
                             {% if periodo_list|keyvalue:year == 'I' %}
                                 <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
                             {% else %}
@@ -180,42 +180,46 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="show-detail-1" class="btn btn-default" type="submit">
-                Ver detalles en Tabla</button>
+            <div class="col-md-12 medium text-center">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
             </div>
         </div>
     </div>
-</div>
-<div class="container" id="detail-1">
+    <div class="container" id="detail-1">
     <div class="row">
-        <div class="col-md-12 table-responsive">
-
-            <h2><strong>Recaudación por habitante</strong><br/>Córdobas Corrientes</h2>
-            <hr class="pma-line-1">
-            <h3>  según categoría de municipios</h3>
-            <table class="table table-condensed">
-                <tr class="">
+        <div class="col-md-offset-4 col-md-4 table-responsive">
+            <table class="table">
+                <tr class="pma-bg-blue">
                     <th>Categoría de municipio</th>
-                    <th>Presupuestado</th>
-                    {% if year != '2016' %}<th>Ejecutado</th>{% endif %}</tr>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                      <th>Presupuestado</th>
+                    {% else %}
+                      <th>Ejecutado</th>
+                    {% endif %}
+                    </tr>
                 {% for row in porclasep %}
                 <tr>
                     <td class="text-center">{{ row.clasificacion }}</td>
-                    <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
-                    {% if year != '2016' %}
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
+                    {% else %}
                     <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
                 <tr class="">
                     <td><strong>Media NacionaL</strong></td>
-                    <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
-                    <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
+                    {% else %}
+                        <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
+                    {% endif %}
                 </tr>
             </table>
         </div>
     </div>
+  </div>
 </div>
 {% endif%}
 {% endblock %}

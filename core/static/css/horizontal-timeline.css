@@ -430,6 +430,6 @@ Main Components
 .cd-horizontal-timeline .events-content p, .line-cifra {
   color: #fff;
 }
-.rankin .events, .rankin .filling-line { background: #fff !important;}
+.rankin .events, .rankin .filling-line, .rankin a.selected::after { background: #fff !important;}
 .posicion { font-size: 25px; color: #71ffe6;}
 .line-cifra { font-size: 14px;}
