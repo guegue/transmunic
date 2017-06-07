@@ -152,3 +152,6 @@
 .arrow_down:before {
     content: "\e688";
 }
+.pe-7s-bubble:before {
+	content: "\e649";
+}

@@ -31,7 +31,7 @@ Main Components
 }
 .cd-horizontal-timeline .timeline {
   position: relative;
-  height: 150px;
+  height: 220px;
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
@@ -70,7 +70,7 @@ Main Components
   position: absolute;
   z-index: 1;
   left: 0;
-  top: 74px;
+  top: 110px;
   height: 2px;
   /* width will be set using JavaScript */
   background: #333;
@@ -131,7 +131,7 @@ Main Components
   height: 12px;
   width: 12px;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #333;
   -webkit-transition: background-color 0.3s, border-color 0.3s;
   -moz-transition: background-color 0.3s, border-color 0.3s;
   transition: background-color 0.3s, border-color 0.3s;
@@ -427,11 +427,14 @@ Main Components
 .no-touch .inverted .cd-timeline-navigation a.inactive:hover {
   border-color: #fff;
 }
-.cd-horizontal-timeline .events-content p, .line-cifra {
+.cd-horizontal-timeline .events-content p, .rankin .line-cifra {
   color: #fff;
 }
-.rankin .events, .rankin .filling-line, .rankin a.selected::after { background: #fff !important;}
-.posicion {
-    font-size: 14px;
+.rankin .events, .rankin .filling-line, .rankin a.selected::after, .rankin .events a::after { background: #fff !important;}
+.rankin .posicion { color: #71ffe6; }
+.posicion { font-size: 16px;}
+.municipio_nombre { 
+font-size: 17px;
+font-weight: bold;
 }
-.line-cifra { font-size: 14px;}
+.line-cifra { font-size: 16px;}
