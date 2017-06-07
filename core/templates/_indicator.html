@@ -33,7 +33,7 @@
                </div>
                <div class="col-xs-8 col-sm-4 col-md-3">
                   <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                  <select class="listado-municipios2 pull-right">
+                  <select class="municipio pull-right">
                       <option></option>
                       <option class="amarillo">Consolidado Municipal</option>
                       {% regroup municipios by depto as departamentos %}
@@ -45,28 +45,19 @@
                           </optgroup>
                       {% endfor %}
                   </select>
-                  {% comment %}
-                  <select name="municipio" class="municipio" id="municipio">
-                      <option value="">Consolidado Municipal</option>
-                      {% for amunicipio in municipio_list %}
-                          <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
-                      {% endfor %}
-                  </select>
-                  {% endcomment %}
                </div>
                <div class="col-xs-9 col-sm-5 col-md-3">
                 <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
                 <select name="indicador" class="indicator" id="indicator">
-                   <option value="">Consolidado Municipa</option>
-                   <option value=""></option>
-                        <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de los ingresos del municipio</option>
-                        <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino del gasto municipal</option>
-                        <option value="inversion-categoria" {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>Inversiones</option>
-                        <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de funcionamiento</option>
-                        <option value="gpersonal" {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de personal</option>
-                        <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>Dependencia para asumir gastos corrientes</option>
-                        <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro corriente para inversiones</option>
-                        <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n del presupuesto</option>
+                   <option value="">Consolidado Municipal</option>
+                   <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de los ingresos del municipio</option>
+                   <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino del gasto municipal</option>
+                   <option value="inversion-categoria" {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>Inversiones</option>
+                   <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de funcionamiento</option>
+                   <option value="gpersonal" {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de personal</option>
+                   <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>Dependencia para asumir gastos corrientes</option>
+                   <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro corriente para inversiones</option>
+                   <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n del presupuesto</option>
                 </select>
             </div>
             <div class="col-xs-2 col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
@@ -206,16 +197,6 @@
         $('[data-toggle="tooltip"]').tooltip({
             placement : 'top'
         });
-        $(".municipios").select2({
-            placeholder: "Presupuesto",
-            allowClear: true
-        });
-    });
-    $(".municipios").on("select2:open", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
-    });
-    $(".municipios").on("select2:close", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
     });
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>

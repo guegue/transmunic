@@ -212,10 +212,10 @@
             placeholder: "Presupuesto",
             allowClear: true
         });
-        $('.listado-municipios2, .listado-municipios').on("select2:selecting", function(e) {
+        $('.listado-municipios').on("select2:selecting", function(e) {
             window.location = e.params.args.data.id;
         });
-        $(".listado-municipios2").select2({
+        $(".municipio").select2({
             placeholder: "Municipios",
             allowClear: true
         });
@@ -224,6 +224,12 @@
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
     });
     $(".listado-municipios").on("select2:close", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+    });
+    $(".municipio").on("select2:open", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+    });
+    $(".municipio").on("select2:close", function() {
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
     });
     </script>

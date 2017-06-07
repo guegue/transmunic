@@ -210,23 +210,25 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="show-detail-1" class="btn btn-default" type="submit">
-                Ver dealles en Tabla</button>
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver dealles en tabla</button>
             </div>
         </div>
     </div>
     <div id="detail-1" class="container">
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <h4 class="text-info text-info-ranking">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed table-striped pma-bg-white">
                     <thead class="thead-inverse">
                         <tr class="bg-primary">
                         <th class="text-center"><strong>Posición</strong></th>
                         <th class="text-center"><strong>Municipios</strong></th>
-                        <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
-                        <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            <th class="text-center"><strong>P. Inicial</strong></th>
+                        {% else %}
+                            <th class="text-center"><strong>Ejecución</strong></th></tr>
+                        {% endif %}
                     </thead>
                     {% if ejecutado <= 0 %}
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -251,8 +253,9 @@
                                 {% endif %}
                                 <td class="text-center"> {{forloop.counter}} </td>
                                 <td>{{ row.gasto__municipio__nombre }}</td>
-                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                {% if year != '2016' %}
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                {% else  %}
                                 <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                                 {% endif %}
                             </tr>

@@ -432,6 +432,9 @@ Main Components
 }
 .rankin .events, .rankin .filling-line, .rankin a.selected::after, .rankin .events a::after { background: #fff !important;}
 .rankin .posicion { color: #71ffe6; }
-.posicion { font-size: 26px;}
-.municipio_nombre { font-size: 17px;}
+.posicion { font-size: 16px;}
+.municipio_nombre { 
+font-size: 17px;
+font-weight: bold;
+}
 .line-cifra { font-size: 16px;}
