@@ -160,7 +160,7 @@
             {% if year == '2016' %}
                 <h2>Recaudación por habitante</h2>
             {% else %}
-                <h2><strong>Ranking de recaudación </strong> <br>
+                <h2><strong>Ranquin de recaudación </strong> <br>
                 {% if mi_clase.clasificacion%}
                     por habitante categoría municipal "{{ mi_clase.clasificacion }}"
                 {% else %}
@@ -282,7 +282,7 @@
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:160 }}px;"><span class="posicion"> {{forloop.counter}}</span>
+                            style="left: {{ forloop.counter|mul:170 }}px;"><span class="posicion"> {{forloop.counter}}</span>
                             <br /><span class="municipio_nombre">{{ row.ingreso__municipio__nombre }}</span>
                             <br/>
                             {% if periodo_list|keyvalue:year == 'I' %}

@@ -26,20 +26,20 @@
         </div>
     </div>
 </div>
+{% if ejecutado %}
 <div class="col-xs-4 col-sm-4 col-md-4">
     <div class="info-box">
         <span class="info-box-icon pma-icon executed">
         </span>
         <div class="info-box-content">
             <span class="info-box-text">
-            {% if year != '2016' %}
             Ejecutado {{ ejecutado|million|intcomma }}
-            {% endif %}
             </span>
             <span class="info-box-number pma-green"></span>
         </div>
     </div>
 </div>
+{% endif %}
 {% if municipio %}
 <div class="col-xs-4 col-sm-4 col-md-4">
     <div class="info-box">
@@ -94,22 +94,31 @@
                 <thead>
                     <tr class="">
                         <th>Rubros de gastos</th>
-                        <th class="text-right">Inicial</th>
-                        <th class="text-right">Ejecutado</th>
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            <th class="text-right">Inicial</th>
+                        {% else %}
+                            <th class="text-right">Ejecutado</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for row in rubros %}
                 <tr>
                     <td>{{ row.subsubtipogasto__origen__nombre }}</td>
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    {% else %}
+                        <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 <tfoot>
                     <tr class="">
                         <td>TOTAL</td>
-                        <td class="text-right">{{ asignado|million|intcomma }}</td>
-                        <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            <td class="text-right">{{ asignado|million|intcomma }}</td>
+                        {% else %}
+                            <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
+                        {% endif %}
                     </tr>
                 </tfoot>
             </table>
@@ -149,24 +158,29 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            {% if year == '2016' %}
-            <h2>Recaudación por habitante</h2>
-            {% else %}
             <h2><strong>Ranking de recaudación </strong> <br>
                 por habitante categoría municipal
                 "{{ mi_clase.clasificacion }}"</h2>
-            {% endif %}
+            <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
             <hr class="pma-line-3" />
             </div>
         </div>
     </div>
-    <div class="timeline container">
+    <div class="timeline container rankin">
         <div class="events-wrapper">
-            <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+            <div class="events" style="width: {{ otros|length|mul:130 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
-                    <li><a href="#0" data-date="{% now "SHORT_DATETIME_FORMAT"%} 00:{{ forloop.counter }}" {% if municipio.slug == row.gasto__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:300}}px;">
-                            {{ row.gasto__municipio__nombre }}</a>
+                    <li><a href="#0" data-date="{% now "SHORT_DATETIME_FORMAT"%} 00:{{ forloop.counter }}" {% if municipio.slug == row.gasto__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:150}}px;">
+                            <span class="posicion">{{forloop.counter}}</span><br/>
+                            <span class="municipio_nombre">{{ row.gasto__municipio__nombre }}</span>
+                            <br/>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra">{% if row.asignado_percent %}{{ row.asignado_percent|million|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            {% else %}
+                                <span class="line-cifra">{% if row.ejecutado_percent %}{{ row.ejecutado_percent|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% endif %}
+                       </a>
                     </li>
                     {% endfor %}
                 </ol>
@@ -184,9 +198,11 @@
         {% for row in otros|dictsortreversed:"asignado_percent" %}
         <li{% if municipio.slug == row.gasto__municipio__slug%} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
         <!-- <h4>{{ row.gasto__municipio__nombre }}</h4> -->
+        {% comment %}
         <span> Asignado: {{ row.asignado_percent|intcomma }}
         </span><br/>
         <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+        {% endcomment %}
         </li>
         {% endfor %}
         </ol>
