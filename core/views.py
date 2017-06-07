@@ -176,6 +176,8 @@ def municipio(request, slug):
         'year': year,
         'periodo': periodo,
         'home': 'home',
+        'data_oim': data_oim,
+        'data_ogm': data_ogm,
     }, context_instance=RequestContext(request))
 
 def inversion_minima_sector_view(request):

@@ -57,7 +57,7 @@
             <div class="pma-summary-box hidden-xs pma-summary-internal">
                 {% if periodo_list|keyvalue:year == 'I' %}<span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
 		{% else %}
-                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ejecutado|million }} millones</span>
                 {% endif %}
             </div>
             <h2> <a href=""><strong>Origenes</strong> de Ingresos</a></h2>
@@ -86,9 +86,9 @@
         <div class="col-md-6 col-eq-height pma-large-icons">
             <div class="pma-summary-box hidden-xs pma-summary-internal">
                 {% if periodo_list|keyvalue:year == 'I' %}
-                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
                 {% else %}
-                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
                 {% endif %}
             </div>
             <h2><strong>Destino</strong> de los Gastos</h2>
