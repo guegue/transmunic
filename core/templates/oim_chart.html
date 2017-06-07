@@ -62,7 +62,7 @@
     <div class="row">
         <h2> <strong>Ingresos</strong> Totales</h2>
         <hr class="pma-line-2">
-        <div class="chart-update col-xs-1 col-sm-1 col-md-1 float-left">
+        <div class="chart-update col-xs-12 col-sm-1 col-md-1 float-left">
                 <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                     aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                 <span id="chart-pie-1" class="pma-icon pe-7s-graph
@@ -89,10 +89,10 @@
             {% else %}
             <div id='comparativo_anios' class="view-alternative col-md-12"> Chart will be rendered here </div>
             {% endif %}
-            <div id="icons" class="view-alternative col-md-12 pma-large-icons">
+            <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
                 <div class="row">
                 {% for origen in rubros %}
-                <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="col-xs-9 col-sm-6 col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon pma-fg-green pma-icon {{origen.subsubtipoingreso__origen__slug}}">
                         </span>
@@ -415,7 +415,7 @@
                     {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
                     style="left:{{ forloop.counter|mul:"100" }}px;"><span class="posicion">{{ row.ingreso__anio }}</span>
                     <br/>
-                    {% if periodo_list|keyvalue:year == 'I' %}
+                    {% if row.ingreso__periodo == 'I' %}
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
                     {% else %}
                         <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
@@ -445,7 +445,7 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 text-center medium">
             <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
             Ver detalles en tabla</button>
         </div>
