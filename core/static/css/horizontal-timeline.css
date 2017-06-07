@@ -31,7 +31,7 @@ Main Components
 }
 .cd-horizontal-timeline .timeline {
   position: relative;
-  height: 220px;
+  height: 170px;
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
@@ -70,7 +70,7 @@ Main Components
   position: absolute;
   z-index: 1;
   left: 0;
-  top: 110px;
+  top: 100px;
   height: 2px;
   /* width will be set using JavaScript */
   background: #333;
@@ -432,7 +432,7 @@ Main Components
 }
 .rankin .events, .rankin .filling-line, .rankin a.selected::after, .rankin .events a::after { background: #fff !important;}
 .rankin .posicion { color: #71ffe6; }
-.posicion { font-size: 16px;}
+.posicion { font-size: 23px;}
 .municipio_nombre { 
 font-size: 17px;
 font-weight: bold;

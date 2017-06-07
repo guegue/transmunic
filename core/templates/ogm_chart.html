@@ -210,7 +210,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center medium">
+            <div class="col-md-12 text-center narrow">
                 <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
                 Ver dealles en tabla</button>
             </div>
@@ -218,7 +218,7 @@
     </div>
     <div id="detail-1" class="container">
         <div class="row">
-            <div class="col-md-12 table-responsive">
+            <div class="col-md-offset-2 col-md-8 table-responsive">
                 <table class="table table-condensed table-striped pma-bg-white">
                     <thead class="thead-inverse">
                         <tr class="bg-primary">
@@ -238,8 +238,9 @@
                             {% endif %}
                             <td class="text-center"> {{forloop.counter}} </td>
                             <td>{{ row.gasto__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                            {% if year != '2016' %}
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% else %}
                             <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                             {% endif %}
                         </tr>
@@ -288,22 +289,25 @@
 {% block section4 %}
 <div class="container wide">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 text-center historico">
             <h2>Información Histórica<br> 
             <strong>Ejecución presupuestaria del gasto {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
             <hr class="pma-line-4" />
             <section class="cd-horizontal-timeline loaded">
                 <div class="timeline">
                     <div class="events-wrapper">
-                        <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+                        <div class="events" style="width: {{ otros|length|mul:90 }}px;">
                             <ol>
                                 {% for row in anuales %}
                                 <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
                                 {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}
-                                style="left:{{ forloop.counter|mul:300 }}px;">{{ row.gasto__anio }}
-                                <span class="text-right">{{ row.asignado|million|intcomma }}</td>
-                                <span class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                            </a></li>
+                                style="left:{{ forloop.counter|mul:90 }}px;"><span class="posicion">{{ row.gasto__anio }}</span><br/> 
+                                {% if row.gasto__periodo == 'I' %}
+                                    <span class="line-cifra text-right">{{ row.asignado|million|intcomma }}</span>
+                                {% else %}
+                                    <span class="line-cifra text-right">{{ row.ejecutado|million|intcomma }}</span>
+                                {% endif %}
+                                </a></li>
                                 {% endfor %}
                             </ol>
 
@@ -322,6 +326,7 @@
                         {% for row in anuales %}
                         <li data-date="01/01/{{ row.gasto__anio }}"
                             {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}>
+                            {% comment %}
                             <h4>{{ municipio }} {{ row.gasto__anio }}</h2>
                           <table class="table table-striped">
                             <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
@@ -334,6 +339,7 @@
                                 {% endif %}
                              </tr>
                           </table>
+                            {% endcomment %}
                         </li>
                         {% endfor %}
                     </ol>
@@ -341,6 +347,56 @@
             </section>
         </div>
     </div>
+
+<div id="d" class="container medium">
+    <div class="row">
+        <div class="col-xs-12 col-md-offset-1 col-md-10 table-responsive">
+           <div class="col-md-4">
+            <table class="table table-condensed">
+                <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+                {% for row in anuales %}
+                <tr>
+                    <td>{{ row.gasto__anio }}</td>
+                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% if row.asignado %}
+                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                    {% endif %}
+                 </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
+                    <td class="text-right">{{ anuales|total_sum:'asignado'|million }}</td>
+                    <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
+                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
+                    <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                    {% endwith %}
+                </tr>
+            </table>
+           </div>
+           <div class="col-md-8">
+            <table class="table">
+                <tr class="bg-primary">
+                    <th></th>
+                    {% for year in year_list %}
+                    <th class="text-center"><strong>{{ year }}</strong>
+                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for key, data in porano.items %}
+                    <tr>
+                        <td class="text-left">{{ key }}</td>
+                        {% for year in year_list %}
+                        <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                        {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock %}
 
