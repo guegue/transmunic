@@ -327,12 +327,12 @@
 <div class="cd-horizontal-timeline loaded">
     <div class="timeline container">
         <div class="events-wrapper">
-            <div class="events" style="{{anuales|length|mul:"150"}}px">
+            <div class="events" style="width: {{anuales|length|mul:"100"}}px">
                 <ol>
                     {% for row in anuales %}
                     <li><a href="#0" data-date="01/01/{{ row.inversion__anio }}"
                     {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter|mul:"150" }}px;">{{ row.inversion__anio }}
+                    style="left:{{ forloop.counter0|mul:"150" }}px;">{{ row.inversion__anio }}
                     <br/>
                     Asignado: <span>{{ row.asignado|million|intcomma }}</span>
                     <br/>
@@ -340,7 +340,7 @@
                     </a></li>
                     {% endfor %}
                 </ol>
-                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+                <span class="filling-line" aria-hidden="true" style="transform:scaleX(0.8);"></span>
             </div> <!-- .events -->
         </div> <!-- .events-wrapper -->
 
