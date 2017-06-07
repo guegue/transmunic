@@ -104,19 +104,19 @@
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
             {% else %} 
-            <div class="events" style="width: {{ porclasep|length|mul:300 }}px;">
+            <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
                 <ol>
-                    {% for row in porclasep|dictsortreversed:"inicial_asignado" %}
+                    {% for row in porclasep|dictsort:"clasificacion" %}
                     <li>
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:300 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
+                            style="left: {{ forloop.counter|mul:122 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
                             <br/>
                             {% if row.gasto__periodo == 'I' %}
                                 <span>{{ row.inicial_asignado|floatformat:2|intcomma }}</span>
                             {% else %}
-                                <span>{{ row.ejecutado|intcomma }}</span>
+                                <span>{{ row.ejecutado|floatformat:2|intcomma }}</span>
                             {% endif %}
                         </a>
                     </li>
@@ -253,16 +253,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 text-center">
-            <button id="show-detail-3" class="btn btn-default" type="submit">
-            Ver detalles en Tabla</button>
+            <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
+            Ver detalles en tabla</button>
         </div>
     </div>
 </div>
-<div id="detail-3" class="container">
+<div id="detail-3" class="container medium">
     <div class="row">
-        <div class="col-md-12 table-responsive">
-            <table class="table table-condensed">
-                <tr class="info"><th>Año</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
+        <div class="col-md-offset-4 col-md-5 table-responsive">
+            <table class="table table-bordered">
+                <tr class="bg-primary"><th>Año</th> <th>Inicial</th> <th>Ejecutado</th> <th> <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info blanco">%</a></th></tr>
                 {% for row in anuales %}
                 <tr>
                     <td>{{ row.gasto__anio }}</td>
@@ -291,9 +291,10 @@
 {% block section4 %}
 <div class="container wide">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12">
             <h2><strong>Modificaciones al presupuesto </strong>municipal de inversiones</h2>
             <h4>Millones de córdobas corrientes </h4>
+            <hr class="pma-line-3" />
         </div>
     </div>
     <div class="row">
