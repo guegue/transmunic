@@ -100,7 +100,7 @@
                 {% endcomment %}
             </ul>
             <form class="navbar-form navbar-left pma-navbar" role="search">
-            <select class="listado-municipios pull-right">
+            <select class="listado-municipios pull-right" name="municipio">
                <option></option>
                <option class="amarillo">Consolidado Municipal</option>
                {% regroup municipios by depto as departamentos %}
@@ -217,10 +217,10 @@
         $('.listado-municipios').on("select2:selecting", function(e) {
             window.location = e.params.args.data.id;
         });
-        /*$(".municipio").select2({
+        $(".municipio").select2({
             placeholder: "Municipios",
             allowClear: true
-        });*/
+        });
     });
     $(".listado-municipios").on("select2:open", function() {
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
@@ -228,12 +228,12 @@
     $(".listado-municipios").on("select2:close", function() {
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
     });
-    /*$(".municipio").on("select2:open", function() {
+    $(".municipio").on("select2:open", function() {
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
     });
     $(".municipio").on("select2:close", function() {
         $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
-    });*/
+    });
     </script>
     <!-- Google Analytics -->
     <script>

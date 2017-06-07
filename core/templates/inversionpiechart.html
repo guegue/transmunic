@@ -40,31 +40,33 @@
         <div class="col-md-5 table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr class="">
+                    <tr class="bg-primary">
                         <th>Clasificación</th>
+                        {% if periodo_list|keyvalue:year == 'I' %}
                         <th class="text-right">Inicial</th>
-                        <th class="text-right">Ejecutado</th>
-                        <th class="text-right">% Ejecutado</th>
+                        {% else %}
+                            <th class="text-right">Ejecutado</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for row in cat %}
                 <tr>
                     <td class="text-left">{{ row.catinversion__nombre }}</td>
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                    <td class="text-right">
-                        {% if row.inicial_asignado %}
-                        <span class="label label-warning">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</span>
-                        {% endif %}
-                    </td>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    {% else %}
+                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 <tfoot>
                     <tr class="">
                         <td>TOTAL</td>
-                        <td class="text-right">{{ asignado|million|intcomma }}</td>
-                        <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
-                        <td class="text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            <td class="text-right">{{ asignado|million|intcomma }}</td>
+                        {% else %}
+                            <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                        {% endif %}
                     </tr>
                 </tfoot>
             </table>
@@ -75,16 +77,12 @@
 
 {% block section2 %}
 <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+    {% if municipio %}
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            {% if year == '2016' %}
-            <h2>Inversión municipal por población</h2>
-            {% else %}
-            <h2><strong>Ranquin de municipio</strong> <br>
-                por habitante categoría municipal
-                "{{ mi_clase.clasificacion }}"</h2>
-            {% endif %}
+            <h2><strong>Inversión municipal por población</strong> </h2>
+            <h4>por categoría de municipios en córdobas corrientes</h4>
             <hr class="pma-line-3" />
             </div>
         </div>
@@ -100,9 +98,12 @@
                             {% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:300 }}px;">{{ row.inversion__municipio__nombre }}
                             <br/>
-                            <span> Asignado: {{ row.asignado_percent|intcomma }}
-                            </span><br/>
-                            <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span>{{ row.asignado_percent|intcomma }}
+                                </span><br/>
+                            {% else %}
+                                <span>{{ row.asignado_percent|intcomma }}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}
@@ -127,8 +128,7 @@
         </li>
         {% endfor %}
         </ol>
-    </div> <!-- .events-content -->
-
+     </div> <!-- .events-content -->
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
@@ -199,6 +199,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 

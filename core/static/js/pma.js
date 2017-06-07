@@ -36,16 +36,18 @@ $(function() {
     });
     $('#indicatorfilter').submit(function(){
       var indicator = $("#indicator option").filter(":selected").val();
+      var year = $("#year option").filter(":selected").val();
       var municipio = $('.municipio').select2('data')[0].id;
 
       if( indicator == "" && (municipio !== "Consolidado Municipal") && (municipio !="")){
           location.href = '/'+ municipio ;
       }
       else if( indicator !== "" ){
-          location.href = '/core/'+ indicator + '?' + $(this).serialize();
+          location.href = '/core/'+ indicator + '?' + 'municipio=' + municipio + '&' + 'year=' + year + '&' + 'indicador=' + indicator;
       }
       else {
           location.href = '/';
       }
+      return false;
     });
 });
