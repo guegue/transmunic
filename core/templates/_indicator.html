@@ -35,7 +35,7 @@
                   <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
                   <select class="municipio pull-right" name="municipio">
                       <option></option>
-                      <option class="amarillo">Consolidado Municipal</option>
+                      <option class="amarillo" value="">Consolidado Municipal</option>
                       {% regroup municipios by depto as departamentos %}
                       {% for departamento in departamentos %}
                           <optgroup label="{{ departamento.grouper }}">

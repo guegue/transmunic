@@ -93,13 +93,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            {% if year == '2016' %}
-            <h2><strong>Gastos de funcionamiento </strong> <br>
-                por categoría de Municipios</h2>
+            {% if municipio %}
+              <h2><strong>Ranquin de municipio </strong>de misma categoría municipal </h2>
+              <h4> Porcentaje del gasto total destinado a gastos de funcionamiento 
+                  "{{ mi_clase.clasificacion }}"</h4>
             {% else %}
-            <h2><strong>Ranking </strong> <br>
-                por habitante categoría municipal
-                "{{ mi_clase.clasificacion }}"</h2>
+              <h2>Porcentaje destinado a gastos de funcionamiento</h2>
+              <h4>por categoría de Municipios</h4>
             {% endif %}
             <hr class="pma-line-3" />
             </div>
@@ -107,6 +107,7 @@
     </div>
     <div class="timeline container">
         <div class="events-wrapper">
+            {% if municipio %}
             <div class="events" style="width: {{ otros|length|mul:300 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -116,15 +117,39 @@
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:300 }}px;">{{ row.gasto__municipio__nombre }}
                             <br/>
-                            <span> Asignado: {{ row.asignado_percent|intcomma }}
-                            </span><br/>
-                            <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                            {% if row.gasto__periodo == 'I' %}
+                                <span> Asignado: {{ row.asignado_percent|intcomma }}</span>
+                            {% else %}
+                                <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}
                 </ol>
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
+            {% else %} 
+            <div class="events" style="width: {{ porclasep|length|mul:300 }}px;">
+                <ol>
+                    {% for row in porclasep|dictsortreversed:"inicial_asignado" %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:300 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
+                            <br/>
+                            {% if row.gasto__periodo == 'I' %}
+                                <span>{{ row.inicial_asignado|floatformat:2|intcomma }}</span>
+                            {% else %}
+                                <span>{{ row.ejecutado|intcomma }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+            {% endif %}
         </div> <!-- .events-wrapper -->
 
         <ul class="cd-timeline-navigation">
@@ -134,14 +159,25 @@
     </div> <!-- .timeline -->
     <div class="events-content container text-center">
         <ol>
-        {% for row in otros|dictsortreversed:"asignado_percent" %}
-        <li{% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-        <!-- <h4>{{ row.gasto__municipio__nombre }}</h4>
-        <span> Asignado: {{ row.asignado_percent|intcomma }}
-        </span><br/>
-        <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
-        </li>
-        {% endfor %}
+        {% if municipio %}
+          {% for row in otros|dictsortreversed:"asignado_percent" %}
+          <li{% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+          <!-- <h4>{{ row.gasto__municipio__nombre }}</h4>
+          <span> Asignado: {{ row.asignado_percent|intcomma }}
+           </span><br/>
+           <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
+          </li>
+          {% endfor %}
+        {% else %}
+          {% for row in porclasep|dictsortreversed:"asignado_percent" %}
+          <li{% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+          <!-- <h4>{{ row.gasto__municipio__nombre }}</h4>
+          <span> Asignado: {{ row.asignado_percent|intcomma }}
+           </span><br/>
+           <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
+          </li>
+          {% endfor %}
+        {% endif %}
         </ol>
     </div> <!-- .events-content -->
 
@@ -277,26 +313,28 @@
 {% block section3 %}
 <div class="container wide">
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h2>Información Histórica<br>
-            <strong>Ejecución presupuestaria del gasto de funcionamiento {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
-            <hr class="pma-line-4" />
+        <div class="col-md-12">
+            <h2><strong>Información Histórica</strong><br>
+            Ejecución presupuestaria del gasto de funcionamiento</h2>
+            <hr class="pma-line-3" />
         </div>
     </div>
 </div>
 <div class="cd-horizontal-timeline loaded">
-    <div class="timeline container">
+    <div class="timeline container historico">
         <div class="events-wrapper">
-            <div class="events" style="{{anuales|length|mul:"150"}}px">
+            <div class="events" style="width:1250px">
                 <ol>
                     {% for row in anuales %}
                     <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
                     {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter|mul:"150" }}px;">{{ row.gasto__anio }}
+                    style="left:{{ forloop.counter|mul:"120" }}px;"><span class="posicion">{{ row.gasto__anio }}</span>
                     <br/>
-                    Asignado: <span>{{ row.asignado|million|intcomma }}</span>
-                    <br/>
-                    Ejecutado: <span>{{ row.ejecutado|million|intcomma }}</span>
+                    {% if row.gasto__periodo == 'I' %}
+                        <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
+                    {% else %}
+                        <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
+                    {% endif %}
                     </a></li>
                     {% endfor %}
                 </ol>
@@ -312,9 +350,11 @@
 
     <div class="events-content">
         <ol>
-            <li data-date="01/01/{{ history_year }}"
-                {% if history_year = year|add:"0" %} class="selected" {% endif %}>
-            </li>
+          {% for row in anuales %}
+            <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
+            {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}
+            style="left:{{ forloop.counter|mul:"100" }}px;"></a></li>
+          {% endfor %}
         </ol>
     </div> <!-- .events-content -->
 </div>
@@ -360,8 +400,8 @@
 <div class="container wide">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2><strong>Modificaciones al presupuesto municipal de inversiones</strong><br>
-            Millones de córdobas corrientes </h2>
+            <h2><strong>Modificaciones al presupuesto </strong>municipal de inversiones</h2>
+            <h4>Millones de córdobas corrientes </h4>
         </div>
     </div>
     <div class="row">
