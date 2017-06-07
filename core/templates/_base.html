@@ -73,8 +73,12 @@
                 {% get_flatpages as flatpages %}
                     <ul class="dropdown-menu">
                         {% for page in flatpages %}
-                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                        {% if page.url != '/intro/' and page.url != '/origen-ingresos/'%}
+                          <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                        {% endif %}
                         {% endfor %}
+                          <li><a href="/documento/marco-legal/">Marco Legal</a></li>
+                          <li><a href="/documento/analisis-presupuestario/">Análisis Presupuestario </a></li>
                     </ul>
                 </li>
                 {% comment %}
@@ -118,8 +122,8 @@
                 </li>
                 <!--li class="active"><a href="#">Descarga</a>
                 </li-->
-                <li><a href="#" class="hidden-xs"><span class="glyphicon glyphicon-search"></span></a>
-                </li>
+                <!--li><a href="#" class="hidden-xs"><span class="glyphicon glyphicon-search"></span></a>
+                </li-->
             </ul>
             </div>
         </div>
