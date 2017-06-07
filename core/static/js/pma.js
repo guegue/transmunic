@@ -38,7 +38,7 @@ $(function() {
       var indicator = $("#indicator option").filter(":selected").val();
       var municipio = $('.municipio').select2('data')[0].id;
 
-      if( indicator == "" && municipio !== "Consolidado Municipal"){
+      if( indicator == "" && (municipio !== "Consolidado Municipal") && (municipio !="")){
           location.href = '/'+ municipio ;
       }
       else if( indicator !== "" ){
