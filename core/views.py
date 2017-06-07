@@ -286,7 +286,7 @@ def inversion_area_view(request):
     municipio = request.GET.get('municipio','')
     data = inversion_area_chart(municipio=municipio)
     return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list'],\
-            'municipio': municipio, },\
+            'municipio': municipio, 'periodo_list': data['periodo_list'],},\
             context_instance=RequestContext(request))
 
 def fuentes_view(request):

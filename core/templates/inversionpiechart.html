@@ -243,17 +243,18 @@
     </div>
     <div id="detail-1" class="container">
         <div class="row">
-            <div class="col-md-12 table-responsive">
+            <div class="col-md-offset-4 col-md-5 table-responsive">
                 <table class="table table-condensed table-striped pma-bg-white">
                     <thead class="thead-inverse">
                         <tr class="bg-primary">
-                        <th class="text-center"><strong>Posición</strong></th>
+                        <th class="text-center"><strong>Posición {{ periodo_list }}</strong></th>
                         <th class="text-center"><strong>Municipios</strong></th>
-                        {% if row.inversion__periodo == 'I' %}
-                            <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            <th class="text-center"><strong>P. Inicial</strong></th>
                         {% else %}
-                            <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                            <th class="text-center"><strong>Ejecución</strong></th>
                         {% endif %}
+                        </tr>
                     </thead>
                     {% if ejecutado <= 0 %}
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -263,7 +264,7 @@
                             {% endif %}
                             <td class="text-center"> {{forloop.counter}} </td>
                             <td>{{ row.inversion__municipio__nombre }}</td>
-                            {% if row.ingreso__periodo == 'I' %}
+                            {% if row.inversion__periodo == 'I' %}
                                 <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
                             {% else %}
                                 <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
