@@ -483,9 +483,6 @@
 .pe-7s-graph:before {
 	content: "\e64e";
 }
-.pe-7s-bubble:before {
-	content: "\e616";
-}
 .pe-7s-global:before {
 	content: "\e64f";
 }
