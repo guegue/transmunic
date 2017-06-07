@@ -33,7 +33,7 @@
                </div>
                <div class="col-xs-3 col-sm-5 col-md-3">
                 <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                <select name="municipio" class="municipio">
+                <select name="municipio" class="municipios">
                    <option value="">Consolidado Municipal</option>
                    {% for amunicipio in municipio_list %}
                    <option {% if amunicipio.slug == municipio.slug %}selected{% endif %} value="{{amunicipio.slug}}">{{amunicipio}}</option>
@@ -44,15 +44,14 @@
                 <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
                 <select name="indicador" class="indicator" id="indicator">
                    <option value="">Consolidado Municipa</option>
-                   <option value=""></option>
-                        <option value="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</option>
-                        <option value="{% absurl 'origen_gastos'%}">Destino del gasto municipal</option>
-                        <option value="{% absurl 'inversion_categoria'%}">Inversiones</option>
-                        <option value="{% absurl 'gastos_funcion'%}">Gastos de funcionamiento</option>
-                        <option value="{% absurl 'gastos_personal'%}">Gastos de personal</option>
-                        <option value="{% absurl 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</option>
-                        <option value="{% absurl 'ahorro_corriente'%}">Ahorro corriente para inversiones</option>
-                        <option value="{% absurl 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</option>
+                   <option value="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</option>
+                   <option value="{% absurl 'origen_gastos'%}">Destino del gasto municipal</option>
+                   <option value="{% absurl 'inversion_categoria'%}">Inversiones</option>
+                   <option value="{% absurl 'gastos_funcion'%}">Gastos de funcionamiento</option>
+                   <option value="{% absurl 'gastos_personal'%}">Gastos de personal</option>
+                   <option value="{% absurl 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</option>
+                   <option value="{% absurl 'ahorro_corriente'%}">Ahorro corriente para inversiones</option>
+                   <option value="{% absurl 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</option>
                 </select>
             </div>
             <div class="col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
@@ -189,10 +188,20 @@
     <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
     <script>
     $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({
-                            placement : 'top'
-                        });
-            });
+        $('[data-toggle="tooltip"]').tooltip({
+            placement : 'top'
+        });
+        $(".municipios").select2({
+            placeholder: "Presupuesto",
+            allowClear: true
+        });
+    });
+    $(".municipios").on("select2:open", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+    });
+    $(".municipios").on("select2:close", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+    });
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/pma.js' %}"></script>
