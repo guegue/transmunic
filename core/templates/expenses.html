@@ -14,19 +14,47 @@
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1 float-left">
-                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie-1"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar-1"></span>
+                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar"></span>
                     <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="icons"></span>
+                        aria-hidden="true" data-chartcontainer="icons"></span>
             </div>
-            <div class="col-md-11 chart-container">
-                <div id="pie-1" class="view-main"> Pastel por
-                categorias </div>
-                <div id="bar-1" class="view-alternative"> Pastel por
-                categorias </div>
+            <div class="col-md-11 chart-container bubbletree-container">
+                <div id="bubble-1" class="bubbletree-wrapper view-alternative ">
+                    <div class="bubbletree"></div>
+                </div>
+                <div id="gfbar" class="view-alternative"></div>
+                <div id="barra" class="view-alternative"></div>
+                <div id="pie" class="view-main"></div>
+                <div id="gf_comparativo2_column" class="view-alternative"></div>
+                <div id="gf_comparativo3_column" class="view-alternative"></div>
+                <div id="gf_comparativo_anios_column" class="view-alternative"></div>
+                <div id="gf_nivelejecucion_bar" class="view-alternative"></div>
+                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
+                    <div class="row">
+                        {% for row in rubros %}
+                        <div class="col-xs-9 col-sm-6 col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-fg-green pma-icon
+                                    {% firstof row.tipogasto__slug row.subtipogasto__slug %}">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</span>
+                                    <span class="info-box-number pma-blue">Inicial: {{ row.inicial_asignado|million|intcomma }}</span>
+                                    <span class="info-box-number pma-green">Final: {{ row.ejecutado|million|intcomma }}</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                    </div>
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -64,13 +92,14 @@
 {% endblock %}
 
 {% block section2 %}
+{% if municipio %}
 <div class="cd-horizontal-timeline loaded pma-gradient inverted">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
             {% if municipio %}
               <h2><strong>Ranquin de municipio </strong>de misma categoría municipal </h2>
-              <h4> Porcentaje del gasto total destinado a gastos de funcionamiento 
+              <h4> Porcentaje del gasto total destinado a gastos de funcionamiento
                   "{{ mi_clase.clasificacion }}"</h4>
             {% else %}
               <h2>Porcentaje destinado a gastos de funcionamiento</h2>
@@ -103,7 +132,7 @@
                 </ol>
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
-            {% else %} 
+            {% else %}
             <div class="events" style="width: {{ porclasep|length|mul:300 }}px;">
                 <ol>
                     {% for row in porclasep|dictsortreversed:"inicial_asignado" %}
@@ -158,16 +187,17 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="show-detail-1" class="btn btn-default" type="submit">
-                Ver detalles en Tabla</button>
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
             </div>
         </div>
     </div>
     <div id="detail-1" class="container">
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <h4 class="text-info text-info-ranking">Porcentaje del gasto total destinado a gastos de funcionamiento</h4>
+                <h4 class="text-info text-info-ranking">Porcentaje del gasto
+                    total destinado a {{indicator_name}}</h4>
                 <table class="table table-condensed table-striped pma-bg-white">
                     <thead class="thead-inverse">
                         <tr class="bg-primary">
@@ -200,6 +230,88 @@
         </div>
     </div>
 </div>
+{% endif %}
+{% if not municipio %}
+<div class="cd-horizontal-timeline loaded pma-gradient inverted">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            <h2><strong>{{indicator_name}} </strong> <br>
+                por categoría de Municipios</h2>
+            <hr class="pma-line-3" />
+            </div>
+        </div>
+    </div>
+    <div class="timeline container">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ porclasep|length|mul:200 }}px;">
+                <ol>
+                    {% for row in porclasep %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.last %} class="selected"{% endif %}
+                            style="left: {{ forloop.counter0|mul:200 }}px;">{{ row.clasificacion }}
+                            <br/>
+                            <span> Asignado: {% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}
+                            </span><br/>
+                            <span> Ejecutado: {% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in porclasep %}
+        <li{% if forloop.last %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
+            </div>
+        </div>
+    </div>
+    <div id="detail-1" class="container">
+        <div class="row">
+            <div class="col-md-12 table-responsive">
+                <h4 class="text-info text-info-ranking">Porcentaje del gasto
+                    total destinado a {{indicator_name}}</h4>
+                <table class="table pma-bg-white">
+                    <tr class="bg-primary"><th>Categoría</th> <th>P. Inicial</th> <th>Ejecutado</th></tr>
+                    {% for row in porclasep %}
+                    <tr>
+                        <td class="text-center">{{ row.clasificacion }}</td>
+                        <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}</td>
+                        <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="bg-primary">
+                        <td><strong>PROMEDIO</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
+                        <td class="text-right"><strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
 {% block section3 %}
@@ -403,58 +515,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script>
-    Highcharts.chart('bar-1', {
-        data: {
-            table: 'datatable-1',
-            startRow: 1, endRow:{{rubros|length}},
-            startColumn:1,
-            endColumn:3
-        },
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: '{{indicator_name}}'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Millones'
-            }
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' +
-                this.point.y + ' ' + this.point.name.toLowerCase();
-            }
-        }
-    });
-    Highcharts.chart('pie-1', {
-        data: {
-            table: 'datatable-1',
-            startRow: 0, endRow:{{rubros|length}},
-            startColumn:0,
-            endColumn:1
-        },
-        chart: {
-            type: 'pie'
-        },
-        title: {
-            text: '{{indicator_name}}'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Millones'
-            }
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' +
-                this.point.y + ' ' + this.point.name.toLowerCase();
-            }
-        }
-    });
-    </script>
+    {% if municipio %}
+    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
+    {% else %}
+    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
+    {% endif %}
 {% endblock %}
