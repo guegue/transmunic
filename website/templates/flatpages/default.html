@@ -1,11 +1,22 @@
 {% extends '_base.html' %}
 {% load staticfiles %}
 {% load flatpages thumbnail i18n %}
+{% block header %}
+    <div class="pma-hero">
+        <div class="container ">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-7">
+                </div>
+            </div>
+        </div>
+   </div>
+{% endblock %}
 {% block main_content %}
 <div class="container wide">
     <div class="row">
         <div class="col-md-10 pull-right-2 col-md-offset-1">
-            <h1>{{ flatpage.title }}</h1>
+            <h2 class="text-center">{{ flatpage.title }}</h2>
+            <hr class="pma-line-5"/>
             {% if flatpage.url == '/transferencias-presupuestarias/' %}<div class="text-center" style="margin-right: 20px;"><iframe width="700" height="415" src="https://www.youtube.com/embed/AzoSRHR5aEA" frameborder="0" allowfullscreen></iframe></div>{% endif %}
             {% if flatpage.url == '/ciclo-presupuestario/' %}
                 <div class="text-center" style="margin-bottom: 20px;">

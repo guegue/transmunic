@@ -1,9 +1,20 @@
-{% extends '_base.html' %} {% load static thumbnail chartit %} {% block main_content %}
+{% extends '_base.html' %} {% load static thumbnail chartit %}
+{% block header %}
+    <div class="pma-hero">
+        <div class="container ">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-7">
+                </div>
+            </div>
+        </div>
+   </div>
+{% endblock %}
+{% block main_content %}
 <div class="container">
     {% if documento_list %}
     <div class="row">
-        <h2 class="title">{% if tipodoc %}{{ tipodoc.titulo }} {% endif %}</h2>
-        <hr class="pma-line-2" />
+        <h2>{% if tipodoc %}{{ tipodoc.titulo }} {% endif %}</h2>
+        <hr class="pma-line-3" />
     </div>
     <div class="row table-row">
         {% for documento in documento_list %}
@@ -26,9 +37,7 @@
                             {% else %} {{ documento }} {% endif %}
                             <p class="fecha">{{ documento.tipo }}</p>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper.
-                                Nunc pellentesque nec libero sed viverra. Donec turpis velit, suscipit sit amet mauris quis,
-                                viverra ornare massa. Morbi tellus eros, fringilla eu sodales id, ultricies ut sapien. Duis
-                                et tristique enim, vitae mattis neque. Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
+                                Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
                             <div class="btn-group">
                                 <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
                                 <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
