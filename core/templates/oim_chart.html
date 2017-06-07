@@ -190,16 +190,16 @@
     <div class="row">
         <div class="col-md-offset-4 col-md-4 table-responsive">
             <table class="table">
-                <tr class="pma-bg-blue">
-                    <th>Categoría de municipio</th>
+                <tr class="blanco pma-bg-blue">
+                    <th><strong>Categoría de municipio</strong></th>
                     {% if periodo_list|keyvalue:year == 'I' %}
-                      <th>Presupuestado</th>
+                      <th><strong>Presupuestado</strong></th>
                     {% else %}
-                      <th>Ejecutado</th>
+                      <th><strong>Ejecutado</strong></th>
                     {% endif %}
                     </tr>
                 {% for row in porclasep %}
-                <tr>
+                <tr class="pma-bg-white">
                     <td class="text-center">{{ row.clasificacion }}</td>
                     {% if periodo_list|keyvalue:year == 'I' %}
                         <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
@@ -208,7 +208,7 @@
                     {% endif %}
                 </tr>
                 {% endfor %}
-                <tr class="">
+                <tr class="blanco pma-bg-blue">
                     <td><strong>Media NacionaL</strong></td>
                     {% if periodo_list|keyvalue:year == 'I' %}
                         <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
@@ -250,11 +250,15 @@
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:300 }}px;">{{ row.ingreso__municipio__nombre }}
+                            style="left: {{ forloop.counter|mul:300 }}px;"><span class="posicion"> {{forloop.counter}}</span>
+                            <br /><span class="municipio_nombre">{{ row.ingreso__municipio__nombre }}</span>
                             <br/>
-                            <span> Asignado: {{ row.asignado_percent|intcomma }}
-                            </span><br/>
-                            <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra"> Asignado: {{ row.asignado_percent|intcomma }}
+                                </span><br/>
+                            {% else %}
+                              <span class="line-cifra"> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}
