@@ -533,3 +533,30 @@ footer .copyright {
     height:100% !important;
 }
 */
+#indicator {
+    float: left;
+    width: 100%;
+    padding-left: 5px;
+    background: url('/static/img/new_arrow_trans.png') no-repeat right transparent;
+    font-size: 14px;
+    line-height: 1.5em;
+    padding: 0 0.5%;
+    margin: 0;
+    color: #FFF;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 27px !important;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#indicator option {
+    background: #fff;
+    color: #333;
+    text-transform: none;
+    font-weight: normal;
+    padding: 5px;
+    font-size: 16px;
+}
