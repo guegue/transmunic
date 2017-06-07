@@ -7,10 +7,11 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> del período</h2>
+        <h2> <strong>{{indicator_name}}</strong> </h2>
+        <h4>Millones de córdobas corrientes</h4>
         <hr class="pma-line-2">
         <div class="col-md-7">
-            <div class="chart-update col-xs-1 col-sm-1 col-md-1 float-left">
+            <div class="chart-update col-xs-1 col-sm-1 col-md-1 text-right">
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
@@ -100,12 +101,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            {% if year == '2016' %}
-                <h2>Inversión por habitante</h2>
-            {% else %}
+                <h2><strong>Ranquin de municipio </strong>de misma categoría municipal</h2>
                 <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
-            {% endif %}
-            <hr class="pma-line-3" />
+                <hr class="pma-line-3" />
             </div>
         </div>
     </div>
@@ -186,28 +184,28 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            <h2><strong>Inversión municipal por población</strong> </h2>
-            <h4>por categoría de municipios en córdobas corrientes</h4>
+            <h2><strong>Ranquin de municipio</strong> de misma categoría municipal</h2>
+            <h4>Córdobas corrientes por habitante</h4>
             <hr class="pma-line-3" />
             </div>
         </div>
     </div>
-    <div class="timeline container">
+    <div class="timeline container rankin">
         <div class="events-wrapper">
-            <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+            <div class="events" style="width: {{ otros|length|mul:200 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     <li>
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:300 }}px;">{{ row.inversion__municipio__nombre }}
-                            <br/>
+                            style="left: {{ forloop.counter|mul:200 }}px;"><span class="posicion"> {{forloop.counter}}</span>
+                            <div class="municipio_nombre">{{ row.inversion__municipio__nombre }}</div>
                             {% if periodo_list|keyvalue:year == 'I' %}
-                                <span>{{ row.asignado_percent|intcomma }}
+                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}
                                 </span><br/>
                             {% else %}
-                                <span>{{ row.asignado_percent|intcomma }}</span>
+                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
                             {% endif %}
                         </a>
                     </li>
@@ -236,23 +234,25 @@
      </div> <!-- .events-content -->
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="show-detail-1" class="btn btn-default" type="submit">
-                Ver dealles en Tabla</button>
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver dealles en tabla</button>
             </div>
         </div>
     </div>
     <div id="detail-1" class="container">
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <h4 class="text-info text-info-ranking">Córdobas corrientes por habitante</h4>
                 <table class="table table-condensed table-striped pma-bg-white">
                     <thead class="thead-inverse">
                         <tr class="bg-primary">
                         <th class="text-center"><strong>Posición</strong></th>
                         <th class="text-center"><strong>Municipios</strong></th>
-                        <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
-                        <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                        {% if row.inversion__periodo == 'I' %}
+                            <th class="text-center"><strong>P. Inicial</strong></th>{% if year != '2016' %}
+                        {% else %}
+                            <th class="text-center"><strong>Ejecución</strong></th>{% endif %}</tr>
+                        {% endif %}
                     </thead>
                     {% if ejecutado <= 0 %}
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -262,9 +262,10 @@
                             {% endif %}
                             <td class="text-center"> {{forloop.counter}} </td>
                             <td>{{ row.inversion__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                            {% if year != '2016' %}
-                            <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% if row.ingreso__periodo == 'I' %}
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% else %}
+                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                             {% endif %}
                         </tr>
                         {% endfor %}
@@ -277,9 +278,10 @@
                                 {% endif %}
                                 <td class="text-center"> {{forloop.counter}} </td>
                                 <td>{{ row.inversion__municipio__nombre }}</td>
-                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                {% if year != '2016' %}
-                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                                {% if row.ingreso__periodo == 'I' %}
+                                    <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                {% else %}
+                                    <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                                 {% endif %}
                             </tr>
                             {% endfor %} {% endif %}
@@ -312,10 +314,11 @@
 {% block section4 %}
 <div class="container wide">
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h2>Información Histórica<br>
-            <strong>Comportamiento histórico de las inversiones anuales {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
-            <hr class="pma-line-4" />
+        <div class="col-md-12">
+            <h2><strong>Información Histórica</strong><br>
+            Comportamiento histórico de las inversiones anuales {% if not municipio %}Consolidado municipal {% endif %} </h2>
+            <h4>En millones de córdobas corrientes </h4>
+            <hr class="pma-line-3" />
         </div>
     </div>
 </div>

@@ -284,9 +284,8 @@
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.ingreso__municipio__slug%} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:170 }}px;"><span class="posicion"> {{forloop.counter}}</span>
-                            <br /><span class="municipio_nombre">{{ row.ingreso__municipio__nombre }}</span>
-                            <br/>
+                            style="left: {{ forloop.counter|mul:180 }}px;"><span class="posicion"> {{forloop.counter}}</span>
+                            <br /><div class="municipio_nombre">{{ row.ingreso__municipio__nombre }}</div>
                             {% if periodo_list|keyvalue:year == 'I' %}
                                 <span class="line-cifra">{{ row.asignado_percent|intcomma }}
                                 </span><br/>

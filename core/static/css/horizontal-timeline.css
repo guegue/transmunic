@@ -434,7 +434,8 @@ Main Components
 .rankin .posicion { color: #71ffe6; }
 .posicion { font-size: 23px;}
 .municipio_nombre { 
-font-size: 17px;
-font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
+    max-width: 150px;
 }
-.line-cifra { font-size: 16px;}
+.line-cifra { font-size: 16px;font-family: arial;}
