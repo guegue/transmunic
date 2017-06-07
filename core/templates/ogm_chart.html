@@ -90,15 +90,20 @@
                 </div>
                 <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
                     <div class="row">
-                        {% for destino in rubros %}
+                        {% for row in rubros %}
                         <div class="col-xs-9 col-sm-6 col-md-6">
                             <div class="info-box">
-                                <span class="info-box-icon pma-fg-green pma-icon {{destino.subsubtipogasto__origen__slug}}">
+                                <span class="info-box-icon pma-fg-green pma-icon
+                                    {{row.subsubtipogasto__origen__slug}}">
                                 </span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">{{destino.subsubtipogasto__origen__nombre}}</span>
-                                    <span class="info-box-number pma-blue">Inicial: {{ destino.asignado_percent }}%</span>
-                                    <span class="info-box-number pma-green">Final: {{ destino.ejecutado_percent }}%</span>
+                                    <span class="info-box-text">{{row.subsubtipogasto__origen__nombre}}</span>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                    <span class="info-box-number pma-blue">Inicial: {{ row.inicial_asignado|million|intcomma }}</span>
+                                    {% else %}
+                                    <span class="info-box-number
+                                        pma-green">Ejecutado: {{ row.ejecutado|million|intcomma|default:"0" }}</span>
+                                    {% endif %}
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
