@@ -14,19 +14,23 @@
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1 float-left">
-                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie-1"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar-1"></span>
+                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar"></span>
                     <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
                         aria-hidden="true" data-chartcontainer="icons"></span>
             </div>
-            <div class="col-md-11 chart-container">
-                <div id="pie-1" class="view-main"> Pastel por
-                categorias </div>
-                <div id="bar-1" class="view-alternative"> Pastel por
-                categorias </div>
+            <div class="col-md-11 chart-container bubbletree-container">
+                <div id="bubble-1" class="bubbletree-wrapper view-alternative ">
+                    <div class="bubbletree"></div>
+                </div>
+                <div id="gfbar" class="view-alternative"></div>
+                <div id="barra" class="view-alternative"></div>
+                <div id="pie" class="view-main"></div>
+                <div id="gf_comparativo2_column" class="view-alternative"></div>
+                <div id="gf_comparativo3_column" class="view-alternative"></div>
+                <div id="gf_comparativo_anios_column" class="view-alternative"></div>
+                <div id="gf_nivelejecucion_bar" class="view-alternative"></div>
                 <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
                     <div class="row">
                         {% for row in rubros %}
@@ -95,7 +99,7 @@
             <div class="col-md-12">
             {% if municipio %}
               <h2><strong>Ranquin de municipio </strong>de misma categoría municipal </h2>
-              <h4> Porcentaje del gasto total destinado a gastos de funcionamiento 
+              <h4> Porcentaje del gasto total destinado a gastos de funcionamiento
                   "{{ mi_clase.clasificacion }}"</h4>
             {% else %}
               <h2>Porcentaje destinado a gastos de funcionamiento</h2>
@@ -128,7 +132,7 @@
                 </ol>
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
-            {% else %} 
+            {% else %}
             <div class="events" style="width: {{ porclasep|length|mul:300 }}px;">
                 <ol>
                     {% for row in porclasep|dictsortreversed:"inicial_asignado" %}
@@ -511,58 +515,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script>
-    Highcharts.chart('bar-1', {
-        data: {
-            table: 'datatable-1',
-            startRow: 1, endRow:{{rubros|length}},
-            startColumn:1,
-            endColumn:3
-        },
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: '{{indicator_name}}'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Millones'
-            }
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' +
-                this.point.y + ' ' + this.point.name.toLowerCase();
-            }
-        }
-    });
-    Highcharts.chart('pie-1', {
-        data: {
-            table: 'datatable-1',
-            startRow: 0, endRow:{{rubros|length}},
-            startColumn:0,
-            endColumn:1
-        },
-        chart: {
-            type: 'pie'
-        },
-        title: {
-            text: '{{indicator_name}}'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Millones'
-            }
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' +
-                this.point.y + ' ' + this.point.name.toLowerCase();
-            }
-        }
-    });
-    </script>
+    {% if municipio %}
+    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
+    {% else %}
+    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
+    {% endif %}
 {% endblock %}
