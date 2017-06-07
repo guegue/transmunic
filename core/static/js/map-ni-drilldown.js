@@ -49,7 +49,8 @@ $(function() {
                                     events: {
                                         click: function (e) {
                                             console.log(e.point);
-                                            location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
+                                            location.href = '/' + e.point.slug;
+                                            //location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
                                     },
                                     allowPointSelect: false,

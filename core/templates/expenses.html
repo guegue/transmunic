@@ -16,7 +16,7 @@
             <div class="chart-update col-md-1 float-left">
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
                         pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="gf_comparativo2_column"></span>
                     <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
                         aria-hidden="true" data-chartcontainer="icons"></span>
             </div>
@@ -132,13 +132,8 @@
                 </ol>
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
-<<<<<<< HEAD
-            {% else %}
-            <div class="events" style="width: {{ porclasep|length|mul:300 }}px;">
-=======
             {% else %} 
             <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
->>>>>>> origin/develop
                 <ol>
                     {% for row in porclasep|dictsort:"clasificacion" %}
                     <li>
@@ -522,7 +517,7 @@
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     {% if municipio %}
-    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
+    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column" }}
     {% else %}
     {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
     {% endif %}

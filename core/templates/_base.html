@@ -106,7 +106,7 @@
             <form class="navbar-form navbar-left pma-navbar" role="search">
             <select class="listado-municipios pull-right" name="municipio">
                <option></option>
-               <option class="amarillo">Consolidado Municipal</option>
+               <!--option class="amarillo">Consolidado Municipal</option-->
                {% regroup municipios by depto as departamentos %}
                {% for departamento in departamentos %}
                    <optgroup label="{{ departamento.grouper }}">
