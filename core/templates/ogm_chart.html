@@ -92,7 +92,7 @@
         <div class="col-md-5 table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr class="">
+                    <tr class="bg-primary">
                         <th>Rubros de gastos</th>
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <th class="text-right">Inicial</th>
@@ -135,21 +135,77 @@
             <div class="col-md-12">
                 <h2>Gastos de personal por habitante en cada categoría municipal</h2>
 
+    <div class="timeline container rankin">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ porclase|length|mul:130 }}px;">
+                <ol>
+                    {% for row in porclasep %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.first %}class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            {% else %}
+                                <span class="line-cifra">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+         <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in porclasep %}
+        <li{% if forloop.first %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        <!--
+           <h4>{{ row.clasificacion }}</h4>
+        -->
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+    <div class="row">
+            <div class="col-md-12 medium text-center">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="detail-1">
+    <div class="row col-md-4 col-md-offset-4">
                 <table class="table table-condensed pma-bg-white">
-                    <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                    <tr class="bg-primary"><th>Categoría de municipio</th> {% if periodo_list|keyvalue:year == 'I' %} <th>Asignado</th> {% else %}<th>Ejecutado</th>{% endif %}</tr>
                     {% for row in porclasep %}
                     <tr>
-                        <td>{{ row.clasificacion }}</td>
+                        <td class="text-center">{{ row.clasificacion }}</td>
+                        {% if periodo_list|keyvalue:year == 'I' %}
                         <td class="text-right">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</td>
+                        {% else %}
                         <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                     <tr class="success">
                         <td><strong>TOTAL</strong></td>
+                        {% if periodo_list|keyvalue:year == 'I' %}
                         <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
+                        {% else %}
                         <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
+                        {% endif %}
                     </tr>
                 </table>
+    </div>
+ </div>
+
 
             </div>
         </div>
@@ -212,7 +268,7 @@
         <div class="row">
             <div class="col-md-12 text-center narrow">
                 <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                Ver dealles en tabla</button>
+                Ver detalles en tabla</button>
             </div>
         </div>
     </div>
@@ -261,7 +317,7 @@
                                 {% endif %}
                             </tr>
                             {% endfor %} {% endif %}
-<!--
+                             {% comment %}
                             <tr class="">
                                 <td colspan="2">TOTAL</td>
                                 <td class="text-right">
@@ -277,7 +333,7 @@
                                 </td>
                                 {% endif %}
                             </tr>
-                        -->
+                            {% endcomment %}
                 </table>
             </div>
         </div>
@@ -287,16 +343,16 @@
 {% endblock %}
 
 {% block section4 %}
-<div class="container wide">
+<div class="container">
     <div class="row">
-        <div class="col-md-12 text-center historico">
+        <div class="col-md-12 historico">
             <h2>Información Histórica<br> 
             <strong>Ejecución presupuestaria del gasto {% if not municipio %}Consolidado municipal {% endif %}</strong> </h2>
-            <hr class="pma-line-4" />
+            <hr class="pma-line-3" />
             <section class="cd-horizontal-timeline loaded">
                 <div class="timeline">
                     <div class="events-wrapper">
-                        <div class="events" style="width: {{ otros|length|mul:90 }}px;">
+                        <div class="events" style="width: {{ anuales|length|mul:110 }}px;">
                             <ol>
                                 {% for row in anuales %}
                                 <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
@@ -347,11 +403,21 @@
             </section>
         </div>
     </div>
-
-<div id="d" class="container medium">
+<div class="container">
     <div class="row">
-        <div class="col-xs-12 col-md-offset-1 col-md-10 table-responsive">
-           <div class="col-md-4">
+        <div class="col-md-12 text-center">
+            <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
+            Ver detalles en tabla</button>
+        </div>
+    </div>
+</div>
+
+<div id="detail-3" class="container medium">
+    <div class="row">
+        <div class="col-xs-12 text-center table-responsive">
+           <h3>Gastos por período</h3>
+           <hr class="pma-line-4" />
+           <div class="col-md-offset-4 col-md-4">
             <table class="table table-condensed">
                 <tr class="info"><th>Años</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
                 {% for row in anuales %}
@@ -374,7 +440,9 @@
                 </tr>
             </table>
            </div>
-           <div class="col-md-8">
+           <div class="col-md-offset-2 col-md-8 text-center">
+            <h3>Gastos por períodos por rubros</h3>
+            <hr class="pma-line-4" />
             <table class="table">
                 <tr class="bg-primary">
                     <th></th>
@@ -403,14 +471,52 @@
 {% block section5 %}
 <div class="container wide">
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h2><strong>Modificaciones al presupuesto municipal de gastos</strong><br> 
-            Millones de córdobas corrientes </h2>
+        <div class="col-md-12">
+            <h2><strong>Modificaciones al presupuesto municipal de gastos</strong></h2> 
+            <h4>Millones de córdobas corrientes </h4>
+            <hr class="pma-line-3" />
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-offset-2 col-md-7">
         <table class="table table-condensed table-striped">
+            <thead>
+            <tr class="bg-primary"> <th>Rubros de gastos</th> <th class="text-right">Inicial</th>
+                <th class="text-right">Actualizado</th><th class="text-right">Ejecutado</th></th>
+            </tr>
+            </thead>
+            {% for row in rubros %}
+                <tr>
+                    <td>{{ row.subsubtipogasto__origen__nombre}}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td class=" text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                </tr>
+            {% endfor %}
+            <tfoot>
+            <tr class="bold">
+                <td>TOTAL</td>
+                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+            </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center big">
+                <button id="show-detail-2" class="blanco btn pma-bg-blue more" type="submit">
+                Ver dealles en tabla</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detail-2" class="row">
+        <div class="col-md-12">
+        <table class="table table-condensed table-bordered">
             <thead>
             <tr class="bg-primary">
                 <td></td>
@@ -433,7 +539,7 @@
             </thead>
             {% for row in rubros %}
                 <tr>
-                    <td class="pull-left">{{ row.subsubtipogasto__origen__nombre}}</td>
+                    <td>{{ row.subsubtipogasto__origen__nombre}}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class=" text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
                     <td class="text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
@@ -447,7 +553,7 @@
                     <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
                     <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
-                    <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    <td class=" montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
 
                 </tr>
@@ -497,47 +603,36 @@
             </tfoot>
         </table>
         </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="show-detail-2" class="btn btn-default" type="submit">
-                Ver dealles en Tabla</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="detail-2" class="row">
-        <div class="col-md-12">
-        <h3><strong>Modificaciones al presupuesto municipal de gastos - Recaudación municipal</strong>
-        Millones de córdobas corrientes</h3>
+        <div class="col-md-12 text-center">
+        <h3><strong>Modificaciones al presupuesto municipal de gastos</strong><br />Recaudación municipal</h3>
+        <h4>Millones de córdobas corrientes</h4>
+        <hr class="pma-line-4" />
         </div>
         <div class="col-md-12">
-        <table class="table table-condensed">
-            <tr><td></td><td></td><td colspan="4" class="success text-center"><h4>Modificación al {{ year_data.actualizado }}</h4></td><td colspan="4" class="danger"><h4>Modificación al {{ year_data.final }}</h4></td></tr>
-            <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th>
-                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
-                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
+        <table class="table table-bordered">
+            <tr class="bg-primary"><td></td><td></td><td colspan="4" class="text-center"><h4>Modificación al {{ year_data.actualizado }}</h4></td><td colspan="4"><h4>Modificación al {{ year_data.final }}</h4></td></tr>
+            <tr class="bg-primary"> <th>Rubros de gastos</th> <th>Inicial</th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info blanco">%</a></th>
+                <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="blanco">%</a></th>
             </tr>
             {% for row in rubrosp %}
                 <tr>
-                    <td class="pull-left">{{ row.subsubtipogasto__nombre }}</td>
+                    <td>{{ row.subsubtipogasto__nombre }}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td class="success text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                    <td class="success text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="success text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                    <td class="text-right">{% if row.actualizado_asignado and row.inicial_asignado %}{{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
                     {% if row.actualizado_asignado %}
-                        <td class="success montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                        <td class="montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% else %}
-                        <td class="success montos">0</td>
+                        <td class="montos">0</td>
                     {% endif %}
 
-                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="danger text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
-                    <td class="danger text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
-                        <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                        <td class="text-right montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
                     {% endif %}
                 </tr>
             {% endfor %}
