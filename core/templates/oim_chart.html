@@ -58,56 +58,89 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h2> <strong>Ingresos</strong> <br/> Totales</h2>
-	    <hr class="pma-line-2">
-            <div class="col-md-12 bubbletree-container chart-container">
-                <div id="bubble-1" class="bubbletree-wrapper view-main">
-                    <div class="bubbletree"></div>
+        <h2> <strong>Ingresos</strong> Totales</h2>
+        <hr class="pma-line-2">
+        <div class="chart-update col-xs-1 col-sm-1 col-md-1 float-left">
+                <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                    aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
+                <span id="chart-pie-1" class="pma-icon pe-7s-graph
+                    pma-fg-gray toggle-chart" aria-hidden="true"
+                    data-chartcontainer="ejecutado"></span>
+                {% if not municipio %}
+                <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="comparativo2"></span>
+                {% else %}
+                <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="ejecutado_column"></span>
+                {% endif %}
+                <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
+                    data-chartcontainer="icons" id="chart-icons"></span>
+        </div>
+        <div class="col-md-6 bubbletree-container chart-container">
+            <div id="bubble-1" class="bubbletree-wrapper view-main col-md-12">
+                <div class="bubbletree"></div>
+            </div>
+            <div id="ejecutado" class="view-alternative col-md-12"> Pastel Ejecucion por
+            Rubros </div>
+            <div id="ejecutado_column" class="view-alternative col-md-12"> Barras Ejecucion por
+            Rubros </div>
+            {% if not municipio %}
+            <div id='comparativo2' class="view-alternative col-md-12"> Chart will be rendered here </div>
+            {% else %}
+            <div id='comparativo_anios' class="view-alternative col-md-12"> Chart will be rendered here </div>
+            {% endif %}
+            <div id="icons" class="view-alternative col-md-12 pma-large-icons">
+                <div class="row">
+                {% for origen in rubros %}
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="info-box">
+                        <span class="info-box-icon pma-fg-green pma-icon {{origen.subsubtipoingreso__origen__slug}}">
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">{{origen.subsubtipoingreso__origen__nombre}}</span>
+                            <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
+                            <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
                 </div>
-                <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
-                Rubros </div>
-                <div id="ejecutado_column" class="view-alternative"> Barras Ejecucion por
-                Rubros </div>
-                    {% if not municipio %}
-                        <div id='comparativo2' class="view-alternative"> Chart will be rendered here </div>
-                    {% else %}
-                        <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
-                    {% endif %}
-                <div id="icons" class="view-alternative">
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                </div>
+                <div class="row">
+                {% endif %}
+                {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="col-md-5 table-responsive general-table big">
+        <div class="col-md-5 table-responsive general-table">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="">
                         <th>Rubros de ingresos</th>
-			{% if periodo_list|keyvalue:year == 'I' %}
-                            <th class="text-right">Inicial</th>
-			{% else %}
-                       	    <th class="text-right">Ejecutado</th>
-			{% endif %}
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                        <th class="text-right">Inicial</th>
+                        {% else %}
+                        <th class="text-right">Ejecutado</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for row in rubros %}
                 <tr>
                     <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
-		    {% if periodo_list|keyvalue:year == 'I' %}
-                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     {% else %}
-                        <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
                 <tfoot>
                     <tr class="">
                         <td>TOTAL</td>
-		    	{% if periodo_list|keyvalue:year == 'I' %}
-                            <td class="text-right">{{ asignado|million|intcomma }}</td>
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ asignado|million|intcomma }}</td>
                         {% else %}
-                            <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
-			{% endif %}
+                        <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
+                        {% endif %}
                     </tr>
                 </tfoot>
             </table>
@@ -170,7 +203,7 @@
         <ol>
         {% for row in porclasep %}
         <li{% if forloop.first %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-        <!-- 
+        <!--
            <h4>{{ row.clasificacion }}</h4>
         -->
         </li>
@@ -452,7 +485,7 @@
         <div class="col-md-offset-2 col-md-8">
         <table class="table table-condensed table-striped">
             <thead>
-            <tr  class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Actualizado</th><th>Ejecutado</th> 
+            <tr  class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> <th>Actualizado</th><th>Ejecutado</th>
             </tr>
             </thead>
             {% for row in rubros %}

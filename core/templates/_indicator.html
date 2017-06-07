@@ -203,10 +203,20 @@
     <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
     <script>
     $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({
-                            placement : 'top'
-                        });
-            });
+        $('[data-toggle="tooltip"]').tooltip({
+            placement : 'top'
+        });
+        $(".municipios").select2({
+            placeholder: "Presupuesto",
+            allowClear: true
+        });
+    });
+    $(".municipios").on("select2:open", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+    });
+    $(".municipios").on("select2:close", function() {
+        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+    });
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/pma.js' %}"></script>
