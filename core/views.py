@@ -204,7 +204,7 @@ def inversion_categoria_view(request):
     bubble_data = {'label':"Total", 'amount': round(data['asignado']/1000000, 2)}
     child_l1 = []
     for child in data['cat']:
-        child_data = {'label':child['catinversion__nombre'], 'amount': round(child['asignado']/1000000, 2)}
+        child_data = {'taxonomy': "cofog", 'name': child['catinversion__id'], 'label':child['catinversion__nombre'], 'amount': round(child['asignado']/1000000, 2)}
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)

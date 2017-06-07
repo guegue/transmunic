@@ -32,9 +32,9 @@
     </ul>
 
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, barra" }}
+        {{ charts|load_charts:"ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra" }}
     {% else %}
-       {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo" }}
+       {{ charts|load_charts:"ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra" }}
     {% endif %}
     <div id="oimTabContent" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="asignados" aria-labelledby="asignados-tab">

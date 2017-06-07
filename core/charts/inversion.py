@@ -110,10 +110,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
-        cat_inicial = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL, inversion__anio=year).values('catinversion__nombre').annotate(inicial_asignado=Sum('asignado')).order_by('catinversion')
-        cat_actualizado = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year).values('catinversion__nombre').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado')).order_by('catinversion')
-        cat_final = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_FINAL, inversion__anio=year).values('catinversion__nombre').annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado')).order_by('catinversion')
-        cat_periodo = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=periodo, inversion__anio=year).values('catinversion__nombre').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
+        cat_inicial = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_INICIAL, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(inicial_asignado=Sum('asignado')).order_by('catinversion')
+        cat_actualizado = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat_final = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=PERIODO_FINAL, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado')).order_by('catinversion')
+        cat_periodo = Proyecto.objects.filter(inversion__municipio__slug=municipio, inversion__periodo=periodo, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('catinversion')
         cat2 = superglue(data=(cat_inicial, cat_final), key='catinversion__nombre')
         cat3 = superglue(data=(cat_inicial, cat_final, cat_actualizado, cat_periodo), key='catinversion__nombre')
 
@@ -238,10 +238,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
-        cat_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__anio=year).values('catinversion__nombre').annotate(inicial_asignado=Sum('asignado')).order_by('catinversion')
-        cat_actualizado = Proyecto.objects.filter(inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year).values('catinversion__nombre').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado')).order_by('catinversion')
-        cat_final = Proyecto.objects.filter(inversion__periodo=PERIODO_FINAL, inversion__anio=year).values('catinversion__nombre').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado')).order_by('catinversion')
-        cat_periodo = Proyecto.objects.filter(inversion__periodo=periodo, inversion__anio=year).values('catinversion__nombre').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(inicial_asignado=Sum('asignado')).order_by('catinversion')
+        cat_actualizado = Proyecto.objects.filter(inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat_final = Proyecto.objects.filter(inversion__periodo=PERIODO_FINAL, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado')).order_by('catinversion')
+        cat_periodo = Proyecto.objects.filter(inversion__periodo=periodo, inversion__anio=year).values('catinversion__nombre','catinversion__id').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado')).order_by('catinversion')
         cat2 = superglue(data=(cat_inicial, cat_final), key='catinversion__nombre')
         cat3 = superglue(data=(cat_inicial, cat_final, cat_actualizado, cat_periodo), key='catinversion__nombre')
 

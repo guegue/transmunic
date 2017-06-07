@@ -62,54 +62,56 @@
     <div class="row">
         <h2> <strong>Ingresos</strong> Totales</h2>
         <hr class="pma-line-2">
-        <div class="chart-update col-xs-12 col-sm-1 col-md-1 float-left">
+        <div class="col-md-7">
+            <div class="chart-update col-xs-12 col-sm-1 col-md-1 float-left">
                 <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                    aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
+                aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                 <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                    pma-fg-gray toggle-chart" aria-hidden="true"
-                    data-chartcontainer="ejecutado"></span>
+                pma-fg-gray toggle-chart" aria-hidden="true"
+                data-chartcontainer="ejecutado"></span>
                 {% if not municipio %}
                 <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="comparativo2"></span>
                 {% else %}
                 <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="ejecutado_column"></span>
                 {% endif %}
                 <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                    data-chartcontainer="icons" id="chart-icons"></span>
-        </div>
-        <div class="col-md-6 bubbletree-container chart-container">
-            <div id="bubble-1" class="bubbletree-wrapper view-main col-md-12">
-                <div class="bubbletree"></div>
+                data-chartcontainer="icons" id="chart-icons"></span>
             </div>
-            <div id="ejecutado" class="view-alternative col-md-12"> Pastel Ejecucion por
-            Rubros </div>
-            <div id="ejecutado_column" class="view-alternative col-md-12"> Barras Ejecucion por
-            Rubros </div>
-            {% if not municipio %}
-            <div id='comparativo2' class="view-alternative col-md-12"> Chart will be rendered here </div>
-            {% else %}
-            <div id='comparativo_anios' class="view-alternative col-md-12"> Chart will be rendered here </div>
-            {% endif %}
-            <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
-                <div class="row">
-                {% for origen in rubros %}
-                <div class="col-xs-9 col-sm-6 col-md-6">
-                    <div class="info-box">
-                        <span class="info-box-icon pma-fg-green pma-icon {{origen.subsubtipoingreso__origen__slug}}">
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">{{origen.subsubtipoingreso__origen__nombre}}</span>
-                            <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
-                            <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
+            <div class="col-md-11 bubbletree-container chart-container">
+                <div id="bubble-1" class="bubbletree-wrapper view-main ">
+                    <div class="bubbletree"></div>
                 </div>
-                {% if forloop.counter|divisibleby:2 and not forloop.last %}
-                </div>
-                <div class="row">
+                <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
+                    Rubros </div>
+                <div id="ejecutado_column" class="view-alternative "> Barras Ejecucion por
+                        Rubros </div>
+                {% if not municipio %}
+                <div id='comparativo2' class="view-alternative"> Chart will be rendered here </div>
+                {% else %}
+                <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
                 {% endif %}
-                {% endfor %}
+                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
+                    <div class="row">
+                        {% for origen in rubros %}
+                        <div class="col-xs-9 col-sm-6 col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-fg-green pma-icon {{origen.subsubtipoingreso__origen__slug}}">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{{origen.subsubtipoingreso__origen__nombre}}</span>
+                                    <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
+                                    <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                    </div>
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

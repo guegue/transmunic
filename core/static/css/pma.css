@@ -527,7 +527,9 @@ footer .copyright {
 .pma-summary-internal {  right: 50px !important; }
 
 /* highchart fit to container */
+/*
 .highcharts-container {
     width:100% !important;
     height:100% !important;
 }
+*/

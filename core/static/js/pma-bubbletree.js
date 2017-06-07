@@ -21,6 +21,8 @@ $(function() {
         }
     };
 
+    /* FIXME: Omit Random color generation use taxonomy styles */
+    /*
     $.each(data['children'], function(key, value) {
         data['children'][key]['color'] = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
         var node_color = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
@@ -30,6 +32,7 @@ $(function() {
             });
         }
     });
+    */
 
     new BubbleTree({
         data: data,

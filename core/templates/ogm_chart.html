@@ -61,21 +61,22 @@
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-xs-1 col-sm-1 col-md-1 float-left">
-                    <span class="pma-icon pe-7s-bubble pma-fg-gray"
-                        aria-hidden="true" id="chart-bubble-1"></span>
+                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                        aria-hidden="true" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray" aria-hidden="true"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray"
-                        aria-hidden="true" id="icons"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="ejecutado"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="tipo"></span>
+                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
+                        data-chartcontainer="icons"></span>
             </div>
+
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
                 <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
                 Rubros </div>
-                <div id="ejecutado_column" class="view-alternative"> Barras Ejecucion por
+                <div id="ejecutado_pie" class="view-alternative"> Barras Ejecucion por
                 Rubros </div>
                 <div id="tipo" class="view-alternative"> Chart will be rendered here
                 </div>
@@ -85,7 +86,30 @@
                 </div>
                 <div id="comparativo3" class="view-alternative"> Chart will be rendered here
                 </div>
-                <div id="barra" class="view-alternative"> Chart will be rendered here
+                <div id="ogm_tipo_column" class="view-alternative"> Chart will be rendered here
+                </div>
+                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
+                    <div class="row">
+                        {% for destino in rubros %}
+                        <div class="col-xs-9 col-sm-6 col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-fg-green pma-icon {{destino.subsubtipogasto__origen__slug}}">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{{destino.subsubtipogasto__origen__nombre}}</span>
+                                    <span class="info-box-number pma-blue">Inicial: {{ destino.asignado_percent }}%</span>
+                                    <span class="info-box-number pma-green">Final: {{ destino.ejecutado_percent }}%</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                    </div>
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -130,7 +154,55 @@
 {% block section3 %}
 <div class="cd-horizontal-timeline inverted loaded pma-gradient">
             {% if not municipio %}
+    <div class="timeline container rankin">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ porclase|length|mul:130 }}px;">
+                <ol>
+                    {% for row in porclasep %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.first %}class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            {% else %}
+                                <span class="line-cifra">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in porclasep %}
+        <li{% if forloop.first %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        <!--
+           <h4>{{ row.clasificacion }}</h4>
+        -->
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+
     <div class="container">
+        <div class="row">
+            <div class="col-md-12 medium text-center">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="detail-1">
         <div class="row">
             <div class="col-md-12">
                 <h2>Gastos de personal por habitante en cada categoría municipal</h2>
@@ -296,7 +368,7 @@
             <section class="cd-horizontal-timeline loaded">
                 <div class="timeline">
                     <div class="events-wrapper">
-                        <div class="events" style="width: {{ otros|length|mul:90 }}px;">
+                        <div class="events" style="width: {{ anuales|length|mul:90 }}px;">
                             <ol>
                                 {% for row in anuales %}
                                 <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
@@ -590,8 +662,8 @@
 
 {% block custom_scripts %}
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, barra" }}
+        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, ogm_tipo_column" }}
     {% else %}
-       {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo" }}
+       {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, ogm_tipo_column" }}
     {% endif %}
 {% endblock %}

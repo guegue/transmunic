@@ -14,27 +14,46 @@
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="tipo"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="icons"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="ejecutado_pie"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart"  data-chartcontainer="ejecutado"></span>
+                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart" data-chartcontainer="icons"></span>
             </div>
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
-                <div id="pie-1" class="view-alternative"> Pastel por
-                categorias </div>
-                <div id="asignado_portada" class="view-alternative"> Pastel por
-                categorias </div>
-                <div id="chart-bar-1" class="view-alternative"> Barras por
-                Rubros </div>
-                <div id="chart-lines-1" class="view-alternative"> Lineas
-                </div>
                 <div id='fuente_pie' class="view-alternative"> Chart will be rendered here </div>
                 <div id='asignado' class="view-alternative"> Chart will be rendered here </div>
                 <div id='ejecutado' class="view-alternative"> Chart will be rendered here </div>
+                <div id='ejecutado_pie' class="view-alternative"> Chart will be rendered here </div>
                 <div id='tipo' class="view-alternative"> Chart will be rendered here </div>
+                <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
+                <div id='area' class="view-alternative"> Chart will be rendered here </div>
+                <div id='fuente' class="view-alternative"> Chart will be rendered here </div>
+                <div id='ultimos' class="view-alternative">Ultimos anios </div>
+                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
+                    <div class="row">
+                        {% for row in cat %}
+                        <div class="col-xs-9 col-sm-6 col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-fg-green pma-icon {{row.catinversion__slug}}">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{{row.catinversion__nombre}}</span>
+                                    <span class="info-box-number pma-blue">Inicial: {{ row.inicial_asignado|million|intcomma }}</span>
+                                    <span class="info-box-number pma-green">Ejecutado: {{ row.ejecutado|million|intcomma }}</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                    </div>
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -74,6 +93,92 @@
 {% endblock %}
 
 {% block section2 %}
+{% if not municipio %}
+<div class="cd-horizontal-timeline loaded pma-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            {% if year == '2016' %}
+                <h2>Inversión por habitante</h2>
+            {% else %}
+                <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
+            {% endif %}
+            <hr class="pma-line-3" />
+            </div>
+        </div>
+    </div>
+    <div class="timeline container rankin">
+        <div class="events-wrapper">
+            <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
+                <ol>
+                    {% for row in porclasep %}
+                    <li>
+                        <a href="#0"
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.first %}class="selected"{% endif %}
+                            style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span><br/>
+                            {% else %}
+                                <span class="line-cifra">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %} 0 {% endif %}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+    <div class="events-content container text-center">
+        <ol>
+        {% for row in porclasep %}
+        <li{% if forloop.first %} class="selected"{% endif %} data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+        <!--
+           <h4>{{ row.clasificacion }}</h4>
+        -->
+        </li>
+        {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 medium text-center">
+                <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                Ver detalles en tabla</button>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="detail-1">
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4 table-responsive">
+            <table class="table">
+                <tr class="info"><th>Categoría de municipio</th> <th>Asignado</th> <th>Ejecutado</th></tr>
+                {% for row in porclasep %}
+                <tr>
+                    <td>{{ row.clasificacion }}</td>
+                    <td class="tex-center">{% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %} 0 {% endif %}</td>
+                    <td class="text-right">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }} {% else %} 0 {% endif %}</td>
+                </tr>
+                {% endfor %}
+                <tr class="success">
+                    <td><strong>TOTAL</strong></td>
+                    <td class="text-right"><strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
+                    <td class="text-right"><strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+  </div>
+</div>
+{% endif%}
+{% if municipio %}
 <div class="cd-horizontal-timeline loaded pma-gradient inverted">
     <div class="container">
         <div class="row">
@@ -200,6 +305,7 @@
         </div>
     </div>
 </div>
+{% endif%}
 {% endblock %}
 
 {% block section4 %}
@@ -383,8 +489,8 @@
 
 {% block custom_scripts %}
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, comparativo_anios, none, asignado" }}
+        {{ charts|load_charts:"tipo, area, fuente, ejecutado_pie, comparativo_anios, asignado" }}
     {% else %}
-        {{ charts|load_charts:"tipo, area, fuente, fuente_pie, asignado, ultimos, fuentes" }}
+        {{ charts|load_charts:"tipo, area, fuente, ejecutado_pie, asignado, ultimos, fuentes" }}
     {% endif %}
 {% endblock %}
