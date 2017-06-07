@@ -37,11 +37,15 @@ $(function() {
     $('#indicatorfilter').submit(function(){
       var indicator = $("#indicator option").filter(":selected").val();
       var municipio = $('.municipio').select2('data')[0].id;
-      if(municipio == "Consolidado Municipal"){
-          location.href = '/core/'+ indicator + $(this).serialize();
+
+      if( indicator == "" && (municipio !== "Consolidado Municipal") && (municipio !="")){
+          location.href = '/'+ municipio ;
       }
-      else if (indicator != "" and municipio != "Consolidado Municipal"){
-          location.href = '/'+ municipio + $(this).serialize();
+      else if( indicator !== "" ){
+          location.href = '/core/'+ indicator + '?' + $(this).serialize();
+      }
+      else {
+          location.href = '/';
       }
     });
 });
