@@ -23,8 +23,8 @@
         <div class="row">
             <div class="col-md-12">
                 <form id="indicatorfilter" method="GET">
-                   <div class="col-xs-4 col-sm-2 col-md-1">
-                    <span class="pma-fg-light-green titsearch"><strong>AÑO</strong></span>
+                <div class="col-xs-4 col-sm-2 col-md-1">
+                    <span class="pma-fg-light-green titsearch years"><strong>AÑO</strong></span>
                     <select name="year" id="year">
                        {% for ayear in year_list %}
                        <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
@@ -40,7 +40,7 @@
                       {% for departamento in departamentos %}
                           <optgroup label="{{ departamento.grouper }}">
                               {% for m in departamento.list %}
-                                  <option value="{{ m.slug }}" {% if request.GET.my_var == m.id  %}selected="selected"{% endif %}>{{ m.nombre }}</option>
+                                  <option value="{{ m.slug }}" {% if request.GET.municipio == m.slug  %}selected="selected"{% endif %}>{{ m.nombre }}</option>
                               {% endfor %}
                           </optgroup>
                       {% endfor %}
