@@ -49,7 +49,10 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(level_0_sql, [year_data.anio, periodo, municipio_id])
         totals = dictfetchall(cursor)
-        data = {'label':"Ingresos Totales", 'amount': round(totals[0][data_source]/1000000, 2)}
+        if totals[0][data_source] is not None:
+            data = {'label':"Ingresos Totales", 'amount': round(totals[0][data_source]/1000000, 2)}
+        else:
+            data = {'label':"Ingresos Totales", 'amount': 0.00 }
 
         child_l1 = []
         level_1_sql = "select sum(sd.asignado) as asignado, sum(sd.ejecutado) as \
