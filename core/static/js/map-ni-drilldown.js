@@ -16,7 +16,8 @@ $(function() {
                 enabled: true,
                 format: '{point.name}'
             };
-            this.value = i; // Non-random bogus data
+            this.animation = false;
+            // this.value = i; // Non-random bogus data
         }
     });
 
@@ -44,11 +45,14 @@ $(function() {
                                     data: data.data,
                                     dataLabels: {
                                         enabled: true,
+                                        allowOverlap: true,
+                                        crop: false,
+                                        overflow: 'none',
                                         format: '{point.name}'
                                     },
                                     events: {
                                         click: function (e) {
-                                            console.log(e.point);
+                                            // console.log(e.point);
                                             location.href = '/' + e.point.slug;
                                             //location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
@@ -56,7 +60,7 @@ $(function() {
                                     allowPointSelect: false,
                                     states: {
                                         hover: {
-                                            color: '#f8f9fa'
+                                            color: '#2b7ab3'
                                         }
                                     }
                                 });
@@ -97,8 +101,9 @@ $(function() {
             enabled: false
         },
         mapNavigation: {
-            enabled: false,
+            enabled: true,
             buttonOptions: {
+                align: 'right',
                 verticalAlign: 'bottom'
             }
         },
@@ -106,9 +111,16 @@ $(function() {
             map: {
                 states: {
                     hover: {
-                        color: '#f8f9fa'
+                        color: '#2b7ab3'
                     }
                 }
+            },
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    allowOverlap: true,
+                    overflow: 'none'
+                }   
             }
         },
         series: ni_custom_data,
