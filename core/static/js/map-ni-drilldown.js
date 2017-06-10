@@ -16,7 +16,8 @@ $(function() {
                 enabled: true,
                 format: '{point.name}'
             };
-            this.value = i; // Non-random bogus data
+            this.animation = false;
+            // this.value = i; // Non-random bogus data
         }
     });
 
@@ -44,6 +45,9 @@ $(function() {
                                     data: data.data,
                                     dataLabels: {
                                         enabled: true,
+                                        allowOverlap: true,
+                                        crop: false,
+                                        overflow: 'none',
                                         format: '{point.name}'
                                     },
                                     events: {
@@ -99,6 +103,7 @@ $(function() {
         mapNavigation: {
             enabled: true,
             buttonOptions: {
+                align: 'right',
                 verticalAlign: 'bottom'
             }
         },
@@ -109,6 +114,13 @@ $(function() {
                         color: '#2b7ab3'
                     }
                 }
+            },
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    allowOverlap: true,
+                    overflow: 'none'
+                }   
             }
         },
         series: ni_custom_data,
