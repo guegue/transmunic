@@ -57,7 +57,7 @@ $(function() {
                                             //location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
                                     },
-                                    allowPointSelect: false,
+                                    // allowPointSelect: false,
                                     states: {
                                         hover: {
                                             color: '#2b7ab3'
