@@ -36,6 +36,7 @@ $(function() {
                         $.get(mapkey + '.json', function(data) {
                             $.each(data, function(i) {
                                 this.value = i;
+                                this.cursor = 'pointer';
                             });
                             chart.showLoading('<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>');
                             setTimeout(function() {
@@ -57,12 +58,12 @@ $(function() {
                                             //location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
                                     },
-                                    allowPointSelect: false,
                                     states: {
                                         hover: {
                                             color: '#2b7ab3'
                                         }
-                                    }
+                                    },
+                                    cursor: 'pointer'
                                 });
                             }, 1000);
                         });
@@ -119,7 +120,8 @@ $(function() {
                 dataLabels: {
                     enabled: true,
                     allowOverlap: true,
-                    overflow: 'none'
+                    overflow: 'none',
+                    cursor: 'pointer'
                 }   
             }
         },

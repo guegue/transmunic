@@ -389,6 +389,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
+        import pdb; pdb.set_trace()
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
@@ -397,6 +398,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
+        
+        """
         ogm_comparativo3 = RawDataPool(
             series=
                 [{'options': {'source': comparativo3 },
@@ -405,6 +408,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
+        """
         ogm_comparativo_anios_column = Chart(
                 datasource = ogm_comparativo_anios,
                 series_options =
@@ -434,6 +438,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                 },
                 )
+        """
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
                 series_options =
@@ -447,6 +452,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': ' '}},
                 )
+        """
     else: # no municipio
         ogm_comparativo_anios = RawDataPool(
             series=
@@ -484,6 +490,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} }
                 },
                 )
+        """
         ogm_comparativo3_column = Chart(
                 datasource = ogm_comparativo3,
                 series_options =
@@ -497,6 +504,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': ' '}},
                 )
+        """
         ogm_comparativo_anios_column = Chart(
                 datasource = ogm_comparativo_anios,
                 series_options =
@@ -662,9 +670,11 @@ def ogm_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado_pie, )
     elif municipio:
-        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_tipo_column, asignado_barra, barra, )
+        # charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
     else:
-        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_tipo_column, asignado_barra, barra, )
+        # charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
             'year_data': year_data, \
