@@ -697,8 +697,8 @@
 
 {% block custom_scripts %}
     {% if municipio and charts.4 %}
-    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, comparativo2,comparativo3, tipo, asignado_barra, barra" }}
+    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo_anios, tipo, asignado_barra, barra" }}
     {% else %}
-    {{ charts|load_charts:"ejecutado, ejecutado_column, comparativo2,tipo,comparativo3,comparativo_anios" }}
+    {{ charts|load_charts:"ejecutado, ejecutado_column,tipo,comparativo_anios" }}
     {% endif %}
 {% endblock %}
