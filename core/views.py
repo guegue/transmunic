@@ -74,7 +74,6 @@ def home(request):
             values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
     inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
-    # import pdb; pdb.set_trace()
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
@@ -145,7 +144,6 @@ def municipio(request, slug):
             values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
     inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
-    # import pdb; pdb.set_trace()
     return render_to_response(template_name, { 
         'banners': banners,
         'desc_oim_chart':desc_oim_chart,
