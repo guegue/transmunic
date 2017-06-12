@@ -387,6 +387,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
+        """    
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
@@ -403,6 +404,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
+        """
         oim_comparativo_anios_column = Chart(
                 datasource = oim_comparativo_anios,
                 series_options =
@@ -419,6 +421,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'title': { 'text': ' ',},
                     'colors':  colorschema,
                 })
+        """
         oim_comparativo2_column = Chart(
                 datasource = oim_comparativo2,
                 series_options =
@@ -448,6 +451,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': ' '}},
                 )
+        """
 
     else: # no municipio chartit
         oim_comparativo_anios = RawDataPool(
@@ -457,6 +461,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'terms':  ['ingreso__anio','ingreso__periodo','asignado','ejecutado',],
                 }],
             )
+        """
         oim_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
@@ -500,6 +505,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {'title': { 'text': ' '}},
                 )
+        """
         oim_comparativo_anios_column = Chart(
                 datasource = oim_comparativo_anios,
                 series_options =
@@ -691,9 +697,11 @@ def oim_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  (ejecutado_pie, )
     elif municipio:
-        charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_tipo_column, asignado_barra, barra, )
+        # charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
     else:
-        charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
+        charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_tipo_column, asignado_barra, barra, )
+        # charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
             'year_data': year_data, \

@@ -389,6 +389,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 'terms':  ['gasto__anio','gasto__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
+        import pdb; pdb.set_trace()
         ogm_comparativo2 = RawDataPool(
             series=
                 [{'options': {'source': comparativo2 },
