@@ -431,6 +431,12 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             'terms':  ['catinversion__nombre','ejecutado','asignado','actualizado'],
             }],
         )
+    inversion_tipo_pie = RawDataPool(
+        series=
+            [{'options': {'source': tipo },
+            'terms':  ['catinversion__nombre','ejecutado'],
+            }],
+        )
     inversion_tipo_column = Chart(
             datasource = inversion_tipo,
             series_options =
@@ -439,6 +445,22 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'stacking': False},
                 'terms':{
                 'catinversion__nombre': ['ejecutado', 'asignado','actualizado'],
+                },
+                }],
+            chart_options =
+            {
+                'title': { 'text': 'Inversions por tipo origen %s %s' % (year, municipio,)},
+                'data': { 'table': 'datatable'},
+            },
+    )
+    inversion_tipo_pie = Chart(
+            datasource = inversion_tipo_pie,
+            series_options =
+            [{'options':{
+                'type': 'pie',
+                'stacking': False},
+                'terms':{
+                'catinversion__nombre': ['ejecutado'],
                 },
                 }],
             chart_options =
@@ -540,9 +562,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     if portada:
         charts =  [ejecutado_pie, ]
     elif municipio:
-        charts =  [inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, inversion_comparativo_anios_column, inversion_percapita_anios_column, ejecutado_pie, ultimos ]
+        charts =  [inversion_tipo_column, inversion_tipo_pie, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, inversion_comparativo_anios_column, inversion_percapita_anios_column, ejecutado_pie, ultimos ]
     else:
-        charts =  [inversion_tipo_column, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, ejecutado_pie, ultimos ]
+        charts =  [inversion_tipo_column, inversion_tipo_pie, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, ejecutado_pie, ultimos ]
 
     return {'charts': charts, \
             'mi_clase': mi_clase, 'year': year, 'porano': porano_table, 'totales': sources, 'cat': cat3, 'anuales': anual3,\

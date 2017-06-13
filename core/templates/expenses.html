@@ -17,8 +17,6 @@
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
                         pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="gf_comparativo2_column"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                        aria-hidden="true" data-chartcontainer="icons"></span>
             </div>
             <div class="col-md-11 chart-container bubbletree-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-alternative ">
@@ -31,30 +29,6 @@
                 <div id="gf_comparativo3_column" class="view-alternative"></div>
                 <div id="gf_comparativo_anios_column" class="view-alternative"></div>
                 <div id="gf_nivelejecucion_bar" class="view-alternative"></div>
-                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
-                    <div class="row">
-                        {% for row in rubros %}
-                        <div class="col-xs-9 col-sm-6 col-md-6">
-                            <div class="info-box">
-                                <span class="info-box-icon pma-fg-green pma-icon
-                                    {% firstof row.tipogasto__slug row.subtipogasto__slug %}">
-                                </span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</span>
-                                    <span class="info-box-number pma-blue">Inicial: {{ row.inicial_asignado|million|intcomma }}</span>
-                                    <span class="info-box-number pma-green">Final: {{ row.ejecutado|million|intcomma }}</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
-                    </div>
-                    <div class="row">
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
