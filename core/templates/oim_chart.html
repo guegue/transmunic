@@ -74,8 +74,6 @@
                 {% else %}
                 <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="ejecutado_column"></span>
                 {% endif %}
-                <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                data-chartcontainer="icons" id="chart-icons"></span>
             </div>
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main ">
@@ -90,29 +88,6 @@
                 {% else %}
                 <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
                 {% endif %}
-                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
-                    <div class="row">
-                        {% for origen in rubros %}
-                        <div class="col-xs-9 col-sm-6 col-md-6">
-                            <div class="info-box">
-                                <span class="info-box-icon pma-fg-green pma-icon {{origen.subsubtipoingreso__origen__slug}}">
-                                </span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">{{origen.subsubtipoingreso__origen__nombre}}</span>
-                                    <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
-                                    <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
-                    </div>
-                    <div class="row">
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-md-5 general-table table-responsive">

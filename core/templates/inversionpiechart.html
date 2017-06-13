@@ -18,7 +18,6 @@
                         pma-fg-gray toggle-chart" data-chartcontainer="asignado"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3
                         pma-fg-gray toggle-chart"  data-chartcontainer="tipo"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart" data-chartcontainer="icons"></span>
             </div>
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
@@ -33,29 +32,6 @@
                 <div id='area' class="view-alternative"> Chart will be rendered here </div>
                 <div id='fuente' class="view-alternative"> Chart will be rendered here </div>
                 <div id='ultimos' class="view-alternative">Ultimos anios </div>
-                <div id="icons" class="view-alternative col-xs-11 col-md-12 pma-large-icons">
-                    <div class="row">
-                        {% for row in cat %}
-                        <div class="col-xs-9 col-sm-6 col-md-6">
-                            <div class="info-box">
-                                <span class="info-box-icon pma-fg-green pma-icon {{row.catinversion__slug}}">
-                                </span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">{{row.catinversion__nombre}}</span>
-                                    <span class="info-box-number pma-blue">Inicial: {{ row.inicial_asignado|million|intcomma }}</span>
-                                    <span class="info-box-number pma-green">Ejecutado: {{ row.ejecutado|million|intcomma }}</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
-                    </div>
-                    <div class="row">
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
