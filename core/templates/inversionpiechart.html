@@ -473,7 +473,7 @@
                     <td class="montos">0</td>
                     {% endif %}
                     <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
                     <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
                     <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
