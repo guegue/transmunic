@@ -15,7 +15,7 @@
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" data-chartcontainer="asignado"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="tipo_pie"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3
                         pma-fg-gray toggle-chart"  data-chartcontainer="tipo"></span>
             </div>
@@ -28,6 +28,7 @@
                 <div id='ejecutado' class="view-alternative"> Chart will be rendered here </div>
                 <div id='ejecutado_pie' class="view-alternative"> Chart will be rendered here </div>
                 <div id='tipo' class="view-alternative"> Chart will be rendered here </div>
+                <div id='tipo_pie' class="view-alternative"> Chart will be rendered here </div>
                 <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
                 <div id='area' class="view-alternative"> Chart will be rendered here </div>
                 <div id='fuente' class="view-alternative"> Chart will be rendered here </div>
@@ -449,7 +450,7 @@
                     <td class="montos">0</td>
                     {% endif %}
                     <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado and row.inicial_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
                     <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
                     <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
@@ -509,8 +510,8 @@
 
 {% block custom_scripts %}
     {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo, area, fuente, ejecutado_pie, comparativo_anios, asignado" }}
+        {{ charts|load_charts:"tipo, tipo_pie, area, fuente, ejecutado_pie, comparativo_anios, asignado" }}
     {% else %}
-        {{ charts|load_charts:"tipo, area, fuente, ejecutado_pie, asignado, ultimos, fuentes" }}
+        {{ charts|load_charts:"tipo, tipo_pie, area, fuente, ejecutado_pie, asignado, ultimos, fuentes" }}
     {% endif %}
 {% endblock %}
