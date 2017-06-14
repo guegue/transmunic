@@ -86,7 +86,7 @@
         </div>
     </div>
     <div class="timeline container">
-        <div class="events-wrapper">
+        <div class="events-wrapper rankin">
             {% if municipio %}
             <div class="events" style="width: {{ otros|length|mul:300 }}px;">
                 <ol>
@@ -95,12 +95,12 @@
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:300 }}px;">{{ row.gasto__municipio__nombre }}
+                            style="left: {{ forloop.counter|mul:290 }}px;"><span class="posicion">{{ row.gasto__municipio__nombre }}</span>
                             <br/>
                             {% if row.gasto__periodo == 'I' %}
-                                <span> Asignado: {{ row.asignado_percent|intcomma }}</span>
+                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
                             {% else %}
-                                <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span>
+                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
                             {% endif %}
                         </a>
                     </li>
@@ -219,7 +219,7 @@
         </div>
     </div>
     <div class="timeline container">
-        <div class="events-wrapper">
+        <div class="events-wrapper rankin">
             <div class="events" style="width: {{ porclasep|length|mul:200 }}px;">
                 <ol>
                     {% for row in porclasep %}
@@ -227,11 +227,14 @@
                         <a href="#0"
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if forloop.last %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter0|mul:200 }}px;">{{ row.clasificacion }}
+                            style="left: {{ forloop.counter0|mul:200 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
                             <br/>
-                            <span> Asignado: {% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}
-                            </span><br/>
-                            <span> Ejecutado: {% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</span>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                              <span class="line-cifra">{% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}
+                              </span>
+                            {% else %}
+                              <span class="line-cifra">{% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}
@@ -264,9 +267,8 @@
     </div>
     <div id="detail-1" class="container">
         <div class="row">
-            <div class="col-md-12 table-responsive">
-                <h4 class="text-info text-info-ranking">Porcentaje del gasto
-                    total destinado a {{indicator_name}}</h4>
+            <div class="col-md-5 table-responsive col-md-offset-3">
+                <h4 class="text-info text-info-ranking">Porcentaje del gasto total destinado a {{indicator_name}}</h4>
                 <table class="table pma-bg-white">
                     <tr class="bg-primary"><th>Categoría</th> <th>P. Inicial</th> <th>Ejecutado</th></tr>
                     {% for row in porclasep %}
@@ -388,12 +390,12 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <table class="table table-condensed">
-                <tr class=gb-primary"> <th>Rubros de gastos</th> <th>Inicial</th>
-                    <th>Actualizado</th> <th>Ejecutado</th>
+                <tr class="bg-primary"> <th>Rubros de gastos</th> <th>Inicial</th>
+                    <th>Actualizado</th> <th>Ejecutado</th> 
                 </tr>
                 {% for row in rubros %}
                 <tr>
-                    <td class="pull-left">{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}{{ row.subtipogasto__nombre }}{% endif%}</td>
+                    <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}{{ row.subtipogasto__nombre }}{% endif%}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
                     <td class="text-right montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
@@ -416,8 +418,8 @@
 
         <div id="detail-2" class="row">
           <div class="col-md-12">
-            <table class="table table-condensed">
-                <tr class="bg-primario">
+            <table class="table table-bordered">
+                <tr class="bg-primary">
                     <td></td>
                     <td></td>
                     <td colspan="4" class="text-center">
@@ -431,13 +433,13 @@
                         </h4>
                     </td>
                 </tr>
-                <tr class="bg-primario"> <th>Rubros de gastos</th> <th>Inicial</th>
+                <tr class="bg-primary"> <th>Rubros de gastos</th> <th>Inicial</th>
                     <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
                     <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-          title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 </tr>
                 {% for row in rubros %}
                 <tr>
-                    <td class="pull-left">{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}{{ row.subtipogasto__nombre }}{% endif%}</td>
+                    <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}{{ row.subtipogasto__nombre }}{% endif%}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
                     <td class="text-right">{% if row.actualizado_asignado %}
