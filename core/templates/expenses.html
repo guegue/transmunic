@@ -14,17 +14,19 @@
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1 float-left">
-                    <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="gf_comparativo2_column"></span>
+                <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
+                <span id="chart-pie-1" class="pma-icon pe-7s-graph
+                pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
+                <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="barra"></span>
             </div>
             <div class="col-md-11 chart-container bubbletree-container">
-                <div id="bubble-1" class="bubbletree-wrapper view-alternative ">
+                <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
                 <div id="gfbar" class="view-alternative"></div>
                 <div id="barra" class="view-alternative"></div>
-                <div id="pie" class="view-main"></div>
+                <div id="pie" class="view-alternative"></div>
                 <div id="gf_comparativo2_column" class="view-alternative"></div>
                 <div id="gf_comparativo3_column" class="view-alternative"></div>
                 <div id="gf_comparativo_anios_column" class="view-alternative"></div>
@@ -106,7 +108,7 @@
                 </ol>
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
-            {% else %} 
+            {% else %}
             <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
                 <ol>
                     {% for row in porclasep|dictsort:"clasificacion" %}
@@ -387,7 +389,7 @@
         <div class="col-md-8 col-md-offset-2">
             <table class="table table-condensed">
                 <tr class=gb-primary"> <th>Rubros de gastos</th> <th>Inicial</th>
-                    <th>Actualizado</th> <th>Ejecutado</th> 
+                    <th>Actualizado</th> <th>Ejecutado</th>
                 </tr>
                 {% for row in rubros %}
                 <tr>
@@ -505,6 +507,16 @@
 
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script type="text/javascript" src="{% static 'js/expen.js' %}"></script>
+    <script type="text/javascript">
+            var data = {{ bubble_data|safe }};
+    </script>
+    <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
     <script>
     $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip({

@@ -4,6 +4,7 @@
 # Gastos de funcionamiento charts /core/gf
 #
 ##############################################################################
+import json
 
 from itertools import chain
 from datetime import datetime, time
@@ -561,11 +562,18 @@ def gf_chart(request):
               'terms': [ 'nombre', 'asignado', ]
             }]
     )
+    data_rubros = RawDataPool(
+           series = [{
+              'options': {'source': rubros },
+              'terms': [ 'tipogasto__nombre', 'asignado', 'ejecutado' ]
+            }]
+    )
     pie = Chart(
-            datasource = data_pgf,
+            #datasource = data_pgf,
+            datasource = data_rubros,
             series_options = [{
                 'options': {'type': 'pie',},
-                'terms': {'nombre': ['asignado']}
+                'terms': {'tipogasto__nombre': ['asignado']}
             }],
             chart_options = {
                 'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
@@ -582,12 +590,12 @@ def gf_chart(request):
     )
 
     barra = Chart(
-            datasource = data_barra,
+            datasource = data_rubros,
             series_options =
               [{'options':{
                   'type': 'column',},
                 'terms':{
-                  'gasto__anio': [
+                  'tipogasto__nombre': [
                     'asignado',
                     'ejecutado']
                   }}],
@@ -623,6 +631,14 @@ def gf_chart(request):
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column,)
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
+    # Bubble tree data
+    bubble_data = {'label':"Total", 'amount': round(ejecutado/1000000, 2)}
+    child_l1 = []
+    for child in rubros:
+        child_data = {'taxonomy': "expen", 'name': child['tipogasto__codigo'], 'label':child['tipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
+        child_l1.append(child_data)
+    bubble_data['children'] = child_l1
+    bubble_source = json.dumps(bubble_data)
 
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
@@ -639,5 +655,6 @@ def gf_chart(request):
             'indicator_name': "Gastos de funcionamiento", \
             'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
+            'bubble_data': bubble_source, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))

@@ -4,6 +4,7 @@
 # Gastos de personal charts /core/gpersonal
 #
 ##############################################################################
+import json
 
 from itertools import chain
 from datetime import datetime, time
@@ -581,14 +582,20 @@ def gpersonal_chart(request):
     data_pgf = RawDataPool(
            series = [{
               'options': {'source': source_pgf },
-              'terms': [ 'nombre', 'asignado', ]
+              'terms': [ 'nombre', 'asignado' ]
+            }]
+    )
+    data_rubros = RawDataPool(
+           series = [{
+              'options': {'source': rubros },
+              'terms': [ 'subtipogasto__nombre', 'ejecutado', ]
             }]
     )
     pie = Chart(
-            datasource = data_pgf,
+            datasource = data_rubros,
             series_options = [{
                 'options': {'type': 'pie',},
-                'terms': {'nombre': ['asignado']}
+                'terms': {'subtipogasto__nombre': ['ejecutado']}
             }],
             chart_options = {
                 'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
@@ -605,15 +612,12 @@ def gpersonal_chart(request):
     )
 
     barra = Chart(
-            datasource = data_barra,
+            datasource = data_rubros,
             series_options =
               [{'options':{
                   'type': 'column',},
-                'terms':{
-                  'gasto__anio': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
+                  'terms': {'subtipogasto__nombre': ['ejecutado']}
+                }],
             chart_options = {
                 'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
@@ -647,6 +651,15 @@ def gpersonal_chart(request):
     else:
         charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
 
+    # Bubble tree data
+    bubble_data = {'label':"Total", 'amount': round(ejecutado/1000000, 2)}
+    child_l1 = []
+    for child in rubros:
+        child_data = {'taxonomy': "expen", 'name': child['subtipogasto__codigo'], 'label':child['subtipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
+        child_l1.append(child_data)
+    bubble_data['children'] = child_l1
+    bubble_source = json.dumps(bubble_data)
+
     #Descarga en Excel
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
@@ -662,5 +675,6 @@ def gpersonal_chart(request):
             'indicator_name': "Gastos de personal", \
             'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
+            'bubble_data': bubble_source, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))
