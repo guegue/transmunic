@@ -199,8 +199,6 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         cursor.execute(sql)
         source = dictfetchall(cursor)
 
-
-
     data = RawDataPool(
            series=
             [{'options': {'source': source },
@@ -210,19 +208,47 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                 'asignado',
                 ]}
              ])
-    bar = Chart(
-            datasource = data,
+
+    data_ingreso = RawDataPool(
+           series=
+            [{'options': {'source': rubros },
+              'terms': [
+                'tipoingreso__nombre',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+    pie = Chart(
+            datasource = data_ingreso,
             series_options =
               [{'options':{
-                  'type': 'bar',},
+                  'type': 'pie',},
                 'terms':{
-                  'anio': [
-                    'asignado',
+                  'tipoingreso__nombre': [
                     'ejecutado']
                   }}],
             chart_options = {
                 'title': {
-                  'text': u'Ahorro corriente para inversiones %s ' % (municipio,)},
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Años'} },
+                },
+            )
+
+    bar = Chart(
+            datasource = data_ingreso,
+            series_options =
+              [{'options':{
+                  'type': 'column',},
+                'terms':{
+                  'tipoingreso__nombre': [
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Rubros'} },
                 },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
@@ -241,7 +267,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         return obtener_excel_response(reporte=reporte, data=data)
 
 
-    return render_to_response('variance_analysis.html',{'charts': (bar, ), 'source': source, \
+    return render_to_response('variance_analysis.html',{'charts': (bar, pie), 'source': source, \
             'indicator_name': "Dependencia para asumir gastos corrientes", \
             'indicator_description': "El ‘indicador de dependencia’ mide la participación relativa de los ingresos por transferencias (corrientes y de capital) sobre el total de los ingresos del Municipio. Al hacerlo, aquel indicador permite saber hasta dónde las finanzas locales son efectivamente controladas por la administración local o en qué medida dependen de las transferencias del Gobierno Central establecidas por Ley. Cuanto más dependiente sean las finanzas municipales, menos posible es una planificación financiera confiable.", \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \

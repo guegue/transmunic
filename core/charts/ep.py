@@ -203,18 +203,46 @@ def ep_chart(request):
                 ]}
              ])
 
-    bar = Chart(
-            datasource = data,
+    data_ingreso = RawDataPool(
+           series=
+            [{'options': {'source': rubros },
+              'terms': [
+                'tipoingreso__clasificacion',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+    pie = Chart(
+            datasource = data_ingreso,
             series_options =
               [{'options':{
-                  'type': 'bar',},
+                  'type': 'pie',},
                 'terms':{
-                  'anio': [
+                  'tipoingreso__clasificacion': [
                     'ejecutado']
                   }}],
             chart_options = {
                 'title': {
-                  'text': u'Ejecución del presupuesto %s ' % (municipio,)},
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Años'} },
+                },
+            )
+
+    bar = Chart(
+            datasource = data_ingreso,
+            series_options =
+              [{'options':{
+                  'type': 'column',},
+                'terms':{
+                  'tipoingreso__clasificacion': [
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Rubros'} },
                 },
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
@@ -231,7 +259,7 @@ def ep_chart(request):
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('variance_analysis.html',{'charts': (bar, ), \
+    return render_to_response('variance_analysis.html',{'charts': (bar, pie), \
             'indicator_name': "Ejecución del presupuesto", \
             'indicator_description': "Mide la eficiencia del municipio en la ejecución del ingreso y el gasto presupuestado inicialmente. Es decir, evaluamos que tanto cambio el presupuesto con respecto la ejecución versus lo presupuestado y aprobado en los procesos de consulta.", \
             'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \

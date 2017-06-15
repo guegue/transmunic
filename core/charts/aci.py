@@ -198,7 +198,6 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         source = dictfetchall(cursor)
 
 
-
     data = RawDataPool(
            series=
             [{'options': {'source': source },
@@ -208,14 +207,23 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'asignado',
                 ]}
              ])
-    bar = Chart(
-            datasource = data,
+
+    data_ingreso = RawDataPool(
+           series=
+            [{'options': {'source': rubros },
+              'terms': [
+                'tipoingreso__nombre',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+    pie = Chart(
+            datasource = data_ingreso,
             series_options =
               [{'options':{
-                  'type': 'bar',},
+                  'type': 'pie',},
                 'terms':{
-                  'anio': [
-                    'asignado',
+                  'tipoingreso__nombre': [
                     'ejecutado']
                   }}],
             chart_options = {
@@ -224,9 +232,25 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                  'xAxis': { 'title': {'text': u'Años'} },
                 },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
+    bar = Chart(
+            datasource = data_ingreso,
+            series_options =
+              [{'options':{
+                  'type': 'column',},
+                'terms':{
+                  'tipoingreso__nombre': [
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {
+                  'text': u' '},
+                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                 'xAxis': { 'title': {'text': u'Rubros'} },
+                },
+            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+            )
 
     # FIXME BS
     porclase = None
@@ -241,7 +265,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         return obtener_excel_response(reporte=reporte, data=data)
 
 
-    return render_to_response('variance_analysis.html',{'charts': (bar, ), 'source': source, \
+    return render_to_response('variance_analysis.html',{'charts': (bar, pie), 'source': source, \
             'indicator_name': "Ahorro Corriente", \
             'indicator_description': "El indicador de Ahorro corriente o capacidad de ahorro es el balance entre los ingresos corrientes y los gastos corrientes y es igual al ahorro corriente como porcentaje de los ingresos corriente​s. Este indicador es una medida de la solvencia que tiene la municipalidad para generar excedentes propios que se destinen a inversión, complementariamente al uso de transferencias del Gobierno Central y la regalías. Se espera que este indicador sea positivo, es decir, que las municipalidades generen ahorro.", \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \

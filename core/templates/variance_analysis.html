@@ -13,26 +13,19 @@
         <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> del período</h2>
         <hr class="pma-line-2">
         <div class="col-md-7">
-                    <!--
             <div class="chart-update col-md-1 float-left">
-                    
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie-1"></span>
-                    <span class="pma-icon pe-7s-graph2 pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="icons"></span>
-                        
+                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar"></span>
             </div>
-                        -->
-            <div class="col-md-11 bubbletree-container chart-container">
-                <!--
-                <div id="pie-1" class="view-main"> Pastel por
-                categorias </div>
-                -->
-                <div id="bar" class="view-main"> Pastel por
-                categorias </div>
+            <div class="col-md-11 chart-container bubbletree-container">
+                <div id="bubble-1" class="bubbletree-wrapper view-main">
+                    <div class="bubbletree"></div>
+                </div>
+                <div id="pie" class="view-alternative"></div>
+                <div id="bar" class="view-main"></div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -562,6 +555,15 @@
 
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
+    <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+    <script type="text/javascript" src="{% static 'js/expen.js' %}"></script>
+    <script type="text/javascript">
+            var data = {{ bubble_data|safe }};
+    </script>
     <script>
     $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip({
@@ -577,5 +579,5 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {{ charts|load_charts:"bar" }}
+    {{ charts|load_charts:"bar,pie" }}
 {% endblock %}
