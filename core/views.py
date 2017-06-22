@@ -178,7 +178,7 @@ def municipio(request, slug=None):
         'totales_ogm': data_ogm['totales'],
         'departamentos': departamentos,
         'municipio': obj,
-        'year_list': year_list,
+        'year_list': data_oim['year_list'],
         'year': year,
         'periodo': periodo,
         'home': 'home',
