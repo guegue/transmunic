@@ -106,7 +106,7 @@ def municipio(request, slug=None):
         obj = get_object_or_404(Municipio, slug=slug)
         municipio = get_object_or_404(Municipio, slug=slug)
     else:
-        obj = "Resumen Nacional"
+        obj = None
     year = request.GET.get('year','2015')
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()

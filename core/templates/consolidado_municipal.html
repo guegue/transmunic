@@ -15,7 +15,9 @@
         <div class="row">
             <div class="col-md-12">
                 {% block indicator_title %}
-                <h2 class="text-center"><strong>{{ municipio.nombre }}</strong></h2>
+                <h2 class="text-center"><strong>
+                        {{municipio.nombre|default:"Resumen Municipal" }}
+                    </strong></h2>
                 <hr class="pma-line-5"/>
                 {% endblock %}
             </div>
