@@ -67,41 +67,22 @@
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-         El Observatorio <b class="caret"></b>
-               </a>
-                {% load flatpages %}
-                {% get_flatpages as flatpages %}
+                    El Observatorio <b class="caret"></b></a>
+                    {% load flatpages %}
+                    {% get_flatpages as flatpages %}
                     <ul class="dropdown-menu">
                         {% for page in flatpages %}
                         {% if page.url != '/intro/' and page.url != '/origen-ingresos/'%}
-                          <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
                         {% endif %}
                         {% endfor %}
-                          <li><a href="/documento/marco-legal/">Marco Legal</a></li>
-                          <li><a href="/documento/analisis-presupuestario/">Entendiendo los Presupuestos Municipales</a></li>
+                        <li><a href="/documento/marco-legal/">Marco Legal</a></li>
+                        <li><a href="/documento/analiResumen Municipalesupuestario/">Entendiendo los Presupuestos Municipales</a></li>
                     </ul>
                 </li>
-                {% comment %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-         PRESUPUESTO TMP
-        </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{%url 'origen_ingresos'%}">Origen de los ingresos del municipio</a></li>
-                        <li><a href="{%url 'origen_gastos'%}">Destino del gasto municipal</a></li>
-                        <li><a href="{%url 'inversion_categoria'%}">Inversiones</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{%url 'gastos_funcion'%}">Gastos de funcionamiento</a></li>
-                        <li><a href="{%url 'gastos_personal'%}">Gastos de personal</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{%url 'autonomia_gastos'%}">Dependencia para asumir gastos corrientes</a></li>
-                        <li><a href="{%url 'ahorro_corriente'%}">Ahorro corriente para inversiones</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{%url 'ejecucion_presupuesto'%}">Ejecuci&oacute;n del presupuesto</a></li>
-                        <li><a href="{%url 'detalle_presupuesto'%}">Descargar Detalle Presupuesto</a></li>
-                    </ul>
+                <li>
+                    <a href="{% url 'budget-summary' %}">Resumen Municipal</a>
                 </li>
-                {% endcomment %}
             </ul>
             <form class="navbar-form navbar-left pma-navbar" role="search">
             <select class="listado-municipios pull-right" name="municipio">

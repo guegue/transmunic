@@ -100,10 +100,13 @@ def home(request):
         'periodo': periodo,
     }, context_instance=RequestContext(request))
 
-def municipio(request, slug):
-    obj = get_object_or_404(Municipio, slug=slug)
-    municipio = get_object_or_404(Municipio, slug=slug)
+def municipio(request, slug=None):
     template_name = 'consolidado_municipal.html'
+    if slug is not None:
+        obj = get_object_or_404(Municipio, slug=slug)
+        municipio = get_object_or_404(Municipio, slug=slug)
+    else:
+        obj = "Resumen Nacional"
     year = request.GET.get('year','2015')
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
@@ -130,12 +133,17 @@ def municipio(request, slug):
     #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     quesumar = 'asignado'
 
-    data_oim = oim_chart(year=year, municipio=slug, portada=True)
-    data_ogm = ogm_chart(year=year, municipio=slug, portada=True)
-    bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
-    #data_inversion = inversion_chart(municipio=slug, portada=True)
-    #data_inversion_area = inversion_area_chart(municipio=slug, portada=True)
-    data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
+    if slug is not None:
+        data_oim = oim_chart(year=year, municipio=slug, portada=True)
+        data_ogm = ogm_chart(year=year, municipio=slug, portada=True)
+        bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
+        data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
+    else:
+        data_oim = oim_chart( portada=True)
+        data_ogm = ogm_chart( portada=True)
+        bubble_oim = oim_bubble_chart_data( year=year)
+        data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
+
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
