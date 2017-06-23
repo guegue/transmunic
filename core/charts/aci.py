@@ -2,6 +2,7 @@
 
 from itertools import chain
 from datetime import datetime, time
+import json
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
@@ -264,11 +265,41 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
+    bubble_data = aci_bubbletree_data(municipio, year, portada, ejecutado)
 
     return render_to_response('variance_analysis.html',{'charts': (bar, pie), 'source': source, \
             'indicator_name': "Ahorro Corriente", \
             'indicator_description': "El indicador de Ahorro corriente o capacidad de ahorro es el balance entre los ingresos corrientes y los gastos corrientes y es igual al ahorro corriente como porcentaje de los ingresos corriente​s. Este indicador es una medida de la solvencia que tiene la municipalidad para generar excedentes propios que se destinen a inversión, complementariamente al uso de transferencias del Gobierno Central y la regalías. Se espera que este indicador sea positivo, es decir, que las municipalidades generen ahorro.", \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
+            'bubble_data': bubble_data, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
             context_instance=RequestContext(request))
+
+def aci_bubbletree_data(municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        rubros = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(amount=Sum(amount_column))
+    else:
+        rubros = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(amount=Sum(amount_column))
+
+    data = {'label':"Total", 'amount': round(total/1000000, 2)}
+    children = []
+    for idx, child in enumerate(rubros):
+        child_data = {
+            'taxonomy': "cofog", 
+            'id': idx, 
+            'name': idx, 
+            'label':child['tipoingreso__nombre'], 
+            'amount': round(child['amount']/1000000, 2)
+        }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)
