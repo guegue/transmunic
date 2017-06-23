@@ -1,9 +1,9 @@
-$(function() {
+$(function () {
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
     $('.bubbletree').append($tooltip);
     $tooltip.hide();
 
-    var tooltip = function(event) {
+    var tooltip = function (event) {
         if (event.type == 'SHOW') {
             // show tooltip
             vis4.log(event);
@@ -33,16 +33,43 @@ $(function() {
         }
     });
     */
-
-    new BubbleTree({
-        data: data,
-        container: '.bubbletree',
-        bubbleType: 'icon',
-        bubbleStyles: {
-            'cofog': BubbleTree.Styles.Cofog
-        },
-        formatValue: function(value) {
-            return 'C$ ' + value + 'M';
-        }
-    });
+    if (typeof data !== 'undefined') {
+        new BubbleTree({
+            data: data,
+            container: '.bubbletree',
+            bubbleType: 'icon',
+            bubbleStyles: {
+                'cofog': BubbleTree.Styles.Cofog
+            },
+            formatValue: function (value) {
+                return 'C$ ' + value + 'M';
+            }
+        });
+    }
+    if (typeof data1 !== 'undefined') {
+        new BubbleTree({
+            data: data1,
+            container: '#bubbletree-1',
+            bubbleType: 'icon',
+            bubbleStyles: {
+                'cofog': BubbleTree.Styles.Cofog
+            },
+            formatValue: function (value) {
+                return 'C$ ' + value + 'M';
+            }
+        });
+    }
+    if (typeof data2 !== 'undefined') {
+        new BubbleTree({
+            data: data2,
+            container: '#bubbletree-2',
+            bubbleType: 'icon',
+            bubbleStyles: {
+                'cofog': BubbleTree.Styles.Cofog
+            },
+            formatValue: function (value) {
+                return 'C$ ' + value + 'M';
+            }
+        });
+    }
 });

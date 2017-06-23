@@ -8,6 +8,10 @@ if (!BubbleTree) window.alert('You must include the BubbleTree before including 
 BubbleTree.Styles = BubbleTree.Styles || {};
 // ['#2b7ab3', '#00a7b2 ', '#5a4a42', '#d65162', '#8b5e3b', '#84b73f', '#af907f', '#ffe070', '#25aae1']
 BubbleTree.Styles.Cofog = {
+    '0': {
+        icon: '/static/images/icons/dollar.svg',
+        color: '#af907f'
+    },
     '1': {
         icon: '/static/images/icons/dollar.svg',
         color: '#2b7ab3'
