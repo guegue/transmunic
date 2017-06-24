@@ -49,7 +49,7 @@ $(function () {
     if (typeof data1 !== 'undefined') {
         new BubbleTree({
             data: data1,
-            container: '#bubbletree-1',
+            container: '#bubbletree1',
             bubbleType: 'icon',
             bubbleStyles: {
                 'cofog': BubbleTree.Styles.Cofog
@@ -62,7 +62,7 @@ $(function () {
     if (typeof data2 !== 'undefined') {
         new BubbleTree({
             data: data2,
-            container: '#bubbletree-2',
+            container: '#bubbletree2',
             bubbleType: 'icon',
             bubbleStyles: {
                 'cofog': BubbleTree.Styles.Cofog

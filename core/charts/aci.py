@@ -228,13 +228,22 @@ def aci_chart(request, municipio=None, year=None, portada=False):
               [{'options':{
                   'type': 'pie',},
                 'terms':{
-                  'tipoingreso__nombre': [
-                    'ejecutado']
+                  'tipoingreso__nombre': [quesumar]
                   }}],
             chart_options = {
                 'title': {'text': u' '},
                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                 'xAxis': { 'title': {'text': u'Años'} },
+                'plotOptions': { 
+                    'pie': { 
+                        'dataLabels': { 
+                            'enabled': True,
+                            'format': '{point.percentage:.2f} %'
+                        },
+                        'showInLegend': True,
+                        'depth': 35
+                    }
+                },
                 'colors':  colorscheme
                 },
             )
@@ -248,7 +257,64 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                     'colorByPoint': True,
                     },
                     'terms':{
-                        'tipoingreso__nombre': ['ejecutado']
+                        'tipoingreso__nombre': [quesumar]
+                        }
+                    }
+                ],
+            chart_options = {
+                'title': {'text': u' '},
+                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                'xAxis': { 'title': {'text': u'Rubros'} },
+                'legend': { 'enabled': False },
+                'colors':  colorscheme
+            },
+            )
+    data_gasto = RawDataPool(
+           series=
+            [{'options': {'source': rubrosg },
+              'terms': [
+                'tipogasto__nombre',
+                'ejecutado',
+                'asignado',
+                ]}
+             ])
+    pie2 = Chart(
+            datasource = data_gasto,
+            series_options =
+              [{'options':{
+                  'type': 'pie',},
+                'terms':{
+                  'tipogasto__nombre': [
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {'text': u' '},
+                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                'xAxis': { 'title': {'text': u'Años'} },
+                'plotOptions': { 
+                    'pie': { 
+                        'dataLabels': { 
+                            'enabled': True,
+                            'format': '{point.percentage:.2f} %'
+                        },
+                        'showInLegend': True,
+                        'depth': 35
+                    }
+                },
+                'colors':  colorscheme
+                },
+            )
+
+    bar2 = Chart(
+            datasource = data_gasto,
+            series_options =
+            [
+                {'options':{
+                    'type': 'column',
+                    'colorByPoint': True,
+                    },
+                    'terms':{
+                        'tipogasto__nombre': ['ejecutado']
                         }
                     }
                 ],
@@ -274,23 +340,25 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         return obtener_excel_response(reporte=reporte, data=data)
 
     total_income = asignado if periodo == PERIODO_INICIAL else ejecutado
-    bubble_data = aci_bubbletree_data(municipio, year, portada, total_income)
+    total_spend = asignado if periodo == PERIODO_INICIAL else ejecutado
+    bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada, total_income)
+    bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada, total_spend)
 
-    return render_to_response('variance_analysis.html',{'charts': (bar, pie), 'source': source, \
+    return render_to_response('variance_analysis.html',{'charts': (bar, pie, pie2, bar2), 'source': source, \
             'indicator_name': "Ahorro Corriente", \
             'indicator_description': "El indicador de Ahorro corriente o capacidad de ahorro es el balance entre los ingresos corrientes y los gastos corrientes y es igual al ahorro corriente como porcentaje de los ingresos corriente​s. Este indicador es una medida de la solvencia que tiene la municipalidad para generar excedentes propios que se destinen a inversión, complementariamente al uso de transferencias del Gobierno Central y la regalías. Se espera que este indicador sea positivo, es decir, que las municipalidades generen ahorro.", \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'bubble_data': bubble_data, \
+            'bubble_data_1': bubble_data_ingreso, \
+            'bubble_data_2': bubble_data_gasto, \
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
             context_instance=RequestContext(request))
 
-def aci_bubbletree_data(municipio=None, year=None, portada=False, total=0):
+def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=0):
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
         year = year_list[-2]
-    
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     if municipio:
         rubros = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
@@ -309,6 +377,33 @@ def aci_bubbletree_data(municipio=None, year=None, portada=False, total=0):
             'label':child['tipoingreso__nombre'], 
             'amount': round(child['amount']/1000000, 2)
         }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)
+
+def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        rubros = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(amount=Sum(amount_column))
+    else:
+        rubros = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(amount=Sum(amount_column))
+
+    data = {'label':"Total", 'amount': round(total/1000000, 2)}
+    children = []
+    for idx, child in enumerate(rubros):
+        child_data = {
+            'taxonomy': "cofog", 
+            'id': idx, 
+            'name': idx, 
+            'label':child['tipogasto__nombre'], 
+            'amount': round(child['amount']/1000000, 2)
+    }
         children.append(child_data)
     data['children'] = children
     return json.dumps(data)

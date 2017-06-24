@@ -15,7 +15,8 @@
         <div class="col-md-7">
             <div class="chart-update col-md-1">
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
+                        aria-hidden="true" id="chart-bubble-1"
+                        data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
                         pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar"></span>
@@ -105,18 +106,19 @@
         </div>
         <div class="col-md-7">
             <div class="col-md-11 chart-container bubbletree-container">
-                <div id="bubble-2" class="bubbletree-wrapper view-main">
-                    <div class="bubbletree" id="bubbletree-2"></div>
+                <div class="bubbletree-wrapper view-main">
+                    <div class="bubbletree" id="bubbletree2"></div>
                 </div>
-                <div id="pie-2" class="view-alternative"></div>
-                <div id="bar-2" class="view-alternative"></div>
+                <div id="pie2" class="view-alternative"></div>
+                <div id="bar2" class="view-alternative"></div>
             </div>
             <div class="chart-update col-md-1 float-left">
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                        aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-2"></span>
+                        id="chart-bubble-1"
+                        data-chartcontainer="bubbletree2"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="pie-2"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" aria-hidden="true" data-chartcontainer="bar-2"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="pie2"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="bar2"></span>
             </div>
         </div>
     </div>
@@ -623,7 +625,8 @@
     <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
     <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
     <script type="text/javascript">
-            var data1 = {{ bubble_data|safe }};
+            var data1 = {{ bubble_data_1|safe }};
+            var data2 = {{ bubble_data_2|safe }};
     </script>
     <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
     <script>
@@ -641,5 +644,5 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {{ charts|load_charts:"bar,pie" }}
+    {{ charts|load_charts:"bar,pie,pie2,bar2" }}
 {% endblock %}
