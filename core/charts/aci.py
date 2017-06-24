@@ -16,6 +16,10 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+
 
 def aci_chart(request, municipio=None, year=None, portada=False):
 
@@ -228,29 +232,33 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                     'ejecutado']
                   }}],
             chart_options = {
-                'title': {
-                  'text': u' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Años'} },
+                'title': {'text': u' '},
+                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                'xAxis': { 'title': {'text': u'Años'} },
+                'colors':  colorscheme
                 },
             )
 
     bar = Chart(
             datasource = data_ingreso,
             series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'tipoingreso__nombre': [
-                    'ejecutado']
-                  }}],
+            [
+                {'options':{
+                    'type': 'column',
+                    'colorByPoint': True,
+                    },
+                    'terms':{
+                        'tipoingreso__nombre': ['ejecutado']
+                        }
+                    }
+                ],
             chart_options = {
-                'title': {
-                  'text': u' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Rubros'} },
-                },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+                'title': {'text': u' '},
+                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                'xAxis': { 'title': {'text': u'Rubros'} },
+                'legend': { 'enabled': False },
+                'colors':  colorscheme
+            },
             )
 
     # FIXME BS

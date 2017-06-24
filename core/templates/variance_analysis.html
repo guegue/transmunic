@@ -50,11 +50,17 @@
                 </tr>
                 {% endfor %}
                 </tbody>
-                <tr class="">
+                <tr class="bold">
                     <td>TOTAL</td>
-                    <td class="text-right">{{ asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-                    <td class="text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                    <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
+                    {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                        <td class="text-right">
+                            {% if sum_asignado %}
+                                {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:2|intcomma}}%
+                            {% endif %}
+                        </td>
+                    {% endwith %}
                 </tr>
             </table>
         </div>
@@ -84,10 +90,16 @@
                 {% endfor %}
                 </tbody>
                 <tr class="">
-                    <td>TOTAL</td>
-                    <td class="text-right">{{ asignado|million|intcomma }}</td>
-                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-                    <td class="text-right">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td>
+                    <td class="text-right">TOTAL</td>
+                    <td class="text-right">{{ rubrosg|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                    <td class="text-right">{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
+                    {% with sum_asignado=rubrosg|total_sum:'inicial_asignado' %}
+                        <td class="text-right">
+                            {% if sum_asignado %}
+                                {{ rubrosg|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:2|intcomma}}%
+                            {% endif %}
+                        </td>
+                    {% endwith %}
                 </tr>
             </table>
         </div>
@@ -200,7 +212,7 @@
             <div class="col-md-6">
                 <h2>Ingresos corrientes totales</h2>
                 <h3>Millones de córdobas corrientes</h3>
-                <table class="table table-condensed pma-bg-white">                                       
+                <table class="table table-condensed pma-bg-white">
                     <thead>
                     <tr class="bg-primary">
                         <th>Rubros ingresos</th>
@@ -210,20 +222,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for row in rubros %}                                                     
-                    <tr>                                                                        
-                        <td>{% firstof row.tipoingreso__nombre row.tipoingreso__clasificacion %}</td>                                    
-                        <td>{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                        <td>{{ row.ejecutado|million|intcomma }}</td>                                   
-                        {% if row.inicial_asignado %}                                                   
+                    {% for row in rubros %}
+                    <tr>
+                        <td>{% firstof row.tipoingreso__nombre row.tipoingreso__clasificacion %}</td>
+                        <td>{{ row.inicial_asignado|million|intcomma }}</td>
+                        <td>{{ row.ejecutado|million|intcomma }}</td>
+                        {% if row.inicial_asignado %}
                         <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</td>
-                        {% endif %}                                                             
-                    </tr>                                                                       
-                    {% endfor %}                                                                
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
                     </tbody>
                     <tfoot>
-                    <tr class="">                                                   
-                        <td>TOTAL</td>                                                          
+                    <tr class="">
+                        <td>TOTAL</td>
                         <td>{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                         <td>{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                         {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
@@ -234,13 +246,13 @@
                         </td>
                         {% endwith %}
                     </tr>
-                    </tfoot>     
-                </table>                                                                    
+                    </tfoot>
+                </table>
             </div>
             <div class="col-md-6">
                 <h2>Gastos corrientes totales</h2>
                 <h3>Millones de córdobas corrientes</h3>
-                <table class="table table-condensed pma-bg-white">                                       
+                <table class="table table-condensed pma-bg-white">
                     <thead>
                     <tr class="bg-primary">
                     <th>Rubros de gastos</th>
@@ -250,20 +262,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for row in rubrosg %}                                                     
-                    <tr>                                                                        
-                        <td>{% firstof row.tipogasto__nombre row.tipogasto__clasificacion %}</td>                                    
-                        <td>{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                        <td>{{ row.ejecutado|million|intcomma }}</td>                                   
-                        {% if row.inicial_asignado %}                                                   
+                    {% for row in rubrosg %}
+                    <tr>
+                        <td>{% firstof row.tipogasto__nombre row.tipogasto__clasificacion %}</td>
+                        <td>{{ row.inicial_asignado|million|intcomma }}</td>
+                        <td>{{ row.ejecutado|million|intcomma }}</td>
+                        {% if row.inicial_asignado %}
                         <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</td>
-                        {% endif %}                                                             
-                    </tr>                                                                       
-                    {% endfor %}                                                                
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
                     </tbody>
                     <tfoot>
-                    <tr class="">                                                   
-                        <td>TOTAL</td>                                                          
+                    <tr class="">
+                        <td>TOTAL</td>
                         <td>{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                         <td>{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                         {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
@@ -274,8 +286,8 @@
                         </td>
                         {% endwith %}
                     </tr>
-                    </tfoot>       
-                </table>                                                                    
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
@@ -370,7 +382,7 @@
             <hr class="pma-line-4" />
           </div>
           <table class="table table-condensed">
-            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Ejecutado</th>
             </tr>
             {% for row in rubros %}
@@ -396,7 +408,7 @@
             <hr class="pma-line-4" />
           </div>
           <table class="table table-condensed">
-            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th><th>Ejecutado</th>
             </tr>
             {% for row in rubrosg %}
@@ -432,7 +444,7 @@
                 <td></td>
                 <td></td>
                 <td colspan="4" class="text-center">
-                    <h4>Modificación intermedia 
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
                     </h4>
                 </td>
@@ -442,7 +454,7 @@
                     </h4>
                 </td>
             </tr>
-            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info blanco">%</a></th>
             </tr>
@@ -518,7 +530,7 @@
                 <td></td>
                 <td></td>
                 <td colspan="4" class="text-center">
-                    <h4>Modificación intermedia 
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
                     </h4>
                 </td>
@@ -528,7 +540,7 @@
                     </h4>
                 </td>
             </tr>
-            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="bg-primary"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info blanco">%</a></th>
             </tr>

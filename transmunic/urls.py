@@ -15,9 +15,6 @@ urlpatterns = patterns('',
     url(r'^documento/(?P<slug>[-\w]+)/$', DocumentoTipoListView.as_view(), name='documento_by_tipo'),
 )
 
-
-
-
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
 

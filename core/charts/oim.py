@@ -21,6 +21,10 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
 from lugar.models import Poblacion
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+
 def oim_chart(municipio=None, year=None, portada=False):
     # TODO: Dividir en Partes este código kilometrico
     # XXX: Split series de datos, agregaciones
@@ -52,7 +56,7 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values('subsubtipoingreso__origen__id').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipoingreso__origen__nombre')
         tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__id')
-        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
+        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingrebre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipoingreso__origen__id')
         source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
@@ -378,7 +382,6 @@ def oim_chart(municipio=None, year=None, portada=False):
     #
     # chartit!
     #
-    colorschema =  ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1']
     if municipio:
         oim_comparativo_anios = RawDataPool(
             series=
@@ -419,7 +422,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 chart_options =
                 {
                     'title': { 'text': ' ',},
-                    'colors':  colorschema,
+                    'colors':  colorscheme,
                 })
         """
         oim_comparativo2_column = Chart(
@@ -635,7 +638,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'title': {'text': ' '},
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f} %</b>' },
-                  'colors':  colorschema,
+                  'colors':  colorscheme,
               }
     )
 
@@ -657,7 +660,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'title': {'text': ' '},
                   'plotOptions': { 'column': { 'dataLabels': { 'enabled': False, 'format': '{point.y:.2f}' }, 'showInLegend': True, 'depth': 35, }},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f} </b>' },
-                  'colors':  colorschema,
+                  'colors':  colorscheme,
               }
     )
 
