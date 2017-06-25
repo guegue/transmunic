@@ -234,9 +234,9 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'title': {'text': u' '},
                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                 'xAxis': { 'title': {'text': u'Años'} },
-                'plotOptions': { 
-                    'pie': { 
-                        'dataLabels': { 
+                'plotOptions': {
+                    'pie': {
+                        'dataLabels': {
                             'enabled': True,
                             'format': '{point.percentage:.2f} %'
                         },
@@ -291,9 +291,9 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'title': {'text': u' '},
                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                 'xAxis': { 'title': {'text': u'Años'} },
-                'plotOptions': { 
-                    'pie': { 
-                        'dataLabels': { 
+                'plotOptions': {
+                    'pie': {
+                        'dataLabels': {
                             'enabled': True,
                             'format': '{point.percentage:.2f} %'
                         },
@@ -361,21 +361,38 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
         year = year_list[-2]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     if municipio:
-        rubros = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+        tipos = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
                 values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(amount=Sum(amount_column))
     else:
-        rubros = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
+        tipos = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).\
                 values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(amount=Sum(amount_column))
-
-    data = {'label':"Total", 'amount': round(total/1000000, 2)}
+    amount = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).\
+    aggregate(total=Sum(amount_column))
+    data = {'label':"Ingreso Corriente", 'amount': round(amount['total']/1000000, 2)}
     children = []
-    for idx, child in enumerate(rubros):
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__codigo=child['tipoingreso']).\
+                    values('subtipoingreso','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(amount=Sum(amount_column))
+        else:
+            subtipos = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, tipoingreso__codigo=child['tipoingreso'],).\
+                    values('subtipoingreso','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label':grandchild['subtipoingreso__nombre'],
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog", 
-            'id': idx, 
-            'name': idx, 
-            'label':child['tipoingreso__nombre'], 
-            'amount': round(child['amount']/1000000, 2)
+            'taxonomy': "cofog",
+            'id': idx,
+            'name': idx,
+            'label':child['tipoingreso__nombre'],
+            'amount': round(child['amount']/1000000, 2),
+            'children': grandchildren
         }
         children.append(child_data)
     data['children'] = children
@@ -388,22 +405,41 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
         year = year_list[-2]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     if municipio:
-        rubros = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+        tipos = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(amount=Sum(amount_column))
     else:
-        rubros = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(amount=Sum(amount_column))
-
-    data = {'label':"Total", 'amount': round(total/1000000, 2)}
+        tipos = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+                values('tipogasto','tipogasto__nombre').\
+                order_by('tipogasto__codigo').\
+                annotate(amount=sum(amount_column))
+    amount = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
+    aggregate(total=Sum(amount_column))
+    data = {'label':"Gasto Corriente", 'amount': round(amount['total']/1000000, 2)}
     children = []
-    for idx, child in enumerate(rubros):
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__codigo=child['tipogasto']).\
+                    values('subtipogasto','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(amount=Sum(amount_column))
+        else:
+            subtipos = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__codigo=child['tipogasto']).\
+                    values('subtipogasto','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label':grandchild['subtipogasto__nombre'],
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog", 
-            'id': idx, 
-            'name': idx, 
-            'label':child['tipogasto__nombre'], 
-            'amount': round(child['amount']/1000000, 2)
-    }
+            'taxonomy': "cofog",
+            'id': idx,
+            'name': idx,
+            'label':child['tipogasto__nombre'],
+            'amount': round(child['amount']/1000000, 2),
+            'children': grandchildren
+            }
         children.append(child_data)
     data['children'] = children
     return json.dumps(data)
