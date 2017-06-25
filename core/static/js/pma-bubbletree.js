@@ -33,6 +33,7 @@ $(function () {
         }
     });
     */
+
     if (typeof data !== 'undefined') {
         var defaultbubble = new BubbleTree({
             data: data,
@@ -47,10 +48,10 @@ $(function () {
         });
     }
 
-    if (typeof data2 !== 'undefined') {
-        var bubble1 = new BubbleTree({
-            data: data2,
-            container: '#bubbletree2',
+    if (typeof data1 !== 'undefined') {
+        var bubble2 = new BubbleTree({
+            data: data1,
+            container: '#bubbletree1',
             bubbleType: 'icon',
             bubbleStyles: {
                 'cofog': BubbleTree.Styles.Cofog
@@ -61,10 +62,10 @@ $(function () {
         });
     }
 
-    if (typeof data1 !== 'undefined') {
-        var bubble2 = new BubbleTree({
-            data: data1,
-            container: '#bubbletree1',
+    if (typeof data2 !== 'undefined') {
+        var bubble1 = new BubbleTree({
+            data: data2,
+            container: '#bubbletree2',
             bubbleType: 'icon',
             bubbleStyles: {
                 'cofog': BubbleTree.Styles.Cofog

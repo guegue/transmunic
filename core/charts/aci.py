@@ -339,10 +339,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    total_income = asignado if periodo == PERIODO_INICIAL else ejecutado
-    total_spend = asignado if periodo == PERIODO_INICIAL else ejecutado
-    bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada, total_income)
-    bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada, total_spend)
+    bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
+    bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
     return render_to_response('variance_analysis.html',{'charts': (bar, pie, pie2, bar2), 'source': source, \
             'indicator_name': "Ahorro Corriente", \
