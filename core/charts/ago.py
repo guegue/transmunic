@@ -258,8 +258,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                     'options': {'source': rubrosg},
                     'terms': [
                         'tipogasto__nombre',
-                        'ejecutado',
-                        'asignado',
+                        quesumar,
                     ]
                 }
             ])
@@ -355,16 +354,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
     if not year:
         year = year_list[-2]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-    amount = IngresoDetalle.objects.filter(
-        ingreso__anio=year,
-        ingreso__municipio__slug=municipio,
-        ingreso__periodo=periodo,
-        tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
-        .aggregate(total=Sum(amount_column))
-    data = {
-        'label': "Ingreso Corriente",
-        'amount': round(amount['total']/1000000, 2)
-        }
+
     if municipio:
         tipos = IngresoDetalle.objects.filter(
             ingreso__anio=year,
@@ -375,6 +365,12 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             .values('tipoingreso', 'tipoingreso__nombre')\
             .order_by('tipoingreso__codigo')\
             .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__municipio__slug=municipio,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
     else:
         tipos = IngresoDetalle.objects.filter(
             ingreso__anio=year,
@@ -384,6 +380,16 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             values('tipoingreso', 'tipoingreso__nombre')\
             .order_by('tipoingreso__codigo')\
             .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+                ingreso__anio=year,
+                ingreso__periodo=periodo,
+                tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+                .aggregate(total=Sum(amount_column))
+
+    data = {
+        'label': "Ingreso Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
     children = []
     for idx, child in enumerate(tipos):
         if municipio:
