@@ -664,6 +664,52 @@ def oim_chart(municipio=None, year=None, portada=False):
               }
     )
 
+    data_ingreso = RawDataPool(
+           series=
+            [{'options': {'source': rubros },
+              'terms': [
+                'subsubtipoingreso__origen__nombre',
+                'ejecutado',
+                ]}
+             ])
+    pie = Chart(
+            datasource = data_ingreso,
+            series_options =
+              [{'options':{
+                  'type': 'pie',},
+                'terms':{
+                  'subsubtipoingreso__origen__nombre': [
+                    'ejecutado']
+                  }}],
+            chart_options = {
+                'title': {'text': u' '},
+                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
+                'xAxis': { 'title': {'text': u'Años'} },
+                'colors':  colorscheme
+                },
+            )
+
+    bar = Chart(
+            datasource=data_ingreso,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                        },
+                    'terms': {
+                        'subsubtipoingreso__origen__nombre': ['ejecutado']
+                    }
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Rubros'}},
+                'colors':  colorscheme
+                },
+            )
+
+
     # tabla: get total and percent
     total = {}
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
@@ -699,12 +745,8 @@ def oim_chart(municipio=None, year=None, portada=False):
 
     if portada:
         charts =  (ejecutado_pie, )
-    elif municipio:
-        charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_tipo_column, asignado_barra, barra, )
-        # charts =  (ejecutado_pie, ejecutado_column, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
     else:
-        charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_tipo_column, asignado_barra, barra, )
-        # charts =  (ejecutado_pie, oim_comparativo_anios_column, oim_comparativo2_column, oim_comparativo3_column, oim_tipo_column, asignado_barra, barra, )
+        charts =  (pie, bar)
 
     return {'charts': charts, \
             'year_data': year_data, \

@@ -329,7 +329,7 @@ def ep_chart(request):
     return render_to_response(
         'variance_analysis.html',
         {
-            'charts': (bar, pie, bar2, pie2),
+            'charts': (pie, bar, pie2, bar2),
             'indicator_name': "Ejecución del presupuesto",
             'indicator_description': """Mide la eficiencia del municipio en
                 la ejecución del ingreso y el gasto presupuestado inicialmente.

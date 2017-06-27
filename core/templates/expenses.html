@@ -24,13 +24,8 @@
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
-                <div id="gfbar" class="view-alternative"></div>
-                <div id="barra" class="view-alternative"></div>
                 <div id="pie" class="view-alternative"></div>
-                <div id="gf_comparativo2_column" class="view-alternative"></div>
-                <div id="gf_comparativo3_column" class="view-alternative"></div>
-                <div id="gf_comparativo_anios_column" class="view-alternative"></div>
-                <div id="gf_nivelejecucion_bar" class="view-alternative"></div>
+                <div id="barra" class="view-alternative"></div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -514,7 +509,7 @@
     <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
     <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
-    <script type="text/javascript" src="{% static 'js/expen.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
     <script type="text/javascript">
             var data = {{ bubble_data|safe }};
     </script>
@@ -534,9 +529,5 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {% if municipio %}
-    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column" }}
-    {% else %}
-    {{ charts|load_charts:"gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column,gf_comparativo_anios_column, gf_nivelejecucion_bar" }}
-    {% endif %}
+    {{ charts|load_charts:"pie,barra" }}
 {% endblock %}

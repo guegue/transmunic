@@ -240,7 +240,10 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             datasource=data_ingreso,
             series_options=[
                 {
-                    'options': {'type': 'column'},
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True
+                        },
                     'terms': {
                         'tipoingreso__nombre': ['ejecutado']
                     }
@@ -324,7 +327,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     return render_to_response(
         'variance_analysis.html',
         {
-            'charts': (bar, pie, bar2, pie2),
+            'charts': (pie, bar, pie2, bar2),
             'source': source,
             'indicator_name': "Dependencia para asumir gastos corrientes",
             'indicator_description': """El ‘indicador de dependencia’ mide la
@@ -370,21 +373,23 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             ingreso__municipio__slug=municipio,
             ingreso__periodo=periodo,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
             .aggregate(total=Sum(amount_column))
     else:
         tipos = IngresoDetalle.objects.filter(
             ingreso__anio=year,
             ingreso__periodo=periodo,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
-            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-            values('tipoingreso', 'tipoingreso__nombre')\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('tipoingreso', 'tipoingreso__nombre')\
             .order_by('tipoingreso__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = IngresoDetalle.objects.filter(
-                ingreso__anio=year,
-                ingreso__periodo=periodo,
-                tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
-                .aggregate(total=Sum(amount_column))
+            ingreso__anio=year,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .aggregate(total=Sum(amount_column))
 
     data = {
         'label': "Ingreso Corriente",
@@ -437,16 +442,13 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
     if not year:
         year = year_list[-2]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-    amount = GastoDetalle.objects.filter(
-        gasto__anio=year,
-        gasto__periodo=PERIODO_INICIAL,
-        tipogasto__clasificacion=TipoGasto.CORRIENTE)\
-        .aggregate(total=Sum(amount_column))
-    data = {
-        'label': "Gasto Corriente",
-        'amount': round(amount['total']/1000000, 2)
-        }
     if municipio:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
         tipos = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__municipio__slug=municipio,
@@ -456,14 +458,22 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
     else:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
         tipos = GastoDetalle.objects.filter(
             gasto__anio=year,
-            gasto__municipio__slug=municipio,
             gasto__periodo=periodo,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
+    data = {
+        'label': "Gasto Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
     children = []
     for idx, child in enumerate(tipos):
         if municipio:

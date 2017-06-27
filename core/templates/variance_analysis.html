@@ -10,7 +10,7 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> del período</h2>
+        <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> Monochrome Color Schemesdel período</h2>
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1">
@@ -643,5 +643,5 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {{ charts|load_charts:"bar,pie,pie2,bar2" }}
+    {{ charts|load_charts:"pie,bar,pie2,bar2" }}
 {% endblock %}
