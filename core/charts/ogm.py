@@ -40,6 +40,13 @@ def ogm_chart(municipio=None, year=None, portada=False):
         quesumar = 'asignado'
     else:
         quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    
+    if periodo == PERIODO_INICIAL:
+        chartcol = 'inicial_asignado'
+    elif periodo == PERIODO_ACTUALIZADO:
+        chartcol = 'actualizado_asignado'
+    else:
+        chartcol = 'final_asignado'
 
     ChartError = False
 
@@ -643,7 +650,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     'options': {'source': rubros},
                     'terms': [
                         'subsubtipogasto__origen__nombre',
-                        quesumar,
+                        chartcol,
                     ]
                 }
             ])
@@ -653,7 +660,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {'type': 'pie'},
-                    'terms': {'subsubtipogasto__origen__nombre': [quesumar]}
+                    'terms': {'subsubtipogasto__origen__nombre': [chartcol]}
                 }],
             chart_options={
                 'title': {'text': u' '},
@@ -681,7 +688,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                         'type': 'column',
                         'colorByPoint': True,
                     },
-                    'terms': {'subsubtipogasto__origen__nombre': [quesumar]}
+                    'terms': {'subsubtipogasto__origen__nombre': [chartcol]}
                 }],
             chart_options={
                 'title': {'text': u' '},
