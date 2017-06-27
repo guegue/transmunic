@@ -22,6 +22,9 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
 
 def gf_chart(request):
     # XXX: why this is not a view?
@@ -580,6 +583,7 @@ def gf_chart(request):
                 'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                 'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
                 'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
+                'colors':  colorscheme
             },
     )
     data_barra = DataPool(
@@ -592,16 +596,20 @@ def gf_chart(request):
     barra = Chart(
             datasource = data_rubros,
             series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'tipogasto__nombre': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
+              [
+                {
+                    'options':{
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms':{
+                        'tipogasto__nombre': [quesumar]
+                    }
+                }],
             chart_options = {
                 'title': {'text': ' '},
                 'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
+                'colors':  colorscheme
                 },
             )
     if municipio:
@@ -627,15 +635,13 @@ def gf_chart(request):
     portada = False #FIXME: convert to view
     if portada:
         charts =  (pie, )
-    elif municipio:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column,)
     else:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
+        charts =  (pie,barra)
     # Bubble tree data
     bubble_data = {'label':"Total", 'amount': round(ejecutado/1000000, 2)}
     child_l1 = []
-    for child in rubros:
-        child_data = {'taxonomy': "expen", 'name': child['tipogasto__codigo'], 'label':child['tipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
+    for idx, child in enumerate(rubros):
+        child_data = {'taxonomy': "cofog", 'id': idx,'name': idx, 'label':child['tipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)

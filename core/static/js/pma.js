@@ -1,24 +1,7 @@
 $(function() {
-    /*
-    $("#chart-pie-1").click(function(){
-        $(".chart-container .view-main").hide("slow");
-        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative");
-        $("#pie-1").show("slow").addClass("view-main");
-    });
-    $("#chart-bubble-1").click(function(){
-        $(".chart-container .view-main").hide("slow");
-        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative");
-        $("#bubble-1").show("slow").addClass("view-main");
-    });
-    $("#chart-bar-1").click(function(){
-        $(".chart-container .view-main").hide("slow");
-        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative");
-        $("#bar-1").show("slow").addClass("view-main");
-    });
-    */
     $(".toggle-chart").click(function(){
-        $(".chart-container .view-main").hide("slow");
-        $(".chart-container .view-main").removeClass("view-main").addClass("view-alternative");
+        $(this).closest(".col-md-7").find(".chart-container .view-main").hide("slow");
+        $(this).closest(".col-md-7").find(".chart-container .view-main").addClass("view-alternative");
         chartcontainer = $(this).data('chartcontainer');
         $("#"+chartcontainer).show("slow").addClass("view-main");
     });

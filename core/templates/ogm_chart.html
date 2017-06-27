@@ -64,63 +64,43 @@
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" data-chartcontainer="ejecutado"></span>
-                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="tipo"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="pie"></span>
+                    <span id="chart-bar-1" class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart" data-chartcontainer="bar"></span>
             </div>
 
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
-                <div id="ejecutado" class="view-alternative"> Pastel Ejecucion por
+                <div id="pie" class="view-alternative"> Pastel Ejecucion por
                 Rubros </div>
-                <div id="ejecutado_pie" class="view-alternative"> Barras Ejecucion por
+                <div id="bar" class="view-alternative"> Barras Ejecucion por
                 Rubros </div>
-                <div id="tipo" class="view-alternative"> Chart will be rendered here
-                </div>
-                <div id="comparativo_anios" class="view-alternative"> Chart will be rendered here
-                </div>
-                <div id="comparativo2" class="view-alternative"> Chart will be rendered here
-                </div>
-                <div id="comparativo3" class="view-alternative"> Chart will be rendered here
-                </div>
-                <div id="ogm_tipo_column" class="view-alternative"> Chart will be rendered here
-                </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr class="bg-primary">
-                        <th>Rubros de gastos</th>
-                        {% if periodo_list|keyvalue:year == 'I' %}
-                            <th class="text-right">Inicial</th>
-                        {% else %}
-                            <th class="text-right">Ejecutado</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                {% for row in rubros %}
-                <tr>
-                    <td>{{ row.subsubtipogasto__origen__nombre }}</td>
-                    {% if periodo_list|keyvalue:year == 'I' %}
-                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    {% else %}
-                        <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+            <table class="table table-condensed">                                       
+                <tr class="bg-primary"> <th>Rubros de gastos</th> <th>Inicial</th>{% if year != '2016' %} <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>{% endif %}</tr>
+                {% for row in rubros %}                                                     
+                <tr>                                                                        
+                    <td>{{ row.subsubtipogasto__origen__nombre }}</td>                                    
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
+                    {% if year != '2016' %}
+                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
+                        {% if row.inicial_asignado %}                                                   
+                            <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
+                        {% endif %}                                                             
                     {% endif %}
-                </tr>
-                {% endfor %}
-                <tfoot>
-                    <tr class="">
-                        <td>TOTAL</td>
-                        {% if periodo_list|keyvalue:year == 'I' %}
-                            <td class="text-right">{{ asignado|million|intcomma }}</td>
-                        {% else %}
-                            <td class="text-right">{{ejecutado|million|intcomma|default:"0" }}</td>
-                        {% endif %}
-                    </tr>
-                </tfoot>
-            </table>
+                </tr>                                                                       
+                {% endfor %}                                                                
+                <tr class="bg-primary bold">                                                   
+                    <td>TOTAL</td>
+                    <td class="text-right">{{ asignado|million|intcomma }}</td>
+                    {% if year != '2016' %}
+                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
+                    <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
+                    {% endif %}
+            </table>                                                                    
         </div>
     </div>
 </div>
@@ -742,9 +722,5 @@
 {% endblock %}
 
 {% block custom_scripts %}
-    {% if municipio and charts.4 %}
-        {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, ogm_tipo_column" }}
-    {% else %}
-       {{ charts|load_charts:"ejecutado, comparativo_anios, comparativo2, comparativo3, tipo, ogm_tipo_column" }}
-    {% endif %}
+    {{ charts|load_charts:"pie,bar" }}
 {% endblock %}

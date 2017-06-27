@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from itertools import chain
-from datetime import datetime, time
+import json
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
@@ -15,6 +14,9 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
 
 def ago_chart(request, municipio=None, year=None, portada=False):
 
@@ -228,31 +230,84 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                     'ejecutado']
                   }}],
             chart_options = {
-                'title': {
-                  'text': u' '},
+                'title': {'text': u' '},
                  'yAxis': { 'title': {'text': u'Millones de córdobas'} },
                  'xAxis': { 'title': {'text': u'Años'} },
                 },
             )
 
     bar = Chart(
-            datasource = data_ingreso,
-            series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'tipoingreso__nombre': [
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {
-                  'text': u' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Rubros'} },
+            datasource=data_ingreso,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True
+                        },
+                    'terms': {
+                        'tipoingreso__nombre': ['ejecutado']
+                    }
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Rubros'}},
                 },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
+    data_gasto = RawDataPool(
+           series=[
+                {
+                    'options': {'source': rubrosg},
+                    'terms': [
+                        'tipogasto__nombre',
+                        quesumar,
+                    ]
+                }
+            ])
+
+    pie2 = Chart(
+            datasource=data_gasto,
+            series_options=[
+                {
+                    'options': {'type': 'pie'},
+                    'terms': {'tipogasto__nombre': ['ejecutado']}
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Años'}},
+                'plotOptions': {
+                    'pie': {
+                        'dataLabels': {
+                            'enabled': True,
+                            'format': '{point.percentage:.2f} %'
+                        },
+                        'showInLegend': True,
+                        'depth': 35
+                    }
+                },
+                'colors':  colorscheme
+                },
+            )
+
+    bar2 = Chart(
+            datasource=data_gasto,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms': {'tipogasto__nombre': ['ejecutado']}
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Rubros'}},
+                'legend': {'enabled': False},
+                'colors':  colorscheme
+            })
 
     # FIXME BS
     porclase = None
@@ -263,14 +318,198 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         data = {'charts': (bar, ), 'source': source, \
             'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
             'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros} 
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
+    bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
+    bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
-    return render_to_response('variance_analysis.html',{'charts': (bar, pie), 'source': source, \
-            'indicator_name': "Dependencia para asumir gastos corrientes", \
-            'indicator_description': "El ‘indicador de dependencia’ mide la participación relativa de los ingresos por transferencias (corrientes y de capital) sobre el total de los ingresos del Municipio. Al hacerlo, aquel indicador permite saber hasta dónde las finanzas locales son efectivamente controladas por la administración local o en qué medida dependen de las transferencias del Gobierno Central establecidas por Ley. Cuanto más dependiente sean las finanzas municipales, menos posible es una planificación financiera confiable.", \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'variance_analysis.html',
+        {
+            'charts': (pie, bar, pie2, bar2),
+            'source': source,
+            'indicator_name': "Dependencia para asumir gastos corrientes",
+            'indicator_description': """El ‘indicador de dependencia’ mide la
+                participación relativa de los ingresos por transferencias
+                (corrientes y de capital) sobre el total de los ingresos del
+                Municipio. Al hacerlo, aquel indicador permite saber hasta
+                dónde las finanzas locales son efectivamente controladas por la
+                 administración local o en qué medida dependen de las
+                 transferencias del Gobierno Central establecidas por Ley.
+                 Cuanto más dependiente sean las finanzas municipales, menos
+                 posible es una planificación financiera confiable.""",
+            'bubble_data_1': bubble_data_ingreso,
+            'bubble_data_2': bubble_data_gasto,
+            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year,
+            'ejecutado': ejecutado, 'asignado': asignado,
+            'year_list': year_list, 'municipio_list': municipio_list,
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase,
+            'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg,
+            'otros': otros
+        },
+        context_instance=RequestContext(request))
+
+
+def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    if municipio:
+        tipos = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__municipio__slug=municipio,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('tipoingreso', 'tipoingreso__nombre')\
+            .order_by('tipoingreso__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__municipio__slug=municipio,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .aggregate(total=Sum(amount_column))
+    else:
+        tipos = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('tipoingreso', 'tipoingreso__nombre')\
+            .order_by('tipoingreso__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .aggregate(total=Sum(amount_column))
+
+    data = {
+        'label': "Ingreso Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = IngresoDetalle.objects.filter(
+                ingreso__anio=year,
+                ingreso__municipio__slug=municipio,
+                ingreso__periodo=periodo,
+                tipoingreso__codigo=child['tipoingreso'])\
+                .values('subtipoingreso', 'subtipoingreso__nombre')\
+                .order_by('subtipoingreso__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = IngresoDetalle.objects.filter(
+                ingreso__anio=year,
+                ingreso__periodo=periodo,
+                tipoingreso__codigo=child['tipoingreso'])\
+                .values('subtipoingreso', 'subtipoingreso__nombre')\
+                .order_by('subtipoingreso__codigo')\
+                .annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label': grandchild['subtipoingreso__nombre'],
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
+        child_data = {
+            'taxonomy': "cofog",
+            'id': idx,
+            'name': idx,
+            'label': child['tipoingreso__nombre'],
+            'amount': round(child['amount']/1000000, 2),
+            'children': grandchildren
+        }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)
+
+
+def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .values('tipogasto', 'tipogasto__nombre')\
+            .order_by('tipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+    else:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .values('tipogasto', 'tipogasto__nombre')\
+            .order_by('tipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+    data = {
+        'label': "Gasto Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__municipio__slug=municipio,
+                gasto__periodo=periodo,
+                tipogasto__codigo=child['tipogasto'])\
+                .values('subtipogasto', 'subtipogasto__nombre')\
+                .order_by('subtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__periodo=periodo,
+                tipogasto__codigo=child['tipogasto'])\
+                .values('subtipogasto', 'subtipogasto__nombre')\
+                .order_by('subtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label': grandchild['subtipogasto__nombre'],
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
+        child_data = {
+            'taxonomy': "cofog",
+            'id': idx,
+            'name': idx,
+            'label': child['tipogasto__nombre'],
+            'amount': round(child['amount']/1000000, 2),
+            'children': grandchildren
+            }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)

@@ -21,6 +21,10 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from lugar.models import Poblacion
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+
 def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
@@ -633,6 +637,61 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
+    data_gasto = RawDataPool(
+           series=[
+                {
+                    'options': {'source': rubros},
+                    'terms': [
+                        'subsubtipogasto__origen__nombre',
+                        quesumar,
+                    ]
+                }
+            ])
+
+    pie = Chart(
+            datasource=data_gasto,
+            series_options=[
+                {
+                    'options': {'type': 'pie'},
+                    'terms': {'subsubtipogasto__origen__nombre': [quesumar]}
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Años'}},
+                'plotOptions': {
+                    'pie': {
+                        'dataLabels': {
+                            'enabled': True,
+                            'format': '{point.percentage:.2f} %'
+                        },
+                        'showInLegend': True,
+                        'depth': 35
+                    }
+                },
+                'colors':  colorscheme
+                },
+            )
+
+    bar = Chart(
+            datasource=data_gasto,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms': {'subsubtipogasto__origen__nombre': [quesumar]}
+                }],
+            chart_options={
+                'title': {'text': u' '},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                'xAxis': {'title': {'text': u'Rubros'}},
+                'legend': {'enabled': False},
+                'colors':  colorscheme
+            })
+
+
     # tabla: get total and percent
     total = {}
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
@@ -668,11 +727,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
     if portada:
         charts =  (ejecutado_pie, )
-    elif municipio:
-        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_tipo_column, asignado_barra, barra, )
-        # charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
     else:
-        charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_tipo_column, asignado_barra, barra, )
+        charts =  (pie,bar)
         # charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
 
     return {'charts': charts, \
