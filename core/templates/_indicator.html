@@ -121,6 +121,19 @@
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="col-xs-4 col-sm-4 col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon pma-icon pe-7s-date">
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">
+                        <strong>Año {{ year }}</strong>
+                        </span>
+                        <span class="info-box-number pma-green"></span>
+                    </div>
+                </div>
+            </div>
             {% endif %}
             {% endblock %}
         </div>
