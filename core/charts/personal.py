@@ -26,6 +26,7 @@ from transmunic import settings as pma_settings
 
 colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
 
+
 def gpersonal_chart(request):
 
     municipio_list = Municipio.objects.all()
@@ -619,9 +620,10 @@ def gpersonal_chart(request):
             datasource = data_rubros,
             series_options =
               [{'options':{
-                  'type': 'column',},
-                  'terms': {'subtipogasto__nombre': ['ejecutado']},
+                  'type': 'column',
                   'colorByPoint': True,
+                  },
+                  'terms': {'subtipogasto__nombre': ['ejecutado']}
                 }],
             chart_options = {
                 'title': {'text': ' '},
