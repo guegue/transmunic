@@ -108,9 +108,12 @@
                         <div class="info-box-content">
                             <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
                             {% if periodo_list|keyvalue:year == 'I' %}
-                                <span class="info-box-number pma-blue">Asignado: {{ gasto.asignado|million|intcomma }}</span>
+                                <span class="info-box-number pma-blue">Asignado:
+                                    {{ gasto.asignado_percent }}%</span>
                             {% else %}
-                                <span class="info-box-number pma-orange">Ejecutado: {{ gasto.ejecutado|million|intcomma }}</span>
+                                <span class="info-box-number
+                                    pma-orange">Ejecutado: 
+                                    {{ gasto.ejecutado_percent }}%</span>
                             {% endif %}
                         </div>
                         <!-- /.info-box-content -->
