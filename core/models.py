@@ -63,7 +63,8 @@ class Anio(models.Model):
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = AutoSlugField(populate_from='nombre')
+    slug = models.CharField(max_length=8)
+    #slug = AutoSlugField(populate_from='nombre')
     minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,blank=True)
     destacar = models.BooleanField(default=False)
     color = models.CharField(max_length=8, default="#2b7ab3")
