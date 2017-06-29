@@ -29,6 +29,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -216,8 +217,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             [{'options': {'source': rubros },
               'terms': [
                 'tipoingreso__nombre',
-                'ejecutado',
-                'asignado',
+                datacol,
                 ]}
              ])
     pie = Chart(
@@ -227,7 +227,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                   'type': 'pie',},
                 'terms':{
                   'tipoingreso__nombre': [
-                    'ejecutado']
+                    datacol]
                   }}],
             chart_options = {
                 'title': {'text': u' '},
@@ -245,7 +245,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                         'colorByPoint': True
                         },
                     'terms': {
-                        'tipoingreso__nombre': ['ejecutado']
+                        'tipoingreso__nombre': [datacol]
                     }
                 }],
             chart_options={
@@ -261,7 +261,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                     'options': {'source': rubrosg},
                     'terms': [
                         'tipogasto__nombre',
-                        quesumar,
+                        datacol,
                     ]
                 }
             ])
@@ -271,7 +271,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {'type': 'pie'},
-                    'terms': {'tipogasto__nombre': ['ejecutado']}
+                    'terms': {'tipogasto__nombre': [datacol]}
                 }],
             chart_options={
                 'title': {'text': u' '},
@@ -299,7 +299,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                         'type': 'column',
                         'colorByPoint': True,
                     },
-                    'terms': {'tipogasto__nombre': ['ejecutado']}
+                    'terms': {'tipogasto__nombre': [datacol]}
                 }],
             chart_options={
                 'title': {'text': u' '},

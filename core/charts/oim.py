@@ -45,6 +45,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     else:
         quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
     ChartError = False
 
     if municipio:
@@ -669,7 +671,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             [{'options': {'source': rubros },
               'terms': [
                 'subsubtipoingreso__origen__nombre',
-                'ejecutado',
+                datacol,
                 ]}
              ])
     pie = Chart(
@@ -679,7 +681,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'type': 'pie',},
                 'terms':{
                   'subsubtipoingreso__origen__nombre': [
-                    'ejecutado']
+                    datacol]
                   }}],
             chart_options = {
                 'title': {'text': u' '},
@@ -698,7 +700,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                         'colorByPoint': True,
                         },
                     'terms': {
-                        'subsubtipoingreso__origen__nombre': ['ejecutado']
+                        'subsubtipoingreso__origen__nombre': [datacol]
                     }
                 }],
             chart_options={

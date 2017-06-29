@@ -41,6 +41,7 @@ def gpersonal_chart(request):
     periodo = year_data.periodo
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     from collections import OrderedDict #FIXME move up
     if municipio:
@@ -592,14 +593,14 @@ def gpersonal_chart(request):
     data_rubros = RawDataPool(
            series = [{
               'options': {'source': rubros },
-              'terms': [ 'subtipogasto__nombre', 'ejecutado', ]
+              'terms': [ 'subtipogasto__nombre', datacol ]
             }]
     )
     pie = Chart(
             datasource = data_rubros,
             series_options = [{
                 'options': {'type': 'pie',},
-                'terms': {'subtipogasto__nombre': ['ejecutado']}
+                'terms': {'subtipogasto__nombre': [datacol]}
             }],
             chart_options = {
                 'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
@@ -623,7 +624,7 @@ def gpersonal_chart(request):
                   'type': 'column',
                   'colorByPoint': True,
                   },
-                  'terms': {'subtipogasto__nombre': ['ejecutado']}
+                  'terms': {'subtipogasto__nombre': [datacol]}
                 }],
             chart_options = {
                 'title': {'text': ' '},
@@ -658,10 +659,11 @@ def gpersonal_chart(request):
         charts =  (pie,barra)
 
     # Bubble tree data
-    bubble_data = {'label':"Total", 'amount': round(ejecutado/1000000, 2)}
+    totalamount = asignado if periodo == PERIODO_INICIAL else ejecutado
+    bubble_data = {'label':"Total", 'amount': round(totalamount/1000000, 2)}
     child_l1 = []
     for idx, child in enumerate(rubros):
-        child_data = {'taxonomy': "cofog", 'name': idx, 'id': idx, 'label':child['subtipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
+        child_data = {'taxonomy': "cofog", 'name': idx, 'id': idx, 'label':child['subtipogasto__nombre'], 'amount': round(child[datacol]/1000000, 2)}
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)

@@ -36,6 +36,7 @@ def ep_chart(request):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     portada = False
 
     if municipio:
@@ -217,8 +218,7 @@ def ep_chart(request):
                 'options': {'source': rubros},
                 'terms': [
                     'tipoingreso__clasificacion',
-                    'ejecutado',
-                    'asignado',
+                    datacol,
                 ]
             }
         ])
@@ -229,7 +229,7 @@ def ep_chart(request):
                 {
                     'options': {'type': 'pie'},
                     'terms': {
-                        'tipoingreso__clasificacion': ['ejecutado']
+                        'tipoingreso__clasificacion': [datacol]
                     }
                 }],
             chart_options={
@@ -246,7 +246,7 @@ def ep_chart(request):
                 {
                     'options': {'type': 'column'},
                     'terms': {
-                        'tipoingreso__clasificacion': ['ejecutado']
+                        'tipoingreso__clasificacion': [datacol]
                     }
                 }],
             chart_options={
@@ -263,8 +263,7 @@ def ep_chart(request):
                     'options': {'source': rubrosg},
                     'terms': [
                         'tipogasto__clasificacion',
-                        'ejecutado',
-                        'asignado',
+                        datacol,
                     ]
                 }
             ])
@@ -274,7 +273,7 @@ def ep_chart(request):
             series_options=[
                 {
                     'options': {'type': 'pie'},
-                    'terms': {'tipogasto__clasificacion': ['ejecutado']}
+                    'terms': {'tipogasto__clasificacion': [datacol]}
                 }],
             chart_options={
                 'title': {'text': u' '},
@@ -301,7 +300,7 @@ def ep_chart(request):
                         'type': 'column',
                         'colorByPoint': True,
                     },
-                    'terms': {'tipogasto__clasificacion': ['ejecutado']}
+                    'terms': {'tipogasto__clasificacion': [datacol]}
                 }],
             chart_options={
                 'title': {'text': u' '},

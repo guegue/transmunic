@@ -94,6 +94,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         year = year_list[-2]
 
     periodo = Anio.objects.get(anio=year).periodo
+    datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     # usar 'asignado' para todo periodo si estamos en portada
     if portada:
@@ -439,7 +440,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     inversion_tipo_pie = RawDataPool(
         series=
             [{'options': {'source': tipo },
-            'terms':  ['catinversion__nombre','ejecutado'],
+            'terms':  ['catinversion__nombre', datacol],
             }],
         )
     inversion_tipo_column = Chart(
@@ -450,7 +451,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'colorByPoint': True,
                 'stacking': False},
                 'terms':{
-                'catinversion__nombre': [quesumar],
+                'catinversion__nombre': [datacol],
                 },
                 }],
             chart_options =
@@ -467,7 +468,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'type': 'pie',
                 'stacking': False},
                 'terms':{
-                'catinversion__nombre': ['ejecutado'],
+                'catinversion__nombre': [datacol],
                 },
                 }],
             chart_options =
