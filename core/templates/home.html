@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load core_extras static thumbnail %}
+{% load mathfilters %}
 {% block header %}
 <div class="pma-hero">
     <div class="container ">
@@ -119,7 +120,7 @@
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
                 </div>
-                <h2><strong>Destino</strong><br/>de los Gastos</h2>
+                <h2><strong>Destino</strong><br/>de los Gastos {{ year }}</h2>
                 <hr class="pma-line-2">
                 {% for gasto in totales_ogm %}
                 {% if forloop.counter|divisibleby:2 %}
@@ -153,7 +154,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2> <strong>Consolidado</strong> <br/>de la Inversión Municipal 2017.</h2>
+                        <h2> <strong>Consolidado</strong> <br/>de la Inversión Municipal {{ year }}</h2>
                         <hr class="pma-line-1">
                     </div>
                 </div>
@@ -163,11 +164,11 @@
                         <p>&nbsp;</p>
                     </div>
                     <div class="row col-xs-12 col-sm-11 col-md-11">
-                    {% for i in categorias %}
+                    {% for i in inversion_categoria %}
                         <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}">
+                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}">
                             </span></a>
-                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ yea }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+                            <h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}" class="blanco"><strong>{{ i.catinversion__nombre }}</strong></a> <br />{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% </h5>
                         </div>
                     {% if foorloop.last or forloop.counter|divisibleby:6 %}
                     </div>
@@ -184,10 +185,10 @@
 			    <div class="collapse" id="collapseExample">
 			    	<div class="well">
 	        		       	<div class="row">
-    					{% for i in otras_categorias %}
+    					{% for i in inversion_categoria2 %}
 						<div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-							<a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.slug }}"> </span></a>
-				                      	<h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}" class="blanco"><strong>{{ i.nombre }}</strong></a></h5>
+							<a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.catinversion__id }}"><span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"> </span></a>
+				                      	<h5 class="text-center"><a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo}}&catinversion={{ i.id }}" class="blanco"><strong>{{ i.catinversion__nombre }}</strong></a> <br />{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% </h5>
 						</div>
 		                                {% if foorloop.last or forloop.counter|divisibleby:6 %}
 						</div>
