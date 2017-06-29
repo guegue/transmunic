@@ -16,6 +16,10 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from lugar.models import Poblacion
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
@@ -401,6 +405,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                   'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
                   'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
+                  'colors':  colorscheme
               }
     )
     inversion_area = RawDataPool(
@@ -442,15 +447,17 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             series_options =
             [{'options':{
                 'type': 'column',
+                'colorByPoint': True,
                 'stacking': False},
                 'terms':{
-                'catinversion__nombre': ['ejecutado', 'asignado','actualizado'],
+                'catinversion__nombre': [quesumar],
                 },
                 }],
             chart_options =
             {
                 'title': { 'text': 'Inversions por tipo origen %s %s' % (year, municipio,)},
                 'data': { 'table': 'datatable'},
+                'colors':  colorscheme
             },
     )
     inversion_tipo_pie = Chart(
