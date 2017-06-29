@@ -313,7 +313,7 @@
             <div class="events" style="width:1250px">
                 <ol>
                     {% for income, expense in history %}
-                    <li><a href=""
+                    <li><a href=""  data-date="01/01/{{ row.gasto__anio }}"
                     {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
                     style="left:{{ forloop.counter0|mul:"150" }}px;"><span
                         class="posicion">{{ expense.gasto__anio }}</span>
