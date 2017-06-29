@@ -342,15 +342,41 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
     bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
-    return render_to_response('variance_analysis.html',{'charts': (pie, bar, pie2, bar2), 'source': source, \
-            'indicator_name': "Ahorro Corriente", \
-            'indicator_description': "El indicador de Ahorro corriente o capacidad de ahorro es el balance entre los ingresos corrientes y los gastos corrientes y es igual al ahorro corriente como porcentaje de los ingresos corriente​s. Este indicador es una medida de la solvencia que tiene la municipalidad para generar excedentes propios que se destinen a inversión, complementariamente al uso de transferencias del Gobierno Central y la regalías. Se espera que este indicador sea positivo, es decir, que las municipalidades generen ahorro.", \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'bubble_data_1': bubble_data_ingreso, \
-            'bubble_data_2': bubble_data_gasto, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'variance_analysis.html',
+        {
+            'charts': (pie, bar, pie2, bar2),
+            'source': source,
+            'indicator_name': "Ahorro Corriente",
+            'indicator_description': """ El indicador de Ahorro corriente o
+            capacidad de ahorro es el balance entre los ingresos
+            corrientes y los gastos corrientes y es igual al ahorro
+            corriente como porcentaje de los ingresos corrientes.
+            Este indicador es una medida de la solvencia que tiene la
+            municipalidad para generar excedentes propios que se
+            destinen a inversión, complementariamente al uso de
+            transferencias del Gobiern Central y la regalías. Se espera
+            que este indicador sea positivo, es decir, que las
+            municipalidades generen ahorro.""",
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'bubble_data_1': bubble_data_ingreso,
+            'bubble_data_2': bubble_data_gasto,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'history': zip(anual2, anual2g),
+            'porclase': porclase,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
+            'otros': otros
+        },
+        context_instance=RequestContext(request))
 
 def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=0):
     year_list = getYears(Gasto)

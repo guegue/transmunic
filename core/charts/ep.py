@@ -348,6 +348,7 @@ def ep_chart(request):
             'municipio_list': municipio_list,
             'anuales': anual2,
             'anualesg': anual2g,
+            'history': zip(anual2, anual2g),
             'porclase': porclase,
             'porclasep': porclasep,
             'rubros': rubros,

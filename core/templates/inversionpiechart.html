@@ -304,12 +304,12 @@
 <div class="cd-horizontal-timeline loaded historico">
     <div class="timeline container">
         <div class="events-wrapper">
-            <div class="events" style="{{anuales|length|mul:"50"}}px">
+            <div class="events" style="width:{{anuales|length|add:1|mul:"100"}}px">
                 <ol>
                     {% for row in anuales %}
                     <li><a href="#0" data-date="01/01/{{ row.inversion__anio }}"
                     {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter|mul:"50" }}px;"><span class="posicion">{{ row.inversion__anio }}</span>
+                    style="left:{{ forloop.counter|mul:"100" }}px;"><span class="posicion">{{ row.inversion__anio }}</span>
                     <br/>
                     {% if row.inversion__periodo == 'I' %} 
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>

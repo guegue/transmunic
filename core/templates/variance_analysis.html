@@ -10,7 +10,7 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> Monochrome Color Schemesdel período</h2>
+        <h2> <strong>Detalle de {{indicator_name}}</strong> <br/> del período</h2>
         <hr class="pma-line-2">
         <div class="col-md-7">
             <div class="chart-update col-md-1">
@@ -305,6 +305,49 @@
             <hr class="pma-line-4" />
         </div>
     </div>
+</div>
+<div class="cd-horizontal-timeline loaded">
+    <div class="timeline container historico">
+        <div class="events-wrapper">
+            <div class="events" style="width:1250px">
+                <ol>
+                    {% for income, expense in history %}
+                    <li><a href=""
+                    {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
+                    style="left:{{ forloop.counter0|mul:"150" }}px;"><span
+                        class="posicion">{{ expense.gasto__anio }}</span>
+                    <br/>
+                    {% if expense.gasto__periodo == 'I' %}
+                        <span class="line-cifra">Gastos: {{ expense.asignado|million|intcomma }}</span>
+                        <br/>
+                        <span class="line-cifra">Ingresos: {{ income.asignado|million|intcomma }}</span>
+                    {% else %}
+                        <span class="line-cifra">Gastos: {{ expense.ejecutado|million|intcomma }}</span>
+                        <br/>
+                        <span class="line-cifra">Ingresos: {{ income.ejecutado|million|intcomma }}</span>
+                    {% endif %}
+                    </a></li>
+                    {% endfor %}
+                </ol>
+                <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+            </div> <!-- .events -->
+        </div> <!-- .events-wrapper -->
+
+        <ul class="cd-timeline-navigation">
+            <li><a href="#0" class="prev inactive">Prev</a></li>
+            <li><a href="#0" class="next">Next</a></li>
+        </ul> <!-- .cd-timeline-navigation -->
+    </div> <!-- .timeline -->
+
+    <div class="events-content">
+        <ol>
+          {% for row in anuales %}
+            <li><a href="#0" data-date="01/01/{{ expense.gasto__anio }}"
+            {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
+            style="left:{{ forloop.counter|mul:"100" }}px;"></a></li>
+          {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
 </div>
 <div  class="container">
     <div class="row">
