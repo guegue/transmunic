@@ -42,7 +42,7 @@
                 <tbody>
                 {% for row in rubros %}
                 <tr>
-                    <td>{% firstof row.tipoingreso__nombre row.tipogasto__nombre row.tipogasto__clasificacion %}</td>
+                    <td>{% firstof row.tipoingreso__nombre row.tipoingreso__clasificacion %}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.inicial_asignado %}
@@ -81,7 +81,8 @@
                 <tbody>
                 {% for row in rubrosg %}
                 <tr>
-                    <td>{% firstof row.tipogasto__nombre row.tipogasto__clasificacion %}</td>
+                    <td>
+                    {% firstof row.tipogasto__nombre row.tipogasto__clasificacion|default:'Otros' %}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% if row.inicial_asignado %}
@@ -518,7 +519,8 @@
                     {% endif %}
 
                     <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">{% if row.final_asignado and row.inicial_asignado %}
+                        {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
                     <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
                         <td class="montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
@@ -604,7 +606,11 @@
                     {% endif %}
 
                     <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}0 {% endif %}</td>
-                    <td class="text-right">{% if row.final_asignado %}{{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}0{% endif %}</td>
+                    <td class="text-right">
+                        {% if row.final_asignado and row.inicial_asignado %}
+                        {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}
+                        {% else %}0{% endif %}
+                    </td>
                     <td class="text-right">{% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}0{% endif %}</td>
                     {% if row.final_asignado %}
                         <td class="montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>

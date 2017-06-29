@@ -393,7 +393,11 @@
                     <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}{{ row.subtipogasto__nombre }}{% endif%}</td>
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                    <td class="text-right montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                    <td class="text-right montos">
+                    {% if row.final_asignado and row.final_ejecutado %}
+                    {{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%
+                    {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
                 <tr class="bold">

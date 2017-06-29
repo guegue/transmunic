@@ -1,9 +1,11 @@
 $(function () {
-    var $tooltip = $('<div class="tooltip">Tooltip</div>');
+    var $tooltip = $('<div class="tooltip" data-toggle="tooltip">Tooltip</div>');
     $('.bubbletree').append($tooltip);
+    $tooltip.tooltip();
     $tooltip.hide();
 
     var tooltip = function (event) {
+        console.log("bubble tooltip");
         if (event.type == 'SHOW') {
             // show tooltip
             vis4.log(event);
@@ -21,19 +23,6 @@ $(function () {
         }
     };
 
-    /* FIXME: Omit Random color generation use taxonomy styles */
-    /*
-    $.each(data['children'], function(key, value) {
-        data['children'][key]['color'] = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
-        var node_color = vis4color.fromHSL(key / data.children.length * 360, .7, .5).x;
-        if(typeof data['children'][key]['children'] != 'undefined' ){
-            $.each(data['children'][key]['children'], function(j, val) {
-                data['children'][key]['children'][j]['color'] = vis4color.fromHex(node_color).lightness('*' + (.5 + Math.random() * .5)).x;
-            });
-        }
-    });
-    */
-
     if (typeof data !== 'undefined') {
         var defaultbubble = new BubbleTree({
             data: data,
@@ -44,7 +33,8 @@ $(function () {
             },
             formatValue: function (value) {
                 return 'C$ ' + value + 'M';
-            }
+            },
+            tooltipCallback: tooltip
         });
     }
 
