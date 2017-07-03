@@ -29,10 +29,11 @@ $(function () {
             container: '.bubbletree',
             bubbleType: 'icon',
             bubbleStyles: {
-                'cofog': BubbleTree.Styles.Cofog
+                'cofog': BubbleTree.Styles.Cofog,
+                'income': BubbleTree.Styles.Income
             },
             formatValue: function (value) {
-                return 'C$ ' + value + 'M';
+                return value.toFixed(1);
             },
             tooltipCallback: tooltip
         });
@@ -44,10 +45,11 @@ $(function () {
             container: '#bubbletree1',
             bubbleType: 'icon',
             bubbleStyles: {
-                'cofog': BubbleTree.Styles.Cofog
+                'cofog': BubbleTree.Styles.Cofog,
+                'income': BubbleTree.Styles.Income
             },
             formatValue: function (value) {
-                return 'C$ ' + value + 'M';
+                return value.toFixed(1);
             }
         });
     }
@@ -58,10 +60,11 @@ $(function () {
             container: '#bubbletree2',
             bubbleType: 'icon',
             bubbleStyles: {
-                'cofog': BubbleTree.Styles.Cofog
+                'cofog': BubbleTree.Styles.Cofog,
+                'expense': BubbleTree.Styles.Expense
             },
             formatValue: function (value) {
-                return 'C$ ' + value + 'M';
+                return value.toFixed(1);
             }
         });
     }

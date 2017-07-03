@@ -7,28 +7,32 @@ if (!BubbleTree) window.alert('You must include the BubbleTree before including 
 
 BubbleTree.Styles = BubbleTree.Styles || {};
 // ['#2b7ab3', '#00a7b2 ', '#5a4a42', '#d65162', '#8b5e3b', '#84b73f', '#af907f', '#ffe070', '#25aae1']
-BubbleTree.Styles.expen = {
-    '1000000': {
+BubbleTree.Styles.Income = {
+    '0': {
+        icon: '/static/images/icons/dollar.svg',
+        color: '#af907f'
+    },
+    '1': {
         icon: '/static/images/icons/dollar.svg',
         color: '#2b7ab3'
     },
-    '2000000': {
+    '2': {
         icon: '/static/images/icons/dollar.svg',
         color: '#00a7b2'
     },
-    '3000000': {
+    '3': {
         icon: '/static/images/icons/dollar.svg',
         color: '#5a4a42'
     },
-    '4000000': {
+    '4': {
         icon: '/static/images/icons/dollar.svg',
         color: '#d65162'
     },
-    '5000000': {
+    '5': {
         icon: '/static/images/icons/dollar.svg',
         color: '#8b5e3b'
     },
-    '6000000': {
+    '6': {
         icon: '/static/images/icons/dollar.svg',
         color: '#af907f'
     }
