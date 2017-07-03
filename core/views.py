@@ -100,7 +100,7 @@ def home(request):
         'periodo': periodo,
     }, context_instance=RequestContext(request))
 
-def municipio(request, slug=None):
+def municipio(request, slug=None, year=None):
     template_name = 'consolidado_municipal.html'
     if slug is not None:
         obj = get_object_or_404(Municipio, slug=slug)
@@ -139,10 +139,10 @@ def municipio(request, slug=None):
         bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
         data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
     else:
-        data_oim = oim_chart( portada=True)
-        data_ogm = ogm_chart( portada=True)
+        data_oim = oim_chart( year=year, municipio=slug, portada=True)
+        data_ogm = ogm_chart( year=year, municipio=slug, portada=True)
         bubble_oim = oim_bubble_chart_data( year=year)
-        data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
+        data_inversion_minima_sector = inversion_minima_sector_chart(year=year, municipio=slug, portada=True)
 
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 

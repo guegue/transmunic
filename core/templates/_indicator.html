@@ -23,50 +23,55 @@
         <div class="row">
             <div class="col-md-12">
                 <form id="indicatorfilter" method="GET">
-                <div class="col-xs-4 col-sm-2 col-md-1">
-                    <span class="pma-fg-light-green titsearch years"><strong>AÑO</strong></span>
-                    <select name="year" id="year">
-                       {% for ayear in year_list %}
-                       <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
-                       {% endfor %}
-                   </select>
-               </div>
-               <div class="col-xs-8 col-sm-4 col-md-2">
-                  <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                  <select class="municipio pull-right" name="municipio">
-                      <option></option>
-                      <option class="amarillo" value="">Consolidado Municipal</option>
-                      {% regroup municipios by depto as departamentos %}
-                      {% for departamento in departamentos %}
-                          <optgroup label="{{ departamento.grouper }}">
-                              {% for m in departamento.list %}
-                                  <option value="{{ m.slug }}" {% if request.GET.municipio == m.slug  %}selected="selected"{% endif %}>{{ m.nombre }}</option>
-                              {% endfor %}
-                          </optgroup>
+                    <div class="col-xs-4 col-sm-2 col-md-1">
+                        <span class="pma-fg-light-green titsearch years"><strong>AÑO</strong></span>
+                        <select name="year" id="year">
+                         {% for ayear in year_list %}
+                         <option {% if ayear == year|add:"0" %}selected{% endif %} value="{{ayear}}">{{ayear}}</option>
+                         {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-9 col-sm-5 col-md-3 indicadores">
+                        <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
+                        <select name="indicador" class="indicator" id="indicator">
+                           <option value="resumen-municipal">Resumen Municipal</option>
+                           <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de los ingresos del municipio</option>
+                           <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino del gasto municipal</option>
+                           <option value="inversion-categoria" {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>Inversiones</option>
+                           <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de funcionamiento</option>
+                           <option value="gpersonal" {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de personal</option>
+                           <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>Dependencia para asumir gastos corrientes</option>
+                           <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro corriente para inversiones</option>
+                           <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n del presupuesto</option>
+                       </select>
+                    </div>
+                    <div class="col-xs-8 col-sm-4 col-md-2">
+                      <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
+                      <select class="municipio pull-right" name="municipio">
+                        <optgroup>
+                        <option value="">Todos</option>
+                        </optgroup>
+                        {% regroup municipios by depto as departamentos %}
+                        {% for departamento in departamentos %}
+                        <optgroup label="{{ departamento.grouper }}">
+                            {% for m in departamento.list %}
+                            <option value="{{ m.slug }}"
+                            {% ifequal request.GET.municipio m.slug %}
+                            selected="selected"
+                            {% endifequal %}>
+                            {{ m.nombre }}
+                        </option>
+                        {% endfor %}
                       {% endfor %}
                   </select>
-               </div>
-               <div class="col-xs-9 col-sm-5 col-md-3 indicadores">
-                <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
-                <select name="indicador" class="indicator" id="indicator">
-                   <option value="">Consolidado Municipal</option>
-                   <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de los ingresos del municipio</option>
-                   <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino del gasto municipal</option>
-                   <option value="inversion-categoria" {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>Inversiones</option>
-                   <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de funcionamiento</option>
-                   <option value="gpersonal" {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de personal</option>
-                   <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>Dependencia para asumir gastos corrientes</option>
-                   <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro corriente para inversiones</option>
-                   <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n del presupuesto</option>
-                </select>
+                    </div>
+                    <div class="col-xs-2 col-sm-1 col-md-1">
+                        <input type="submit" value="Buscar" class="btn buscar"/>
+                    </div>
+                </form>
             </div>
-            <div class="col-xs-2 col-sm-1 col-md-1"><input type="submit" value="Buscar" class="btn buscar"/></div>
-       </form>
-   </div>
-</form>
-</div>
-</div>
-</div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
