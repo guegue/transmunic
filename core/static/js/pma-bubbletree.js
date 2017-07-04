@@ -30,7 +30,8 @@ $(function () {
             bubbleType: 'icon',
             bubbleStyles: {
                 'cofog': BubbleTree.Styles.Cofog,
-                'income': BubbleTree.Styles.Income
+                'income': BubbleTree.Styles.Income,
+                'expense': BubbleTree.Styles.Expense
             },
             formatValue: function (value) {
                 return value.toFixed(1);
