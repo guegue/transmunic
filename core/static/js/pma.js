@@ -27,10 +27,12 @@ $(function() {
             path = "/" + municipio;
         } else if (indicator == "resumen-municipal" && municipio == "") {
             path = "/resumen-municipal/";
-        } else if (indicator != "resumen-municipal" && municipio != "") {
+        } else if (indicator != "resumen-municipal") {
             path = '/core/' + indicator;
-            qs += '&municipio=' + municipio
-            + '&' + 'indicador=' + indicator;
+            qs += '&indicador=' + indicator;
+            if(municipio !=""){
+                qs += '&municipio=' + municipio;
+            }
         }
         if(qs != ""){
             qs = "?" + qs;
