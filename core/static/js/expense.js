@@ -9,27 +9,27 @@ BubbleTree.Styles = BubbleTree.Styles || {};
 // ['#2b7ab3', '#00a7b2 ', '#5a4a42', '#d65162', '#8b5e3b', '#84b73f', '#af907f', '#ffe070', '#25aae1']
 BubbleTree.Styles.Expense = {
     '1': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-deb.svg',
         color: '#2b7ab3'
     },
     '2': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-debt.svg',
         color: '#00a7b2'
     },
     '3': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-debt.svg',
         color: '#5a4a42'
     },
     '4': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-debt.svg',
         color: '#d65162'
     },
     '5': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-debt.svg',
         color: '#8b5e3b'
     },
     '6': {
-        icon: '/static/images/icons/pig.svg',
+        icon: '/static/images/icons/public-debt.svg',
         color: '#af907f'
     }
 };

@@ -5,7 +5,6 @@
 #
 ##############################################################################
 
-import logging
 import json
 
 from django.db import connection
