@@ -433,7 +433,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             }
             grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog",
+            'taxonomy': "income",
             'id': idx,
             'name': idx,
             'label': child['tipoingreso__nombre'],
@@ -512,7 +512,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             }
             grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog",
+            'taxonomy': "expense",
             'id': idx,
             'name': idx,
             'label': child['tipogasto__nombre'],

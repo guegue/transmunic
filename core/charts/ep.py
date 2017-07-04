@@ -2,20 +2,18 @@
 
 import json
 
-from itertools import chain
-from datetime import datetime, time
-from operator import itemgetter
 
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
+from django.db.models import Sum
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
+from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, TipoIngreso, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Poblacion
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
+from core.models import Anio, IngresoDetalle, GastoDetalle, Gasto, Municipio,\
+    ClasificacionMunicAno
+from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL,\
+    CLASIFICACION_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from core.charts.bubble_oim import oim_bubble_chart_data
@@ -23,7 +21,20 @@ from core.charts.bubble_ogm import ogm_bubble_chart_data
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
 
 def ep_chart(request):
 
@@ -163,21 +174,6 @@ def ep_chart(request):
         with open ("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl=query_file.read()
 
-        # FIXME: no longer use this?
-        # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #inicial = dictfetchall(cursor)
-        #sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #final = dictfetchall(cursor)
-        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #actualizado = dictfetchall(cursor)
-        #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # the new way... re-haciendo "porclasep"
         sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
@@ -316,13 +312,17 @@ def ep_chart(request):
     bubble_data_ingreso = oim_bubble_chart_data(municipio=municipio, year=year)
     bubble_data_gasto = ogm_bubble_chart_data(municipio=municipio, year=year)
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        data = {'charts': (bar, ), \
-            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
+        data = {
+            'charts': (bar, ),
+            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row,
+            'year': year, 'ejecutado': ejecutado, 'asignado': asignado,
+            'year_list': year_list, 'municipio_list': municipio_list,
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase,
+            'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg,
+            'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
     return render_to_response(

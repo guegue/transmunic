@@ -378,7 +378,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         },
         context_instance=RequestContext(request))
 
-def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=0):
+
+def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
@@ -390,7 +391,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             ingreso__municipio__slug=municipio,
             ingreso__periodo=periodo,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
-            .values('tipoingreso','tipoingreso__nombre')\
+            .values('tipoingreso', 'tipoingreso__nombre')\
             .order_by('tipoingreso__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = IngresoDetalle.objects.filter(
@@ -404,7 +405,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             ingreso__anio=year,
             ingreso__periodo=periodo,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
-            .values('tipoingreso','tipoingreso__nombre')\
+            .values('tipoingreso', 'tipoingreso__nombre')\
             .order_by('tipoingreso__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = IngresoDetalle.objects.filter(
@@ -412,7 +413,10 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             ingreso__periodo=periodo,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
             .aggregate(total=Sum(amount_column))
-    data = {'label':"Ingreso Corriente", 'amount': round(amount['total']/1000000, 2)}
+    data = {
+        'label': "Ingreso Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
     children = []
     for idx, child in enumerate(tipos):
         if municipio:
@@ -421,7 +425,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
                 ingreso__municipio__slug=municipio,
                 ingreso__periodo=periodo,
                 tipoingreso__codigo=child['tipoingreso'])\
-                .values('subtipoingreso','subtipoingreso__nombre')\
+                .values('subtipoingreso', 'subtipoingreso__nombre')\
                 .order_by('subtipoingreso__codigo')\
                 .annotate(amount=Sum(amount_column))
         else:
@@ -429,7 +433,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
                 ingreso__anio=year,
                 ingreso__periodo=periodo,
                 tipoingreso__codigo=child['tipoingreso'])\
-                .values('subtipoingreso','subtipoingreso__nombre')\
+                .values('subtipoingreso', 'subtipoingreso__nombre')\
                 .order_by('subtipoingreso__codigo')\
                 .annotate(amount=Sum(amount_column))
         grandchildren = []
@@ -437,15 +441,15 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
             grandchild_data = {
                 'id': '{}.{}'.format(idx, ix),
                 'name': '{}.{}'.format(idx, ix),
-                'label':grandchild['subtipoingreso__nombre'],
+                'label': grandchild['subtipoingreso__nombre'],
                 'amount': round(grandchild['amount']/1000000, 2)
             }
             grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog",
+            'taxonomy': "income",
             'id': idx,
             'name': idx,
-            'label':child['tipoingreso__nombre'],
+            'label': child['tipoingreso__nombre'],
             'amount': round(child['amount']/1000000, 2),
             'children': grandchildren
         }
@@ -453,7 +457,8 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
     data['children'] = children
     return json.dumps(data)
 
-def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0):
+
+def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
@@ -465,7 +470,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             gasto__municipio__slug=municipio,
             gasto__periodo=periodo,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
-            .values('tipogasto','tipogasto__nombre')\
+            .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = GastoDetalle.objects.filter(
@@ -479,7 +484,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             gasto__anio=year,
             gasto__periodo=periodo,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
-            .values('tipogasto','tipogasto__nombre')\
+            .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = GastoDetalle.objects.filter(
@@ -487,7 +492,10 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             gasto__periodo=periodo,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .aggregate(total=Sum(amount_column))
-    data = {'label':"Gasto Corriente", 'amount': round(amount['total']/1000000, 2)}
+    data = {
+        'label': "Gasto Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
     children = []
     for idx, child in enumerate(tipos):
         if municipio:
@@ -496,7 +504,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
                 gasto__municipio__slug=municipio,
                 gasto__periodo=periodo,
                 tipogasto__codigo=child['tipogasto'])\
-                .values('subtipogasto','subtipogasto__nombre')\
+                .values('subtipogasto', 'subtipogasto__nombre')\
                 .order_by('subtipogasto__codigo')\
                 .annotate(amount=Sum(amount_column))
         else:
@@ -504,7 +512,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
                 gasto__anio=year,
                 gasto__periodo=periodo,
                 tipogasto__codigo=child['tipogasto'])\
-                .values('subtipogasto','subtipogasto__nombre')\
+                .values('subtipogasto', 'subtipogasto__nombre')\
                 .order_by('subtipogasto__codigo')\
                 .annotate(amount=Sum(amount_column))
         grandchildren = []
@@ -512,15 +520,15 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0)
             grandchild_data = {
                 'id': '{}.{}'.format(idx, ix),
                 'name': '{}.{}'.format(idx, ix),
-                'label':grandchild['subtipogasto__nombre'],
+                'label': grandchild['subtipogasto__nombre'],
                 'amount': round(grandchild['amount']/1000000, 2)
             }
             grandchildren.append(grandchild_data)
         child_data = {
-            'taxonomy': "cofog",
+            'taxonomy': "expense",
             'id': idx,
             'name': idx,
-            'label':child['tipogasto__nombre'],
+            'label': child['tipogasto__nombre'],
             'amount': round(child['amount']/1000000, 2),
             'children': grandchildren
             }
