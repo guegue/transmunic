@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="big text-center">
-                <a href="{%url 'origen_ingresos'%}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de ingresos</a> 
+                <a href="{%url 'origen_ingresos'%}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de ingresos</a>
             </div>
         </div>
         <div class="col-md-6 col-eq-height pma-large-icons">
@@ -112,7 +112,7 @@
                                     {{ gasto.asignado_percent }}%</span>
                             {% else %}
                                 <span class="info-box-number
-                                    pma-orange">Ejecutado: 
+                                    pma-orange">Ejecutado:
                                     {{ gasto.ejecutado_percent }}%</span>
                             {% endif %}
                         </div>
@@ -125,7 +125,7 @@
             {% endif %}
             {% endfor %}
             <div class="big text-center">
-                <a href="{%url 'origen_gastos' %}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de gastos</a> 
+                <a href="{%url 'origen_gastos' %}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de gastos</a>
             </div>
         </div>
     </div>
@@ -221,6 +221,8 @@
     <script type="text/javascript" src="{% static 'js/bubbletree.js' %}"></script>
     <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
     <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/income.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/expense.js' %}"></script>
     <script type="text/javascript">
             var data = {{ bubble_data|safe }};
     </script>

@@ -19,22 +19,23 @@ from website.models import Banner
 from core.forms import DetallePresupuestoForm
 import json
 
+
 # Create your views here.
 def home(request):
     template_name = 'home.html'
     banners = Banner.objects.all()
 
-    #cleans session vars
+    # cleans session vars
     request.session['year'] = None
     request.session['municipio'] = None
 
-    #descripcion de graficos de portada
+    # descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionsector = Grafico.objects.get(pk='inversion')
-    #fin de descripcion de graficos de portada
+    # fin de descripcion de graficos de portada
     # consulta sobre consulta presupuestaria muelle de los bueyes
     desc_consultamb = Grafico.objects.get(pk='consultamb')
 
@@ -100,7 +101,8 @@ def home(request):
         'periodo': periodo,
     }, context_instance=RequestContext(request))
 
-def municipio(request, slug=None):
+    
+def municipio(request, slug=None, year=None):
     template_name = 'consolidado_municipal.html'
     if slug is not None:
         obj = get_object_or_404(Municipio, slug=slug)
@@ -139,10 +141,10 @@ def municipio(request, slug=None):
         bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
         data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
     else:
-        data_oim = oim_chart( portada=True)
-        data_ogm = ogm_chart( portada=True)
+        data_oim = oim_chart( year=year, municipio=slug, portada=True)
+        data_ogm = ogm_chart( year=year, municipio=slug, portada=True)
         bubble_oim = oim_bubble_chart_data( year=year)
-        data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
+        data_inversion_minima_sector = inversion_minima_sector_chart(year=year, municipio=slug, portada=True)
 
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
@@ -152,7 +154,7 @@ def municipio(request, slug=None):
             values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
     inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
-    return render_to_response(template_name, { 
+    return render_to_response(template_name, {
         'banners': banners,
         'desc_oim_chart':desc_oim_chart,
         'desc_ogm_chart':desc_ogm_chart,
