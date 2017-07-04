@@ -16,7 +16,7 @@
             <div class="col-md-12">
                 {% block indicator_title %}
                 <h2 class="text-center"><strong>
-                        {{municipio.nombre|default:"Resumen Municipal" }}
+                        {{municipio.nombre|default:"Resumen Municipal" }} {{ year }}
                     </strong></h2>
                 <hr class="pma-line-5"/>
                 {% endblock %}
@@ -24,6 +24,7 @@
         </div>
         <div class="row pma-header-summary wide">
             {% block indicator_summary %}
+            {% if municipio %}
             <div class="col-md-offset-4 col-xs-12 col-sm-6 col-md-2">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon pe-7s-date">
@@ -35,7 +36,6 @@
                     </div>
                 </div>
             </div>
-            {% if municipio %}
             <div class="col-xs-12 col-sm-6 col-md-4">
                 <div class="info-box">
                     <span class="info-box-icon pma-icon municipality-category">
@@ -62,7 +62,7 @@
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ejecutado|million }} millones</span>
                 {% endif %}
             </div>
-            <h2> <a href=""><strong>Origenes</strong> de Ingresos</a></h2>
+            <h2> <a href="{%url 'origen_ingresos'%}?year={{ year }}&municipio={{ municipio.slug }}"><strong>Origenes</strong><br /> de Ingresos</a></h2>
             <h5>Millones de córdobas</h5>
 	    <hr class="pma-line-2">
             <div class="bubbletree-container chart-container">
@@ -93,7 +93,7 @@
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
                 {% endif %}
             </div>
-            <h2><strong>Destino</strong> de los Gastos</h2>
+            <h2><strong>Destino</strong><br /> de los Gastos</h2>
             <h5>Millones de córdobas</h5>
             <hr class="pma-line-2">
             {% for gasto in totales_ogm %}

@@ -80,25 +80,30 @@
         </div>
         <div class="col-md-5 table-responsive">
             <table class="table table-condensed">                                       
-                <tr class="bg-primary"> <th>Rubros de gastos</th> <th>Inicial</th>{% if year != '2016' %} <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th>{% endif %}</tr>
+                <tr class="bg-primary"> 
+                    <th>Rubros de gastos</th> 
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                      <th>Inicial</th> 
+                    {% else %}
+                      <th>Ejecutado</th> 
+                    {% endif %}
+                </tr>
                 {% for row in rubros %}                                                     
                 <tr>                                                                        
                     <td>{{ row.subsubtipogasto__origen__nombre }}</td>                                    
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                    {% if year != '2016' %}
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    {% else %}
                         <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                        {% if row.inicial_asignado %}                                                   
-                            <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                        {% endif %}                                                             
                     {% endif %}
                 </tr>                                                                       
                 {% endfor %}                                                                
                 <tr class="bg-primary bold">                                                   
                     <td>TOTAL</td>
-                    <td class="text-right">{{ asignado|million|intcomma }}</td>
-                    {% if year != '2016' %}
-                    <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-                    <td class="montos">{% if asignado %}{{ ejecutado|div:asignado|mul:100|floatformat:1 }}%{% endif %}</td></tr>
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        <td class="text-right">{{ asignado|million|intcomma }}</td>
+                    {% else  %}
+                        <td class="text-right">{{ ejecutado|million|intcomma }}</td>
                     {% endif %}
             </table>                                                                    
         </div>
