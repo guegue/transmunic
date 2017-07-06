@@ -132,7 +132,7 @@
         <div class="row">
             <div class="col-md-12">
             {% if not municipio %}
-            <h2><strong>Gastos de funcionamiento </strong> <br>
+            <h2><strong>Ranking </strong> <br>
                 por categoría de Municipios</h2>
             {% else %}
             <h2><strong>Ranking </strong> <br>
@@ -145,21 +145,30 @@
     </div>
     <div class="timeline container">
         <div class="events-wrapper rankin">
-            <div class="events" style="width: {{ otros|length|mul:300 }}{{ porclasep|length|mul:300 }}px;">
+            <div class="events" 
+                style="width: {{otros|length|mul:170}}{{porclasep|length|mul:300}}px;">
                 <ol>
                     {% for row in porclasep %}
                     <li>
                         <a href="#0"
-                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+
                             {% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
+                            style="left: {{ forloop.counter0|mul:150 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
                             <br/>
-                            {% if periodo_list|keyvalue:year == 'I' %}
-                              <span class="line-cifra">{{ row.asignado|floatformat:2 }}
-                              </span><br/>
-                            {% else %}
-                              <span class="line-cifra">{{ row.ejecutado|floatformat:2 }}</span>
-                            {% endif %}
+                            <span class="line-cifra">
+                            {% if row.asignado %}
+                            Asignado: {{ row.asignado|floatformat:2 }}
+                            {% elif row.ingreso %}
+                            Ingreso: {{ row.ingreso|floatformat:2|intcomma }}
+                            {% else %}{% endif %}
+                            </span><br/>
+                            <span class="line-cifra">
+                            {% if row.ejecutado %}
+                            Ejecutado: {{ row.ejecutado|floatformat:2 }}
+                            {% elif row.gasto %}
+                            Gasto: {{ row.gasto|floatformat:2|intcomma }}
+                            {% else %}{% endif %}
+                            </span>
                         </a>
                     </li>
                     {% endfor %}
@@ -170,12 +179,20 @@
                             {% if forloop.first %} class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:240 }}px;"><span class="posicion2">{% firstof row.nombre row.clasificacion %}</span>
                             <br/>
-                            {% if periodo_list|keyvalue:year == 'I' %}
-                              <span class="line-cifra">{{ row.asignado|floatformat:2 }}
-                              </span><br/>
-                            {% else %}
-                              <span class="line-cifra">{{ row.ejecutado|floatformat:2 }}</span>
-                            {% endif %}
+                            <span class="line-cifra">
+                            {% if row.asignado %}
+                            Asignado: {{ row.asignado|floatformat:2 }}
+                            {% elif row.ingreso %}
+                            Ingreso: {{ row.ingreso|floatformat:2|intcomma }}
+                            {% else %} 0 {% endif %}
+                            </span><br/>
+                            <span class="line-cifra">
+                            {% if row.ejecutado %}
+                            Ejecutado: {{ row.ejecutado|floatformat:2 }}
+                            {% elif row.gasto %}
+                            Gasto: {{ row.gasto|floatformat:2|intcomma }}
+                            {% else %} 0 {% endif %}
+                            </span>
                         </a>
                     </li>
                     {% endfor %}
@@ -212,87 +229,100 @@
     </div>
     <div id="detail-1" class="container">
         <div class="row">
-            <div class="col-md-6">
-                <h2>Ingresos corrientes totales</h2>
-                <h3>Millones de córdobas corrientes</h3>
-                <table class="table table-condensed pma-bg-white">
-                    <thead>
+            <div class="col-md-12">
+                <h2>{{indicator_name}}</h2>
+                {% if municipio %}
+                <h3>por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h3>
+                <table class="table table-condensed table-striped pma-bg-white">
+                    <thead class="thead-inverse">
                     <tr class="bg-primary">
-                        <th>Rubros ingresos</th>
-                        <th>Inicial</th>
-                        <th>Ejecutado</th>
-                        <th>% (ejecutado/inicial)</th>
+                        <th class="text-left">Municipios</th>
+                        <th class="text-right">
+                            {% if ep %}
+                            Ingreso
+                            {% else %}
+                            P. Inicial
+                            {% endif %}
+                        </th>
+                        <th class="text-right">
+                            {% if ep %}
+                            Gasto
+                            {% else %}
+                            Ejecución
+                            {% endif %}
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for row in rubros %}
+                    {% for row in otros %}
                     <tr>
-                        <td>{% firstof row.tipoingreso__nombre row.tipoingreso__clasificacion %}</td>
-                        <td>{{ row.inicial_asignado|million|intcomma }}</td>
-                        <td>{{ row.ejecutado|million|intcomma }}</td>
-                        {% if row.inicial_asignado %}
-                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                    <tr class="">
-                        <td>TOTAL</td>
-                        <td>{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        <td>{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
+                        <td class="text-left">{{ row.nombre }}</td>
                         <td class="text-right">
-                            {% if sum_asignado %}
-                            {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:2|intcomma}}%
-                            {% endif %}
+                        {% if row.asignado %}
+                        {{ row.asignado|floatformat:2 }}
+                        {% elif row.ingreso %}
+                        {{ row.ingreso|floatformat:2|intcomma }}
+                        {% else %} 0 {% endif %}%
                         </td>
-                        {% endwith %}
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <h2>Gastos corrientes totales</h2>
-                <h3>Millones de córdobas corrientes</h3>
-                <table class="table table-condensed pma-bg-white">
-                    <thead>
-                    <tr class="bg-primary">
-                    <th>Rubros de gastos</th>
-                    <th>Inicial</th>
-                    <th>Ejecutado</th>
-                    <th>% (ejecutado/inicial)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in rubrosg %}
-                    <tr>
-                        <td>{% firstof row.tipogasto__nombre row.tipogasto__clasificacion %}</td>
-                        <td>{{ row.inicial_asignado|million|intcomma }}</td>
-                        <td>{{ row.ejecutado|million|intcomma }}</td>
-                        {% if row.inicial_asignado %}
-                        <td class="montos">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:2 }}%</td>
-                        {% endif %}
+                        <td class="text-right">
+                        {% if row.ejecutado %}
+                        {{ row.ejecutado|floatformat:2 }}
+                        {% elif row.gasto %}
+                        {{ row.gasto|floatformat:2|intcomma }}
+                        {% else %} 0 {% endif %}%
+                        </td>
                     </tr>
                     {% endfor %}
                     </tbody>
-                    <tfoot>
-                    <tr class="">
-                        <td>TOTAL</td>
-                        <td>{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        <td>{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
-                        <td>
-                            {% if sum_asignado %}
-                            {{ rubros|total_sum:'ejecutado'|div:sum_asignado|mul:100|floatformat:2|intcomma}}%
-                            {% endif %}
-                        </td>
-                        {% endwith %}
-                    </tr>
-                    </tfoot>
                 </table>
+                {% else %}
+                <h3>por categoría de Municipios</h3>
+                <table class="table table-condensed table-striped pma-bg-white">
+                    <thead class="thead-inverse">
+                    <tr class="bg-primary">
+                        <th class="text-left">Categoría de municipio</th>
+                        <th class="text-right">
+                            {% if ep %}
+                            Ingreso
+                            {% else %}
+                            P. Inicial
+                            {% endif %}
+                        </th>
+                        <th class="text-right">
+                            {% if ep %}
+                            Gasto
+                            {% else %}
+                            Ejecución
+                            {% endif %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in porclasep %}
+                    <tr>
+                        <td class="text-left">{{ row.clasificacion }}</td>
+                        <td class="text-right">
+                        {% if row.asignado %}
+                        {{ row.asignado|floatformat:2 }}
+                        {% elif row.ingreso %}
+                        {{ row.ingreso|floatformat:2|intcomma }}
+                        {% else %} 0 {% endif %}%
+                        </td>
+                        <td class="text-right">
+                        {% if row.ejecutado %}
+                        {{ row.ejecutado|floatformat:2 }}
+                        {% elif row.gasto %}
+                        {{ row.gasto|floatformat:2|intcomma }}
+                        {% else %} 0 {% endif %}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
             </div>
         </div>
+                
     </div>
 </div>
 {% endblock %}
