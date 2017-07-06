@@ -79,22 +79,22 @@
             </div>
         </div>
         <div class="col-md-5 table-responsive">
-            <table class="table table-condensed">                                       
-                <tr class="bg-primary"> 
-                    <th>Rubros de gastos</th> 
+            <table class="table table-condensed">
+                <tr class="bg-primary">
+                    <th>Rubros de gastos</th>
                     {% if periodo_list|keyvalue:year == 'I' %}
-                      <th>Inicial</th> 
+                      <th>Inicial</th>
                     {% else %}
-                      <th>Ejecutado</th> 
+                      <th>Ejecutado</th>
                     {% endif %}
                 </tr>
-                {% for row in rubros %}                                                     
-                <tr>                                                                        
-                    <td>{{ row.subsubtipogasto__origen__nombre }}</td>                                    
+                {% for row in rubros %}
+                <tr>
+                    <td>{{ row.subsubtipogasto__origen__nombre }}</td>
                     {% if periodo_list|keyvalue:year == 'I' %}
                         <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     {% else %}
-                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
+                        <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -127,7 +127,7 @@
                 <ol>
                     {% for row in porclasep %}
                     <li>
-                        <a href="#0"
+                        <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if forloop.first %}class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span><br/>
@@ -213,7 +213,8 @@
             <div class="events" style="width: {{ otros|length|mul:130 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
-                    <li><a href="#0" data-date="{% now "SHORT_DATETIME_FORMAT"%} 00:{{ forloop.counter }}" {% if municipio.slug == row.gasto__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:150}}px;">
+                    <li>
+                        <a href="" data-date="{% now "SHORT_DATETIME_FORMAT"%} 00:{{ forloop.counter }}" {% if municipio.slug == row.gasto__municipio__slug%} class="selected"{% endif %} style="left: {{ forloop.counter|mul:150}}px;">
                             <span class="posicion">{{forloop.counter}}</span><br/>
                             <span class="municipio_nombre">{{ row.gasto__municipio__nombre }}</span>
                             <br/>

@@ -150,7 +150,7 @@
                 <ol>
                     {% for row in porclasep %}
                     <li>
-                        <a href="#0"
+                        <a href=""
 
                             {% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
                             style="left: {{ forloop.counter0|mul:150 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
