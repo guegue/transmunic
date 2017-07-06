@@ -87,7 +87,7 @@
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     <li>
-                        <a href="#0"
+                        <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
                             style="left: {{ forloop.counter|mul:290 }}px;"><span class="posicion">{{ row.gasto__municipio__nombre }}</span>
@@ -219,7 +219,7 @@
                 <ol>
                     {% for row in porclasep %}
                     <li>
-                        <a href="#0"
+                        <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if forloop.last %} class="selected"{% endif %}
                             style="left: {{ forloop.counter0|mul:200 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
