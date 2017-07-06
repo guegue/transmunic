@@ -222,18 +222,23 @@ def ago_chart(request, municipio=None, year=None, portada=False):
              ])
     pie = Chart(
             datasource = data_ingreso,
-            series_options =
-              [{'options':{
+            series_options=[{'options':{
                   'type': 'pie',},
                 'terms':{
                   'tipoingreso__nombre': [
                     datacol]
                   }}],
-            chart_options = {
-                'title': {'text': u' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Años'} },
-                },
+            'plotOptions': {
+                'pie': {
+                    'dataLabels': {
+                        'enabled': True,
+                        'format': '{point.percentage:.2f} %'
+                    },
+                    'showInLegend': True,
+                    'depth': 35
+                }
+            },
+            'colors':  colorscheme
             )
 
     bar = Chart(
@@ -288,8 +293,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                     }
                 },
                 'colors':  colorscheme
-                },
-            )
+                })
 
     bar2 = Chart(
             datasource=data_gasto,
