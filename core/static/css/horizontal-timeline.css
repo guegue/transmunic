@@ -115,6 +115,8 @@ Main Components
   -ms-transform: translateZ(0);
   -o-transform: translateZ(0);
   transform: translateZ(0);
+  cursor: none;
+  text-decoration: none;
 }
 .cd-horizontal-timeline .events a::after {
   /* this is used to create the event spot */
