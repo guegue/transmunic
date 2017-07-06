@@ -667,29 +667,40 @@ def oim_chart(municipio=None, year=None, portada=False):
     )
 
     data_ingreso = RawDataPool(
-           series=
-            [{'options': {'source': rubros },
-              'terms': [
+       series=[{
+            'options': {'source': rubros},
+            'terms': [
                 'subsubtipoingreso__origen__nombre',
                 datacol,
-                ]}
-             ])
+            ]}
+        ])
     pie = Chart(
-            datasource = data_ingreso,
-            series_options =
-              [{'options':{
-                  'type': 'pie',},
-                'terms':{
-                  'subsubtipoingreso__origen__nombre': [
-                    datacol]
-                  }}],
-            chart_options = {
-                'title': {'text': u' '},
-                'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                'xAxis': { 'title': {'text': u'Años'} },
-                'colors':  colorscheme
-                },
-            )
+        datasource=data_ingreso,
+        series_options=[{
+            'options': {
+                'type': 'pie'
+            },
+            'terms': {
+                'subsubtipoingreso__origen__nombre': [datacol]
+                }
+            }],
+        chart_options={
+            'title': {'text': u' '},
+            'yAxis': {'title': {'text': u'Millones de córdobas'}},
+            'xAxis': {'title': {'text': u'Años'}},
+            'plotOptions': {
+                'pie': {
+                    'dataLabels': {
+                        'enabled': True,
+                        'format': '{point.percentage:.2f} %'
+                    },
+                    'showInLegend': True,
+                    'depth': 35
+                }
+            },
+            'colors':  colorscheme
+            },
+        )
 
     bar = Chart(
             datasource=data_ingreso,
@@ -710,7 +721,6 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'colors':  colorscheme
                 },
             )
-
 
     # tabla: get total and percent
     total = {}
