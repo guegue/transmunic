@@ -22,12 +22,19 @@ PERIODO_CHOICES = (
     (PERIODO_ACTUALIZADO, 'Actualizado'),
     (PERIODO_FINAL, 'Final'),
 )
-AREAGEOGRAFICA_VERBOSE = {'R': 'Rural', 'U': 'Urbana', 'M': 'Eme?', 'O': 'Otros', '': 'Vacio', None: 'None'}
+AREAGEOGRAFICA_VERBOSE = {
+    'R': 'Rural',
+    'U': 'Urbana',
+    'M': 'Eme?',
+    'O': 'Otros',
+    '': 'Vacio',
+    None: 'None'}
 CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
+
 
 class Organizacion(models.Model):
     nombre = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True,null=True)
+    descripcion = models.TextField(blank=True, null=True)
     correo = models.CharField(max_length=100, null=True, blank=True)
     web = models.CharField(max_length=200, null=True, blank=True)
     logo = ImageField(upload_to='organizacion', null=True, blank=True)
@@ -35,22 +42,26 @@ class Organizacion(models.Model):
     class Meta:
         verbose_name_plural = 'Organizaciones'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class Grafico(models.Model):
     id = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True,null=True)
-    notas = models.TextField(blank=True,null=True)
-    imagen_objetivo = ImageField(upload_to='grafico',null=True,blank=True)
-    imagen_actual = ImageField(upload_to='grafico',null=True,blank=True)
+    descripcion = models.TextField(blank=True, null=True)
+    notas = models.TextField(blank=True, null=True)
+    imagen_objetivo = ImageField(upload_to='grafico', null=True, blank=True)
+    imagen_actual = ImageField(upload_to='grafico', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Graficos'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class Anio(models.Model):
     anio = models.IntegerField()
@@ -58,14 +69,17 @@ class Anio(models.Model):
     inicial = models.DateField(null=True, blank=True)
     actualizado = models.DateField(null=True, blank=True)
     final = models.DateField(null=True, blank=True)
+
     def __unicode__(self):
         return u'%s %s' % (self.anio, self.periodo)
+
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
     slug = models.CharField(max_length=8)
-    #slug = AutoSlugField(populate_from='nombre')
-    minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,blank=True)
+    # slug = AutoSlugField(populate_from='nombre')
+    minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,
+                                 blank=True)
     destacar = models.BooleanField(default=False)
     color = models.CharField(max_length=8, default="#2b7ab3")
 
@@ -73,8 +87,10 @@ class CatInversion(models.Model):
         verbose_name_plural = 'Categorias de inversion'
         verbose_name = 'Categoria de inversion'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class OrigenGasto(models.Model):
     nombre = models.CharField(max_length=200)
@@ -83,8 +99,10 @@ class OrigenGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Origen  de los gastos'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class TipoGasto(models.Model):
     PERSONAL = '1000000'
@@ -97,16 +115,20 @@ class TipoGasto(models.Model):
         (CORRIENTE, 'Gasto Corriente'),
         (CAPITAL, 'Gasto de Capital'),
     )
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
-    clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0, null=True)
+    clasificacion = models.IntegerField(
+        choices=CLASIFICACION_CHOICES,
+        default=0, null=True)
 
     class Meta:
         verbose_name_plural = 'Tipo de gastos'
         ordering = ['codigo']
+
     def __unicode__(self):
         return self.nombre
+
 
 class SubTipoGasto(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
@@ -117,8 +139,10 @@ class SubTipoGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Sub-Tipo de gastos'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class SubSubTipoGasto(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
@@ -130,8 +154,10 @@ class SubSubTipoGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Sub-Sub-Tipo de gastos'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class OrigenRecurso(models.Model):
     # FIXME: id es auto!!! RECAUDACION puede no ser == 1
@@ -142,8 +168,10 @@ class OrigenRecurso(models.Model):
     class Meta:
         verbose_name_plural = 'Origen  de los recursos'
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class TipoIngreso(models.Model):
     TRANSFERENCIAS_CORRIENTES = '15000000'
@@ -156,14 +184,17 @@ class TipoIngreso(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
-    #si no es ingreso corriente, entonces es de Capital
-    clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES, default=0, null=True)
+    # si no es ingreso corriente, entonces es de Capital
+    clasificacion = models.IntegerField(
+        choices=CLASIFICACION_CHOICES, default=0, null=True)
 
     class Meta:
         verbose_name_plural = 'Tipo de ingreso'
         ordering = ['codigo']
+
     def __unicode__(self):
         return self.nombre
+
 
 class SubTipoIngreso(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
@@ -174,8 +205,10 @@ class SubTipoIngreso(models.Model):
     class Meta:
         verbose_name_plural = 'Subtipos de ingresos'
         ordering = ['codigo']
+
     def __unicode__(self):
         return self.nombre
+
 
 class SubSubTipoIngreso(models.Model):
     codigo = models.CharField(max_length=25,  primary_key=True)
