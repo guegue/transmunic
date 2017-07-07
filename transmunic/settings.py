@@ -111,6 +111,17 @@ SITE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(SITE_ROOT, 'media'))
 STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(SITE_ROOT, 'static'))
 
+CHART_OPTIONS_COLORS = [
+    '#2b7ab3',
+    '#00a7b2 ',
+    '#5A4A42',
+    '#D65162',
+    '#8B5E3B',
+    '#84B73F',
+    '#AF907F',
+    '#FFE070',
+    '#25AAE1']
+
 CHARTS_COLORSCHEME = [
     '#2b7ab3',
     '#00a7b2 ',
@@ -122,7 +133,7 @@ CHARTS_COLORSCHEME = [
     '#FFE070',
     '#25AAE1']
 
-CHARTS_OPTIONS_RESPONSIVE = {
+CHART_OPTIONS_RESPONSIVE = {
     'rules': [
         {
             'condition': {
@@ -165,6 +176,30 @@ CHARTS_OPTIONS_RESPONSIVE = {
             }
         }
         ]
+}
+
+CHART_OPTIONS = {
+    'title': {'text': u' '},
+    'yAxis': {'title': {'text': u'Millones de cordobas'}},
+    'xAxis': {'title': {'text': u'Rubros'}},
+    'colors': CHART_OPTIONS_COLORS,
+    'plotOptions': {
+        'pie': {
+            'dataLabels': {
+                'enabled': True,
+                'format': '{point.percentage:.2f} %'
+            },
+            'showInLegend': True,
+            'depth': 35
+        },
+        'column': {
+            'showInLegend': False,
+        }
+    },
+}
+
+CHART_OPTIONS_BAR = {
+    'legend': {'enabled': False},
 }
 
 try:

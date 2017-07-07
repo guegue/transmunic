@@ -550,7 +550,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     # FIXME BS
     porclase = None
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = {
