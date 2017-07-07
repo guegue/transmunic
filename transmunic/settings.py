@@ -196,6 +196,7 @@ CHART_OPTIONS = {
             'showInLegend': False,
         }
     },
+    'responsive': CHART_OPTIONS_RESPONSIVE
 }
 
 CHART_OPTIONS_BAR = {

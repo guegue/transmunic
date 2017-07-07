@@ -109,7 +109,7 @@
             <div class="col-md-11 chart-container bubbletree-container">
                 <div id="bubble-2" class="bubbletree-wrapper view-main">
                     <div class="bubbletree" id="bubbletree2"></div>
-                </div>
+                    </div>
                 <div id="pie2" class="view-alternative"></div>
                 <div id="bar2" class="view-alternative"></div>
             </div>
@@ -145,15 +145,15 @@
     </div>
     <div class="timeline container">
         <div class="events-wrapper rankin">
-            <div class="events" 
-                style="width: {{otros|length|mul:170}}{{porclasep|length|mul:300}}px;">
+            <div class="events"
+                style="width: {{otros|length|add:1|mul:170}}{{porclasep|length|add:1|mul:170}}px;">
                 <ol>
                     {% for row in porclasep %}
                     <li>
                         <a href=""
 
                             {% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter0|mul:150 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
+                            style="left: {{ forloop.counter0|mul:170 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
                             <br/>
                             <span class="line-cifra">
                             {% if row.asignado %}
@@ -174,10 +174,10 @@
                     {% endfor %}
                     {% for row in otros %}
                     <li>
-                        <a href="#0"
+                        <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if forloop.first %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:240 }}px;"><span class="posicion2">{% firstof row.nombre row.clasificacion %}</span>
+                            style="left: {{ forloop.counter0|mul:170 }}px;"><span class="posicion2">{% firstof row.nombre row.clasificacion %}</span>
                             <br/>
                             <span class="line-cifra">
                             {% if row.asignado %}
@@ -322,7 +322,7 @@
                 {% endif %}
             </div>
         </div>
-                
+
     </div>
 </div>
 {% endblock %}
@@ -373,7 +373,7 @@
     <div class="events-content">
         <ol>
           {% for row in anuales %}
-            <li><a href="#0" data-date="01/01/{{ expense.gasto__anio }}"
+            <li><a href="" data-date="01/01/{{ expense.gasto__anio }}"
             {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
             style="left:{{ forloop.counter|mul:"100" }}px;"></a></li>
           {% endfor %}

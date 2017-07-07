@@ -282,10 +282,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
        series=[
             {
                 'options': {'source': rubrosg},
-                'terms': [
-                    'tipogasto__nombre',
-                    datacol,
-                ]
+                'terms': ['tipogasto__nombre', datacol]
             }
         ])
 

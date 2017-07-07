@@ -47,6 +47,26 @@
     height: 500px;
 }
 .bubbletree-container {
-    min-height: 600px;
     position: relative;
+    min-height: 320px;
+}
+@media (max-width: 540px) {
+    .bubbletree-container {
+        min-height: 320px;
+    }
+}
+@media (min-width: 541px) and (max-width: 720px) {
+    .bubbletree-container {
+        min-height: 540px;
+    }
+}
+@media (min-width: 721px) and (max-width: 960px) {
+    .bubbletree-container {
+        min-height: 540px;
+    }
+    }
+@media (min-width: 1140px) {
+    .bubbletree-container {
+        min-height: 600px;
+    }
 }
