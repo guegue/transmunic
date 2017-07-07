@@ -36,6 +36,11 @@ colorscheme = getattr(
                 '#FFE070',
                 '#25AAE1'])
 
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
 
 def aci_chart(request, municipio=None, year=None, portada=False):
 
@@ -48,6 +53,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -294,7 +300,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__periodo=PERIODO_INICIAL,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
-            .values('tipogasto','tipogasto__nombre')\
+            .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(
@@ -454,26 +460,10 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'type': 'pie'
             },
             'terms': {
-                'tipoingreso__nombre': [quesumar]
+                'tipoingreso__nombre': [datacol]
             }
             }],
-        chart_options={
-            'title': {'text': u' '},
-            'yAxis': {'title': {'text': u'Millones de córdobas'}},
-            'xAxis': {'title': {'text': u'Años'}},
-            'plotOptions': {
-                'pie': {
-                    'dataLabels': {
-                        'enabled': True,
-                        'format': '{point.percentage:.2f} %'
-                    },
-                    'showInLegend': True,
-                    'depth': 35
-                }
-            },
-            'colors':  colorscheme
-            },
-        )
+        chart_options=chart_options)
 
     bar = Chart(
         datasource=data_ingreso,
@@ -483,16 +473,11 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'colorByPoint': True,
                 },
             'terms': {
-                'tipoingreso__nombre': [quesumar]
+                'tipoingreso__nombre': [datacol]
                 }
             }],
-        chart_options={
-            'title': {'text': u' '},
-            'yAxis': {'title': {'text': u'Millones de córdobas'}},
-            'xAxis': {'title': {'text': u'Rubros'}},
-            'legend': {'enabled': False},
-            'colors':  colorscheme
-        })
+        chart_options=chart_options)
+
     data_gasto = RawDataPool(
         series=[{
             'options': {'source': rubrosg},
@@ -508,25 +493,9 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'options': {
                 'type': 'pie'},
             'terms': {
-                'tipogasto__nombre': [
-                    'ejecutado']
+                'tipogasto__nombre': [datacol]
               }}],
-        chart_options={
-            'title': {'text': u' '},
-            'yAxis': {'title': {'text': u'Millones de córdobas'}},
-            'xAxis': {'title': {'text': u'Años'}},
-            'plotOptions': {
-                'pie': {
-                    'dataLabels': {
-                        'enabled': True,
-                        'format': '{point.percentage:.2f} %'
-                    },
-                    'showInLegend': True,
-                    'depth': 35
-                }
-            },
-            'colors':  colorscheme
-        })
+        chart_options=chart_options)
 
     bar2 = Chart(
         datasource=data_gasto,
@@ -536,16 +505,10 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'colorByPoint': True,
                 },
             'terms': {
-                'tipogasto__nombre': ['ejecutado']
+                'tipogasto__nombre': [datacol]
                 }
             }],
-        chart_options={
-            'title': {'text': u' '},
-            'yAxis': {'title': {'text': u'Millones de córdobas'}},
-            'xAxis': {'title': {'text': u'Rubros'}},
-            'legend': {'enabled': False},
-            'colors': colorscheme
-        })
+        chart_options=chart_options)
 
     # FIXME BS
     porclase = None

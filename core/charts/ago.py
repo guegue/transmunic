@@ -18,7 +18,7 @@ from transmunic import settings as pma_settings
 
 colorscheme = getattr(
     pma_settings,
-    'CHARTS_COLORSCHEME',
+    'CHART_OPTIONS_COLORS',
     [
         '#2b7ab3',
         '#00a7b2 ',

@@ -35,6 +35,12 @@ colorscheme = getattr(
         '#FFE070',
         '#25AAE1'])
 
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def ep_chart(request):
 
@@ -220,38 +226,29 @@ def ep_chart(request):
         ])
 
     pie = Chart(
-            datasource=data_ingreso,
-            series_options=[
-                {
-                    'options': {'type': 'pie'},
-                    'terms': {
-                        'tipoingreso__clasificacion': [datacol]
-                    }
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Años'}},
-                'colors':  colorscheme
-                },
-            )
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {
+                    'tipoingreso__clasificacion': [datacol]
+                }
+            }],
+        chart_options=chart_options)
 
     bar = Chart(
-            datasource=data_ingreso,
-            series_options=[
-                {
-                    'options': {'type': 'column'},
-                    'terms': {
-                        'tipoingreso__clasificacion': [datacol]
-                    }
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                'colors':  colorscheme
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True
+                    },
+                'terms': {
+                    'tipoingreso__clasificacion': [datacol]
                 }
-            )
+            }],
+        chart_options=chart_options)
 
     data_gasto = RawDataPool(
            series=[
@@ -265,46 +262,25 @@ def ep_chart(request):
             ])
 
     pie2 = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {'type': 'pie'},
-                    'terms': {'tipogasto__clasificacion': [datacol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Años'}},
-                'plotOptions': {
-                    'pie': {
-                        'dataLabels': {
-                            'enabled': True,
-                            'format': '{point.percentage:.2f} %'
-                        },
-                        'showInLegend': True,
-                        'depth': 35
-                    }
-                },
-                'colors': colorscheme
-            })
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {'tipogasto__clasificacion': [datacol]}
+            }],
+        chart_options=chart_options)
 
     bar2 = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {'tipogasto__clasificacion': [datacol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                'legend': {'enabled': False},
-                'colors':  colorscheme
-            })
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                },
+                'terms': {'tipogasto__clasificacion': [datacol]}
+            }],
+        chart_options=chart_options)
 
     # FIXME BS
     asignado = ejecutado = porclase = None
