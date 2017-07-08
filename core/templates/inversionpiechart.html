@@ -15,24 +15,16 @@
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                         aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
                     <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" data-chartcontainer="tipo_pie"></span>
+                        pma-fg-gray toggle-chart" data-chartcontainer="pie"></span>
                     <span id="chart-bar-1" class="pma-icon pe-7s-graph3
-                        pma-fg-gray toggle-chart"  data-chartcontainer="tipo"></span>
+                        pma-fg-gray toggle-chart"  data-chartcontainer="bar"></span>
             </div>
             <div class="col-md-11 bubbletree-container chart-container">
                 <div id="bubble-1" class="bubbletree-wrapper view-main">
                     <div class="bubbletree"></div>
                 </div>
-                <div id='fuente_pie' class="view-alternative"> Chart will be rendered here </div>
-                <div id='asignado' class="view-alternative"> Chart will be rendered here </div>
-                <div id='ejecutado' class="view-alternative"> Chart will be rendered here </div>
-                <div id='ejecutado_pie' class="view-alternative"> Chart will be rendered here </div>
-                <div id='tipo' class="view-alternative"> Chart will be rendered here </div>
-                <div id='tipo_pie' class="view-alternative"> Chart will be rendered here </div>
-                <div id='comparativo_anios' class="view-alternative"> Chart will be rendered here </div>
-                <div id='area' class="view-alternative"> Chart will be rendered here </div>
-                <div id='fuente' class="view-alternative"> Chart will be rendered here </div>
-                <div id='ultimos' class="view-alternative">Ultimos anios </div>
+                <div id='pie' class="view-alternative"> Chart will be rendered here </div>
+                <div id='bar' class="view-alternative"> Chart will be rendered here </div>
             </div>
         </div>
         <div class="col-md-5 table-responsive">
@@ -311,7 +303,7 @@
                     {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}
                     style="left:{{ forloop.counter|mul:"100" }}px;"><span class="posicion">{{ row.inversion__anio }}</span>
                     <br/>
-                    {% if row.inversion__periodo == 'I' %} 
+                    {% if row.inversion__periodo == 'I' %}
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
                     {% else %}
                         <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
@@ -384,7 +376,7 @@
         <table class="table table-condensed table-striped">
             <thead>
             <tr  class="bg-primary"> <th>Rubros de inversión</th> <th class="text-right">Inicial</th>
-                <th class="text-right">Actualizado</th> <th class="text-right">Modificación</th> 
+                <th class="text-right">Actualizado</th> <th class="text-right">Modificación</th>
             </tr>
             </thead>
             {% for row in cat %}
@@ -509,9 +501,5 @@
 {% endblock %}
 
 {% block custom_scripts %}
-    {% if municipio and charts.4 %}
-        {{ charts|load_charts:"tipo, tipo_pie, area, fuente, ejecutado_pie, comparativo_anios, asignado" }}
-    {% else %}
-        {{ charts|load_charts:"tipo, tipo_pie, area, fuente, ejecutado_pie, asignado, ultimos, fuentes" }}
-    {% endif %}
+    {{ charts|load_charts:"pie, bar" }}
 {% endblock %}

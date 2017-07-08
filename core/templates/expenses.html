@@ -83,14 +83,14 @@
     <div class="timeline container">
         <div class="events-wrapper rankin">
             {% if municipio %}
-            <div class="events" style="width: {{ otros|length|mul:300 }}px;">
+            <div class="events" style="width: {{ otros|length|add:1|mul:270 }}px;">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                     <li>
                         <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:290 }}px;"><span class="posicion">{{ row.gasto__municipio__nombre }}</span>
+                            style="left: {{ forloop.counter0|mul:270 }}px;"><span class="posicion">{{ row.gasto__municipio__nombre }}</span>
                             <br/>
                             {% if row.gasto__periodo == 'I' %}
                                 <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
@@ -104,14 +104,14 @@
                 <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
             </div> <!-- .events -->
             {% else %}
-            <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
+            <div class="events" style="width: {{ porclasep|length|add:1|mul:120 }}px;">
                 <ol>
                     {% for row in porclasep|dictsort:"clasificacion" %}
                     <li>
-                        <a href="#0"
+                        <a href=""
                             data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                             {% if municipio.slug == row.gasto__municipio__slug %} class="selected"{% endif %}
-                            style="left: {{ forloop.counter|mul:122 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
+                            style="left: {{ forloop.counter0|mul:120 }}px;"><span class="posicion">{{ row.clasificacion }}</span>
                             <br/>
                             {% if row.gasto__periodo == 'I' %}
                                 <span>{{ row.inicial_asignado|floatformat:2|intcomma }}</span>
@@ -303,9 +303,9 @@
             <div class="events" style="width:1250px">
                 <ol>
                     {% for row in anuales %}
-                    <li><a href="#0" data-date="01/01/{{ row.gasto__anio }}"
+                    <li><a href="" data-date="01/01/{{ row.gasto__anio }}"
                     {% if row.gasto__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter|mul:"120" }}px;"><span class="posicion">{{ row.gasto__anio }}</span>
+                    style="left:{{ forloop.counter0|mul:"100" }}px;"><span class="posicion">{{ row.gasto__anio }}</span>
                     <br/>
                     {% if row.gasto__periodo == 'I' %}
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>

@@ -23,7 +23,26 @@ from lugar.models import Poblacion
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
@@ -34,19 +53,13 @@ def ogm_chart(municipio=None, year=None, portada=False):
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     # usar 'asignado' para todo periodo si estamos en portada
     if portada:
         quesumar = 'asignado'
     else:
         quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-    
-    if periodo == PERIODO_INICIAL:
-        chartcol = 'inicial_asignado'
-    elif periodo == PERIODO_ACTUALIZADO:
-        chartcol = 'actualizado_asignado'
-    else:
-        chartcol = 'final_asignado'
 
     ChartError = False
 
@@ -265,7 +278,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
         source_barra = GastoDetalle.objects.filter(gasto__periodo=periodo)
         source_barra2 = GastoDetalle.objects.filter(gasto__periodo=periodo, gasto__anio__gt=year_list[-3])
-        
+
         # obtiene datos de gastos en ditintos rubros
         rubrosp_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, \
                 subtipogasto=TipoGasto.PERSONAL_PERMANENTE,).\
@@ -370,7 +383,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         comparativo3 = list(chain(inicial, final, actualizado))
         for d in comparativo3:
             d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "gasto__periodo")
-        
+
         # obtiene datos para OGM comparativo de todos los años
         anios_inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
         anios_final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
@@ -408,7 +421,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }],
                 #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
                 )
-        
+
         """
         ogm_comparativo3 = RawDataPool(
             series=
@@ -650,54 +663,31 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     'options': {'source': rubros},
                     'terms': [
                         'subsubtipogasto__origen__nombre',
-                        chartcol,
+                        datacol
                     ]
                 }
             ])
 
     pie = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {'type': 'pie'},
-                    'terms': {'subsubtipogasto__origen__nombre': [chartcol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Años'}},
-                'plotOptions': {
-                    'pie': {
-                        'dataLabels': {
-                            'enabled': True,
-                            'format': '{point.percentage:.2f} %'
-                        },
-                        'showInLegend': True,
-                        'depth': 35
-                    }
-                },
-                'colors':  colorscheme
-                },
-            )
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {'subsubtipogasto__origen__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
 
     bar = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {'subsubtipogasto__origen__nombre': [chartcol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                'legend': {'enabled': False},
-                'colors':  colorscheme
-            })
-
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                },
+                'terms': {'subsubtipogasto__origen__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
 
     # tabla: get total and percent
     total = {}
@@ -733,13 +723,25 @@ def ogm_chart(municipio=None, year=None, portada=False):
             porano_table[label]['extra'] = value if value else '...'
 
     if portada:
-        charts =  (ejecutado_pie, )
+        charts = (ejecutado_pie,)
     else:
-        charts =  (pie,bar)
-        # charts =  (ejecutado_pie, ogm_comparativo_anios_column, ogm_comparativo2_column, ogm_comparativo3_column, ogm_tipo_column, asignado_barra, barra, )
+        charts = (pie, bar)
 
-    return {'charts': charts, \
-            'year_data': year_data, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}
+    return {
+        'charts': charts,
+        'year_data': year_data,
+        'mi_clase': mi_clase,
+        'municipio': municipio_row,
+        'year': year,
+        'porano': porano_table,
+        'totales': sources,
+        'ejecutado': ejecutado,
+        'asignado': asignado,
+        'year_list': year_list,
+        'municipio_list': municipio_list,
+        'anuales': anual2,
+        'porclase': porclase,
+        'porclasep': porclasep,
+        'rubros': rubros,
+        'rubrosp': rubrosp,
+        'otros': otros}

@@ -24,7 +24,25 @@ from core.charts.misc import getVar
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
 
 def gf_chart(request):
     # XXX: why this is not a view?
@@ -37,6 +55,7 @@ def gf_chart(request):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     from collections import OrderedDict #FIXME move up
     if municipio:
@@ -566,52 +585,33 @@ def gf_chart(request):
             }]
     )
     data_rubros = RawDataPool(
-           series = [{
-              'options': {'source': rubros },
-              'terms': [ 'tipogasto__nombre', 'asignado', 'ejecutado' ]
+           series=[{
+              'options': {'source': rubros},
+              'terms': ['tipogasto__nombre', datacol]
             }]
     )
     pie = Chart(
-            #datasource = data_pgf,
-            datasource = data_rubros,
-            series_options = [{
-                'options': {'type': 'pie',},
-                'terms': {'tipogasto__nombre': ['asignado']}
-            }],
-            chart_options = {
-                'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
-                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
-                'colors':  colorscheme
-            },
-    )
-    data_barra = DataPool(
-           series = [{
-              'options': {'source': source_barra_final },
-              'terms': [ 'gasto__anio', 'ejecutado', 'asignado', ]
-            }]
-    )
+        datasource=data_rubros,
+        series_options=[{
+            'options': {'type': 'pie'},
+            'terms': {'tipogasto__nombre': [datacol]}
+        }],
+        chart_options=chart_options)
 
     barra = Chart(
-            datasource = data_rubros,
-            series_options =
-              [
-                {
-                    'options':{
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms':{
-                        'tipogasto__nombre': [quesumar]
-                    }
-                }],
-            chart_options = {
-                'title': {'text': ' '},
-                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
-                'colors':  colorscheme
+        datasource=data_rubros,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
                 },
-            )
+                'terms': {
+                    'tipogasto__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options)
+
     if municipio:
         dataterms = ['gasto__anio', 'asignado', 'ejecutado', 'promedio']
         terms = ['asignado', 'ejecutado', 'promedio',]

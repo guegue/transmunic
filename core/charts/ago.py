@@ -16,7 +16,26 @@ from core.charts.misc import getVar
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHART_OPTIONS_COLORS',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def ago_chart(request, municipio=None, year=None, portada=False):
 
@@ -37,14 +56,22 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         municipio_nombre = municipio_row.nombre
         porclasep = None
 
-        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \
-            ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).\
-            exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=periodo, \
-            ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).\
-            exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = IngresoDetalle.objects.filter(
+            ingreso__periodo=PERIODO_INICIAL,
+            ingreso__municipio__slug=municipio,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('ingreso__anio')\
+            .order_by('ingreso__anio')\
+            .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = IngresoDetalle.objects.filter(
+            ingreso__periodo=periodo,
+            ingreso__municipio__slug=municipio,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('ingreso__anio')\
+            .order_by('ingreso__anio')\
+            .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["ingreso__anio"] == int(year)).next()['asignado']
@@ -203,122 +230,106 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         source = dictfetchall(cursor)
 
     data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'anio',
-                'ejecutado',
-                'asignado',
-                ]}
-             ])
+            series=[
+                {
+                    'options': {'source': source},
+                    'terms': [
+                        'anio',
+                        'ejecutado',
+                        'asignado',
+                    ]
+                }
+            ]
+        )
 
     data_ingreso = RawDataPool(
-           series=
-            [{'options': {'source': rubros },
-              'terms': [
-                'tipoingreso__nombre',
-                datacol,
+           series=[
+            {
+                'options': {'source': rubros},
+                'terms': [
+                    'tipoingreso__nombre',
+                    datacol,
                 ]}
              ])
     pie = Chart(
-            datasource = data_ingreso,
-            series_options =
-              [{'options':{
-                  'type': 'pie',},
-                'terms':{
-                  'tipoingreso__nombre': [
-                    datacol]
-                  }}],
-            chart_options = {
-                'title': {'text': u' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Años'} },
+        datasource=data_ingreso,
+        series_options=[{
+            'options': {
+                'type': 'pie'
                 },
-            )
+            'terms': {
+                'tipoingreso__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options,
+        )
 
     bar = Chart(
-            datasource=data_ingreso,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True
-                        },
-                    'terms': {
-                        'tipoingreso__nombre': [datacol]
-                    }
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                },
-            )
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True
+                    },
+                'terms': {
+                    'tipoingreso__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options)
 
     data_gasto = RawDataPool(
-           series=[
-                {
-                    'options': {'source': rubrosg},
-                    'terms': [
-                        'tipogasto__nombre',
-                        datacol,
-                    ]
-                }
-            ])
+       series=[
+            {
+                'options': {'source': rubrosg},
+                'terms': ['tipogasto__nombre', datacol]
+            }
+        ])
 
     pie2 = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {'type': 'pie'},
-                    'terms': {'tipogasto__nombre': [datacol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Años'}},
-                'plotOptions': {
-                    'pie': {
-                        'dataLabels': {
-                            'enabled': True,
-                            'format': '{point.percentage:.2f} %'
-                        },
-                        'showInLegend': True,
-                        'depth': 35
-                    }
-                },
-                'colors':  colorscheme
-                },
-            )
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {'tipogasto__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
 
     bar2 = Chart(
-            datasource=data_gasto,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {'tipogasto__nombre': [datacol]}
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                'legend': {'enabled': False},
-                'colors':  colorscheme
-            })
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                },
+                'terms': {'tipogasto__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
 
     # FIXME BS
     porclase = None
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        data = {'charts': (bar, ), 'source': source, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
+        data = {
+            'charts': (bar, ),
+            'source': source,
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'porclase': porclase,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
+            'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
     bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
@@ -360,7 +371,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         context_instance=RequestContext(request))
 
 
-def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=0):
+def aci_bubbletree_data_ingreso(
+        municipio=None, year=None, portada=False, total=0):
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
@@ -445,7 +457,8 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False, total=
     return json.dumps(data)
 
 
-def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False, total=0):
+def aci_bubbletree_data_gasto(
+        municipio=None, year=None, portada=False, total=0):
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:

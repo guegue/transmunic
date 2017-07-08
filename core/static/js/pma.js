@@ -1,9 +1,31 @@
 $(function() {
     $(".toggle-chart").click(function() {
-        $(this).closest(".col-md-7").find(".chart-container .view-main").hide("slow");
-        $(this).closest(".col-md-7").find(".chart-container .view-main").addClass("view-alternative");
         chartcontainer = $(this).data('chartcontainer');
-        $("#" + chartcontainer).show("slow").addClass("view-main");
+        var charts = $("#" + chartcontainer).closest(".col-md-7").find(".view-main");
+        $(charts).each(function(){
+            $(this).hide("slow").removeClass("view-main").addClass("view-alternative");
+        });
+
+            $("#" + chartcontainer).show("slow", function(){
+            var width = $( window ).width();
+            var height = $("#" + chartcontainer).closest(".col-md-7").height();
+            console.log(width + "x" + height);
+            if(!$(this).hasClass("bubbletree-wrapper")){
+                if (width < 540){
+                    $(this).highcharts().setSize(width, 320);
+                }else if(width >= 540 && width < 720){
+                    $(this).highcharts().setSize(400, 540);
+                }else if(width >= 720 && width < 960){
+                    $(this).highcharts().setSize(600, 540);
+                }else if(width >= 960 && width < 1140){
+                    $(this).highcharts().setSize(600, 600);
+                }else{
+                    $(this).highcharts().setSize(600, 600);
+                }
+            }
+            $(this).removeClass("view-alternative").addClass("view-main");
+        });
+
     });
 
     $("#show-detail-1").click(function() {

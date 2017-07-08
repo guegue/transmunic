@@ -17,7 +17,7 @@ from django.conf import global_settings as DJANGO_DEFAULT
 DEBUG = 'DEBUG' in os.environ and not os.environ['DEBUG'] == 'False'
 TEMPLATE_DEBUG = DEBUG
 
-#BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,9 +28,9 @@ SECRET_KEY = '=*2w4v6%9wib742a3hr!&a0h2%a_x2pp7k6svha1@@1g0y#q(s'
 SITE_ID = 1
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+# DEBUG = True
 
-#TEMPLATE_DEBUG = True
+# TEMPLATE_DEBUG = True
 
 TEMPLATE_DIRS = ('templates', )
 
@@ -111,7 +111,104 @@ SITE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(SITE_ROOT, 'media'))
 STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(SITE_ROOT, 'static'))
 
-CHARTS_COLORSCHEME = ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1']
+CHART_OPTIONS_COLORS = [
+    '#2b7ab3',
+    '#00a7b2 ',
+    '#5A4A42',
+    '#D65162',
+    '#8B5E3B',
+    '#84B73F',
+    '#AF907F',
+    '#FFE070',
+    '#25AAE1']
+
+CHARTS_COLORSCHEME = [
+    '#2b7ab3',
+    '#00a7b2 ',
+    '#5A4A42',
+    '#D65162',
+    '#8B5E3B',
+    '#84B73F',
+    '#AF907F',
+    '#FFE070',
+    '#25AAE1']
+
+CHART_OPTIONS_RESPONSIVE = {
+    'rules': [
+        {
+            'condition': {
+                'maxWidth': 540
+            },
+            'chartOptions': {
+                'legend': {
+                    'enabled': False
+                    }
+            }
+        },
+        {
+            'condition': {
+                'maxWidth': 720
+            },
+            'chartOptions': {
+                'legend': {
+                    'enabled': False
+                }
+            }
+        },
+        {
+            'condition': {
+                'maxWidth': 960
+            },
+            'chartOptions': {
+                'legend': {
+                    'enabled': True
+                }
+            }
+        },
+        {
+            'condition': {
+                'maxWidth': 1140
+            },
+            'chartOptions': {
+                'legend': {
+                    'enabled': True
+                }
+            }
+        }
+        ]
+}
+
+CHART_OPTIONS = {
+    'title': {'text': u' '},
+    'yAxis': {'title': {'text': u'Millones de cordobas'}},
+    'xAxis': {'title': {'text': u'Rubros'}},
+    'legend': {'enabled': True},
+    'colors': CHART_OPTIONS_COLORS,
+    'plotOptions': {
+        'pie': {
+            'dataLabels': {
+                'enabled': True,
+                'format': '{point.percentage:.2f} %'
+            },
+            'showInLegend': True,
+            'depth': 35
+        },
+        'column': {
+            'showInLegend': False,
+            'dataLabels': {
+                'enabled': False,
+                'format': '{point.y:.2f}'},
+            'depth': 35
+            }
+        },
+    'tooltip': {
+        'pointFormat': '{series.name}: <b>{point.y:.2f} </b>'},
+    'responsive': CHART_OPTIONS_RESPONSIVE
+}
+
+CHART_OPTIONS_BAR = {
+    'legend': {'enabled': False},
+}
 
 try:
     LOCAL_SETTINGS
