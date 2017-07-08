@@ -151,8 +151,8 @@
                     {% for row in porclasep %}
                     <li>
                         <a href=""
-
-                            {% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
+                            data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                            {% if forloop.first %} class="selected"{% endif %}
                             style="left: {{ forloop.counter0|mul:170 }}px;"><span class="posicion">{% firstof row.nombre row.clasificacion %}</span>
                             <br/>
                             <span class="line-cifra">

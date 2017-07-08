@@ -287,7 +287,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             .values('ingreso__anio', 'ingreso__periodo')\
             .order_by('ingreso__anio', 'ingreso__periodo')\
             .annotate(ejecutado=Sum('ejecutado'))
-        final = list(year_comparaive_final)
+        final = list(year_comparative_final)
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
@@ -445,14 +445,12 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         source = dictfetchall(cursor)
 
     data_ingreso = RawDataPool(
-       series=[{
-        'options': {'source': rubros},
-        'terms': [
-            'tipoingreso__nombre',
-            'ejecutado',
-            'asignado'
-        ]
-        }])
+        series=[
+            {
+                'options': {'source': rubros},
+                'terms': ['tipoingreso__nombre', datacol]
+            }
+        ])
     pie = Chart(
         datasource=data_ingreso,
         series_options=[{
@@ -481,20 +479,14 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     data_gasto = RawDataPool(
         series=[{
             'options': {'source': rubrosg},
-            'terms': [
-                'tipogasto__nombre',
-                'ejecutado',
-                'asignado',
-            ]}
+            'terms': ['tipogasto__nombre', datacol]}
         ])
     pie2 = Chart(
         datasource=data_gasto,
         series_options=[{
-            'options': {
-                'type': 'pie'},
-            'terms': {
-                'tipogasto__nombre': [datacol]
-              }}],
+            'options': {'type': 'pie'},
+            'terms': {'tipogasto__nombre': [datacol]}
+        }],
         chart_options=chart_options)
 
     bar2 = Chart(
