@@ -18,7 +18,25 @@ from lugar.models import Poblacion
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
@@ -432,51 +450,38 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             },
     )
     inversion_tipo = RawDataPool(
-        series=
-            [{'options': {'source': tipo },
-            'terms':  ['catinversion__nombre','ejecutado','asignado','actualizado'],
-            }],
-        )
-    inversion_tipo_pie = RawDataPool(
-        series=
-            [{'options': {'source': tipo },
+        series=[{
+            'options': {'source': tipo},
             'terms':  ['catinversion__nombre', datacol],
             }],
         )
-    inversion_tipo_column = Chart(
-            datasource = inversion_tipo,
-            series_options =
-            [{'options':{
-                'type': 'column',
-                'colorByPoint': True,
-                'stacking': False},
-                'terms':{
-                'catinversion__nombre': [datacol],
-                },
-                }],
-            chart_options =
-            {
-                'title': { 'text': 'Inversions por tipo origen %s %s' % (year, municipio,)},
-                'data': { 'table': 'datatable'},
-                'colors':  colorscheme
+    inversion_source = RawDataPool(
+        series=[{
+            'options': {'source': tipo},
+            'terms':  ['catinversion__nombre', datacol],
+            }]
+        )
+    bar = Chart(
+        datasource=inversion_tipo,
+        series_options=[{'options': {
+            'type': 'column',
+            'colorByPoint': True,
+            'stacking': False},
+            'terms': {
+            'catinversion__nombre': [datacol],
             },
-    )
-    inversion_tipo_pie = Chart(
-            datasource = inversion_tipo_pie,
-            series_options =
-            [{'options':{
-                'type': 'pie',
-                'stacking': False},
-                'terms':{
-                'catinversion__nombre': [datacol],
-                },
-                }],
-            chart_options =
+        }],
+        chart_options=chart_options)
+
+    pie = Chart(
+        datasource=inversion_tipo,
+        series_options=[
             {
-                'title': { 'text': 'Inversions por tipo origen %s %s' % (year, municipio,)},
-                'data': { 'table': 'datatable'},
-            },
-    )
+                'options': {'type': 'pie', 'stacking': False},
+                'terms': {'catinversion__nombre': [datacol]},
+            }],
+        chart_options=chart_options)
+
     data_ultimos = DataPool(
            series=
             [{'options': {
@@ -566,15 +571,20 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                     aggregate(total=Avg(quesumar))['total']
             porano_table[label]['extra'] = value if value else '...'
 
+    charts = [pie, bar]
 
-    if portada:
-        charts =  [ejecutado_pie, ]
-    elif municipio:
-        charts =  [inversion_tipo_column, inversion_tipo_pie, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, inversion_comparativo_anios_column, inversion_percapita_anios_column, ejecutado_pie, ultimos ]
-    else:
-        charts =  [inversion_tipo_column, inversion_tipo_pie, inversion_area_column, inversion_fuente_column, inversion_fuente_pie, ejecutado_pie, ultimos ]
-
-    return {'charts': charts, \
-            'mi_clase': mi_clase, 'year': year, 'porano': porano_table, 'totales': sources, 'cat': cat3, 'anuales': anual3,\
-            'ejecutado': ejecutado, 'asignado': asignado, 'porclasep': porclasep, 'otros': otros,\
-            'year_list': year_list, 'municipio_list': municipio_list, 'municipio': municipio_row}
+    return {
+        'charts': charts,
+        'mi_clase': mi_clase,
+        'year': year,
+        'porano': porano_table,
+        'totales': sources,
+        'cat': cat3,
+        'anuales': anual3,
+        'ejecutado': ejecutado,
+        'asignado': asignado,
+        'porclasep': porclasep,
+        'otros': otros,
+        'year_list': year_list,
+        'municipio_list': municipio_list,
+        'municipio': municipio_row}

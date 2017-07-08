@@ -23,7 +23,26 @@ from lugar.models import Poblacion
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(pma_settings, 'CHARTS_COLORSCHEME', ['#2b7ab3', '#00a7b2 ', '#5A4A42', '#D65162', '#8B5E3B', '#84B73F', '#AF907F', '#FFE070', '#25AAE1'])
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def oim_chart(municipio=None, year=None, portada=False):
     # TODO: Dividir en Partes este código kilometrico
@@ -392,24 +411,6 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'terms':  ['ingreso__anio','ingreso__periodo','municipio_inicial','municipio_final','clase_inicial','clase_final'],
                 }],
             )
-        """    
-        oim_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'names':  [u'Ingreso',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
-                'terms':  ['ingreso__periodo','municipio','clase'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        oim_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'names':  ['Modificaciones al presupuesto',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
-                'terms':  ['ingreso__periodo','municipio','clase'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        """
         oim_comparativo_anios_column = Chart(
                 datasource = oim_comparativo_anios,
                 series_options =
@@ -426,39 +427,9 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'title': { 'text': ' ',},
                     'colors':  colorscheme,
                 })
-        """
-        oim_comparativo2_column = Chart(
-                datasource = oim_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'ingreso__periodo': ['municipio', 'clase']
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                },
-                )
-        oim_comparativo3_column = Chart(
-                datasource = oim_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'names':  [u'Municipio',u'Categoria'],
-                    'terms':{
-                    'ingreso__periodo': ['municipio','clase']
-                    },
-                }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        """
 
-    else: # no municipio chartit
+    else:
+        # no municipio chartit
         oim_comparativo_anios = RawDataPool(
             series=
                 [{'options': {'source': comparativo_anios },
@@ -466,51 +437,6 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'terms':  ['ingreso__anio','ingreso__periodo','asignado','ejecutado',],
                 }],
             )
-        """
-        oim_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'names':  [u'Ingreso',u'Ingresos del periodo'],
-                'terms':  ['ingreso__periodo', 'monto'],
-                }],
-                )
-        oim_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'names':  [' ','Ingresos totales'],
-                'terms':  ['ingreso__periodo', 'monto'],
-                }],
-                )
-        oim_comparativo2_column = Chart(
-                datasource = oim_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'ingreso__periodo': ['monto',]
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': ' '},
-                    #'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
-                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                },
-                )
-        oim_comparativo3_column = Chart(
-                datasource = oim_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'ingreso__periodo': ['monto', ]
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        """
         oim_comparativo_anios_column = Chart(
                 datasource = oim_comparativo_anios,
                 series_options =
@@ -656,14 +582,24 @@ def oim_chart(municipio=None, year=None, portada=False):
                   'subsubtipoingreso__origen__nombre': [
                     quesumar]
                   }}],
-            chart_options =
-              {
-                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'title': {'text': ' '},
-                  'plotOptions': { 'column': { 'dataLabels': { 'enabled': False, 'format': '{point.y:.2f}' }, 'showInLegend': True, 'depth': 35, }},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f} </b>' },
-                  'colors':  colorscheme,
-              }
+            chart_options={
+                'options3d': {
+                    'enabled': 'true',
+                    'alpha': '45',
+                    'beta': '0'},
+                'title': {'text': ' '},
+                'plotOptions': {
+                    'column': {
+                        'dataLabels': {
+                            'enabled': False,
+                            'format': '{point.y:.2f}'},
+                        'showInLegend': True,
+                        'depth': 35}
+                    },
+                'tooltip': {
+                    'pointFormat': '{series.name}: <b>{point.y:.2f} </b>'},
+                'colors':  colorscheme,
+            }
     )
 
     data_ingreso = RawDataPool(
@@ -684,43 +620,21 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'subsubtipoingreso__origen__nombre': [datacol]
                 }
             }],
-        chart_options={
-            'title': {'text': u' '},
-            'yAxis': {'title': {'text': u'Millones de córdobas'}},
-            'xAxis': {'title': {'text': u'Años'}},
-            'plotOptions': {
-                'pie': {
-                    'dataLabels': {
-                        'enabled': True,
-                        'format': '{point.percentage:.2f} %'
-                    },
-                    'showInLegend': True,
-                    'depth': 35
-                }
-            },
-            'colors':  colorscheme
-            },
-        )
+        chart_options=chart_options)
 
     bar = Chart(
-            datasource=data_ingreso,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                        },
-                    'terms': {
-                        'subsubtipoingreso__origen__nombre': [datacol]
-                    }
-                }],
-            chart_options={
-                'title': {'text': u' '},
-                'yAxis': {'title': {'text': u'Millones de córdobas'}},
-                'xAxis': {'title': {'text': u'Rubros'}},
-                'colors':  colorscheme
-                },
-            )
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                    },
+                'terms': {
+                    'subsubtipoingreso__origen__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options)
 
     # tabla: get total and percent
     total = {}

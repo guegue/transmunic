@@ -161,7 +161,7 @@ CHART_OPTIONS_RESPONSIVE = {
             },
             'chartOptions': {
                 'legend': {
-                    'enabled': False
+                    'enabled': True
                 }
             }
         },
@@ -171,7 +171,7 @@ CHART_OPTIONS_RESPONSIVE = {
             },
             'chartOptions': {
                 'legend': {
-                    'enabled': False
+                    'enabled': True
                 }
             }
         }
@@ -182,6 +182,7 @@ CHART_OPTIONS = {
     'title': {'text': u' '},
     'yAxis': {'title': {'text': u'Millones de cordobas'}},
     'xAxis': {'title': {'text': u'Rubros'}},
+    'legend': {'enabled': True},
     'colors': CHART_OPTIONS_COLORS,
     'plotOptions': {
         'pie': {
@@ -194,8 +195,14 @@ CHART_OPTIONS = {
         },
         'column': {
             'showInLegend': False,
-        }
-    },
+            'dataLabels': {
+                'enabled': False,
+                'format': '{point.y:.2f}'},
+            'depth': 35
+            }
+        },
+    'tooltip': {
+        'pointFormat': '{series.name}: <b>{point.y:.2f} </b>'},
     'responsive': CHART_OPTIONS_RESPONSIVE
 }
 
