@@ -64,8 +64,8 @@
     .bubbletree-container {
         min-height: 540px;
     }
-    }
-@media (min-width: 1140px) {
+}
+@media (min-width: 961px) {
     .bubbletree-container {
         min-height: 600px;
     }

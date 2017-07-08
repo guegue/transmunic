@@ -5,26 +5,25 @@ $(function() {
         $(charts).each(function(){
             $(this).hide("slow").removeClass("view-main").addClass("view-alternative");
         });
-        console.log("is bubble " + !$("#" + chartcontainer).hasClass("bubbletree").toString(), chartcontainer);
 
             $("#" + chartcontainer).show("slow", function(){
             var width = $( window ).width();
-                if(!$(this).hasClass("bubbletree")){
+            var height = $("#" + chartcontainer).closest(".col-md-7").height();
+            console.log(width + "x" + height);
+            if(!$(this).hasClass("bubbletree-wrapper")){
                 if (width < 540){
                     $(this).highcharts().setSize(width, 320);
                 }else if(width >= 540 && width < 720){
-                    $(this).highcharts().setSize(400, 360);
+                    $(this).highcharts().setSize(400, 540);
                 }else if(width >= 720 && width < 960){
-                    $(this).highcharts().setSize(600, 400);
-                    }else if(width >= 960 && width < 1140){
-                    $(this).highcharts().setSize(600, 400);
-                }else if(width > 1140){
-                    $(this).highcharts().setSize(600, 400);
-                }else {
-                    $(this).highcharts().setSize(width);
+                    $(this).highcharts().setSize(600, 540);
+                }else if(width >= 960 && width < 1140){
+                    $(this).highcharts().setSize(600, 600);
+                }else{
+                    $(this).highcharts().setSize(600, 600);
                 }
             }
-            $(this).addClass("view-main");
+            $(this).removeClass("view-alternative").addClass("view-main");
         });
 
     });
