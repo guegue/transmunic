@@ -6,7 +6,7 @@
 .oh-my-zsh
 environment.sh
 .zcompdump*
-*/migrations/
+# */migrations/
 .z
 .z*
 .ipython
