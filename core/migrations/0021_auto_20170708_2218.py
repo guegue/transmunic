@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_catinversion_color'),
+        ('core', '0020_catinversion_color'),
     ]
 
     operations = [
