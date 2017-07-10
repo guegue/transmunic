@@ -55,7 +55,7 @@ def gf_chart(request):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     from collections import OrderedDict #FIXME move up
     if municipio:
@@ -119,16 +119,16 @@ def gf_chart(request):
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'tipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
@@ -351,19 +351,19 @@ def gf_chart(request):
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'tipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
@@ -636,12 +636,18 @@ def gf_chart(request):
     if portada:
         charts =  (pie, )
     else:
-        charts =  (pie,barra)
-    # Bubble tree data
-    bubble_data = {'label':"Total", 'amount': round(ejecutado/1000000, 2)}
+        charts =  (pie, barra)
+    # Bubble tree data 
+    bubble_total = asignado if periodo == PERIODO_INICIAL else ejecutado
+    bubble_data = {'label': "Total", 'amount': round(bubble_total/1000000, 2)}
     child_l1 = []
     for idx, child in enumerate(rubros):
-        child_data = {'taxonomy': "cofog", 'id': idx,'name': idx, 'label':child['tipogasto__nombre'], 'amount': round(child['ejecutado']/1000000, 2)}
+        child_data = {
+            'taxonomy': "cofog",
+            'id': idx,
+            'name': idx,
+            'label': child['tipogasto__shortname'] if child['tipogasto__shortname'] else child['tipogasto__nombre'],
+            'amount': round(child[datacol]/1000000, 2)}
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)
