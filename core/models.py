@@ -76,7 +76,7 @@ class Anio(models.Model):
 
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200)
-    slug = models.CharField(max_length=8)
+    slug = models.SlugField(max_length=80)
     minimo = models.DecimalField(max_digits=5, decimal_places=2, null=True,
                                  blank=True)
     destacar = models.BooleanField(default=False)
