@@ -54,7 +54,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
 
         child_l1 = []
         level_1_sql = """SELECT SUM(sd.asignado) AS asignado,
-            SUM(sd.ejecutado) AS ejecutado, o.nombre, o.id
+            SUM(sd.ejecutado) AS ejecutado, o.nombre, o.shortname, o.id
             from (
                 select id.asignado, id.ejecutado, id.ingreso_id,
                 id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
@@ -70,27 +70,29 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             as sd
             left join core_origenrecurso as o
             on sd.origen_id=o.id
-            group by nombre, id"""
+            group by nombre, shortname, id"""
         cursor = connection.cursor()
         cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
+            print source;
             source_data = {
                 'taxonomy': "income",
                 'name': source['id'],
                 'id': source['id'],
-                'label': source['nombre'],
+                'label': source['shortname'] if source['shortname'] else source['nombre'],
                 'amount': round(source[data_source]/1000000, 2)
             }
 
             child_l2 = []
             level_2_sql = """select sum(sd.asignado) as asignado,
-                sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo
+                sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
+                sd.shortname
                 from (
                     select id.asignado, id.ejecutado, id.ingreso_id,
                     id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
                     ssti.subtipoingreso_id as codigo, ssti.origen_id,
-                    sti.nombre
+                    sti.nombre, sti.shortname
                     from core_ingresodetalle as id
                     left join core_ingreso as i
                     on id.ingreso_id = i.id
@@ -102,7 +104,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     and i.periodo = %s
                     and i.municipio_id = %s
                     and ssti.origen_id = '%s') as sd
-                group by sd.nombre, sd.codigo"""
+                group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
             cursor.execute(
                 level_2_sql,
@@ -111,15 +113,17 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
 
             for subtype in subtype_list:
                 subtype_data = {
-                    'label': subtype['nombre'],
+                    'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
                 child_l3 = []
                 level_3_sql = """select sum(sd.asignado) as asignado,
-                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo
+                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
+                    sd.shortname
                     from (select id.asignado, id.ejecutado, id.ingreso_id,
                     id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
-                    ssti.subtipoingreso_id as codigo, ssti.nombre
+                    ssti.subtipoingreso_id as codigo, ssti.nombre,
+                    ssti.shortname
                     from core_ingresodetalle as id
                     left join core_ingreso as i on id.ingreso_id = i.id
                     left join core_subsubtipoingreso as ssti
@@ -128,7 +132,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     and i.periodo = %s
                     and i.municipio_id = %s
                     and ssti.subtipoingreso_id = %s) as sd
-                group by sd.nombre, sd.codigo"""
+                group by sd.nombre, sd.shortname, sd.codigo"""
                 cursor = connection.cursor()
                 cursor.execute(
                     level_3_sql,
@@ -136,7 +140,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 subsubtype_list = dictfetchall(cursor)
                 for subsubtype in subsubtype_list:
                     subsubtype_data = {
-                        'label': subsubtype['nombre'],
+                        'label': subsubtype['shortname'] if subsubtype['shortname'] else subsubtype['nombre'],
                         'amount': round(subsubtype[data_source]/1000000, 2)
                         }
                     child_l3.append(subsubtype_data)
@@ -170,7 +174,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
 
         child_l1 = []
         level_1_sql = """select sum(sd.asignado) as asignado,
-            sum(sd.ejecutado) as ejecutado, o.nombre, o.id
+            sum(sd.ejecutado) as ejecutado, o.nombre, o.shortname, o.id
             from (
                 select id.asignado, id.ejecutado, id.ingreso_id,
                 id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
@@ -184,7 +188,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 and origen_id is not null) as sd
             left join core_origenrecurso as o
             on sd.origen_id=o.id
-            group by nombre, id"""
+            group by nombre, shortname, id"""
         cursor = connection.cursor()
         cursor.execute(level_1_sql, [year_data.anio, periodo])
         revenuesource_list = dictfetchall(cursor)
@@ -193,17 +197,18 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 'taxonomy': "income",
                 'name': source['id'],
                 'id': source['id'],
-                'label': source['nombre'],
+                'label': source['shortname'] if source['shortname'] else source['nombre'],
                 'amount': round(source[data_source]/1000000, 2)
                 }
             child_l2 = []
             level_2_sql = """select sum(sd.asignado) as asignado,
-                sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo
+                sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
+                sd.shortname
                 from (
                     select id.asignado, id.ejecutado, id.ingreso_id,
                     id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
                     ssti.subtipoingreso_id as codigo, ssti.origen_id,
-                    sti.nombre
+                    sti.nombre, sti.shortname
                     from core_ingresodetalle as id left join core_ingreso as i
                     on id.ingreso_id = i.id
                     left join core_subsubtipoingreso as ssti
@@ -213,7 +218,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     where i.anio = %s
                     and i.periodo = %s
                     and ssti.origen_id = '%s') as sd
-                group by sd.nombre, sd.codigo"""
+                group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
             cursor.execute(
                 level_2_sql,
@@ -222,15 +227,17 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
 
             for subtype in subtype_list:
                 subtype_data = {
-                    'label': subtype['nombre'],
+                    'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
                 child_l3 = []
                 level_3_sql = """select sum(sd.asignado) as asignado,
-                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo
+                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
+                    sd.shortname
                     from (select id.asignado, id.ejecutado, id.ingreso_id,
                     id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio,
-                    ssti.subtipoingreso_id as codigo, ssti.nombre
+                    ssti.subtipoingreso_id as codigo, ssti.nombre,
+                    ssti.shortname
                     from core_ingresodetalle as id
                     left join core_ingreso as i
                     on id.ingreso_id = i.id
@@ -239,7 +246,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     where i.anio = %s
                     and i.periodo = %s
                     and ssti.subtipoingreso_id = %s) as sd
-                group by sd.nombre, sd.codigo"""
+                group by sd.nombre, sd.shortname, sd.codigo"""
                 cursor = connection.cursor()
                 cursor.execute(
                     level_3_sql,
@@ -247,7 +254,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 subsubtype_list = dictfetchall(cursor)
                 for subsubtype in subsubtype_list:
                     subsubtype_data = {
-                        'label': subsubtype['nombre'],
+                        'label': subsubtype['shortname'] if subsubtype['shortname'] else subsubtype['nombre'],
                         'amount': round(subsubtype[data_source]/1000000, 2)
                         }
                     child_l3.append(subsubtype_data)

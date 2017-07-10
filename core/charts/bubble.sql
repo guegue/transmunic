@@ -85,3 +85,28 @@ and i.municipio_id = 55
 and ssti.origen_id = '3'
 
 select sum(sd.asignado) as asignado, sum(sd.ejecutado) as         ejecutado from (select id.asignado, id.ejecutado, id.ingreso_id,         id.subsubtipoingreso_id, i.municipio_id, i.periodo, i.anio, ssti.subtipoingreso_id, ssti.origen_id         from core_ingresodetalle as id left join core_ingreso as i on id.ingreso_id = i.id         left join core_subsubtipoingreso as ssti on id.subsubtipoingreso_id=ssti.codigo         where i.anio = %s         and i.periodo = %s         and i.municipio_id = %s         and origen_id is not null) as sd         left join core_origenrecurso as o on sd.origen_id=o.id
+
+
+
+select sum(sd.asignado) as asignado,
+                sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
+                sd.shortname
+                from (
+                    select id.asignado, id.ejecutado, id.gasto_id,
+                    id.subsubtipogasto_id, i.municipio_id, i.periodo, i.anio,
+                    ssti.subtipogasto_id as codigo, ssti.origen_id, sti.nombre,
+                    sd.shortname
+                    from core_gastodetalle as id
+                    left join core_gasto as i
+                    on id.gasto_id = i.id
+                    left join core_subsubtipogasto as sti
+                    on id.subsubtipogasto_id::text=ssti.codigo::text
+                    left join (
+                        select stg.nombre, stg.shortname
+                        to_number(stg.codigo, '9999999') as codigo
+                        from core_subtipogasto stg) as sti
+                        on sti.codigo= ssti.subtipogasto_id
+                        where i.anio = 2015
+                        and i.periodo = 'F'
+                        and ssti.origen_id = '3') as sd
+                    group by sd.nombre, sd.shortname, sd.codigo
