@@ -48,6 +48,7 @@ chart_options = getattr(
 def gpersonal_chart(request):
 
     municipio_list = Municipio.objects.all()
+    municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:

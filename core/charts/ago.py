@@ -424,7 +424,9 @@ def aci_bubbletree_data_ingreso(
                 ingreso__municipio__slug=municipio,
                 ingreso__periodo=periodo,
                 tipoingreso__codigo=child['tipoingreso'])\
-                .values('subtipoingreso', 'subtipoingreso__nombre', 'subtipoingreso__shortname')\
+                .values(
+                    'subtipoingreso', 'subtipoingreso__nombre',
+                    'subtipoingreso__shortname')\
                 .order_by('subtipoingreso__codigo')\
                 .annotate(amount=Sum(amount_column))
         else:
@@ -432,7 +434,9 @@ def aci_bubbletree_data_ingreso(
                 ingreso__anio=year,
                 ingreso__periodo=periodo,
                 tipoingreso__codigo=child['tipoingreso'])\
-                .values('subtipoingreso', 'subtipoingreso__nombre', 'subtipoingreso__shortname')\
+                .values(
+                    'subtipoingreso', 'subtipoingreso__nombre',
+                    'subtipoingreso__shortname')\
                 .order_by('subtipoingreso__codigo')\
                 .annotate(amount=Sum(amount_column))
         grandchildren = []
