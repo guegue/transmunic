@@ -125,6 +125,7 @@ def municipio(request, slug=None, year=None):
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
+    investyear = year_list[-1]
 
     data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
@@ -148,12 +149,30 @@ def municipio(request, slug=None, year=None):
 
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
-    total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    if slug is not None:
+        total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+    else:
+        total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
 
-    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
-    inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(
+        inversion__anio=investyear,
+        inversion__periodo=periodo, catinversion__destacar=True)\
+        .values(
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre')\
+        .annotate(ejecutado=Sum(quesumar))
+    inversion_categoria2 = Proyecto.objects.filter(
+        inversion__anio=investyear,
+        inversion__periodo=periodo,
+        catinversion__destacar=False)\
+        .values(
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre',
+            'catinversion__id')\
+        .annotate(ejecutado=Sum(quesumar))
+
     return render_to_response(template_name, {
         'banners': banners,
         'desc_oim_chart':desc_oim_chart,
