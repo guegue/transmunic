@@ -6,21 +6,21 @@ $(function() {
             $(this).hide("slow").removeClass("view-main").addClass("view-alternative");
         });
 
-            $("#" + chartcontainer).show("slow", function(){
+            $("#" + chartcontainer).show("slow", function(chartcontainer){
             var width = $( window ).width();
-            var height = $("#" + chartcontainer).closest(".col-md-7").height();
+            var height = $( window ).height();
             console.log(width + "x" + height);
             if(!$(this).hasClass("bubbletree-wrapper")){
                 if (width < 540){
-                    $(this).highcharts().setSize(width, 320);
+                    $(this).highcharts().setSize(width, width);
                 }else if(width >= 540 && width < 720){
-                    $(this).highcharts().setSize(400, 540);
+                    $(this).highcharts().setSize(432, 324);
                 }else if(width >= 720 && width < 960){
-                    $(this).highcharts().setSize(600, 540);
+                    $(this).highcharts().setSize(540, 405);
                 }else if(width >= 960 && width < 1140){
-                    $(this).highcharts().setSize(600, 600);
+                    $(this).highcharts().setSize(600, 450);
                 }else{
-                    $(this).highcharts().setSize(600, 600);
+                    $(this).highcharts().setSize(600, 450);
                 }
             }
             $(this).removeClass("view-alternative").addClass("view-main");

@@ -44,6 +44,7 @@ chart_options = getattr(
 )
 
 
+# FIXME: Table date does not match with the original site
 def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)

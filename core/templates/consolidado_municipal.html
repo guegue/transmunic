@@ -96,11 +96,8 @@
             <h2><strong>Destino</strong><br /> de los Gastos</h2>
             <h5>Millones de córdobas</h5>
             <hr class="pma-line-2">
-            {% for gasto in totales_ogm %}
-            {% if forloop.counter|divisibleby:2 %}
-            {% else %}
             <div class="row wide">
-            {% endif %}
+            {% for gasto in totales_ogm %}
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug}}">
@@ -116,14 +113,14 @@
                                     {{ gasto.ejecutado_percent }}%</span>
                             {% endif %}
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
                 </div>
-            {% if forloop.counter|divisibleby:2 %}
-            </div>
-            {% endif %}
+                {% if forloop.counter|divisibleby:2 %}
+                </div>
+                <div class="row wide">
+                {% endif %}
             {% endfor %}
+            </div>
             <div class="big text-center">
                 <a href="{%url 'origen_gastos' %}?year={{ year }}&municipio={{ municipio.slug }}" class="blanco btn pma-bg-green more">Ver detalle de gastos</a>
             </div>
@@ -132,7 +129,28 @@
 </div>
 {% endblock %}
 
-{% block section2 %}
+{% block section3 %}
+{% endblock %}
+
+{% block section4 %}
+{% endblock %}
+
+<!-- ranking line -->
+{% block section5 %}
+{% endblock %}
+
+<!-- historic info -->
+{% block section6 %}
+{% endblock %}
+
+{% endblock %}
+
+{% block custom_body_blocks %}
+
+{% block section7 %}
+{% endblock %}
+
+{% block investment %}
 <div class="pma-gradient pma-summary pma-index-inversion-icons">
     <div class="container">
         <div class="row">
@@ -189,28 +207,6 @@
     </div>
 </div>
 {% endblock %}
-
-{% block section3 %}
-{% endblock %}
-
-{% block section4 %}
-{% endblock %}
-
-<!-- ranking line -->
-{% block section5 %}
-{% endblock %}
-
-<!-- historic info -->
-{% block section6 %}
-{% endblock %}
-
-{% endblock %}
-
-{% block custom_body_blocks %}
-
-{% block section7 %}
-{% endblock %}
-
 {% endblock %}
 
 {% block extra_footer_scripts %}
