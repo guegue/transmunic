@@ -598,7 +598,7 @@ def gf_chart(request):
         }],
         chart_options=chart_options)
 
-    barra = Chart(
+    bar = Chart(
         datasource=data_rubros,
         series_options=[
             {
@@ -636,7 +636,7 @@ def gf_chart(request):
     if portada:
         charts =  (pie, )
     else:
-        charts =  (pie, barra)
+        charts =  (pie, bar)
     # Bubble tree data 
     bubble_total = asignado if periodo == PERIODO_INICIAL else ejecutado
     bubble_data = {'label': "Total", 'amount': round(bubble_total/1000000, 2)}

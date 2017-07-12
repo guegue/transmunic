@@ -288,14 +288,23 @@ def oim_view(request):
         from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response(template_name, { \
-            'indicator_name': indicator_name, \
-            'year_data': data['year_data'], \
-            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
-            'totales': data['totales'], 'charts': data['charts'], 'periodo_list': data['periodo_list'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
-            'rubrosp': data['rubrosp'], 'otros': data['otros'],\
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data}, \
+    return render_to_response(
+        template_name, {
+            'indicator_name': indicator_name,
+            'year_data': data['year_data'],
+            'indicator_name': "Origen de los Ingresos",
+            'indicator_description': """Son los ingresos que capta el sector público
+                para realizar sus actividades, es decir, es el dinero percibido por 
+                el gobierno para financiar sus gastos públicos""",
+            'municipio': data['municipio'], 'year': data['year'],
+            'mi_clase': data['mi_clase'], 'porano': data['porano'],
+            'totales': data['totales'], 'charts': data['charts'],
+            'periodo_list': data['periodo_list'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
+            'porclase': data['porclase'], 'porclasep': data['porclasep'],
+            'rubros': data['rubros'], 'anuales': data['anuales'],
+            'rubrosp': data['rubrosp'], 'otros': data['otros'],
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
+            'bubble_data': bubble_data}, \
         context_instance=RequestContext(request))
 
 def inversion_view(request):

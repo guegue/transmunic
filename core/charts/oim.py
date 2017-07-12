@@ -674,8 +674,13 @@ def oim_chart(municipio=None, year=None, portada=False):
     else:
         charts =  (pie, bar)
 
-    return {'charts': charts, \
-            'year_data': year_data, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, 'porano': porano_table, 'totales': sources, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'periodo_list': periodo_list, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}
+    return {
+        'charts': charts,
+        'year_data': year_data,
+        'mi_clase': mi_clase,
+        'municipio': municipio_row,
+        'year': year,
+        'porano': porano_table,
+        'totales': sources,
+        'ejecutado': ejecutado, 'asignado': asignado, 'periodo_list': periodo_list,'year_list': year_list, 'municipio_list': municipio_list,
+        'anuales': anual2, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosp': rubrosp, 'otros': otros}

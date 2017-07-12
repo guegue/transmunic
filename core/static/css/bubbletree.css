@@ -63,10 +63,12 @@
 @media (min-width: 721px) and (max-width: 960px) {
     .bubbletree-container {
         min-height: 540px;
+        margin-top: 65px;
     }
 }
 @media (min-width: 961px) {
     .bubbletree-container {
         min-height: 600px;
+        margin-top: 65px;
     }
 }

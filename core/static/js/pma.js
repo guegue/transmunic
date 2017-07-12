@@ -12,7 +12,7 @@ $(function() {
             console.log(width + "x" + height);
             if(!$(this).hasClass("bubbletree-wrapper")){
                 if (width < 540){
-                    $(this).highcharts().setSize(width, width);
+                    $(this).highcharts().setSize(Math.round(width*0.8), width);
                 }else if(width >= 540 && width < 720){
                     $(this).highcharts().setSize(432, 324);
                 }else if(width >= 720 && width < 960){

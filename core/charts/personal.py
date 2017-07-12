@@ -375,13 +375,13 @@ def gpersonal_chart(request):
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'subtipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subtipogasto__codigo')
 
@@ -620,7 +620,7 @@ def gpersonal_chart(request):
         }],
         chart_options=chart_options)
 
-    barra = Chart(
+    bar = Chart(
         datasource=data_rubros,
         series_options=[{
             'options': {
@@ -655,7 +655,7 @@ def gpersonal_chart(request):
     if portada:
         charts =  (pie, )
     else:
-        charts =  (pie,barra)
+        charts =  (pie,bar)
 
     # Bubble tree data
     totalamount = asignado if periodo == PERIODO_INICIAL else ejecutado

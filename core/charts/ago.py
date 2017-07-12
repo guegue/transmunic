@@ -462,8 +462,9 @@ def aci_bubbletree_data_ingreso(
             'name': idx,
             'label': label,
             'amount': round(child['amount']/1000000, 2),
-            'children': grandchildren
         }
+        if grandchildren.__len__() > 3 :
+            child_data['children'] = grandchildren
         children.append(child_data)
     data['children'] = children
     return json.dumps(data)

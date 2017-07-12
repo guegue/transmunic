@@ -356,7 +356,7 @@ footer .copyright {
 .chart-container
 [class^="view-"],
 [class*=" view-"] {
-    position: absolute;
+    /*position: absolute;*/
 }
 .chart-container .view-alternative {
     display: none;
