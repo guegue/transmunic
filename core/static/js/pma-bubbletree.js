@@ -34,7 +34,8 @@ $(function () {
                 'expense': BubbleTree.Styles.Expense
             },
             formatValue: function (value) {
-                return value.toFixed(1);
+                // return value.toFixed(1);
+                return Intl.NumberFormat('en-US', { maximumSignificantDigits: 21, maximumFractionDigits: 1 }).format(value);
             },
             tooltipCallback: tooltip
         });
@@ -50,7 +51,8 @@ $(function () {
                 'income': BubbleTree.Styles.Income
             },
             formatValue: function (value) {
-                return value.toFixed(1);
+                // return value.toFixed(1);
+                return Intl.NumberFormat('en-US', { maximumSignificantDigits: 21, maximumFractionDigits: 1 }).format(value);
             }
         });
     }
@@ -65,7 +67,8 @@ $(function () {
                 'expense': BubbleTree.Styles.Expense
             },
             formatValue: function (value) {
-                return value.toFixed(1);
+                // return value.toFixed(1);
+                return Intl.NumberFormat('en-US', { maximumSignificantDigits: 21, maximumFractionDigits: 1 }).format(value);
             }
         });
     }
