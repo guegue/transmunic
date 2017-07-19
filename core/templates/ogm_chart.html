@@ -16,44 +16,6 @@
 <p class="text-center metric-description container"> </p>
 {% endblock %}
 
-{% block indicator_summary %}
-<div class="col-xs-4 col-sm-4 col-md-4">
-    <div class="info-box">
-        <span class="info-box-icon pma-icon initial">
-        </span>
-        <div class="info-box-content">
-            <span class="info-box-text">Inicial {{ asignado|million|intcomma }}</span>
-        </div>
-    </div>
-</div>
-{% if ejecutado %}
-<div class="col-xs-4 col-sm-4 col-md-4">
-    <div class="info-box">
-        <span class="info-box-icon pma-icon executed">
-        </span>
-        <div class="info-box-content">
-            <span class="info-box-text">
-            Ejecutado {{ ejecutado|million|intcomma }}
-            </span>
-            <span class="info-box-number pma-green"></span>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% if municipio %}
-<div class="col-xs-4 col-sm-4 col-md-4">
-    <div class="info-box">
-        <span class="info-box-icon pma-icon municipality-category">
-        </span>
-        <div class="info-box-content">
-            <span class="info-box-text">Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</span>
-            <span class="info-box-number pma-green"></span>
-        </div>
-    </div>
-</div>
- {% endif %}
-{% endblock %}
-
 {% block section1 %}
 <div class="container">
     <div class="row">
