@@ -56,25 +56,36 @@ def home(request):
     periodo = Anio.objects.get(anio=year).periodo
 
     # siempre sumar 'asginado'
-    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    # quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     quesumar = 'asignado'
 
     data_oim = oim_chart(year=year, portada=True)
     data_ogm = ogm_chart(year=year, portada=True)
 
-    #FIXME no 'quesumar'? usa asignado y ejecutado
-    #data_inversion = inversion_chart()
-    #FIXME no 'quesumar'? solo usa ejecutado
-    #data_inversion_area = inversion_area_chart()
+    # FIXME no 'quesumar'? usa asignado y ejecutado
+    # data_inversion = inversion_chart()
+    # FIXME no 'quesumar'? solo usa ejecutado
+    # data_inversion_area = inversion_area_chart()
 
     data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=True). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre',).annotate(ejecutado=Sum(quesumar))
-    inversion_categoria2 = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__destacar=False). \
-            values('catinversion__slug','catinversion__minimo','catinversion__nombre','catinversion__id').annotate(ejecutado=Sum(quesumar))
+    inversion_categoria = Proyecto.objects.filter(
+        inversion__anio=year,
+        inversion__periodo=periodo,
+        catinversion__destacar=True)\
+        .values(
+            'catinversion__slug', 'catinversion__minimo',
+            'catinversion__nombre')\
+        .annotate(ejecutado=Sum(quesumar))
+    inversion_categoria2 = Proyecto.objects.filter(
+        inversion__anio=year, inversion__periodo=periodo,
+        catinversion__destacar=False)\
+        .values(
+            'catinversion__slug', 'catinversion__minimo',
+            'catinversion__nombre', 'catinversion__id')\
+        .annotate(ejecutado=Sum(quesumar))
     return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
@@ -125,7 +136,8 @@ def municipio(request, slug=None, year=None):
 
     # InversionFuente tiene su propio último año
     year_list = getYears(InversionFuente)
-    investyear = year_list[-1]
+    # investyear = year_list[-1]
+    investyear = year
 
     data_fuentes = fuentes_chart(year=year, municipio=slug, portada=True)
 
@@ -207,13 +219,22 @@ def municipio(request, slug=None, year=None):
         'data_ogm': data_ogm,
     }, context_instance=RequestContext(request))
 
+
 def inversion_minima_sector_view(request):
     template_name = 'chart.html'
-    municipio = request.GET.get('municipio','')
-    year = request.GET.get('year','')
+    municipio = request.GET.get('municipio', '')
+    year = request.GET.get('year', '')
     data = inversion_minima_sector_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'], 'year_list': data['year_list']},\
-            context_instance=RequestContext(request))
+
+    return render_to_response(
+        template_name,
+        {
+            'charts': data['charts'],
+            'municipio_list': data['municipio_list'],
+            'year_list': data['year_list']
+        },
+        context_instance=RequestContext(request))
+
 
 def inversion_categoria_view(request):
     template_name = 'inversionpiechart.html'
