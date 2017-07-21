@@ -142,7 +142,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color')\
             .annotate(inicial_asignado=Sum('asignado'))\
             .order_by('catinversion')
 
@@ -152,7 +152,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color')\
             .annotate(
                 actualizado_asignado=Sum('asignado'),
                 actualizado_ejecutado=Sum('ejecutado'))\
@@ -164,7 +164,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color')\
             .annotate(
                 final_ejecutado=Sum('ejecutado'),
                 final_asignado=Sum('asignado'))\
@@ -176,7 +176,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color')\
             .annotate(
                 ejecutado=Sum('ejecutado'),
                 asignado=Sum('asignado'))\
