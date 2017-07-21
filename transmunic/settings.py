@@ -184,6 +184,7 @@ CHART_OPTIONS = {
     'xAxis': {'title': {'text': u'Rubros'}},
     'legend': {'enabled': True},
     'colors': CHART_OPTIONS_COLORS,
+    'credits': {'enabled': False},
     'plotOptions': {
         'pie': {
             'dataLabels': {
