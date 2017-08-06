@@ -110,7 +110,6 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     on sti.codigo= ssti.subtipogasto_id
                     where i.anio = %s
                     and i.periodo = %s and i.municipio_id = %s
-                if subtype['nombre'] == "Gastos de Personal":
                     and ssti.origen_id = '%s') as sd
                 group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
