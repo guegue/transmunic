@@ -78,11 +78,15 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
         cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
+            if source['shortname'] is not None:
+                label = source['shortname']
+            else:
+                label = source['nombre']
             source_data = {
                 'taxonomy': "expense",
                 'name': source['id'],
                 'id': source['id'],
-                'label': source['shortname'] if source['shortname'] else source['nombre'],
+                'label': label,
                 'amount': round(source[data_source]/1000000, 2)
                 }
             child_l2 = []
@@ -106,6 +110,7 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     on sti.codigo= ssti.subtipogasto_id
                     where i.anio = %s
                     and i.periodo = %s and i.municipio_id = %s
+                if subtype['nombre'] == "Gastos de Personal":
                     and ssti.origen_id = '%s') as sd
                 group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
@@ -114,8 +119,12 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                 [year_data.anio, periodo, municipio_id, source['id']])
             subtype_list = dictfetchall(cursor)
             for subtype in subtype_list:
+                if subtype['shortname'] is not None:
+                    label = subtype['shortname']
+                else:
+                    label = subtype['nombre']
                 subtype_data = {
-                    'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
+                    'label': label,
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
                 child_l3 = []
@@ -125,8 +134,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     from (
                         select id.asignado, id.ejecutado, id.gasto_id,
                             id.subsubtipogasto_id, i.municipio_id, i.periodo,
-                            i.anio, ssti.subtipogasto_id as codigo, ssti.nombre,
-                            ssti.shortname
+                            i.anio, ssti.subtipogasto_id as codigo,
+                            ssti.nombre, ssti.shortname
                             from core_gastodetalle as id
                             left join core_gasto as i on id.gasto_id = i.id
                             left join core_subsubtipogasto as ssti
@@ -142,8 +151,12 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     [year_data.anio, periodo, municipio_id, subtype['codigo']])
                 subsubtype_list = dictfetchall(cursor)
                 for subsubtype in subsubtype_list:
+                    if subsubtype['shortname'] is not None:
+                        label = subsubtype['shortname']
+                    else:
+                        label = subsubtype['nombre']
                     subsubtype_data = {
-                        'label': subsubtype['shortname'] if subsubtype['shortname'] else subsubtype['nombre'],
+                        'label': label,
                         'amount': round(subsubtype[data_source]/1000000, 2)
                         }
                     child_l3.append(subsubtype_data)
@@ -198,11 +211,15 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             child_l3 = []
+            if source['shortname'] is not None:
+                label = source['shortname']
+            else:
+                label = source['nombre']
             source_data = {
                 'taxonomy': "expense",
                 'name': source['id'],
                 'id': source['id'],
-                'label': source['shortname'] if source['shortname'] else source['nombre'],
+                'label': label,
                 'amount': round(source[data_source]/1000000, 2)
                 }
             child_l2 = []
@@ -235,8 +252,12 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
             subtype_list = dictfetchall(cursor)
 
             for subtype in subtype_list:
+                if subtype['shortname'] is not None:
+                    label = subtype['shortname']
+                else:
+                    label = subtype['nombre']
                 subtype_data = {
-                    'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
+                    'label': label,
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
                 child_l3 = []
@@ -263,8 +284,12 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     [year_data.anio, periodo, subtype['codigo']])
                 subsubtype_list = dictfetchall(cursor)
                 for subsubtype in subsubtype_list:
+                    if subsubtype['shortname'] is not None:
+                        label = subsubtype['shortname']
+                    else:
+                        label = subsubtype['nombre']
                     subsubtype_data = {
-                        'label': subsubtype['shortname'] if subsubtype['shortname'] else subsubtype['nombre'],
+                        'label': label,
                         'amount': round(subsubtype[data_source]/1000000, 2)
                         }
                     child_l3.append(subsubtype_data)
