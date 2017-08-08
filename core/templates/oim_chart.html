@@ -301,12 +301,12 @@
 <div class="cd-horizontal-timeline loaded">
     <div class="timeline container historico">
         <div class="events-wrapper col-md-11">
-            <div class="events" style="{{anuales|length|add:1|mul:"150"}}px">
+            <div class="events" style="width:{{anuales|length|add:1|mul:"130"}}px">
                 <ol>
                     {% for row in anuales %}
-                    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }}"
+                    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
                     {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter0|mul:"150" }}px;"><span class="posicion">{{ row.ingreso__anio }}</span>
+                    style="left:{{ forloop.counter|mul:"130" }}px;"><span class="posicion">{{ row.ingreso__anio }}</span>
                     <br/>
                     {% if row.ingreso__periodo == 'I' %}
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
@@ -329,9 +329,9 @@
     <div class="events-content">
         <ol>
 	    {% for row in anuales %}
-	    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }}"
+	    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
 	    {% if row.ingreso__anio = year|add:"0" %} class="selected" {% endif %}
-	    style="left:{{ forloop.counter0|mul:"150" }}px;"></a></li>
+	    style="left:{{ forloop.counter|mul:"130" }}px;"></a></li>
 	    {% endfor %}
         </ol>
     </div> <!-- .events-content -->
