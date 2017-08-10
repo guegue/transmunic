@@ -271,12 +271,12 @@
 <div class="cd-horizontal-timeline loaded historico">
     <div class="timeline container">
         <div class="events-wrapper">
-            <div class="events" style="width:{{anuales|length|add:1|mul:"100"}}px">
+            <div class="events" style="width:{{anuales|length|add:1|mul:"135"}}px">
                 <ol>
                     {% for row in anuales %}
-                    <li><a href="#0" data-date="01/01/{{ row.inversion__anio }}"
+                    <li><a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
                     {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}
-                    style="left:{{ forloop.counter|mul:"100" }}px;"><span class="posicion">{{ row.inversion__anio }}</span>
+                    style="left:{{ forloop.counter|mul:"135" }}px;"><span class="posicion">{{ row.inversion__anio }}</span>
                     <br/>
                     {% if row.inversion__periodo == 'I' %}
                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
@@ -298,7 +298,7 @@
 
     <div class="events-content">
         <ol>
-            <li data-date="01/01/{{ row.inversion__anio }}"
+            <li data-date="01/01/{{ row.inversion__anio }} 00:00"
                 {% if row.inversion__anio = year|add:"0" %} class="selected" {% endif %}>
             </li>
         </ol>
