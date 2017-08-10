@@ -283,7 +283,10 @@ def ep_chart(request):
         chart_options=chart_options)
 
     # FIXME BS
-    asignado = ejecutado = porclase = None
+    # asignado = ejecutado = porclase = None
+    asignado = ep_ingresos
+    ejecutado = ep_gastos
+    porclase = None
 
     bubble_data_ingreso = oim_bubble_chart_data(municipio=municipio, year=year)
     bubble_data_gasto = ogm_bubble_chart_data(municipio=municipio, year=year)
