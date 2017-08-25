@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
-from django.views.generic.detail import DetailView
-from django.db.models import Sum, Max
+from django.db.models import Sum
 
-from models import Anio, Departamento, Municipio, Inversion, Proyecto, InversionFuente, Grafico, CatInversion
-from models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, AREAGEOGRAFICA_VERBOSE
+from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
+    InversionFuente, Grafico, CatInversion
 from tools import getYears
-from charts.misc import fuentes_chart, inversion_minima_sector_chart, inversion_area_chart, inversion_minima_porclase, getVar
+from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
+    inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
@@ -112,7 +111,7 @@ def home(request):
         'periodo': periodo,
     }, context_instance=RequestContext(request))
 
-    
+
 def municipio(request, slug=None, year=None):
     template_name = 'consolidado_municipal.html'
     if slug is not None:
@@ -316,6 +315,7 @@ def ogm_view(request):
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data}, \
             context_instance=RequestContext(request))
 
+
 def oim_view(request):
     template_name = 'oim_chart.html'
     municipio = getVar('municipio', request)
@@ -323,7 +323,7 @@ def oim_view(request):
     indicator_name = "Origen de los ingresos"
     data = oim_chart(municipio=municipio, year=year)
     bubble_data = oim_bubble_chart_data(municipio=municipio, year=year)
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
@@ -332,19 +332,20 @@ def oim_view(request):
         template_name, {
             'indicator_name': indicator_name,
             'year_data': data['year_data'],
-            'indicator_name': "Origen de los Ingresos",
-            'indicator_description': """Son los ingresos que capta el sector público
-                para realizar sus actividades, es decir, es el dinero percibido por 
-                el gobierno para financiar sus gastos públicos""",
+            'indicator_description': """Son los ingresos que capta el sector
+                público para realizar sus actividades, es decir, es el dinero
+                percibido por el gobierno para financiar sus gastos públicos""",
             'municipio': data['municipio'], 'year': data['year'],
             'mi_clase': data['mi_clase'], 'porano': data['porano'],
             'totales': data['totales'], 'charts': data['charts'],
-            'periodo_list': data['periodo_list'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
+            'periodo_list': data['periodo_list'],
+            'year_list': data['year_list'],
+            'municipio_list': data['municipio_list'],
             'porclase': data['porclase'], 'porclasep': data['porclasep'],
             'rubros': data['rubros'], 'anuales': data['anuales'],
             'rubrosp': data['rubrosp'], 'otros': data['otros'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
-            'bubble_data': bubble_data}, \
+            'bubble_data': bubble_data},
         context_instance=RequestContext(request))
 
 def inversion_view(request):
