@@ -21,6 +21,7 @@ from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inve
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
+from core.charts.aci import aci_bubbletree_data_gasto
 
 from transmunic import settings as pma_settings
 
@@ -638,19 +639,7 @@ def gf_chart(request):
     else:
         charts =  (pie, bar)
     # Bubble tree data 
-    bubble_total = asignado if periodo == PERIODO_INICIAL else ejecutado
-    bubble_data = {'label': "Total", 'amount': round(bubble_total/1000000, 2)}
-    child_l1 = []
-    for idx, child in enumerate(rubros):
-        child_data = {
-            'taxonomy': "cofog",
-            'id': idx,
-            'name': idx,
-            'label': child['tipogasto__shortname'] if child['tipogasto__shortname'] else child['tipogasto__nombre'],
-            'amount': round(child[datacol]/1000000, 2)}
-        child_l1.append(child_data)
-    bubble_data['children'] = child_l1
-    bubble_source = json.dumps(bubble_data)
+    bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:

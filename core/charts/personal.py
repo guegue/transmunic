@@ -658,19 +658,8 @@ def gpersonal_chart(request):
         charts =  (pie,bar)
 
     # Bubble tree data
-    totalamount = asignado if periodo == PERIODO_INICIAL else ejecutado
-    bubble_data = {'label':"Total", 'amount': round(totalamount/1000000, 2)}
-    child_l1 = []
-    for idx, child in enumerate(rubros):
-        child_data = {
-            'taxonomy': "cofog",
-            'name': idx,
-            'id': idx,
-            'label': child['subtipogasto__shortname'] if child['subtipogasto__shortname'] else child['subtipogasto__nombre'],
-            'amount': round(child[datacol]/1000000, 2)}
-        child_l1.append(child_data)
-    bubble_data['children'] = child_l1
-    bubble_source = json.dumps(bubble_data)
+    bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)
+    print bubble_source
 
     #Descarga en Excel
     reporte = request.POST.get("reporte","")
@@ -690,3 +679,76 @@ def gpersonal_chart(request):
             'bubble_data': bubble_source, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))
+
+
+def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+            .order_by('subtipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .aggregate(total=Sum(amount_column))
+    else:
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+            .order_by('subtipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .aggregate(total=Sum(amount_column))
+    data = {
+        'label': "Gasto de Personal",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__municipio__slug=municipio,
+                gasto__periodo=periodo,
+                subtipogasto__codigo=child['subtipogasto'])\
+                .values('subsubtipogasto', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname')\
+                .order_by('subsubtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__periodo=periodo,
+                subtipogasto__codigo=child['subtipogasto'])\
+                .values('subsubtipogasto', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname')\
+                .order_by('subsubtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        if child['subtipogasto__shortname']:
+            label = child['subtipogasto__shortname']
+        else:
+            label = child['subtipogasto__nombre']
+        child_data = {
+            'taxonomy': "expense",
+            'id': idx,
+            'name': idx,
+            'label': label,
+            'amount': round(child['amount']/1000000, 2)
+            }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)
