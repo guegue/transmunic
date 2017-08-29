@@ -162,27 +162,46 @@ def municipio(request, slug=None, year=None):
 
     if slug is not None:
         total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+        inversion_categoria = Proyecto.objects.filter(
+            inversion__municipio__slug=slug,
+            inversion__anio=investyear,
+            inversion__periodo=periodo, catinversion__destacar=True)\
+            .values(
+                'catinversion__slug',
+                'catinversion__minimo',
+                'catinversion__nombre')\
+            .annotate(ejecutado=Sum(quesumar))
+        inversion_categoria2 = Proyecto.objects.filter(
+            inversion__municipio__slug=slug,
+            inversion__anio=investyear,
+            inversion__periodo=periodo,
+            catinversion__destacar=False)\
+            .values(
+                'catinversion__slug',
+                'catinversion__minimo',
+                'catinversion__nombre',
+                'catinversion__id')\
+            .annotate(ejecutado=Sum(quesumar))
     else:
         total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
-
-    inversion_categoria = Proyecto.objects.filter(
-        inversion__anio=investyear,
-        inversion__periodo=periodo, catinversion__destacar=True)\
-        .values(
-            'catinversion__slug',
-            'catinversion__minimo',
-            'catinversion__nombre')\
-        .annotate(ejecutado=Sum(quesumar))
-    inversion_categoria2 = Proyecto.objects.filter(
-        inversion__anio=investyear,
-        inversion__periodo=periodo,
-        catinversion__destacar=False)\
-        .values(
-            'catinversion__slug',
-            'catinversion__minimo',
-            'catinversion__nombre',
-            'catinversion__id')\
-        .annotate(ejecutado=Sum(quesumar))
+        inversion_categoria = Proyecto.objects.filter(
+            inversion__anio=investyear,
+            inversion__periodo=periodo, catinversion__destacar=True)\
+            .values(
+                'catinversion__slug',
+                'catinversion__minimo',
+                'catinversion__nombre')\
+            .annotate(ejecutado=Sum(quesumar))
+        inversion_categoria2 = Proyecto.objects.filter(
+            inversion__anio=investyear,
+            inversion__periodo=periodo,
+            catinversion__destacar=False)\
+            .values(
+                'catinversion__slug',
+                'catinversion__minimo',
+                'catinversion__nombre',
+                'catinversion__id')\
+            .annotate(ejecutado=Sum(quesumar))
 
     return render_to_response(template_name, {
         'banners': banners,
