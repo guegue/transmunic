@@ -84,7 +84,9 @@
                 <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}Consolidado{% endif %}</h2>
                 <hr class="pma-line-5"/>
                 <h4 class="text-center">
-                    <strong>{% block indicator_title_text %}{{indicator_name}}{% endblock %} {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
+                    <strong>{% block indicator_title_text %}{{indicator_name}}{% endblock %} 
+			    {% if periodo_list|keyvalue:year == 'F' %} cierre {% elif periodo_list|keyvalue:year == 'A' %} intermedio {% elif periodo_list|keyvalue:year == 'I' %}inicial {% endif %}
+			    {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
                 </h4>
                 <p class="text-center metric-description container"> {% block indicator_description %} Son los ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero percibido por el gobierno para financiar sus gastos públicos
                 {% endblock %}
@@ -148,9 +150,14 @@
 {% block section1 %}
 <div class="container">
     <div class="row">
-        <h2> <strong>{{indicator_name}}</strong> </h2>
-        <h4>Millones de córdobas corrientes</h4>
-        <hr class="pma-line-2">
+	<div class="text-center">
+        <h3>
+	Ingresos presupuesto {% if periodo_list|keyvalue:year == 'F' %}cierre {% elif periodo_list|keyvalue:year == 'A' %} intermedio {% elif periodo_list|keyvalue:year == 'I' %}inicial {% endif %}
+	<br />Periodo {{ year }}
+	</h3>
+        <h5>Millones de córdobas corrientes</h5>
+        <hr class="pma-line-2 text-center">
+	</div>
         {% block charts %}
         <div class="col-xs-12 col-sm-12 col-md-7">
             <div class="chart-update col-xs-12 col-sm-12 col-md-1 text-right">
@@ -172,6 +179,12 @@
         {% endblock %}
         <div class="col-md-5 table-responsive">
             {% block main_table %}
+	    <h3>Destino de la inversion municipal<br> 
+		Presupuesto de
+               {% if periodo == 'F'%}Cierre {% else %}{% if periodo == 'A' %} Intermedio {% else %}Inicial {% endif %}{% endif %}
+	       {{ year }}
+	    </h3>
+	    <small>Millones de córdobas corrientes</small>
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="bg-primary">

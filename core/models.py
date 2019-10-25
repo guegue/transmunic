@@ -9,6 +9,7 @@ from django.db.models import Sum, Max, Min
 from autoslug import AutoSlugField
 from sorl.thumbnail import ImageField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
+from django.utils.encoding import python_2_unicode_compatible
 
 from lugar.models import *
 
@@ -435,3 +436,4 @@ class InversionFuenteDetalle(models.Model):
     class Meta:
         verbose_name_plural = 'Detalle de inversion por fuente'
         ordering = ['inversionfuente']
+

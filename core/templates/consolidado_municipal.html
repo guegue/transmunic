@@ -16,8 +16,8 @@
             <div class="col-md-12">
                 {% block indicator_title %}
                 <h2 class="text-center"><strong>
-                        {{municipio.nombre|default:"Resumen Municipal" }} {{ year }}
-                    </strong></h2>
+		  {{municipio.nombre|default:"Resumen Municipal" }} {% if periodo == 'F'%}Cierre {% else %}{% if periodo == 'A' %} Intermedio {% else %}Inicial {% endif %}{% endif %}{{ year }}
+                </strong></h2>
                 <hr class="pma-line-5"/>
                 {% endblock %}
             </div>
@@ -57,9 +57,9 @@
     <div class="row">
         <div class="col-md-6">
             <div class="pma-summary-box hidden-xs pma-summary-internal">
-                {% if periodo_list|keyvalue:year == 'I' %}<span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
+		    {% if periodo_list|keyvalue:year == 'I' %}<span class="font_small">Presupuestado:<br /> </span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
 		{% else %}
-                    <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ejecutado|million }} millones</span>
+		<span class="font_small">Ejecutado: <br /></span><span class="font_small">{{ data_oim.ejecutado|million }} millones</span>
                 {% endif %}
             </div>
             <h2> <a href="{%url 'origen_ingresos'%}?year={{ year }}&municipio={{ municipio.slug }}"><strong>Origenes</strong><br /> de Ingresos</a></h2>
@@ -88,7 +88,7 @@
         <div class="col-md-6 col-eq-height pma-large-icons">
             <div class="pma-summary-box hidden-xs pma-summary-internal">
                 {% if periodo_list|keyvalue:year == 'I' %}
-                    <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
+                    <span class="font_small">Presupuestado: </span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
                 {% else %}
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
                 {% endif %}

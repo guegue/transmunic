@@ -235,6 +235,7 @@ def municipio(request, slug=None, year=None):
         'home': 'home',
         'data_oim': data_oim,
         'data_ogm': data_ogm,
+        'periodo_list': data_oim['periodo_list'],
     }, context_instance=RequestContext(request))
 
 

@@ -80,15 +80,19 @@
         </div>
     </div>
 </div>
+<div class="container">
+</div>
 <div class="container pma-index-icons">
-    <div class="row row-eq-height pma-spacing-top pma-spacing-bottom">
+       <h3>Consolidado {{ year }}</h3>
+       <hr class="pma-line-3">
+    <div class="row row-eq-height pma-spacing-bottom">
         <div class="col-md-6 col-eq-height">
             <div class="gray-box">
                 <div class="pma-summary-box hidden-xs">
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_oim.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_oim.ajecutado|million }} millones</span>
                 </div>
-                <h2><strong>Origen</strong><br/>de los Ingresos {{ year }}</h2>
+                <h2><strong>Origen</strong><br/>de los Ingresos</h2>
                 <hr class="pma-line-2">
                 {% for origen in totales_oim %}
                 {% if forloop.counter|divisibleby:2 %}
@@ -120,7 +124,7 @@
                     <span class="font_small">Asignado:</span><span class="font_small">{{ data_ogm.asignado|million }} millones</span><br />
                     <span class="font_small">Ejecutado:</span><span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
                 </div>
-                <h2><strong>Destino</strong><br/>de los Gastos {{ year }}</h2>
+                <h2><strong>Destino</strong><br/>de los Gastos</h2>
                 <hr class="pma-line-2">
                 {% for gasto in totales_ogm %}
                 {% if forloop.counter|divisibleby:2 %}
@@ -151,18 +155,12 @@
 <div class="pma-gradient pma-summary pma-index-inversion-icons">
     <div class="container">
         <div class="row">
+            <h2><strong>Destino</strong> de la inversi&oacute;n</h2>
+	    <br />
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h2> <strong>Consolidado</strong> <br/>de la Inversión Municipal {{ year }}</h2>
-                        <hr class="pma-line-1">
-                    </div>
                 </div>
                 <div class="row categorias_inversion">
-                    <div class="col-md-12">
-                        <p>Da clic en cada categoría de inversión para ver sus proyectos relacionados </p>
-                        <p>&nbsp;</p>
-                    </div>
                     <div class="row col-xs-12 col-sm-11 col-md-11">
                     {% for i in inversion_categoria %}
                         <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">

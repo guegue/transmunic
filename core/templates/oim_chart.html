@@ -24,12 +24,15 @@
                 </thead>
                 {% for row in rubros %}
                 <tr>
-                    <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
-                    {% if periodo_list|keyvalue:year == 'I' %}
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    {% else %}
-                    <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
-                    {% endif %}
+			{% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
+	                    <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
+        	            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                	{% else %}
+			    {% if row.ejecutado > 0 %}
+        	            <td>{{ row.subsubtipoingreso__origen__nombre}}</td>
+                	    <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+			    {% endif %}
+        	        {% endif %}
                 </tr>
                 {% endfor %}
                 <tfoot>

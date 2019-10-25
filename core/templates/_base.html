@@ -98,14 +98,6 @@
                {% endfor %}
             </select>
             </form>
-            <ul class="nav navbar-nav pma-navbar">
-                <li><a href="#">Consulta</a>
-                </li>
-                <!--li class="active"><a href="#">Descarga</a>
-                </li-->
-                <!--li><a href="#" class="hidden-xs"><span class="glyphicon glyphicon-search"></span></a>
-                </li-->
-            </ul>
             </div>
         </div>
         </div>
@@ -199,7 +191,7 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $(".listado-municipios").select2({
-            placeholder: "Presupuesto",
+            placeholder: "Municipio",
             allowClear: true
         });
         $('.listado-municipios').on("select2:selecting", function(e) {
