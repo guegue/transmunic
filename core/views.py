@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.db.models import Sum
@@ -85,7 +85,7 @@ def home(request):
             'catinversion__slug', 'catinversion__minimo',
             'catinversion__nombre', 'catinversion__id')\
         .annotate(ejecutado=Sum(quesumar))
-    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
+    context = { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
@@ -109,7 +109,8 @@ def home(request):
         'home': 'home',
         'year': year,
         'periodo': periodo,
-    }, context_instance=RequestContext(request))
+    }
+    return render(request, template_name, context)
 
 
 def municipio(request, slug=None, year=None):
