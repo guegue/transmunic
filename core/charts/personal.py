@@ -12,7 +12,7 @@ from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
@@ -672,13 +672,15 @@ def gpersonal_chart(request):
 
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('expenses.html',{'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
+    template_name =  'expenses.html'
+    context = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
             'indicator_name': "Gastos de personal", \
             'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'bubble_data': bubble_source, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
-            context_instance=RequestContext(request))
+            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year
+            }
+    return render(request, template_name, context)
 
 
 def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):

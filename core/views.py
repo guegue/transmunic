@@ -204,7 +204,7 @@ def municipio(request, slug=None, year=None):
                 'catinversion__id')\
             .annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, {
+    context = {
         'banners': banners,
         'desc_oim_chart':desc_oim_chart,
         'desc_ogm_chart':desc_ogm_chart,
@@ -237,7 +237,8 @@ def municipio(request, slug=None, year=None):
         'data_oim': data_oim,
         'data_ogm': data_ogm,
         'periodo_list': data_oim['periodo_list'],
-    }, context_instance=RequestContext(request))
+    }
+    return render(request, template_name, context)
 
 
 def inversion_minima_sector_view(request):
@@ -326,15 +327,16 @@ def ogm_view(request):
         from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response(template_name, { \
-            'indicator_name': indicator_name, \
-            'year_data': data['year_data'], \
-            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'], \
-            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],\
-            'rubrosp': data['rubrosp'], 'otros': data['otros'],\
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data}, \
-            context_instance=RequestContext(request))
+    context = {
+            'indicator_name': indicator_name,
+            'year_data': data['year_data'],
+            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
+            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
+            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],
+            'rubrosp': data['rubrosp'], 'otros': data['otros'],
+            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data,
+            }
+    return render(request, template_name, context)
 
 
 def oim_view(request):
@@ -349,8 +351,7 @@ def oim_view(request):
         from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response(
-        template_name, {
+    context = {
             'indicator_name': indicator_name,
             'year_data': data['year_data'],
             'indicator_description': """Son los ingresos que capta el sector
@@ -366,8 +367,9 @@ def oim_view(request):
             'rubros': data['rubros'], 'anuales': data['anuales'],
             'rubrosp': data['rubrosp'], 'otros': data['otros'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
-            'bubble_data': bubble_data},
-        context_instance=RequestContext(request))
+            'bubble_data': bubble_data
+            }
+    return render(request, template_name, context)
 
 def inversion_view(request):
     template_name = 'inversion.html'

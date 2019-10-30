@@ -344,7 +344,7 @@
                 <ol>
                     {% for income, expense in history %}
                     <li><a href="" data-date="01/01/{{ row.gasto__anio }} 00:00"
-                    {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
+                    {% if expense.gasto__anio == year|add:"0" %} class="selected" {% endif %}
                     style="left:{{ forloop.counter0|mul:"155" }}px;"><span
                         class="posicion">{{ expense.gasto__anio }}</span>
                     <br/>
@@ -374,7 +374,7 @@
         <ol>
           {% for row in anuales %}
             <li><a href="" data-date="01/01/{{ expense.gasto__anio }} 00:00"
-            {% if expense.gasto__anio = year|add:"0" %} class="selected" {% endif %}
+            {% if expense.gasto__anio == year|add:"0" %} class="selected" {% endif %}
             ></a></li>
           {% endfor %}
         </ol>
