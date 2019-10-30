@@ -15,7 +15,6 @@ import dj_database_url
 from django.conf import global_settings as DJANGO_DEFAULT
 
 DEBUG = 'DEBUG' in os.environ and not os.environ['DEBUG'] == 'False'
-TEMPLATE_DEBUG = DEBUG
 
 #BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -31,8 +30,27 @@ SITE_ID = 1
 #DEBUG = True
 
 #TEMPLATE_DEBUG = True
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-TEMPLATE_DIRS = ('templates', )
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                #'django.core.context_processors.debug',
+                #'django.core.context_processors.media',
+                #'django.core.context_processors.static',
+                #'django.contrib.messages.context_processors.messages',
+                #'django.core.context_processors.request',
+                #'lugar.context_processors.info',
+            ],
+        },
+    },
+]
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -61,15 +79,6 @@ INSTALLED_APPS = (
     'website',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    'lugar.context_processors.info',
-)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
