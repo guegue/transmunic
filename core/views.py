@@ -70,11 +70,11 @@ def home(request):
     inversion_categoria = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo). \
             values('catinversion__slug','catinversion__minimo','catinversion__nombre').annotate(ejecutado=Sum(quesumar))
 
-    return render_to_response(template_name, { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
+    context = { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
-            #data_inversion['charts'][0], 
+            #data_inversion['charts'][0],
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
             data_inversion_minima_porclase['charts'][0],
@@ -84,7 +84,8 @@ def home(request):
         'total_inversion': total_inversion,
         'departamentos': departamentos,
         'home': 'home',
-    }, context_instance=RequestContext(request))
+    }
+    return render(request, template_name, context)
 
 def municipio(request, slug):
     obj = get_object_or_404(Municipio, slug=slug)
