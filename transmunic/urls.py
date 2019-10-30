@@ -1,37 +1,20 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
-from website.views import (DocumentoTipoListView)
 from django.contrib import admin
+
+from website.views import DocumentoTipoListView
+from core.views import home, municipio
+
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    url(r'^$', 'core.views.home', name='home'),
+urlpatterns = [
+    url(r'^$', home, name='home'),
     url(r'^core/', include('core.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^chaining/', include('pixelfields_smart_selects.urls')),
-    url(r'^resumen-municipal', 'core.views.municipio', name='budget-summary'),
-    url(r'^resumen-municipal/(?P<year>[0-9]{4})/$', 'core.views.municipio', name='anual-budget-summary'),
-    url(r'^(?P<slug>[-\w]+)/$', 'core.views.municipio', name='municipio'),
+    url(r'^resumen-municipal', municipio, name='budget-summary'),
+    url(r'^resumen-municipal/(?P<year>[0-9]{4})/$', municipio, name='anual-budget-summary'),
+    url(r'^(?P<slug>[-\w]+)/$', municipio, name='municipio'),
     url(r'^documento/(?P<slug>[-\w]+)/$', DocumentoTipoListView.as_view(), name='documento_by_tipo'),
-)
-
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-urlpatterns += staticfiles_urlpatterns()
-
-urlpatterns += patterns('',
-(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-{'document_root': settings.MEDIA_ROOT}),
-
-                            )
-
-urlpatterns += patterns('',
-(r'^static/(?P<path>.*)$', 'django.views.static.serve',
-{'document_root': settings.STATIC_ROOT}),
-
-)
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
