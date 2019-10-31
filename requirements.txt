@@ -3,7 +3,7 @@ django-compressor==1.3
 dj-database-url==0.2.2
 gunicorn==19.1.0
 Fabric==1.6.1
-django-autoslug==1.7.2
+django-autoslug==1.9.6
 sorl-thumbnail==12.5.0
 pixelfields-smart-selects==0.1.5
 -e git://github.com/javierwilson/django-chartit.git#egg=django_chartit
