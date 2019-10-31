@@ -1,48 +1,77 @@
-{% extends 'base.html' %}
-{% load static thumbnail chartit %}
-{% block main_content %}
-<div class="row">
-    <div class="col-md-9">
-    {% if documento_list %}
-        {% for documento in documento_list %}
-            {% if forloop.first %}
-            <h2 class="title">{% if tipo %}{{ documento.tipo }} {% endif %}</h2>
-                <div class="linea"></div>
-            {% endif %}
-            <div class="col-md-4">
-                <h4>
-                  {% if documento.archivo %}
-                    <a href="{{ documento.archivo.url }}" target="_blank">{{ documento }}</a>
-                  {% else %}
-                    {{ documento }}
-                  {% endif %}
-                </h4>
-                {% thumbnail documento.imagen "250x180" crop='top' as img %}
-                  <img src="{{ img.url }}" alt="{{ banner }}"/>
-                {% endthumbnail %}
-                <p class="fecha">{{ documento.tipo }}</p>
-                {% if documento.archivo %}<a class="verde" href="{{ documento.archivo.url }}" target="_blank"><i id="file" class="fa fa-file fa-1x"></i> Descargar &raquo;</a></p>{% endif %}
+{% extends '_base.html' %} {% load static thumbnail chartit %}
+{% block header %}
+    <div class="pma-hero">
+        <div class="container ">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-7">
+                </div>
             </div>
-            {% if forloop.counter|divisibleby:3 %}
-                <div class="clearfix"></div>
-                <div class="web-divider"></div>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <i>No hay información relacionada a su búsqueda</i>
-    {% endif %}
-
+        </div>
+   </div>
+{% endblock %}
+{% block main_content %}
+<div class="container">
+    {% if documento_list %}
+    <div class="row">
+        <h2>{% if tipodoc %}{{ tipodoc.titulo }} {% endif %}</h2>
+        <hr class="pma-line-3" />
     </div>
-    <div class="col-md-3">
-        <div class="panel panel-success ft">
-            <div class="panel-heading"><h3>Documentos</h3></div>
-            <div class="panel-body">
-            {% for tipo in tipos %}
-                    <p class="secciones"><a href="{% url 'documento_by_tipo' tipo.slug %}" class="text-success"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> {{ tipo.titulo }}</a></p>
-            {% endfor %}
+    <div class="row table-row">
+        {% for documento in documento_list %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        {% thumbnail documento.imagen "250x180" crop='top' as img %}
+                        <div class="thumbnail">
+                            <a href="{{ documento.archivo.url }}">
+                        <img src="{{ img.url }}" alt="{{ banner }}"/>
+                        </a>
+                        </div>
+                        {% endthumbnail %}
+                        <div class="icerik-bilgi">
+                            {% if documento.archivo %}
+                            <a href="{{ documento.archivo.url }}" target="_blank">
+                                <h3>{{ documento }}</h3>
+                            </a>
+                            {% else %} {{ documento }} {% endif %}
+                            <p class="fecha">{{ documento.tipo }}</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut condimentum eget nunc quis semper.
+                                Aliquam efficitur, dui id laoreet blandit, lorem […]</p>
+                            <div class="btn-group">
+                                <a class="btn btn-social btn-facebook" href="#" data-toggle="tooltip" title="Share Facebook"><i class="fa fa-facebook"></i></a>
+                                <a class="btn btn-social btn-twitter" href="#" data-toggle="tooltip" title="Share Twitter"><i class="fa fa-twitter"></i></a>
+                                <a class="btn btn-social btn-google" href="#" data-toggle="tooltip" title="Share Google"><i class="fa fa-google"></i></a>
+                            </div>
+                            {% if documento.archivo %}
+                            <a href="{{ documento.archivo.url }}" target="_blank">
+                            <button type="button" class="btn btn-primary">
+                                <i class="glyphicon glyphicon-download-alt"></i> Descargar
+                            </button>
+                        </a> {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row table-row">
+        {% endif %} {% endfor %}
+    </div>
+    {% else %}
+    <i>No hay información relacionada a su búsqueda</i> {% endif %}
+</div>
+
+<div class="pma-gradient">
+    <div class="container wide">
+        <div class="row">
+            <div class="col-md-12">
+                {% for tipo in tipos %}
+                <a href="{% url 'documento_by_tipo' tipo.slug %}" class="label label-success"><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> {{ tipo.titulo }}</a>                {% endfor %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
+{% endblock %}

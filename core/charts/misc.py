@@ -16,8 +16,6 @@ from core.tools import getYears, dictfetchall, glue
 
 def getVar(var, request):
     foo = None
-    if var in request.session:
-        foo = request.session[var]
     if var in request.GET:
         foo = request.GET[var]
     request.session[var] = foo

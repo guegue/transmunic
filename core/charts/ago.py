@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from itertools import chain
-from datetime import datetime, time
+import json
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
@@ -15,6 +14,28 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(
+    pma_settings,
+    'CHART_OPTIONS_COLORS',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def ago_chart(request, municipio=None, year=None, portada=False):
 
@@ -27,6 +48,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -34,14 +56,22 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         municipio_nombre = municipio_row.nombre
         porclasep = None
 
-        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \
-            ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).\
-            exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=periodo, \
-            ingreso__municipio__slug=municipio, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).\
-            exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = IngresoDetalle.objects.filter(
+            ingreso__periodo=PERIODO_INICIAL,
+            ingreso__municipio__slug=municipio,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('ingreso__anio')\
+            .order_by('ingreso__anio')\
+            .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = IngresoDetalle.objects.filter(
+            ingreso__periodo=periodo,
+            ingreso__municipio__slug=municipio,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('ingreso__anio')\
+            .order_by('ingreso__anio')\
+            .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["ingreso__anio"] == int(year)).next()['asignado']
@@ -199,50 +229,330 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         cursor.execute(sql)
         source = dictfetchall(cursor)
 
-
-
     data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'anio',
-                'ejecutado',
-                'asignado',
+            series=[
+                {
+                    'options': {'source': source},
+                    'terms': [
+                        'anio',
+                        'ejecutado',
+                        'asignado',
+                    ]
+                }
+            ]
+        )
+
+    data_ingreso = RawDataPool(
+           series=[
+            {
+                'options': {'source': rubros},
+                'terms': [
+                    'tipoingreso__nombre',
+                    datacol,
                 ]}
              ])
-    bar = Chart(
-            datasource = data,
-            series_options =
-              [{'options':{
-                  'type': 'bar',},
-                'terms':{
-                  'anio': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {
-                  'text': u'Ahorro corriente para inversiones %s ' % (municipio,)},
+    pie = Chart(
+        datasource=data_ingreso,
+        series_options=[{
+            'options': {
+                'type': 'pie'
                 },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
-            )
+            'terms': {
+                'tipoingreso__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options,
+        )
 
+    bar = Chart(
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True
+                    },
+                'terms': {
+                    'tipoingreso__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options)
+
+    data_gasto = RawDataPool(
+       series=[
+            {
+                'options': {'source': rubrosg},
+                'terms': ['tipogasto__nombre', datacol]
+            }
+        ])
+
+    pie2 = Chart(
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {'tipogasto__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
+
+    bar2 = Chart(
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                },
+                'terms': {'tipogasto__nombre': [datacol]}
+            }],
+        chart_options=chart_options)
 
     # FIXME BS
     porclase = None
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        data = {'charts': (bar, ), 'source': source, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros} 
+        data = {
+            'charts': (bar, ),
+            'source': source,
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'porclase': porclase,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
+            'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
+    bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
+    bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
-    return render_to_response('ago.html',{'charts': (bar, ), 'source': source, \
-            'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'variance_analysis.html',
+        {
+            'charts': (pie, bar, pie2, bar2),
+            'source': source,
+            'indicator_name': "Dependencia para asumir gastos corrientes",
+            'indicator_description': """El ‘indicador de dependencia’ mide la
+                participación relativa de los ingresos por transferencias
+                (corrientes y de capital) sobre el total de los ingresos del
+                Municipio. Al hacerlo, aquel indicador permite saber hasta
+                dónde las finanzas locales son efectivamente controladas por la
+                 administración local o en qué medida dependen de las
+                 transferencias del Gobierno Central establecidas por Ley.
+                 Cuanto más dependiente sean las finanzas municipales, menos
+                 posible es una planificación financiera confiable.""",
+            'bubble_data_1': bubble_data_ingreso,
+            'bubble_data_2': bubble_data_gasto,
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'history': zip(anual2, anual2g),
+            'porclase': porclase,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
+            'otros': otros
+        },
+        context_instance=RequestContext(request))
+
+
+def aci_bubbletree_data_ingreso(
+        municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    if municipio:
+        tipos = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__municipio__slug=municipio,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('tipoingreso', 'tipoingreso__nombre', 'tipoingreso__shortname')\
+            .order_by('tipoingreso__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__municipio__slug=municipio,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .aggregate(total=Sum(amount_column))
+    else:
+        tipos = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .values('tipoingreso', 'tipoingreso__nombre', 'tipoingreso__shortname')\
+            .order_by('tipoingreso__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = IngresoDetalle.objects.filter(
+            ingreso__anio=year,
+            ingreso__periodo=periodo,
+            tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
+            .exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)\
+            .aggregate(total=Sum(amount_column))
+
+    data = {
+        'label': "Ingreso Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = IngresoDetalle.objects.filter(
+                ingreso__anio=year,
+                ingreso__municipio__slug=municipio,
+                ingreso__periodo=periodo,
+                tipoingreso__codigo=child['tipoingreso'])\
+                .values(
+                    'subtipoingreso', 'subtipoingreso__nombre',
+                    'subtipoingreso__shortname')\
+                .order_by('subtipoingreso__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = IngresoDetalle.objects.filter(
+                ingreso__anio=year,
+                ingreso__periodo=periodo,
+                tipoingreso__codigo=child['tipoingreso'])\
+                .values(
+                    'subtipoingreso', 'subtipoingreso__nombre',
+                    'subtipoingreso__shortname')\
+                .order_by('subtipoingreso__codigo')\
+                .annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            if grandchild['subtipoingreso__shortname']:
+                label = grandchild['subtipoingreso__shortname']
+            else:
+                label = grandchild['subtipoingreso__nombre']
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label': label,
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
+        if child['tipoingreso__shortname']:
+            label = child['tipoingreso__shortname']
+        else:
+            label = child['tipoingreso__nombre']
+        child_data = {
+            'taxonomy': "income",
+            'id': idx,
+            'name': idx,
+            'label': label,
+            'amount': round(child['amount']/1000000, 2),
+        }
+        if grandchildren.__len__() > 3 :
+            child_data['children'] = grandchildren
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)
+
+
+def aci_bubbletree_data_gasto(
+        municipio=None, year=None, portada=False, total=0):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .values('tipogasto', 'tipogasto__nombre', 'tipogasto__shortname')\
+            .order_by('tipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+    else:
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .aggregate(total=Sum(amount_column))
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            .values('tipogasto', 'tipogasto__nombre', 'tipogasto__shortname')\
+            .order_by('tipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+    data = {
+        'label': "Gasto Corriente",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__municipio__slug=municipio,
+                gasto__periodo=periodo,
+                tipogasto__codigo=child['tipogasto'])\
+                .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+                .order_by('subtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__periodo=periodo,
+                tipogasto__codigo=child['tipogasto'])\
+                .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+                .order_by('subtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        grandchildren = []
+        for ix, grandchild in enumerate(subtipos):
+            if grandchild['subtipogasto__shortname']:
+                label = grandchild['subtipogasto__shortname']
+            else:
+                label = grandchild['subtipogasto__nombre']
+            grandchild_data = {
+                'id': '{}.{}'.format(idx, ix),
+                'name': '{}.{}'.format(idx, ix),
+                'label': label,
+                'amount': round(grandchild['amount']/1000000, 2)
+            }
+            grandchildren.append(grandchild_data)
+        if child['tipogasto__shortname']:
+            label = child['tipogasto__shortname']
+        else:
+            label = child['tipogasto__nombre']
+        child_data = {
+            'taxonomy': "expense",
+            'id': idx,
+            'name': idx,
+            'label': label,
+            'amount': round(child['amount']/1000000, 2),
+            'children': grandchildren
+            }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)

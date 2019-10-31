@@ -1,0 +1,76 @@
+// Type Scale
+// http://type-scale.com/?size=14&scale=1.200&text=A%20Visual%20Type%20Scale&webfont=Relaway&font-family=%27Raleway%27%2C%20sans-serif%3B&font-weight=400&font-family-headers=%27Raleway%27%2C%20sans-serif%3B&font-weight-headers=inherit&background-color=white&font-color=%23333
+html {
+    font-size: 0.875em;
+}
+body {
+    background-color: white;
+    font-family: 'Raleway', sans-serif;
+    ;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #333;
+}
+p {
+    margin-bottom: 1.3em;
+}
+h1,
+h2,
+h3,
+h4 {
+    margin: 1.414em 0 0.5em;
+    font-family: 'Raleway', sans-serif;
+    ;
+    font-weight: inherit;
+    line-height: 1.2;
+}
+h1 {
+    margin-top: 0;
+    font-size: 2.074em;
+}
+h2 {
+    font-size: 1.728em;
+}
+h3 {
+    font-size: 1.44em;
+}
+h4 {
+    font-size: 1.2em;
+}
+small,
+.font_small {
+    font-size: 0.833em;
+}
+// PMA Custom Styles
+.pma-gradient {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b7ab3+0,00a7b2+100 */
+    background: #2b7ab3;
+    /* Old browsers */
+    background: -moz-linear-gradient(-45deg, #2b7ab3 0%, #00a7b2 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #2b7ab3 0%, #00a7b2 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #2b7ab3 0%, #00a7b2 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    // filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#2b7ab3', endColorstr='#00a7b2', GradientType=1);
+
+    /* IE6-9 fallback on horizontal gradient */
+}
+.pma-hero {
+    height: 644px;
+}
+.pma-illustration{
+    position: relative;
+}
+.illustration-index {
+    position: absolute;
+    top: -386px;
+}
+.pma-navbar.navbar-nav > li > a {
+    color: #fff;
+    font-weight: bold;
+}
+
+.pma-summary{
+    height: 530px;
+}

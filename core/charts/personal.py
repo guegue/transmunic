@@ -4,6 +4,7 @@
 # Gastos de personal charts /core/gpersonal
 #
 ##############################################################################
+import json
 
 from itertools import chain
 from datetime import datetime, time
@@ -11,7 +12,7 @@ from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
@@ -20,6 +21,28 @@ from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inve
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
+
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
 
 
 def gpersonal_chart(request):
@@ -31,13 +54,13 @@ def gpersonal_chart(request):
     if not year:
         year = year_list[-2]
 
-    # obtiene último periodo del año que se quiere ver                          
+    # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
-    from collections import OrderedDict #FIXME move up
     if municipio:
         porclase = None
         porclasep = None
@@ -102,16 +125,16 @@ def gpersonal_chart(request):
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
                 tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, \
                 tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
                 tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, \
                 tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'subtipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subtipogasto__codigo')
 
@@ -352,13 +375,13 @@ def gpersonal_chart(request):
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
+                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'subtipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subtipogasto__codigo')
 
@@ -581,44 +604,33 @@ def gpersonal_chart(request):
     data_pgf = RawDataPool(
            series = [{
               'options': {'source': source_pgf },
-              'terms': [ 'nombre', 'asignado', ]
+              'terms': [ 'nombre', 'asignado' ]
             }]
     )
+    data_rubros = RawDataPool(
+        series=[{
+            'options': {'source': rubros},
+            'terms': ['subtipogasto__nombre', datacol]
+        }])
     pie = Chart(
-            datasource = data_pgf,
-            series_options = [{
-                'options': {'type': 'pie',},
-                'terms': {'nombre': ['asignado']}
-            }],
-            chart_options = {
-                'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
-                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
-            },
-    )
-    data_barra = DataPool(
-           series = [{
-              'options': {'source': source_barra_final },
-              'terms': [ 'gasto__anio', 'ejecutado', 'asignado', ]
-            }]
-    )
+        datasource=data_rubros,
+        series_options=[{
+            'options': {'type': 'pie'},
+            'terms': {'subtipogasto__nombre': [datacol]}
+        }],
+        chart_options=chart_options)
 
-    barra = Chart(
-            datasource = data_barra,
-            series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'gasto__anio': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {'text': ' '},
-                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
-                },
-            )
+    bar = Chart(
+        datasource=data_rubros,
+        series_options=[{
+            'options': {
+                'type': 'column',
+                'colorByPoint': True,
+            },
+            'terms': {'subtipogasto__nombre': [datacol]}
+        }],
+        chart_options=chart_options)
+
     if municipio:
         dataterms = ['gasto__anio', 'asignado', 'ejecutado', 'promedio']
         terms = ['asignado', 'ejecutado', 'promedio',]
@@ -642,23 +654,103 @@ def gpersonal_chart(request):
     portada = False #FIXME: convert to view
     if portada:
         charts =  (pie, )
-    elif municipio:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column)
     else:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
-        
+        charts =  (pie,bar)
+
+    # Bubble tree data
+    bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)
+    print bubble_source
+
     #Descarga en Excel
-    reporte = request.POST.get("reporte","") 
-    if "excel" in request.POST.keys() and reporte:        
+    reporte = request.POST.get("reporte","")
+    if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        
+
         data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
-                 
+
         return obtener_excel_response(reporte=reporte, data=data)
-            
-    return render_to_response('personal.html',{'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
+
+    template_name =  'expenses.html'
+    context = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
+            'indicator_name': "Gastos de personal", \
+            'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
-            context_instance=RequestContext(request))
+            'bubble_data': bubble_source, \
+            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year
+            }
+    return render(request, template_name, context)
+
+
+def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):
+    year_list = getYears(Gasto)
+    periodo = Anio.objects.get(anio=year).periodo
+    if not year:
+        year = year_list[-2]
+    amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    if municipio:
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+            .order_by('subtipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__municipio__slug=municipio,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .aggregate(total=Sum(amount_column))
+    else:
+        tipos = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .values('subtipogasto', 'subtipogasto__nombre', 'subtipogasto__shortname')\
+            .order_by('subtipogasto__codigo')\
+            .annotate(amount=Sum(amount_column))
+        amount = GastoDetalle.objects.filter(
+            gasto__anio=year,
+            gasto__periodo=periodo,
+            tipogasto=TipoGasto.PERSONAL)\
+            .aggregate(total=Sum(amount_column))
+    data = {
+        'label': "Gasto de Personal",
+        'amount': round(amount['total']/1000000, 2)
+        }
+    children = []
+    for idx, child in enumerate(tipos):
+        if municipio:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__municipio__slug=municipio,
+                gasto__periodo=periodo,
+                subtipogasto__codigo=child['subtipogasto'])\
+                .values('subsubtipogasto', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname')\
+                .order_by('subsubtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        else:
+            subtipos = GastoDetalle.objects.filter(
+                gasto__anio=year,
+                gasto__periodo=periodo,
+                subtipogasto__codigo=child['subtipogasto'])\
+                .values('subsubtipogasto', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname')\
+                .order_by('subsubtipogasto__codigo')\
+                .annotate(amount=Sum(amount_column))
+        if child['subtipogasto__shortname']:
+            label = child['subtipogasto__shortname']
+        else:
+            label = child['subtipogasto__nombre']
+        child_data = {
+            'taxonomy': "expense",
+            'id': idx,
+            'name': idx,
+            'label': label,
+            'amount': round(child['amount']/1000000, 2)
+            }
+        children.append(child_data)
+    data['children'] = children
+    return json.dumps(data)

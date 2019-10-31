@@ -26,7 +26,6 @@ class DocumentoTipoListView(DocumentoListView):
         context = super(DocumentoTipoListView, self).get_context_data(**kwargs)
         context['documento_list'] = Documento.objects.filter(tipo__slug=self.kwargs['slug']).order_by('-fecha')
         context['tipos'] = TipoDoc.objects.all()
+        context['tipodoc'] = TipoDoc.objects.get(slug=self.kwargs['slug'])
         context['tipo'] = True
         return context
-
-

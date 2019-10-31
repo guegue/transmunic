@@ -1,21 +1,46 @@
 # -*- coding: utf-8 -*-
 
-from itertools import chain
-from datetime import datetime, time
-from operator import itemgetter
+import json
+
 
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
+from django.db.models import Sum
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
+from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, TipoIngreso, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
-from core.models import Poblacion
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
+from core.models import Anio, IngresoDetalle, GastoDetalle, Gasto, Municipio,\
+    ClasificacionMunicAno
+from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL,\
+    CLASIFICACION_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
+from core.charts.bubble_oim import oim_bubble_chart_data
+from core.charts.bubble_ogm import ogm_bubble_chart_data
+
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
+
 
 def ep_chart(request):
 
@@ -28,6 +53,8 @@ def ep_chart(request):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    portada = False
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -85,7 +112,7 @@ def ep_chart(request):
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
-        # calculo de La Ejecución presupuestaria alcanzó el: 
+        # calculo de La Ejecución presupuestaria alcanzó el:
         # FIXME incial_asignado? o asignado (periodo) ? misma pregunta sobre final_ejecutado.
         ep_ingresos = sum(item['inicial_asignado'] for item in rubros_inicial)
         ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
@@ -153,21 +180,6 @@ def ep_chart(request):
         with open ("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl=query_file.read()
 
-        # FIXME: no longer use this?
-        # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #inicial = dictfetchall(cursor)
-        #sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=PERIODO_FINAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #final = dictfetchall(cursor)
-        #sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
-        #cursor = connection.cursor()
-        #cursor.execute(sql)
-        #actualizado = dictfetchall(cursor)
-        #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
 
         # the new way... re-haciendo "porclasep"
         sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado", year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
@@ -195,44 +207,129 @@ def ep_chart(request):
         source = IngresoDetalle.objects.raw(sql, [year_list])
 
     data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              'terms': [
-                'anio',
-                'ejecutado',
-                ]}
-             ])
+        series=[
+            {
+                'options': {'source': source},
+                'terms': ['anio', 'ejecutado']
+            }
+        ])
+
+    data_ingreso = RawDataPool(
+        series=[
+            {
+                'options': {'source': rubros},
+                'terms': [
+                    'tipoingreso__clasificacion',
+                    datacol,
+                ]
+            }
+        ])
+
+    pie = Chart(
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {
+                    'tipoingreso__clasificacion': [datacol]
+                }
+            }],
+        chart_options=chart_options)
 
     bar = Chart(
-            datasource = data,
-            series_options =
-              [{'options':{
-                  'type': 'bar',},
-                'terms':{
-                  'anio': [
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {
-                  'text': u'Ejecución del presupuesto %s ' % (municipio,)},
+        datasource=data_ingreso,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True
+                    },
+                'terms': {
+                    'tipoingreso__clasificacion': [datacol]
+                }
+            }],
+        chart_options=chart_options)
+
+    data_gasto = RawDataPool(
+           series=[
+                {
+                    'options': {'source': rubrosg},
+                    'terms': [
+                        'tipogasto__clasificacion',
+                        datacol,
+                    ]
+                }
+            ])
+
+    pie2 = Chart(
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {'type': 'pie'},
+                'terms': {'tipogasto__clasificacion': [datacol]}
+            }],
+        chart_options=chart_options)
+
+    bar2 = Chart(
+        datasource=data_gasto,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
                 },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
-            )
+                'terms': {'tipogasto__clasificacion': [datacol]}
+            }],
+        chart_options=chart_options)
 
     # FIXME BS
-    asignado = ejecutado = porclase = None
+    # asignado = ejecutado = porclase = None
+    asignado = ep_ingresos
+    ejecutado = ep_gastos
+    porclase = None
 
-    reporte = request.POST.get("reporte","")
+    bubble_data_ingreso = oim_bubble_chart_data(municipio=municipio, year=year)
+    bubble_data_gasto = ogm_bubble_chart_data(municipio=municipio, year=year)
+
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
-        data = {'charts': (bar, ), \
-            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros}
+        data = {
+            'charts': (bar, ),
+            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row,
+            'year': year, 'ejecutado': ejecutado, 'asignado': asignado,
+            'year_list': year_list, 'municipio_list': municipio_list,
+            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase,
+            'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg,
+            'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('ep.html',{'charts': (bar, ), \
-            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row, 'year': year, \
-            'ejecutado': ejecutado, 'asignado': asignado, 'year_list': year_list, 'municipio_list': municipio_list, \
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase, 'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg, 'otros': otros},\
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'variance_analysis.html',
+        {
+            'charts': (pie, bar, pie2, bar2),
+            'indicator_name': "Ejecución del presupuesto",
+            'indicator_description': """Mide la eficiencia del municipio en
+                la ejecución del ingreso y el gasto presupuestado inicialmente.
+                Es decir, evaluamos que tanto cambio el presupuesto con
+                respecto la ejecución versus lo presupuestado y aprobado en los
+                procesos de consulta.""",
+            'bubble_data_1': bubble_data_ingreso,
+            'bubble_data_2': bubble_data_gasto,
+            'ep': ep,
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'history': zip(anual2, anual2g),
+            'porclase': porclase,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
+            'otros': otros},
+        context_instance=RequestContext(request))

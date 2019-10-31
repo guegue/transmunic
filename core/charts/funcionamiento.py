@@ -4,6 +4,7 @@
 # Gastos de funcionamiento charts /core/gf
 #
 ##############################################################################
+import json
 
 from itertools import chain
 from datetime import datetime, time
@@ -20,10 +21,32 @@ from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inve
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
+from core.charts.aci import aci_bubbletree_data_gasto
 
+from transmunic import settings as pma_settings
+
+colorscheme = getattr(
+    pma_settings,
+    'CHARTS_COLORSCHEME',
+    [
+        '#2b7ab3',
+        '#00a7b2 ',
+        '#5A4A42',
+        '#D65162',
+        '#8B5E3B',
+        '#84B73F',
+        '#AF907F',
+        '#FFE070',
+        '#25AAE1'])
+
+chart_options = getattr(
+    pma_settings,
+    'CHART_OPTIONS',
+    {}
+)
 
 def gf_chart(request):
-
+    # XXX: why this is not a view?
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
@@ -33,6 +56,7 @@ def gf_chart(request):
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     from collections import OrderedDict #FIXME move up
     if municipio:
@@ -96,16 +120,16 @@ def gf_chart(request):
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, \
                 tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'tipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
@@ -225,7 +249,7 @@ def gf_chart(request):
 
         source = source_inicial
         #source = OrderedDict(sorted(source.items(), key=lambda t: t[0]))
-            
+
         # FIXME. igual que abajo (sin municipio) de donde tomar los datos?
         source_barra = GastoDetalle.objects.filter( gasto__periodo=PERIODO_INICIAL, \
             tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
@@ -328,19 +352,19 @@ def gf_chart(request):
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
                 exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
                 exclude(tipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-                values('tipogasto__codigo','tipogasto__nombre').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+                values('tipogasto__codigo','tipogasto__nombre', 'tipogasto__shortname').order_by('tipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'tipogasto__codigo', actualizado=rubros_actualizado)
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipogasto__codigo')
 
@@ -561,41 +585,34 @@ def gf_chart(request):
               'terms': [ 'nombre', 'asignado', ]
             }]
     )
-    pie = Chart(
-            datasource = data_pgf,
-            series_options = [{
-                'options': {'type': 'pie',},
-                'terms': {'nombre': ['asignado']}
-            }],
-            chart_options = {
-                'title': {'text': 'Periodo: %s' % (PERIODO_VERBOSE[periodo],)},
-                'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
-                'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
-            },
-    )
-    data_barra = DataPool(
-           series = [{
-              'options': {'source': source_barra_final },
-              'terms': [ 'gasto__anio', 'ejecutado', 'asignado', ]
+    data_rubros = RawDataPool(
+           series=[{
+              'options': {'source': rubros},
+              'terms': ['tipogasto__nombre', datacol]
             }]
     )
+    pie = Chart(
+        datasource=data_rubros,
+        series_options=[{
+            'options': {'type': 'pie'},
+            'terms': {'tipogasto__nombre': [datacol]}
+        }],
+        chart_options=chart_options)
 
-    barra = Chart(
-            datasource = data_barra,
-            series_options =
-              [{'options':{
-                  'type': 'column',},
-                'terms':{
-                  'gasto__anio': [
-                    'asignado',
-                    'ejecutado']
-                  }}],
-            chart_options = {
-                'title': {'text': ' '},
-                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
+    bar = Chart(
+        datasource=data_rubros,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
                 },
-            )
+                'terms': {
+                    'tipogasto__nombre': [datacol]
+                }
+            }],
+        chart_options=chart_options)
+
     if municipio:
         dataterms = ['gasto__anio', 'asignado', 'ejecutado', 'promedio']
         terms = ['asignado', 'ejecutado', 'promedio',]
@@ -619,10 +636,10 @@ def gf_chart(request):
     portada = False #FIXME: convert to view
     if portada:
         charts =  (pie, )
-    elif municipio:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column,)
     else:
-        charts =  (gfbar, barra, pie, gf_comparativo2_column, gf_comparativo3_column, gf_comparativo_anios_column, gf_nivelejecucion_bar)
+        charts =  (pie, bar)
+    # Bubble tree data 
+    bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
     reporte = request.POST.get("reporte","")
     if "excel" in request.POST.keys() and reporte:
@@ -634,8 +651,11 @@ def gf_chart(request):
 
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('funcionamiento.html',
+    return render_to_response('expenses.html',
             {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
+            'indicator_name': "Gastos de funcionamiento", \
+            'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
+            'bubble_data': bubble_source, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
             context_instance=RequestContext(request))

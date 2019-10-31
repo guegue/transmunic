@@ -1,6 +1,6 @@
 {% load i18n model_report %}
-
-<table class="report">
+<div class="table-responsive">
+<table class="report table table-striped table-hover">
     <thead>
         <tr>
             {% for column_label in column_labels %}
@@ -43,3 +43,4 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
