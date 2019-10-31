@@ -299,9 +299,7 @@ def inversion_categoria_view(request):
             'asignado': data['asignado'], 'ejecutado': data['ejecutado']}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response(
-        template_name,
-        {
+    context = {
             'indicator_name': indicator_name,
             'municipio': data['municipio'], 'year': data['year'],
             'mi_clase': data['mi_clase'], 'porano': data['porano'],
@@ -312,8 +310,8 @@ def inversion_categoria_view(request):
             'municipio_list': data['municipio_list'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
             'bubble_data': bubble_source
-        },
-        context_instance=RequestContext(request))
+        }
+    return render(request, template_name, context)
 
 def ogm_view(request):
     template_name = 'ogm_chart.html'

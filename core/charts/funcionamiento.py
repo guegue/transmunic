@@ -12,7 +12,7 @@ from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
@@ -638,7 +638,7 @@ def gf_chart(request):
         charts =  (pie, )
     else:
         charts =  (pie, bar)
-    # Bubble tree data 
+    # Bubble tree data
     bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
     reporte = request.POST.get("reporte","")
@@ -651,11 +651,12 @@ def gf_chart(request):
 
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response('expenses.html',
-            {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
+    template_name = 'expenses.html'
+    context = {
+            'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
             'indicator_name': "Gastos de funcionamiento", \
             'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'bubble_data': bubble_source, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year},
-            context_instance=RequestContext(request))
+            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+    return render(request, template_name, context)

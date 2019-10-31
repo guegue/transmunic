@@ -41,6 +41,7 @@ class Documento(models.Model):
         return self.titulo
 
     class Meta:
+        ordering = ['titulo']
         verbose_name = 'Documentos'
         verbose_name_plural = 'Documentos'
 

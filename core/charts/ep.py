@@ -5,7 +5,7 @@ import json
 
 from django.db import connection
 from django.db.models import Sum
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from chartit import Chart, RawDataPool
@@ -304,9 +304,8 @@ def ep_chart(request):
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    return render_to_response(
-        'variance_analysis.html',
-        {
+    template_name = 'variance_analysis.html'
+    context = {
             'charts': (pie, bar, pie2, bar2),
             'indicator_name': "Ejecución del presupuesto",
             'indicator_description': """Mide la eficiencia del municipio en
@@ -331,5 +330,5 @@ def ep_chart(request):
             'porclasep': porclasep,
             'rubros': rubros,
             'rubrosg': rubrosg,
-            'otros': otros},
-        context_instance=RequestContext(request))
+            'otros': otros}
+    return render(request, template_name, context)

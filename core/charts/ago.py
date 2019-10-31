@@ -4,7 +4,7 @@ import json
 
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
@@ -335,9 +335,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
     bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
-    return render_to_response(
-        'variance_analysis.html',
-        {
+    template_name = 'variance_analysis.html'
+    context = {
             'charts': (pie, bar, pie2, bar2),
             'source': source,
             'indicator_name': "Dependencia para asumir gastos corrientes",
@@ -367,8 +366,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'rubros': rubros,
             'rubrosg': rubrosg,
             'otros': otros
-        },
-        context_instance=RequestContext(request))
+        }
+    return render(request, template_name, context)
 
 
 def aci_bubbletree_data_ingreso(
