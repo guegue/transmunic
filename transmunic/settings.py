@@ -33,12 +33,11 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
-                #'django.core.context_processors.debug',
-                #'django.core.context_processors.media',
-                #'django.core.context_processors.static',
-                #'django.contrib.messages.context_processors.messages',
-                #'django.core.context_processors.request',
-                #'lugar.context_processors.info',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'lugar.context_processors.info',
             ],
         },
     },

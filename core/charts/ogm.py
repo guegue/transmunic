@@ -222,6 +222,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
             for row2 in final:
                 if row2['gasto__anio'] == row['gasto__anio']:
                     found = True
+                    if not 'clase_final' in row2:
+                        row2['clase_final'] = 0
                     row['clase_final'] = row2['clase_final']
                     row['municipio_final'] = row2['municipio_final']
                 if not found:
