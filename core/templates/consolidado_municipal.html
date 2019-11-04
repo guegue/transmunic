@@ -195,6 +195,9 @@
                                     <br/>
                                     de la Inversión Municipal {{ year }}
                                 </h2>
+                                <h4>
+                                    Cifras en Millones
+                                </h4>
                                 <hr class="pma-line-1">
                             </div>
                         </div>
@@ -214,7 +217,10 @@
                                                class="blanco">
                                                 <strong>{{ i.catinversion__nombre }}</strong>
                                             </a>
-                                            <br/>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                            <br>
+                                            <span>{{ i.ejecutado|million }} </span>
+                                            <br/>
+                                            <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                         </h5>
                                     </div>
                                     {% if foorloop.last or forloop.counter|divisibleby:6 %}
@@ -245,7 +251,10 @@
                                                            class="blanco">
                                                             <strong>{{ i.catinversion__nombre }}</strong>
                                                         </a>
-                                                        <br/>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                                        <br>
+                                                        <span>{{ i.ejecutado|million }} </span>
+                                                        <br/>
+                                                        <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                                     </h5>
                                                 </div>
                                                 {% if foorloop.last or forloop.counter|divisibleby:6 %}
