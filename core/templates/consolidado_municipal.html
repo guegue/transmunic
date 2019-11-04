@@ -125,17 +125,20 @@
                         {% for gasto in totales_ogm %}
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="info-box">
-                                    <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug }}">
-                                    </span>
+                                    <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug }}"> </span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
                                         {% if periodo_list|keyvalue:year == 'I' %}
                                             <span class="info-box-number pma-blue">
                                                 Asignado:
-                                                {{ gasto.asignado_percent }}%</span>
+                                                {{ gasto.asignado|million }}
+                                                ({{ gasto.asignado_percent }}%)
+                                            </span>
                                         {% else %}
-                                            <span class="info-box-number pma-orange">Ejecutado:
-                                            {{ gasto.ejecutado_percent }}%
+                                            <span class="info-box-number pma-orange">
+                                                Ejecutado:
+                                                {{ gasto.ejecutado|million }}
+                                                ({{ gasto.ejecutado_percent }}%)
                                             </span>
                                         {% endif %}
                                     </div>
