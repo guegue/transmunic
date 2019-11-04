@@ -48,7 +48,7 @@ def home(request):
     data_fuentes = fuentes_chart(year=year, portada=True)
 
     # obtiene último año
-    year_list = getYears(Inversion)
+    year_list = getYears(Anio)
     year = year_list[-1]
 
     # obtiene periodo del año a ver
