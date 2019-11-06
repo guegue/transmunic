@@ -38,10 +38,11 @@ def glue(inicial, final, key, actualizado=[]):
 
     # do glue
     for item in inicial+final+actualizado:
-        if item[key] in merged:
-            merged[item[key]].update(item)
-        else:
-            merged[item[key]] = item
+        if item[key]:
+            if item[key] in merged:
+                merged[item[key]].update(item)
+            else:
+                merged[item[key]] = item
     omerged = collections.OrderedDict(sorted(merged.items()))
     glued = [val for (_, val) in omerged.iteritems()]
 
