@@ -49,7 +49,8 @@ def home(request):
 
     # obtiene último año
     year_list = getYears(Inversion)
-    year = 2015
+    year = year_list[-1]
+
     # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
 
