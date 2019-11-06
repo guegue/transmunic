@@ -87,7 +87,8 @@
     <div class="container">
     </div>
     <div class="container pma-index-icons">
-        <h3>Consolidado {{ year }}</h3>
+        <h3>Consolidado {{ year }} {% if periodo == 'F' %}Final{% elif periodo == 'A' %}Actualizado{% else %}
+            Inicial {% endif %}</h3>
         <hr class="pma-line-3">
         <div class="row row-eq-height pma-spacing-bottom">
             <div class="col-md-6 col-eq-height">
@@ -159,6 +160,8 @@
         <div class="container">
             <div class="row">
                 <h2><strong>Destino</strong> de la inversi&oacute;n</h2>
+                <h4>Consolidado {{ year }} {% if periodo == 'F' %}Final{% elif periodo == 'A' %}Actualizado{% else %}
+                    Inicial {% endif %}</h4>
                 <br/>
                 <div class="col-md-12">
                     <div class="row">
