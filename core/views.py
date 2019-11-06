@@ -49,8 +49,7 @@ def home(request):
 
     # obtiene último año
     year_list = getYears(Inversion)
-    year = year_list[-1]
-
+    year = 2015
     # obtiene periodo del año a ver
     periodo = Anio.objects.get(anio=year).periodo
 
@@ -76,7 +75,7 @@ def home(request):
         catinversion__destacar=True)\
         .values(
             'catinversion__slug', 'catinversion__minimo',
-            'catinversion__nombre')\
+            'catinversion__nombre', 'catinversion__id')\
         .annotate(ejecutado=Sum(quesumar))
     inversion_categoria2 = Proyecto.objects.filter(
         inversion__anio=year, inversion__periodo=periodo,

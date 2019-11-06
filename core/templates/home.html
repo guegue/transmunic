@@ -167,7 +167,7 @@
                         <div class="row col-xs-12 col-sm-11 col-md-11">
                             {% for i in inversion_categoria %}
                                 <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-                                    <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.id }}">
+                                    <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
                                         <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
                                     </a>
                                     <h5 class="text-center">
@@ -176,7 +176,8 @@
                                             <strong>{{ i.catinversion__nombre }}</strong>
                                         </a>
                                         <br/>
-                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}% </h5>
+                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                    </h5>
                                 </div>
                                 {% if foorloop.last or forloop.counter|divisibleby:6 %}
                                     </div>
