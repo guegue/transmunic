@@ -365,6 +365,8 @@ def oim_view(request):
             'rubros': data['rubros'], 'anuales': data['anuales'],
             'rubrosp': data['rubrosp'], 'otros': data['otros'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
+            'asignado_porcentaje': data['asignado_porcentaje'],
+            'ejecutado_porcentaje': data['ejecutado_porcentaje'],
             'bubble_data': bubble_data
             }
     return render(request, template_name, context)
