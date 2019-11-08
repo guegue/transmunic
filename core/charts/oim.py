@@ -50,7 +50,6 @@ def oim_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
     periodo_list = getPeriods(Ingreso)
-    print periodo_list
     if not year:
         year = year_list[-2]
 
@@ -654,6 +653,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         row['inicial_asignado_percent'] = round((row['inicial_asignado'] / asignado) * 100, 1) if row['inicial_asignado'] > 0 else 0
         asignado_porcentaje = asignado_porcentaje + row['inicial_asignado_percent']
 
+    total_asignado_ranking = 0
+    total_ejecutado_ranking = 0
+    # calculando la suma total de asignado y ejectuado para tabla de ranking por recaudacion
+    for row in porclasep:
+        total_asignado_ranking = total_asignado_ranking + row['asignado']
+        total_ejecutado_ranking = total_ejecutado_ranking + row['ejecutado']
+
+    total_asignado_ranking_porcentaje = 0
+    total_ejecutado_ranking_porcenteje = 0
+    # calculando el porcentaje de cada categoria para la tabla de ranking por decaudacion
+    for row in porclasep:
+        row['asignado_percent'] = round((row['asignado'] / total_asignado_ranking) * 100, 1) if row['asignado'] > 0 else 0
+        total_asignado_ranking_porcentaje = total_asignado_ranking_porcentaje + row['asignado_percent']
+        row['ejecutado_percent'] = round((row['ejecutado'] / total_ejecutado_ranking) * 100, 1) if row['ejecutado'] > 0 else 0
+        total_ejecutado_ranking_porcenteje = total_ejecutado_ranking_porcenteje + row['ejecutado_percent']
+
 
     # tabla: get ingresos por año
     if municipio:
@@ -693,6 +708,10 @@ def oim_chart(municipio=None, year=None, portada=False):
         'asignado': asignado, 'periodo_list': periodo_list,
         'asignado_porcentaje': asignado_porcentaje,
         'ejecutado_porcentaje': ejecutado_porcentaje,
+        'total_asignado_ranking': total_asignado_ranking,
+        'total_asignado_ranking_porcentaje': total_asignado_ranking_porcentaje,
+        'total_ejecutado_ranking': total_ejecutado_ranking,
+        'total_ejecutado_ranking_porcenteje': total_ejecutado_ranking_porcenteje,
         'year_list': year_list, 'municipio_list': municipio_list,
         'anuales': anual2, 'porclase': porclase,
         'porclasep': porclasep, 'rubros': rubros,
