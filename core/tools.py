@@ -2,7 +2,8 @@
 
 import collections
 
-def getPeriods(model): # ;)
+
+def getPeriods(model):  # ;)
     "Gets all years and their period with data from a model.anio"
 
     from models import Anio
@@ -11,7 +12,7 @@ def getPeriods(model): # ;)
     alist = {}
     for year in years:
         alist[year] = Anio.objects.get(anio=year).periodo
-    #return {x[0]:x[1] for x in years}
+    # return {x[0]:x[1] for x in years}
     return alist
 
 
@@ -37,7 +38,7 @@ def glue(inicial, final, key, actualizado=[]):
         item['actualizado'] = item.pop('asignado')
 
     # do glue
-    for item in inicial+final+actualizado:
+    for item in inicial + final + actualizado:
         if item[key]:
             if item[key] in merged:
                 merged[item[key]].update(item)
@@ -69,6 +70,11 @@ def superglue(data=(), key='id', default=0):
     nonkeys = []
     merged = {}
     for item in alldata:
+
+        if not item[key]:
+            item[key] = 'Sin Clasificar'
+            item['subsubtipoingreso__origen__nombre'] = 'Sin Clasificar'
+
         if item[key] in merged:
             merged[item[key]].update(item)
         else:
@@ -97,4 +103,3 @@ def dictfetchall(cursor):
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
     ]
-
