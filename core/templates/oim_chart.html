@@ -422,24 +422,40 @@
     </div>
     <div id="detail-3" class="container medium">
         <div class="row">
-            <div class="col-xs-12 col-md-offset-1 col-md-10 table-responsive">
-                <table class="table">
-                    <tr class="bg-primary">
-                        <th></th>
-                        {% for year in year_list %}
-                            <th class="text-center"><strong>{{ year }}</strong>
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
-                        {% endfor %}
-                    </tr>
+            <div class="col-xs-12 col-md-12 table-responsive">
+                 <table class="table">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th rowspan="2" colspan="1"></th>
+                            {% for year in year_list %}
+                            <th rowspan="1" colspan="2" class="text-center" style="border-bottom: none">
+                                <strong>{{ year }}</strong>
+                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                        <tr class="bg-primary">
+                            {% for year in year_list %}
+                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
+                               Cordobas
+                            </th>
+                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
+                               Porcentaje
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
                     {% for key, data in porano.items %}
                         <tr>
                             <td class="text-left">{{ key }}</td>
                             {% for year in year_list %}
-                                <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                            <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
-                </table>
+                    </tbody>
+            </table>
             </div>
         </div>
     </div>
