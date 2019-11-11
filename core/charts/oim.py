@@ -235,35 +235,43 @@ def oim_chart(municipio=None, year=None, portada=False):
                     row['clase_final'] = 0
                     row['municipio_final'] = 0
         comparativo_anios = inicial
-        #FIXME: no longer? comparativo_anios = list(chain(inicial, final, ))
+        # FIXME: no longer? comparativo_anios = list(chain(inicial, final, ))
 
         # obtiene datos para OIM comparativo de un año específico
-        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('ingreso__periodo').annotate(municipio=Sum('asignado')))
-        actualizado = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO).values('ingreso__periodo').annotate(municipio=Sum('asignado')))
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_FINAL).values('ingreso__periodo').annotate(municipio=Sum('ejecutado')))
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
+                                                     ingreso__periodo=PERIODO_INICIAL).values('ingreso__periodo').annotate(municipio=Sum('asignado')))
+        actualizado = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
+                                                         ingreso__periodo=PERIODO_ACTUALIZADO).values('ingreso__periodo').annotate(municipio=Sum('asignado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
+                                                   ingreso__periodo=PERIODO_FINAL).values('ingreso__periodo').annotate(municipio=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
-        inicial_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,\
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
-                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('asignado'))
-        actualizado_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,\
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
-                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('asignado'))
-        final_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL,\
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
-                values('ingreso__periodo').order_by('ingreso__periodo').annotate(clase=Sum('ejecutado'))
+        inicial_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,
+                                                      ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
+            values('ingreso__periodo').order_by(
+                'ingreso__periodo').annotate(clase=Sum('asignado'))
+        actualizado_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,
+                                                          ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
+            values('ingreso__periodo').order_by(
+                'ingreso__periodo').annotate(clase=Sum('asignado'))
+        final_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL,
+                                                    ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
+            values('ingreso__periodo').order_by(
+                'ingreso__periodo').annotate(clase=Sum('ejecutado'))
 
         # inserta datos para municipio de la misma clase
         if inicial:
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
         if actualizado:
-            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / mi_clase_count
+            actualizado[0]['clase'] = actualizado_clase[0]['clase'] / \
+                mi_clase_count
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
         comparativo3 = list(chain(inicial, actualizado, final))
         comparativo2 = list(chain(inicial, final, ))
         for d in comparativo3:
-            d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "ingreso__periodo")
+            d.update((k, PERIODO_VERBOSE[v])
+                     for k, v in d.iteritems() if k == "ingreso__periodo")
 
     else:
         #
@@ -646,7 +654,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'options': {
                     'type': 'column',
                     'colorByPoint': True,
-                    },
+                },
                 'terms': {
                     'subsubtipoingreso__origen__nombre': [datacol]
                 }
