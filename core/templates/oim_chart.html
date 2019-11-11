@@ -499,9 +499,6 @@
                         </thead>
                         <tbody>
                         {% for row in rubros %}
-                            {% if forloop.counter <= 1 %}
-                                {{ row }}
-                            {% endif %}
                             <tr>
                                 <td class="pull-left">{{ row.subsubtipoingreso__origen__nombre }}</td>
                                 <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
