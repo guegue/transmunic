@@ -50,7 +50,6 @@ def oim_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Ingreso)
     periodo_list = getPeriods(Ingreso)
-    print periodo_list
     if not year:
         year = year_list[-2]
 
@@ -652,6 +651,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     else:
         source_cuadro = IngresoDetalle.objects.all()
     porano_table = {}
+    ano_table = {}
     ys = source_cuadro.order_by('subsubtipoingreso__origen__nombre').values('subsubtipoingreso__origen__nombre').distinct()
     for y in ys:
         label = y['subsubtipoingreso__origen__nombre']
@@ -660,7 +660,11 @@ def oim_chart(municipio=None, year=None, portada=False):
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
-            porano_table[label][ayear] = value if value else ''
+            porano_table[label][ayear] = {}
+            porano_table[label][ayear]['raw'] = value if value else ''
+            if not ayear in ano_table:
+                ano_table[ayear] = 0
+            ano_table[ayear] += value if value else 0
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
@@ -670,6 +674,12 @@ def oim_chart(municipio=None, year=None, portada=False):
             if value:
                 value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
+    for y in ys:
+        label = y['subsubtipoingreso__origen__nombre']
+        for ayear in year_list:
+            aaa = porano_table[label][ayear]['raw']
+            if porano_table[label][ayear]['raw']:
+                porano_table[label][ayear]['percent'] = format(porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     if portada:
         charts =  (ejecutado_pie, )
