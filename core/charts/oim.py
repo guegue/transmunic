@@ -217,12 +217,13 @@ def oim_chart(municipio=None, year=None, portada=False):
         for row in inicial:
             for row2 in inicial_clase:
                 if row2['ingreso__anio'] == row['ingreso__anio']:
-                    row['clase_inicial'] = 0 
+                    row['clase_inicial'] = 0
                     #row['clase_inicial'] = row2['clase_inicial'] / mi_clase_anios_count[row['ingreso__anio']]
         for row in final:
             for row2 in final_clase:
                 if row2['ingreso__anio'] == row['ingreso__anio']:
-                    row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['ingreso__anio']]
+                    row['clase_final'] = row2['clase_final'] / \
+                        mi_clase_anios_count[row['ingreso__anio']]
         for row in inicial:
             found = False
             for row2 in final:
