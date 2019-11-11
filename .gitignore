@@ -42,6 +42,9 @@ tmp
 *.db
 *.sqlite
 wsgi.py
+.psql_history
+.wget-hsts
+.gitconfig
 
 # cache files for sublime text
 *.tmlanguage.cache
@@ -92,9 +95,9 @@ local_settings.py
 .pydevproject
 .*.swo
 .*.swp
-
 .idea
 env
 /git-shell-commands/
 .lesshst
 .ssh
+.env
