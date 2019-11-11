@@ -74,100 +74,134 @@ def oim_chart(municipio=None, year=None, portada=False):
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
 
-        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values('subsubtipoingreso__origen__id').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipoingreso__origen__nombre')
-        tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__id')
-        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values('subsubtipoingreso', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
+        source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values(
+            'subsubtipoingreso__origen__id').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipoingreso__origen__nombre')
+        tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values(
+            'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__id')
+        tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=periodo).values(
+            'subsubtipoingreso', 'subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__id')
         sources = glue(tipos_inicial, tipos_final, 'subsubtipoingreso__origen__id')
-        source_barra = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
-        source_barra2 = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
+        source_barra = IngresoDetalle.objects.filter(
+            ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
+        source_barra2 = IngresoDetalle.objects.filter(
+            ingreso__municipio__slug=municipio, ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
 
-        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, \
-            ingreso__municipio__slug=municipio).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL, \
-            ingreso__municipio__slug=municipio).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_periodo = IngresoDetalle.objects.filter(ingreso__periodo=periodo, \
-            ingreso__municipio__slug=municipio).\
-            values('ingreso__anio').order_by('ingreso__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,
+                                                       ingreso__municipio__slug=municipio).\
+            values('ingreso__anio').order_by('ingreso__anio').annotate(
+                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,
+                                                     ingreso__municipio__slug=municipio).\
+            values('ingreso__anio').order_by('ingreso__anio').annotate(
+                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_periodo = IngresoDetalle.objects.filter(ingreso__periodo=periodo,
+                                                       ingreso__municipio__slug=municipio).\
+            values('ingreso__anio').order_by('ingreso__anio').annotate(
+                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # obtiene valores para este año de las listas
         try:
-            asignado = (item for item in source_inicial if item["ingreso__anio"] == int(year)).next()['asignado']
+            asignado = (item for item in source_inicial if item["ingreso__anio"] == int(
+                year)).next()['asignado']
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_periodo if item["ingreso__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_periodo if item["ingreso__anio"] == int(year)).next()[
+                'ejecutado']
         except StopIteration:
             ejecutado = 0
 
         # obtiene datos de ingresos en ditintos rubros de persoal pemanente (codigo 1100000)
-        rubrosp_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, \
-                subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
-        rubrosp_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO, \
-                subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubrosp_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, \
-                subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubrosp_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, \
-                subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-                values('subtipoingreso__codigo','subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
-        rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final, rubrosp_actualizado, rubrosp_periodo), key='subtipoingreso__codigo')
+        rubrosp_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,
+                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
+                'subtipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
+        rubrosp_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,
+                                                            subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(
+                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubrosp_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,
+                                                      subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
+                'subtipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubrosp_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,
+                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
+                'subtipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
+        rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final,
+                                  rubrosp_actualizado, rubrosp_periodo), key='subtipoingreso__codigo')
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
-                values('subsubtipoingreso__origen__id','subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__id').annotate(inicial_asignado=Sum('asignado'))
+            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
+                'subsubtipoingreso__origen__id').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,).\
-                values('subsubtipoingreso__origen__id','subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__id').annotate(actualizado_ejecutado=Sum('ejecutado'), actualizado_asignado=Sum('asignado'))
+            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
+                'subsubtipoingreso__origen__id').annotate(actualizado_ejecutado=Sum('ejecutado'), actualizado_asignado=Sum('asignado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
-                values('subsubtipoingreso__origen__id','subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__id').annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado'))
+            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
+                'subsubtipoingreso__origen__id').annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado'))
         rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,).\
-                values('subsubtipoingreso__origen__id','subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__id').annotate(ejecutado=Sum('ejecutado'))
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subsubtipoingreso__origen__id')
+            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
+                'subsubtipoingreso__origen__id').annotate(ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
+                                 rubros_periodo), key='subsubtipoingreso__origen__id')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
-        mi_clase_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
+        mi_clase_count = ClasificacionMunicAno.objects.filter(
+            clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
         # obtiene clase y contador (otros en misma clase) para todos los años
-        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
+        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(
+            municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
         mi_clase_anios_count = {}
         for aclase in mi_clase_anios:
-            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
+            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(
+                clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
         # obtiene datos de municipios de la misma clase
-        municipios_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, ingreso__municipio__clase__anio=year, \
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
-                values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
-        municipios_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, ingreso__municipio__clase__anio=year, \
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
-                values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
-        municipios_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ingreso__municipio__clase__anio=year,subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, \
-                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-                values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by('ingreso__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
-        otros = glue(municipios_inicial, municipios_final, 'ingreso__municipio__nombre', actualizado=municipios_actualizado)
+        municipios_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, ingreso__municipio__clase__anio=year,
+                                                           ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
+            values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
+                'ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
+        municipios_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, ingreso__municipio__clase__anio=year,
+                                                               ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, subsubtipoingreso__origen=OrigenRecurso.RECAUDACION).\
+            values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
+                'ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
+        municipios_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ingreso__municipio__clase__anio=year, subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,
+                                                         ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
+            values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
+                'ingreso__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
+        otros = glue(municipios_inicial, municipios_final,
+                     'ingreso__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de ingresos
         for row in otros:
             #total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
             #        .aggregate(poblacion=Sum('poblacion'))['poblacion']
             try:
-                total_poblacion = Poblacion.objects.get(anio=year, municipio__slug=row['ingreso__municipio__slug']).poblacion
+                total_poblacion = Poblacion.objects.get(
+                    anio=year, municipio__slug=row['ingreso__municipio__slug']).poblacion
             except:
                 total_poblacion = 0
             row['poblacion'] = total_poblacion
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion, 1) if total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
+            row['ejecutado_percent'] = round(
+                row['ejecutado'] / total_poblacion, 1) if total_poblacion > 0 else 0
+            row['asignado_percent'] = round(
+                row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
         otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de ingresos
-        tipo_inicial= list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year, ingreso__periodo=PERIODO_FINAL).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo_inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
+                                                          ingreso__periodo=PERIODO_INICIAL).values('subsubtipoingreso__origen__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
+                                                        ingreso__periodo=PERIODO_FINAL).values('subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, 'subsubtipoingreso__origen__nombre')
 
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
-        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values(
+            'ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values(
+            'ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
         final_clase_sql = "SELECT core_ingreso.anio AS ingreso__anio,'F' AS ingreso__periodo,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
