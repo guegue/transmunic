@@ -353,25 +353,35 @@ def oim_view(request):
         'indicator_name': indicator_name,
         'year_data': data['year_data'],
         'indicator_description': """Son los ingresos que capta el sector
-                público para realizar sus actividades, es decir, es el dinero
-                percibido por el gobierno para financiar sus gastos públicos""",
-        'municipio': data['municipio'], 'year': data['year'],
-        'mi_clase': data['mi_clase'], 'porano': data['porano'],
-        'totales': data['totales'], 'charts': data['charts'],
+                        público para realizar sus actividades, es decir, es el dinero
+                        percibido por el gobierno para financiar sus gastos públicos""",
+        'municipio': data['municipio'],
+        'year': data['year'],
+        'mi_clase': data['mi_clase'],
+        'porano': data['porano'],
+        'totales': data['totales'],
+        'charts': data['charts'],
         'periodo_list': data['periodo_list'],
         'year_list': data['year_list'],
         'municipio_list': data['municipio_list'],
-        'porclase': data['porclase'], 'porclasep': data['porclasep'],
-        'rubros': data['rubros'], 'anuales': data['anuales'],
-        'rubrosp': data['rubrosp'], 'otros': data['otros'],
-        'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
+        'porclase': data['porclase'],
+        'porclasep': data['porclasep'],
+        'rubros': data['rubros'],
+        'anuales': data['anuales'],
+        'rubrosp': data['rubrosp'],
+        'otros': data['otros'],
+        'asignado': data['asignado'],
+        'ejecutado': data['ejecutado'],
         'asignado_porcentaje': data['asignado_porcentaje'],
         'actualizado_porcentaje': data['actualizado_porcentaje'],
         'ejecutado_porcentaje': data['ejecutado_porcentaje'],
         'total_asignado_ranking': data['total_asignado_ranking'],
-        'total_asignado_ranking_porcentaje': data['total_asignado_ranking_porcentaje'],
-        'total_ejecutado_ranking': data['total_ejecutado_ranking'],
-        'total_ejecutado_ranking_porcenteje': data['total_ejecutado_ranking_porcenteje'],
+        'total_asignado_ranking_porcentaje':
+            data['total_asignado_ranking_porcentaje'],
+        'total_ejecutado_ranking':
+            data['total_ejecutado_ranking'],
+        'total_ejecutado_ranking_porcenteje':
+            data['total_ejecutado_ranking_porcenteje'],
         'bubble_data': bubble_data
     }
     return render(request, template_name, context)
