@@ -3,6 +3,18 @@
 import collections
 
 
+def xnumber(number):
+    if not number:
+        return 0
+    if isinstance(number, int) or isinstance(number, float):
+        return number
+    if str(number).isdigit():
+        return int(number)
+    try:
+        return float(number)
+    except ValueError:
+        return 0
+
 def getPeriods(model):  # ;)
     "Gets all years and their period with data from a model.anio"
 
