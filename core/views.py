@@ -370,9 +370,9 @@ def oim_view(request):
         'ejecutado_porcentaje': data['ejecutado_porcentaje'],
         'total_asignado_ranking': data['total_asignado_ranking'],
         'total_asignado_ranking_porcentaje': data['total_asignado_ranking_porcentaje'],
-            'total_ejecutado_ranking': data['total_ejecutado_ranking'],
-            'total_ejecutado_ranking_porcenteje': data['total_ejecutado_ranking_porcenteje'],
-            'bubble_data': bubble_data
+        'total_ejecutado_ranking': data['total_ejecutado_ranking'],
+        'total_ejecutado_ranking_porcenteje': data['total_ejecutado_ranking_porcenteje'],
+        'bubble_data': bubble_data
     }
     return render(request, template_name, context)
 

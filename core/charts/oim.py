@@ -782,12 +782,13 @@ def oim_chart(municipio=None, year=None, portada=False):
         for ayear in year_list:
             aaa = porano_table[label][ayear]['raw']
             if porano_table[label][ayear]['raw']:
-                porano_table[label][ayear]['percent'] = format(porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
+                porano_table[label][ayear]['percent'] = format(
+                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     if portada:
-        charts =  (ejecutado_pie, )
+        charts = (ejecutado_pie, )
     else:
-        charts =  (pie, bar)
+        charts = (pie, bar)
 
     return {
         'charts': charts, 'year_data': year_data,
