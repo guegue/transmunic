@@ -450,9 +450,10 @@
                         <tr>
                             <td class="text-left">{{ key }}</td>
                             {% for year in year_list %}
-                            {% with year_data=data|keyvalue:year %}
-                            <td class="text-right">{{ year_data.raw|million|intcomma }} = {{ year_data.percent }}</td>
-                            {% endwith %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-right">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right">{{ year_data.percent|default:"0%" }}</td>
+                                {% endwith %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
