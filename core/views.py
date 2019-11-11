@@ -350,14 +350,14 @@ def oim_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     context = {
-            'indicator_name': indicator_name,
-            'year_data': data['year_data'],
-            'indicator_description': """Son los ingresos que capta el sector
+        'indicator_name': indicator_name,
+        'year_data': data['year_data'],
+        'indicator_description': """Son los ingresos que capta el sector
                 público para realizar sus actividades, es decir, es el dinero
                 percibido por el gobierno para financiar sus gastos públicos""",
-            'municipio': data['municipio'], 'year': data['year'],
-            'mi_clase': data['mi_clase'], 'porano': data['porano'],
-            'totales': data['totales'], 'charts': data['charts'],
+        'municipio': data['municipio'], 'year': data['year'],
+        'mi_clase': data['mi_clase'], 'porano': data['porano'],
+        'totales': data['totales'], 'charts': data['charts'],
             'periodo_list': data['periodo_list'],
             'year_list': data['year_list'],
             'municipio_list': data['municipio_list'],
