@@ -366,6 +366,7 @@ def oim_view(request):
             'rubrosp': data['rubrosp'], 'otros': data['otros'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
             'asignado_porcentaje': data['asignado_porcentaje'],
+            'actualizado_porcentaje': data['actualizado_porcentaje'],
             'ejecutado_porcentaje': data['ejecutado_porcentaje'],
             'total_asignado_ranking': data['total_asignado_ranking'],
             'total_asignado_ranking_porcentaje': data['total_asignado_ranking_porcentaje'],

@@ -645,11 +645,15 @@ def oim_chart(municipio=None, year=None, portada=False):
         row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
         row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
+    actualizado_asignado = (sum(r['actualizado_asignado'] for r in rubros))
     asignado_porcentaje = 0
+    actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
     for row in rubros:
         row['ejecutado_percent'] = round((row['ejecutado'] / ejecutado) * 100, 1) if row['ejecutado'] > 0 else 0
         ejecutado_porcentaje = ejecutado_porcentaje + row['ejecutado_percent']
+        row['actualizado_asignado_percent'] = round((row['actualizado_asignado'] / actualizado_asignado) * 100, 1) if row['actualizado_asignado'] > 0 else 0
+        actualizado_porcentaje = actualizado_porcentaje + row['actualizado_asignado_percent']
         row['inicial_asignado_percent'] = round((row['inicial_asignado'] / asignado) * 100, 1) if row['inicial_asignado'] > 0 else 0
         asignado_porcentaje = asignado_porcentaje + row['inicial_asignado_percent']
 
@@ -662,6 +666,7 @@ def oim_chart(municipio=None, year=None, portada=False):
 
     total_asignado_ranking_porcentaje = 0
     total_ejecutado_ranking_porcenteje = 0
+
     # calculando el porcentaje de cada categoria para la tabla de ranking por decaudacion
     for row in porclasep:
         row['asignado_percent'] = round((row['asignado'] / total_asignado_ranking) * 100, 1) if row['asignado'] > 0 else 0
@@ -718,6 +723,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         'totales': sources, 'ejecutado': ejecutado,
         'asignado': asignado, 'periodo_list': periodo_list,
         'asignado_porcentaje': asignado_porcentaje,
+        'actualizado_porcentaje': actualizado_porcentaje,
         'ejecutado_porcentaje': ejecutado_porcentaje,
         'total_asignado_ranking': total_asignado_ranking,
         'total_asignado_ranking_porcentaje': total_asignado_ranking_porcentaje,
