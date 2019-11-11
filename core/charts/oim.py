@@ -5,6 +5,8 @@
 #
 ##############################################################################
 
+import decimal
+
 from itertools import chain
 from datetime import datetime, time
 from operator import itemgetter
@@ -18,7 +20,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, TipoIngreso, OrigenRecurso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion, ClasificacionMunicAno
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
+from core.tools import getYears, dictfetchall, glue, superglue, getPeriods, xnumber
 from lugar.models import Poblacion
 
 from transmunic import settings as pma_settings
@@ -728,12 +730,12 @@ def oim_chart(municipio=None, year=None, portada=False):
     total_ejecutado_ranking = 0
     # calculando la suma total de asignado y ejectuado para tabla de ranking por recaudacion
     for row in porclasep:
-        total_asignado_ranking = total_asignado_ranking + row['asignado']
-        total_ejecutado_ranking = total_ejecutado_ranking + row['ejecutado']
+        total_asignado_ranking = total_asignado_ranking + decimal.Decimal(xnumber(row['asignado']))
+        total_ejecutado_ranking = total_ejecutado_ranking + \
+            decimal.Decimal(xnumber(row['ejecutado']))
 
     total_asignado_ranking_porcentaje = 0
     total_ejecutado_ranking_porcenteje = 0
-
     # calculando el porcentaje de cada categoria para la tabla de ranking por decaudacion
     for row in porclasep:
         row['asignado_percent'] = round(
