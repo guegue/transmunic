@@ -12,11 +12,12 @@ def million(number):
 
 @register.filter
 def keyvalue(dict, key):
-    try:
+    key=str(key)
+    if key in dict:
         return dict[key]
-    except KeyError:
-        if key.isdigit():
-            return dict[int(key)]
+    if key.isdigit() and int(key) in dict:
+        return dict[int(key)]
+    return 'KeyError'
 
 @register.filter
 def total_sum(dict, key):
