@@ -2,6 +2,7 @@
 
 import collections
 
+
 def xnumber(number):
     if not number:
         return 0
