@@ -184,7 +184,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 if row2['ingreso__anio'] == row['ingreso__anio']:
                     found = True
                     try:
-                        row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['ingreso__anio']]
+                        row['clase_final'] = row2['clase_final'] / \
+                            mi_clase_anios_count[row['ingreso__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
