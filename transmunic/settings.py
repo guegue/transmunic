@@ -8,19 +8,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from email.utils import getaddresses
+import environ
 import os
-import dj_database_url
 
-from django.conf import global_settings as DJANGO_DEFAULT
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
+DATABASES = {
+    'default': env.db(),
+}
 
-DEBUG = 'DEBUG' in os.environ and not os.environ['DEBUG'] == 'False'
+ADMINS = getaddresses([env('DJANGO_ADMINS')])
+MANAGERS = ADMINS
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=*2w4v6%9wib742a3hr!&a0h2%a_x2pp7k6svha1@@1g0y#q(s'
 SITE_ID = 1
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))

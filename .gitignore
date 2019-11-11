@@ -92,9 +92,9 @@ local_settings.py
 .pydevproject
 .*.swo
 .*.swp
-
 .idea
 env
 /git-shell-commands/
 .lesshst
 .ssh
+.env
