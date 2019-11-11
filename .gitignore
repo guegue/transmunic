@@ -41,7 +41,6 @@ tmp
 /sql
 *.db
 *.sqlite
-wsgi.py
 .psql_history
 .wget-hsts
 .gitconfig
