@@ -255,6 +255,8 @@
                                             <strong>{{ i.catinversion__nombre }}</strong>
                                         </a>
                                         <br/>
+                                        <span style="color: yellow">{{ i.ejecutado|million|intcomma}}</span>
+                                        <br>
                                         {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
                                     </h5>
                                 </div>
