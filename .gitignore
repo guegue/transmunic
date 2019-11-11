@@ -43,8 +43,8 @@ tmp
 *.sqlite
 wsgi.py
 .psql_history
-.gitconfig
 .wget-hsts
+.gitconfig
 
 # cache files for sublime text
 *.tmlanguage.cache
