@@ -350,51 +350,71 @@ def oim_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     context = {
-            'indicator_name': indicator_name,
-            'year_data': data['year_data'],
-            'indicator_description': """Son los ingresos que capta el sector
-                público para realizar sus actividades, es decir, es el dinero
-                percibido por el gobierno para financiar sus gastos públicos""",
-            'municipio': data['municipio'], 'year': data['year'],
-            'mi_clase': data['mi_clase'], 'porano': data['porano'],
-            'totales': data['totales'], 'charts': data['charts'],
-            'periodo_list': data['periodo_list'],
-            'year_list': data['year_list'],
-            'municipio_list': data['municipio_list'],
-            'porclase': data['porclase'], 'porclasep': data['porclasep'],
-            'rubros': data['rubros'], 'anuales': data['anuales'],
-            'rubrosp': data['rubrosp'], 'otros': data['otros'],
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
-            'bubble_data': bubble_data
-            }
+        'indicator_name': indicator_name,
+        'year_data': data['year_data'],
+        'indicator_description': """Son los ingresos que capta el sector
+                        público para realizar sus actividades, es decir, es el dinero
+                        percibido por el gobierno para financiar sus gastos públicos""",
+        'municipio': data['municipio'],
+        'year': data['year'],
+        'mi_clase': data['mi_clase'],
+        'porano': data['porano'],
+        'totales': data['totales'],
+        'charts': data['charts'],
+        'periodo_list': data['periodo_list'],
+        'year_list': data['year_list'],
+        'municipio_list': data['municipio_list'],
+        'porclase': data['porclase'],
+        'porclasep': data['porclasep'],
+        'rubros': data['rubros'],
+        'anuales': data['anuales'],
+        'rubrosp': data['rubrosp'],
+        'otros': data['otros'],
+        'asignado': data['asignado'],
+        'ejecutado': data['ejecutado'],
+        'asignado_porcentaje': data['asignado_porcentaje'],
+        'actualizado_porcentaje': data['actualizado_porcentaje'],
+        'ejecutado_porcentaje': data['ejecutado_porcentaje'],
+        'total_asignado_ranking': data['total_asignado_ranking'],
+        'total_asignado_ranking_porcentaje':
+            data['total_asignado_ranking_porcentaje'],
+        'total_ejecutado_ranking':
+            data['total_ejecutado_ranking'],
+        'total_ejecutado_ranking_porcenteje':
+            data['total_ejecutado_ranking_porcenteje'],
+        'bubble_data': bubble_data
+    }
     return render(request, template_name, context)
+
 
 def inversion_view(request):
     template_name = 'inversion.html'
     municipio = getVar('municipio', request)
     year = getVar('year', request)
     data = inversion_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],\
-            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'], \
-            'porclasep': data['porclasep']},\
-            context_instance=RequestContext(request))
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],
+                                              'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
+                                              'porclasep': data['porclasep']},
+                              context_instance=RequestContext(request))
+
 
 def inversion_area_view(request):
     template_name = 'inversionarea.html'
-    municipio = request.GET.get('municipio','')
+    municipio = request.GET.get('municipio', '')
     data = inversion_area_chart(municipio=municipio)
-    return render_to_response(template_name,{'charts': data['charts'], 'municipio_list': data['municipio_list'],\
-            'municipio': municipio, 'periodo_list': data['periodo_list'],},\
-            context_instance=RequestContext(request))
+    return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],
+                                              'municipio': municipio, 'periodo_list': data['periodo_list'], },
+                              context_instance=RequestContext(request))
+
 
 def fuentes_view(request):
     template_name = 'fuentes_chart.html'
-    municipio = request.GET.get('municipio','')
-    year = request.GET.get('year','')
+    municipio = request.GET.get('municipio', '')
+    year = request.GET.get('year', '')
     data = fuentes_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, { 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],\
-            'municipio': municipio, 'year': year,},\
-            context_instance=RequestContext(request))
+    return render_to_response(template_name, {'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
+                                              'municipio': municipio, 'year': year, },
+                              context_instance=RequestContext(request))
 
 
 def descargar_detalle(request):

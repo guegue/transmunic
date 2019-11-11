@@ -9,37 +9,47 @@
 {% endblock %}
 
 {% block main_table %}
-    <table class="table table-striped table-hover">
+    <table class="table">
         <thead>
         <tr class="bg-primary">
-            <th>Rubros de ingresos</th>
-            {% if periodo_list|keyvalue:year == 'I' %}
-                <th class="text-right">Inicial</th>
-            {% else %}
-                <th class="text-right">Ejecutado</th>
-            {% endif %}
+            <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
+            <th rowspan="1" colspan="2" style="border-bottom: none;" class="text-center">
+                {% if periodo_list|keyvalue:year == 'I' %}
+                    Inicial
+                {% else %}
+                    Ejecutado
+                {% endif %}
+            </th>
+        </tr>
+        <tr class="bg-primary">
+            <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
+            <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
         </tr>
         </thead>
         {% for row in rubros %}
             <tr>
                 {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
-                    <td>{{ row.subsubtipoingreso__origen__nombre }}</td>
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                    <td colspan="1" class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td colspan="1" class="text-right">{{ row.inicial_asignado_percent }}</td>
                 {% else %}
                     {% if row.ejecutado > 0 %}
-                        <td>{{ row.subsubtipoingreso__origen__nombre }}</td>
-                        <td class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                        <td colspan="1" class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                        <td colspan="1" class="text-right">{{ row.ejecutado_percent }}</td>
                     {% endif %}
                 {% endif %}
             </tr>
         {% endfor %}
         <tfoot>
         <tr class="">
-            <td>TOTAL</td>
+            <td colspan="1">TOTAL</td>
             {% if periodo_list|keyvalue:year == 'I' %}
-                <td class="text-right">{{ asignado|million|intcomma }}</td>
+                <td colspan="1" class="text-right">{{ asignado|million|intcomma }}</td>
+                <td colspan="1" class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
             {% else %}
-                <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                <td colspan="1" class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                <td colspan="1" class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
             {% endif %}
         </tr>
         </tfoot>
@@ -128,40 +138,76 @@
                 <div class="row">
                     <div class="col-md-offset-4 col-md-4 table-responsive">
                         <table class="table">
+                            <thead>
                             <tr class="blanco pma-bg-blue">
-                                <th><strong>Categoría de municipio</strong></th>
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    <th><strong>Presupuestado</strong></th>
-                                {% else %}
-                                    <th><strong>Ejecutado</strong></th>
-                                {% endif %}
+                                <th rowspan="2" colspan="1" style="vertical-align: middle">Categoría de municipio</th>
+                                <th rowspan="1" colspan="2" style="border-bottom: none;" class="text-center">
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        Presupuestado
+                                    {% else %}
+                                        Ejecutado
+                                    {% endif %}
+                                </th>
                             </tr>
+                            <tr class="blanco pma-bg-blue">
+                                <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
+                                <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
-                                    <td class="text-center">{{ row.clasificacion }}</td>
+                                    <td colspan="1" class="text-center">{{ row.clasificacion }}</td>
                                     {% if periodo_list|keyvalue:year == 'I' %}
                                         <td class="text-right">
-                                            {% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %}
-                                                0 {% endif %}</td>
+                                            {% if row.asignado %}
+                                                {{ row.asignado|floatformat:2|intcomma }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-right">
+                                            {% if row.asignado_percent %}
+                                                {{ row.asignado_percent|floatformat:1|intcomma }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
                                     {% else %}
                                         <td class="text-right">
-                                            {% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %}
-                                                0 {% endif %}</td>
+                                            {% if row.ejecutado %}
+                                                {{ row.ejecutado|floatformat:2|intcomma }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-right">
+                                            {% if row.ejecutado_percent %}
+                                                {{ row.ejecutado_percent|floatformat:1|intcomma }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
+                            </tbody>
+                            <tfoot>
                             <tr class="blanco pma-bg-blue">
-                                <td><strong>Media Nacional</strong></td>
+                                <th colspan="1">Media Nacional</th>
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <td class="text-right">
-                                        <strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong>
+                                        {{ total_asignado_ranking|floatformat:2|intcomma }}
                                     </td>
+                                    <td class="text-right">{{ total_asignado_ranking_porcentaje|floatformat:0 }}</td>
                                 {% else %}
                                     <td class="text-right">
-                                        <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong>
+                                        {{ total_ejecutado_ranking|floatformat:2|intcomma }}
                                     </td>
+                                    <td class="text-right">{{ total_ejecutado_ranking_porcenteje|floatformat:0 }}</td>
                                 {% endif %}
                             </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -376,25 +422,42 @@
     </div>
     <div id="detail-3" class="container medium">
         <div class="row">
-            <div class="col-xs-12 col-md-offset-1 col-md-10 table-responsive">
+            <div class="col-xs-12 col-md-12 table-responsive">
                 <table class="table">
+                    <thead>
                     <tr class="bg-primary">
-                        <th></th>
+                        <th rowspan="2" colspan="1"></th>
                         {% for year in year_list %}
-                            <th class="text-center"><strong>{{ year }}</strong>
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                            <th rowspan="1" colspan="2" class="text-center" style="border-bottom: none">
+                                <strong>{{ year }}</strong>
+                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
+                            </th>
                         {% endfor %}
                     </tr>
+                    <tr class="bg-primary">
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
+                                Cordobas
+                            </th>
+                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
+                                Porcentaje
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
                     {% for key, data in porano.items %}
                         <tr>
                             <td class="text-left">{{ key }}</td>
                             {% for year in year_list %}
-                            {% with year_data=data|keyvalue:year %}
-                            <td class="text-right">{{ year_data.raw|million|intcomma }} = {{ year_data.percent }}</td>
-                            {% endwith %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-right">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right">{{ year_data.percent|default:"0%" }}</td>
+                                {% endwith %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -406,40 +469,65 @@
         <div class="container wide">
             <div class="row">
                 <div class="col-md-12">
-                    <h2><strong>Modificaciones al presupuesto</strong><br>
-                        municipal de ingresos </h2>
+                    <h2>
+                        <strong>Modificaciones al presupuesto</strong>
+                        <br>
+                        municipal de ingresos
+                    </h2>
                     <h4>Millones de cordobas</h4>
                     <hr class="pma-line-2"/>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-offset-2 col-md-8 table-responsive">
+                <div class="col-md-offset-2 col-md-9 table-responsive">
                     <table class="table table-condensed table-striped">
                         <thead>
                         <tr class="bg-primary">
-                            <th>Rubros de ingresos</th>
-                            <th>Inicial</th>
-                            <th>Actualizado</th>
-                            <th>Ejecutado</th>
+                            <th rowspan="2" colspan="1">Rubros de ingresos</th>
+                            <th colspan="2" class="text-center" style="border-bottom: none;">Inicial</th>
+                            <th colspan="2" class="text-center" style="border-bottom: none;">Actualizado</th>
+                            <th colspan="2" class="text-center" style="border-bottom: none;">Ejecutado</th>
+                        </tr>
+                        <tr class="bg-primary">
+                            <th colspan="1" style="border-top: none;">Cordobas</th>
+                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" style="border-top: none;">Cordobas</th>
+                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" style="border-top: none;">Cordobas</th>
+                            <th colspan="1" style="border-top: none;">Porcentaje</th>
                         </tr>
                         </thead>
+                        <tbody>
                         {% for row in rubros %}
                             <tr>
                                 <td class="pull-left">{{ row.subsubtipoingreso__origen__nombre }}</td>
                                 <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                                <td class=" text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                                <td class="text-right">{{ row.inicial_asignado_percent }}%</td>
+                                <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                                <td class="text-right">{{ row.actualizado_asignado_percent }}%</td>
                                 <td class="text-right">
-                                    {% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}
-                                        0{% endif %}</td>
+                                    {% if row.final_ejecutado %}
+                                        {{ row.final_ejecutado|million|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                     {{ row.ejecutado_percent }}%
+                                </td>
                             </tr>
                         {% endfor %}
+                        </tbody>
                         <tfoot>
-                        <tr class="bold">
-                            <td>TOTAL</td>
-                            <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                            <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                            <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                        </tr>
+                            <tr class="bold">
+                                <td>TOTAL</td>
+                                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                                <td class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                                <td class="text-right">{{ actualizado_porcentaje|floatformat:"0" }}%</td>
+                                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                                <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>
