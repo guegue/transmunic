@@ -9,7 +9,7 @@ from core.forms import UploadExcelForm
 
 
 def import_file(excel_file, municipio, year, periodo, start_row, end_row):
-    book = load_workbook(filename = excel_file)
+    book = load_workbook(filename=excel_file)
     sheet = book.active
     today = date.today()
     ingreso = Ingreso.objects.create(municipio=municipio, anio=year, periodo=periodo, fecha=today)
@@ -33,18 +33,19 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                     tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo, nombre=nombre)
                 else:
                     subsubtipo, created = SubTipoIngreso.objects.get_or_create(codigo=codigo,
-                                          tipoingreso_id=tipo_id, nombre=nombre)
+                                                                               tipoingreso_id=tipo_id, nombre=nombre)
             else:
                 subsubtipo, created = SubSubTipoIngreso.objects.get_or_create(codigo=codigo,
-                                      subtipoingreso_id=subtipo_id, nombre=nombre)
+                                                                              subtipoingreso_id=subtipo_id, nombre=nombre)
         else:
             asignado = row[1].value
             ejecutado = row[2].value
             ingresodetalle, created = IngresoDetalle.objects.update_or_create(
-                    codigo=codigo, ingreso=ingreso, defaults={'asignado': asignado,
-                        'ejecutado': ejecutado, 'cuenta': nombre, 'tipoingreso_id': tipo_id})
-                  cuenta, nombre, asignado, ejecutado))
-            print(u"{} ({}:{}:{}:{}) | {} | {} | {}".format(codigo, tipo, subtipo, subsubtipo,
+                codigo=codigo, ingreso=ingreso, defaults={'asignado': asignado,
+                                                          'ejecutado': ejecutado, 'cuenta': nombre, 'tipoingreso_id': tipo_id})
+            cuenta, nombre, asignado, ejecutado))
+                print(u"{} ({}:{}:{}:{}) | {} | {} | {}".format(codigo, tipo, subtipo, subsubtipo,
+
 
 class UploadExcelView(FormView):
     template_name = 'upload_excel.html'
