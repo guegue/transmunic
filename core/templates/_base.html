@@ -14,10 +14,11 @@
     <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="{% static 'css/pma.css' %}">
     <link rel="stylesheet" href="{% static 'css/pma-icon.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/own.css' %}">
     <!-- Custom Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -38,143 +39,147 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="pma-gradient">
+<!-- Header -->
+<header class="pma-gradient">
     <nav class="navbar" role="navigation">
         <!-- El logotipo y el icono que despliega el menú se agrupan
        para mostrarlos mejor en los dispositivos móviles -->
         <div class="container ">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Desplegar navegación</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <span id="brand-01">Presupuestos</span>
-                <span id="brand-02">Municipales </span>
-                <span id="brand-03">Abiertos </span>
-            </a>
-        </div>
-
-        <!-- Agrupar los enlaces de navegación, los formularios y cualquier
-       otro elemento que se pueda ocultar al minimizar la barra -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-           <div class="navbar-right">
-            <ul class="nav navbar-nav pma-navbar">
-                <li><a href="{% url 'home' %}">Inicio</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    El Observatorio <b class="caret"></b></a>
-                    {% load flatpages %}
-                    {% get_flatpages as flatpages %}
-                    <ul class="dropdown-menu">
-                        {% for page in flatpages %}
-                        {% if page.url != '/intro/' and page.url != '/origen-ingresos/'%}
-                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-                        <li><a href="/documento/marco-legal/">Marco Legal</a></li>
-                        <li><a href="/documento/analisis/Resumen Municipalesupuestario/">Entendiendo los Presupuestos Municipales</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="{% url 'budget-summary' %}">Resumen Municipal</a>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left pma-navbar" role="search">
-            <select class="listado-municipios pull-right" name="municipio">
-               <option></option>
-               <!--option class="amarillo">Consolidado Municipal</option-->
-               {% regroup municipios by depto as departamentos %}
-               {% for departamento in departamentos %}
-                   <optgroup label="{{ departamento.grouper }}">
-                       {% for m in departamento.list %}
-                           <option value="/{{ m.slug}}">{{ m.nombre }}</option>
-                       {% endfor %}
-                   </optgroup>
-               {% endfor %}
-            </select>
-            </form>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Desplegar navegación</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <span id="brand-01">Presupuestos</span>
+                    <span id="brand-02">Municipales </span>
+                    <span id="brand-03">Abiertos </span>
+                </a>
             </div>
-        </div>
+
+            <!-- Agrupar los enlaces de navegación, los formularios y cualquier
+           otro elemento que se pueda ocultar al minimizar la barra -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav pma-navbar">
+                        <li><a href="{% url 'home' %}">Inicio</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                El Observatorio <b class="caret"></b></a>
+                            {% load flatpages %}
+                            {% get_flatpages as flatpages %}
+                            <ul class="dropdown-menu">
+                                {% for page in flatpages %}
+                                    {% if page.url != '/intro/' and page.url != '/origen-ingresos/' %}
+                                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                                <li><a href="/documento/marco-legal/">Marco Legal</a></li>
+                                <li><a href="/documento/analisis/Resumen Municipalesupuestario/">Entendiendo los
+                                    Presupuestos Municipales</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'budget-summary' %}">Resumen Municipal</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-left pma-navbar" role="search">
+                        <select class="listado-municipios pull-right" name="municipio">
+                            <option></option>
+                            <!--option class="amarillo">Consolidado Municipal</option-->
+                            {% regroup municipios by depto as departamentos %}
+                            {% for departamento in departamentos %}
+                                <optgroup label="{{ departamento.grouper }}">
+                                    {% for m in departamento.list %}
+                                        <option value="/{{ m.slug }}">{{ m.nombre }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
         </div>
     </nav>
     {% block header %}
-    <div class="pma-hero">
-        <div class="container ">
-            <div class="row">
-                <div class="col-md-7">
-                    {% block header_left %}
-                    {% block header_left_title %}
-                    <h2 class="text-center"> <strong>Participemos</strong> en la consulta del <br> Presupuesto Municipal</h2>
-                    <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
-                    {% endblock %}
-                    <div>
-                        {% block illustration %}
-                        <img src="/static/images/illustration-index.png" alt="..." class="pma-illustration">
+        <div class="pma-hero">
+            <div class="container ">
+                <div class="row">
+                    <div class="col-md-7">
+                        {% block header_left %}
+                            {% block header_left_title %}
+                                <h2 class="text-center"><strong>Participemos</strong> en la consulta del <br>
+                                    Presupuesto Municipal</h2>
+                                <h4 class="text-center"> Informémonos dónde y cuándo será</h4>
+                            {% endblock %}
+                            <div>
+                                {% block illustration %}
+                                    <img src="/static/images/illustration-index.png" alt="..." class="pma-illustration">
+                                {% endblock %}
+                            </div>
                         {% endblock %}
                     </div>
-                    {% endblock %}
+                    <div class="col-md-5 mapa-container">
+                        {% block header_right %}
+                            <div id="nic-map-container"></div>
+                        {% endblock %}
+                    </div>
                 </div>
-                <div class="col-md-5 mapa-container">
-                    {% block header_right %}
-                    <div id="nic-map-container"></div>
-                    {% endblock %}
+            </div>
+        </div>
+    {% endblock %}
+</header>
+
+{% block main_content %}
+{% endblock %}
+
+
+{% block custom_body_blocks %}
+{% endblock %}
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <a class="footer-brand" href="{% url 'home' %}">
+                    <span id="brand-01">Presupuestos</span>
+                    <span id="brand-02">Municipales </span>
+                    <span id="brand-03">Abiertos </span>
+                </a>
+                <p> Las opiniones expresadas en este sitio web no reflejan necesariamente las de la Agencia de los
+                    Estados Unidos para el Desarrollo Internacional, USAID, o la del Gobierno de los Estados
+                    Unidos. </p>
+                <a href="#" class="pma-special-link font_small">POLÍTICAS DE PRIVACIDAD</a>
+            </div>
+            <div class="col-md-6">
+                <h3><strong>Nuestros</strong> Aliados.</h3>
+                <hr class="pma-line-2">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <img class="img-responsive" src="/static/images/logo_usaid.png" alt="USAID">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <img class="img-responsive" src="/static/images/logo_guegue.png" alt="GUEGUE">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <img class="img-responsive" src="/static/images/logo_global_communities.png" alt="GLOBAL">
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="row pma-spacing-top pma-spacing-bottom">
+            <div class="col-md-12 copyright">
+                <small>2017 Todos los derechos reservados</small>
             </div>
         </div>
     </div>
-    {% endblock %}
-    </header>
 
-    {% block main_content %}
-    {% endblock %}
+</footer>
 
-
-    {% block custom_body_blocks %}
-    {% endblock %}
-
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <a class="footer-brand" href="{% url 'home' %}">
-                        <span id="brand-01">Presupuestos</span>
-                        <span id="brand-02">Municipales </span>
-                        <span id="brand-03">Abiertos </span>
-                    </a>
-                    <p> Las opiniones expresadas en este sitio web no reflejan necesariamente las de la Agencia de los Estados Unidos para el Desarrollo Internacional, USAID, o la del Gobierno de los Estados Unidos. </p>
-                    <a href="#" class="pma-special-link font_small">POLÍTICAS DE PRIVACIDAD</a>
-                </div>
-                <div class="col-md-6">
-                    <h3> <strong>Nuestros</strong> Aliados.</h3>
-                    <hr class="pma-line-2">
-                    <div class="row">
-                        <div class="col-xs-4 col-sm-4 col-md-4">
-                            <img class="img-responsive" src="/static/images/logo_usaid.png" alt="USAID">
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4">
-                            <img class="img-responsive" src="/static/images/logo_guegue.png" alt="GUEGUE">
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4">
-                            <img class="img-responsive" src="/static/images/logo_global_communities.png" alt="GLOBAL">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row pma-spacing-top pma-spacing-bottom">
-                <div class="col-md-12 copyright">
-                <small>2017 Todos los derechos reservados</small>
-                </div>
-            </div>
-        </div>
-
-    </footer>
-
-    {% block footer_scripts_global %}
+{% block footer_scripts_global %}
     <!-- Librería jQuery requerida por los plugins de JavaScript -->
     <!--
     <script src="http://code.jquery.com/jquery.js"></script>
@@ -189,44 +194,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script type="text/javascript">
-    $(document).ready(function() {
-        $(".listado-municipios").select2({
-            placeholder: "Municipio",
-            allowClear: true
+        $(document).ready(function () {
+            $(".listado-municipios").select2({
+                placeholder: "Municipio",
+                allowClear: true
+            });
+            $('.listado-municipios').on("select2:selecting", function (e) {
+                window.location = e.params.args.data.id;
+            });
+            $(".municipio").select2({
+                placeholder: "Municipios",
+                allowClear: true
+            });
         });
-        $('.listado-municipios').on("select2:selecting", function(e) {
-            window.location = e.params.args.data.id;
+        $(".listado-municipios").on("select2:open", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
         });
-        $(".municipio").select2({
-            placeholder: "Municipios",
-            allowClear: true
+        $(".listado-municipios").on("select2:close", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
         });
-    });
-    $(".listado-municipios").on("select2:open", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
-    });
-    $(".listado-municipios").on("select2:close", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
-    });
-    $(".municipio").on("select2:open", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
-    });
-    $(".municipio").on("select2:close", function() {
-        $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
-    });
+        $(".municipio").on("select2:open", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+        });
+        $(".municipio").on("select2:close", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        });
     </script>
     <!-- Google Analytics -->
     <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
         ga('create', 'UA-68619423-1', 'auto');
         ga('send', 'pageview');
     </script>
-    {% endblock %}
+{% endblock %}
 
-    {% block extra_footer_scripts %}
+{% block extra_footer_scripts %}
     <!-- Highcharts -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
@@ -234,11 +246,10 @@
     <script src="https://code.highcharts.com/mapdata/countries/ni/ni-all.js"></script>
     <script type="text/javascript" src="{% static 'maps/ni-custom-all.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/map-ni-drilldown.js' %}"></script>
-    {% endblock %}
+{% endblock %}
 
-    {% block custom_scripts %}
-    {% endblock %}
+{% block custom_scripts %}
+{% endblock %}
 
 </body>
-
 </html>
