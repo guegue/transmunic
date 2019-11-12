@@ -245,6 +245,11 @@ class Ingreso(models.Model):
         chained_model_field='depto', null=True, blank=True)
     descripcion = models.TextField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        if not self.departamento_id and self.municipio_id:
+            self.departamento_id = self.municipio.depto_id
+        super(Ingreso, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = 'Ingresos'
 
