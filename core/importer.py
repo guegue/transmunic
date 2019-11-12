@@ -42,11 +42,10 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
             asignado = row[1].value
             ejecutado = row[2].value
             ingresodetalle, created = IngresoDetalle.\
-                objects.update_or_create(codigo=codigo, ingreso=ingreso, defaults=
-                    {'asignado': asignado, 'ejecutado': ejecutado, 'cuenta': nombre,
-                      'tipoingreso_id': tipo_id})
-                print(u"{} ({}:{}:{}:{}) | {} | {} | {}".\
-                    format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
+                objects.update_or_create(codigo=codigo, ingreso=ingreso, defaults={'asignado': asignado, 'ejecutado': ejecutado, 'cuenta': nombre,
+                                                                                   'tipoingreso_id': tipo_id})
+            print(u"{} ({}:{}:{}:{}) | {} | {} | {}".
+                  format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
 
 
 class UploadExcelView(FormView):
