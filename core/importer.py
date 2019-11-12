@@ -32,19 +32,21 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                         raise('Tipo no puede ser 00')
                     tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo, nombre=nombre)
                 else:
-                    subsubtipo, created = SubTipoIngreso.objects.get_or_create(codigo=codigo,
-                                                                               tipoingreso_id=tipo_id, nombre=nombre)
+                    subsubtipo, created = SubTipoIngreso.\
+                        objects.get_or_create(codigo=codigo, tipoingreso_id=tipo_id, nombre=nombre)
             else:
-                subsubtipo, created = SubSubTipoIngreso.objects.get_or_create(codigo=codigo,
-                                                                              subtipoingreso_id=subtipo_id, nombre=nombre)
+                subsubtipo, created = SubSubTipoIngreso.\
+                    objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
+                                          nombre=nombre)
         else:
             asignado = row[1].value
             ejecutado = row[2].value
-            ingresodetalle, created = IngresoDetalle.objects.update_or_create(
-                codigo=codigo, ingreso=ingreso, defaults={'asignado': asignado,
-                                                          'ejecutado': ejecutado, 'cuenta': nombre, 'tipoingreso_id': tipo_id})
-            cuenta, nombre, asignado, ejecutado))
-                print(u"{} ({}:{}:{}:{}) | {} | {} | {}".format(codigo, tipo, subtipo, subsubtipo,
+            ingresodetalle, created = IngresoDetalle.\
+                objects.update_or_create(codigo=codigo, ingreso=ingreso, defaults=
+                    {'asignado': asignado, 'ejecutado': ejecutado, 'cuenta': nombre,
+                      'tipoingreso_id': tipo_id})
+                print(u"{} ({}:{}:{}:{}) | {} | {} | {}".\
+                    format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
 
 
 class UploadExcelView(FormView):
