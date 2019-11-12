@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load core_extras static thumbnail %}
+{% load humanize %}
 {% load mathfilters %}
 {% block header %}
     <div class="pma-hero">
@@ -87,71 +88,140 @@
     <div class="container">
     </div>
     <div class="container pma-index-icons">
-        <h3>Consolidado {{ year }} {% if periodo == 'F' %}Final{% elif periodo == 'A' %}Actualizado{% else %}
-            Inicial {% endif %}</h3>
+        <h3>
+            Consolidado {{ year }}
+            {% if periodo == 'F' %}
+                Final
+            {% elif periodo == 'A' %}
+                Actualizado
+            {% else %}
+                Inicial
+            {% endif %}
+        </h3>
         <hr class="pma-line-3">
         <div class="row row-eq-height pma-spacing-bottom">
             <div class="col-md-6 col-eq-height">
                 <div class="gray-box">
                     <div class="pma-summary-box hidden-xs">
                         <span class="font_small">Asignado:</span><span
-                            class="font_small">{{ data_oim.asignado|million }} millones</span><br/>
+                            class="font_small">{{ data_oim.asignado|million|intcomma }} millones</span><br/>
                         <span class="font_small">Ejecutado:</span><span
-                            class="font_small">{{ data_oim.ajecutado|million }} millones</span>
+                            class="font_small">{{ data_oim.ajecutado|million|intcomma }} millones</span>
                     </div>
-                    <h2><strong>Origen</strong><br/>de los Ingresos</h2>
+                    <h2>
+                        <strong>Origen</strong>
+                        <br/>
+                        de los Ingresos
+                    </h2>
                     <hr class="pma-line-2">
-                    {% for origen in totales_oim %}
-
-                        <div class="{% if not forloop.counter|divisibleby:2 %}row info-index{% endif %}">
-                            <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row">
+                        {% for origen in totales_oim %}
+                            <div class="col-xs-12 col-sm-6 col-md-6" style="min-height: 70px;height: 176px">
                                 <div class="info-box">
-                            <span class="info-box-icon pma-fg-green pma-icon {{ origen.subsubtipoingreso__origen__slug }}">
-                            </span>
+                                <span class="info-box-icon pma-fg-green pma-icon {{ origen.subsubtipoingreso__origen__slug }}">
+                                </span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">{{ origen.subsubtipoingreso__origen__nombre }}</span>
-                                        <span class="info-box-number pma-blue">Inicial: {{ origen.asignado_percent }}%</span>
-                                        <span class="info-box-number pma-green">Final: {{ origen.ejecutado_percent }}%</span>
+
+                                        <table class="table text-center info-box-number"
+                                               style="margin-bottom: 1px !important;">
+                                            <thead>
+                                            <tr>
+                                                <th class="pma-blue" style="border-right: 1px solid #ddd">Inicial</th>
+                                                <th style="padding-left: 2px">Ejecutado</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="pma-blue"
+                                                    style="border-right: 1px solid #ddd; border-top: none !important;">
+                                                    {{ origen.asignado|million|intcomma|default:0 }}
+                                                </td>
+                                                <td style="padding-left: 2px;border-top: none !important;"
+                                                    class="info-box-number">
+                                                    {{ origen.ejecutado|million|intcomma|default:0 }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="pma-blue"
+                                                    style="border-right: 1px solid #ddd; border-top: none !important;">
+                                                    {{ origen.asignado_percent }}%
+                                                </td>
+                                                <td style="padding-left: 2px;border-top: none !important;">
+                                                    {{ origen.ejecutado_percent }}%
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
                                 <!-- /.info-box -->
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="col-md-6 col-eq-height">
                 <div class="gray-box">
                     <div class="hidden-xs pma-summary-box">
                         <span class="font_small">Asignado:</span><span
-                            class="font_small">{{ data_ogm.asignado|million }} millones</span>
+                            class="font_small">{{ data_ogm.asignado|million|intcomma }} millones</span>
                         <br/>
                         <span class="font_small">Ejecutado:</span><span
-                            class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
+                            class="font_small">{{ data_ogm.ejecutado|million|intcomma }} millones</span>
                     </div>
-                    <h2><strong>Destino</strong><br/>de los Gastos</h2>
+                    <h2>
+                        <strong>Destino</strong>
+                        <br/>
+                        de los Gastos
+                    </h2>
                     <hr class="pma-line-2">
-                    {% for gasto in totales_ogm %}
-
-                        <div class="{% if not forloop.counter|divisibleby:2 %}row{% endif %}">
-                            <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row">
+                        {% for gasto in totales_ogm %}
+                            <div class="col-xs-12 col-sm-6 col-md-6" style="min-height: 70px">
                                 <div class="info-box">
-                            <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug }}">
-                            </span>
+                                <span class="info-box-icon pma-fg-green pma-icon {{ gasto.subsubtipogasto__origen__slug }}">
+                                </span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">{{ gasto.subsubtipogasto__origen__nombre }}</span>
-                                        <span class="info-box-number pma-blue">Inicial: {{ gasto.asignado_percent }}%</span>
-                                        <span class="info-box-number pma-orange">Final: {{ gasto.ejecutado_percent }}%</span>
+                                        <table class="table text-center info-box-number"
+                                               style="margin-bottom: 1px !important;">
+                                            <thead>
+                                            <tr>
+                                                <th class="pma-blue" style="border-right: 1px solid #ddd">Inicial</th>
+                                                <th style="padding-left: 2px">Ejecutado</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="pma-blue"
+                                                    style="border-right: 1px solid #ddd; border-top: none !important;">
+                                                    {{ gasto.asignado|million|intcomma|default:0 }}
+                                                </td>
+                                                <td style="padding-left: 2px;border-top: none !important;"
+                                                    class="info-box-number">
+                                                    {{ gasto.ejecutado|million|intcomma|default:0 }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="pma-blue"
+                                                    style="border-right: 1px solid #ddd; border-top: none !important;">
+                                                    {{ gasto.asignado_percent }}%
+                                                </td>
+                                                <td style="padding-left: 2px;border-top: none !important;">
+                                                    {{ gasto.ejecutado_percent }}%
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
                                 <!-- /.info-box -->
                             </div>
-
-                        </div>
-
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,14 +230,20 @@
         <div class="container">
             <div class="row">
                 <h2><strong>Destino</strong> de la inversi&oacute;n</h2>
-                <h4>Consolidado {{ year }} {% if periodo == 'F' %}Final{% elif periodo == 'A' %}Actualizado{% else %}
-                    Inicial {% endif %}</h4>
+                <h4>
+                    Consolidado {{ year }}
+                    {% if periodo == 'F' %}
+                        Final
+                    {% elif periodo == 'A' %}
+                        Actualizado
+                    {% else %}
+                        Inicial
+                    {% endif %}
+                </h4>
                 <br/>
                 <div class="col-md-12">
-                    <div class="row">
-                    </div>
                     <div class="row categorias_inversion">
-                        <div class="row col-xs-12 col-sm-11 col-md-11">
+                        <div class="col-xs-12 col-sm-11 col-md-11">
                             {% for i in inversion_categoria %}
                                 <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
                                     <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
@@ -179,6 +255,8 @@
                                             <strong>{{ i.catinversion__nombre }}</strong>
                                         </a>
                                         <br/>
+                                        <span style="color: yellow">{{ i.ejecutado|million|intcomma}}</span>
+                                        <br>
                                         {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
                                     </h5>
                                 </div>

@@ -71,17 +71,18 @@
                     <div class="pma-summary-box hidden-xs pma-summary-internal">
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <span class="font_small">Presupuestado:<br/> </span>
-                            <span class="font_small">{{ data_oim.asignado|million }} millones</span><br/>
+                            <span class="font_small">{{ data_oim.asignado|million|intcomma }} millones</span><br/>
                         {% else %}
                             <span class="font_small">Ejecutado: <br/></span>
-                            <span class="font_small">{{ data_oim.ejecutado|million }} millones</span>
+                            <span class="font_small">{{ data_oim.ejecutado|million|intcomma }} millones</span>
                         {% endif %}
                     </div>
                     <h2>
                         <a href="{% url 'origen_ingresos' %}?year={{ year }}&municipio={{ municipio.slug }}">
                             <strong>Origenes</strong>
                             <br/>
-                            de Ingresos</a>
+                            de Ingresos
+                        </a>
                     </h2>
                     <h5>Millones de córdobas</h5>
                     <hr class="pma-line-2">
@@ -112,13 +113,17 @@
                     <div class="pma-summary-box hidden-xs pma-summary-internal">
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <span class="font_small">Presupuestado: </span>
-                            <span class="font_small">{{ data_ogm.asignado|million }} millones</span><br/>
+                            <span class="font_small">{{ data_ogm.asignado|million|intcomma }} millones</span><br/>
                         {% else %}
                             <span class="font_small">Ejecutado:</span>
-                            <span class="font_small">{{ data_ogm.ejecutado|million }} millones</span>
+                            <span class="font_small">{{ data_ogm.ejecutado|million|intcomma }} millones</span>
                         {% endif %}
                     </div>
-                    <h2><strong>Destino</strong><br/> de los Gastos</h2>
+                    <h2>
+                        <strong>Destino</strong>
+                        <br/>
+                        de los Gastos
+                    </h2>
                     <h5>Millones de córdobas</h5>
                     <hr class="pma-line-2">
                     <div class="row wide">
@@ -131,13 +136,13 @@
                                         {% if periodo_list|keyvalue:year == 'I' %}
                                             <span class="info-box-number pma-blue">
                                                 Asignado:
-                                                {{ gasto.asignado|million }}
+                                                {{ gasto.asignado|million|intcomma }}
                                                 ({{ gasto.asignado_percent }}%)
                                             </span>
                                         {% else %}
                                             <span class="info-box-number pma-orange">
                                                 Ejecutado:
-                                                {{ gasto.ejecutado|million }}
+                                                {{ gasto.ejecutado|million|intcomma }}
                                                 ({{ gasto.ejecutado_percent }}%)
                                             </span>
                                         {% endif %}
@@ -218,7 +223,7 @@
                                                 <strong>{{ i.catinversion__nombre }}</strong>
                                             </a>
                                             <br>
-                                            <span>{{ i.ejecutado|million }} </span>
+                                            <span style="color: yellow !important;">{{ i.ejecutado|million|intcomma }} </span>
                                             <br/>
                                             <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                         </h5>
@@ -229,12 +234,12 @@
                                     {% endif %}
                                 {% endfor %}
                                 <div class="col-xs-12 col-sm-1 col-md-1">
-                                    <div class="text-center ver-mas">
-                                        <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
-                                           aria-expanded="false" aria-controls="collapseExample">
+                                    <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                                        <div class="text-center ver-mas">
                                             <strong>VER MAS</strong>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </div>
                                 </div>
                             <div class="otras-categorias col-md-11">
@@ -252,7 +257,7 @@
                                                             <strong>{{ i.catinversion__nombre }}</strong>
                                                         </a>
                                                         <br>
-                                                        <span>{{ i.ejecutado|million }} </span>
+                                                        <span style="color: yellow !important;">{{ i.ejecutado|million }} </span>
                                                         <br/>
                                                         <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                                     </h5>
