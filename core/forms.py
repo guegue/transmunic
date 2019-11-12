@@ -3,6 +3,18 @@ from django import forms
 from lugar.models import Municipio
 from core.models import PERIODO_CHOICES, CatInversion
 import datetime
+
+class UploadExcelForm(forms.Form):
+    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(), empty_label="(Municipio)")
+    year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
+                              attrs={'class':"form-control required"}),
+                              initial=lambda: datetime.date.today().year, required=True)
+    periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
+                                attrs={'class':"form-control required"}), required=True)
+    start_row = forms.IntegerField(min_value=1, max_value=1000)
+    end_row = forms.IntegerField(min_value=1, max_value=10000)
+    excel_file = forms.FileField()
+
 class DetallePresupuestoForm(forms.Form):
     MODELS = (
               ("Inversion",u"Inversión"),

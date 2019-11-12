@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
-{% load humanize %} 
+{% load humanize %}
 {% load mathfilters %}
-{% load core_extras %} 
+{% load core_extras %}
 {% block titulo %}
-Ahorro corriente para inversiones  {{ municipio }} 
+Ahorro corriente para inversiones  {{ municipio }}
 {% endblock %}
 {% block main_content %}
 	{% descargar_excel "aci-all" %}
