@@ -266,6 +266,7 @@ class IngresoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
+        unique_together = [['ingreso', 'codigo']]
         verbose_name_plural = 'Detalle de ingresos'
         ordering = ['ingreso']
 
@@ -306,6 +307,7 @@ class GastoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
+        unique_together = [['gasto', 'codigo']]
         verbose_name_plural = 'Detalle de gastos'
         ordering = ['gasto']
 
@@ -347,20 +349,20 @@ class Proyecto(models.Model):
         (OTROS, 'Otros'),
     )
     inversion = models.ForeignKey(
-            Inversion, related_name='inversion', null=True)
+        Inversion, related_name='inversion', null=False)
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(
-            TipoProyecto, related_name='tipo_proyecto', null=True, blank=True)
+        TipoProyecto, related_name='tipo_proyecto', null=True, blank=True)
     catinversion = models.ForeignKey(
-            CatInversion, related_name='categoria_inversion',
-            null=True, blank=True, verbose_name=u"Categoría de Inversión")
+        CatInversion, related_name='categoria_inversion',
+        null=True, blank=True, verbose_name=u"Categoría de Inversión")
     areageografica = models.CharField(
-            choices=AREA_CHOICES, max_length=1, null=True, blank=True)
+        choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
+        max_digits=12, decimal_places=2, blank=False, null=False)
     ficha = models.FileField(upload_to='proyecto', blank=True, null=True)
 
     @property
@@ -375,6 +377,7 @@ class Proyecto(models.Model):
         return self.areageografica
 
     class Meta:
+        unique_together = [['inversion', 'codigo']]
         verbose_name_plural = 'Proyectos'
 
     def __unicode__(self):
