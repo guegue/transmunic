@@ -349,7 +349,7 @@ class Proyecto(models.Model):
         (OTROS, 'Otros'),
     )
     inversion = models.ForeignKey(
-            Inversion, related_name='inversion', null=True)
+            Inversion, related_name='inversion', null=False)
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(
