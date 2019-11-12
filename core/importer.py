@@ -2,6 +2,7 @@ from django.views.generic.edit import FormView
 
 from core.forms import UploadExcelForm
 
+
 class UploadExcelView(FormView):
     template_name = 'upload_excel.html'
     form_class = UploadExcelForm
