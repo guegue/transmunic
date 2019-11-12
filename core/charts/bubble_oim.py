@@ -75,7 +75,6 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
-            print source;
             source_data = {
                 'taxonomy': "income",
                 'name': source['id'],
