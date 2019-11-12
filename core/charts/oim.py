@@ -5,8 +5,6 @@
 #
 ##############################################################################
 
-import decimal
-
 from itertools import chain
 from datetime import datetime, time
 from operator import itemgetter
@@ -709,7 +707,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         row['asignado_percent'] = round(
             row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
-    actualizado_asignado = (sum(r['actualizado_asignado'] for r in rubros))
+    actualizado_asignado = (sum(xnumber(r['actualizado_asignado']) for r in rubros))
     asignado_porcentaje = 0
     actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
@@ -729,23 +727,24 @@ def oim_chart(municipio=None, year=None, portada=False):
     total_asignado_ranking = 0
     total_ejecutado_ranking = 0
     # calculando la suma total de asignado y ejectuado para tabla de ranking por recaudacion
-    for row in porclasep:
-        total_asignado_ranking = total_asignado_ranking + decimal.Decimal(xnumber(row['asignado']))
-        total_ejecutado_ranking = total_ejecutado_ranking + \
-            decimal.Decimal(xnumber(row['ejecutado']))
+    if porclasep:
+        for row in porclasep:
+            total_asignado_ranking = total_asignado_ranking + xnumber(row['asignado'])
+            total_ejecutado_ranking = total_ejecutado_ranking + xnumber(row['ejecutado'])
 
     total_asignado_ranking_porcentaje = 0
     total_ejecutado_ranking_porcenteje = 0
     # calculando el porcentaje de cada categoria para la tabla de ranking por decaudacion
-    for row in porclasep:
-        row['asignado_percent'] = round(
-            (row['asignado'] / total_asignado_ranking) * 100, 1) if row['asignado'] > 0 else 0
-        total_asignado_ranking_porcentaje = total_asignado_ranking_porcentaje + \
-            row['asignado_percent']
-        row['ejecutado_percent'] = round(
-            (row['ejecutado'] / total_ejecutado_ranking) * 100, 1) if row['ejecutado'] > 0 else 0
-        total_ejecutado_ranking_porcenteje = total_ejecutado_ranking_porcenteje + \
-            row['ejecutado_percent']
+    if porclasep:
+        for row in porclasep:
+            row['asignado_percent'] = round(
+                (row['asignado'] / total_asignado_ranking) * 100, 1) if row['asignado'] > 0 else 0
+            total_asignado_ranking_porcentaje = total_asignado_ranking_porcentaje + \
+                row['asignado_percent']
+            row['ejecutado_percent'] = round(
+                (row['ejecutado'] / total_ejecutado_ranking) * 100, 1) if row['ejecutado'] > 0 else 0
+            total_ejecutado_ranking_porcenteje = total_ejecutado_ranking_porcenteje + \
+                row['ejecutado_percent']
 
     # tabla: get ingresos por año
     if municipio:

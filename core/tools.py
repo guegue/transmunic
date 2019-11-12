@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import collections
+import decimal
 
 
 def xnumber(number):
@@ -11,7 +12,7 @@ def xnumber(number):
     if str(number).isdigit():
         return int(number)
     try:
-        return float(number)
+        return decimal.Decimal(number)
     except ValueError:
         return 0
 
