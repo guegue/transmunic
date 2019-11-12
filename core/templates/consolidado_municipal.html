@@ -70,11 +70,11 @@
                 <div class="col-md-6">
                     <div class="pma-summary-box hidden-xs pma-summary-internal">
                         {% if periodo_list|keyvalue:year == 'I' %}
-                            <span class="font_small">Presupuestado:<br/> </span>
-                            <span class="font_small">{{ data_oim.asignado|million|intcomma }} millones</span><br/>
+                            <span class="font_small">Presupuestado: </span>
+                            <span class="info-box-number font-13px"> {{ data_oim.asignado|million|intcomma }} millones</span><br/>
                         {% else %}
-                            <span class="font_small">Ejecutado: <br/></span>
-                            <span class="font_small">{{ data_oim.ejecutado|million|intcomma }} millones</span>
+                            <span class="font_small">Ejecutado:</span>
+                            <span class="info-box-number font-13px"> {{ data_oim.ejecutado|million|intcomma }} millones</span>
                         {% endif %}
                     </div>
                     <h2>
@@ -113,10 +113,10 @@
                     <div class="pma-summary-box hidden-xs pma-summary-internal">
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <span class="font_small">Presupuestado: </span>
-                            <span class="font_small">{{ data_ogm.asignado|million|intcomma }} millones</span><br/>
+                            <span class="info-box-number font-13px"> {{ data_ogm.asignado|million|intcomma }} millones</span><br/>
                         {% else %}
                             <span class="font_small">Ejecutado:</span>
-                            <span class="font_small">{{ data_ogm.ejecutado|million|intcomma }} millones</span>
+                            <span class="info-box-number font-13px"> {{ data_ogm.ejecutado|million|intcomma }} millones</span>
                         {% endif %}
                     </div>
                     <h2>
@@ -223,7 +223,7 @@
                                                 <strong>{{ i.catinversion__nombre }}</strong>
                                             </a>
                                             <br>
-                                            <span style="color: yellow !important;">{{ i.ejecutado|million|intcomma }} </span>
+                                            <span class="font-color-yellow">{{ i.ejecutado|million|intcomma }} </span>
                                             <br/>
                                             <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                         </h5>
@@ -257,7 +257,7 @@
                                                             <strong>{{ i.catinversion__nombre }}</strong>
                                                         </a>
                                                         <br>
-                                                        <span style="color: yellow !important;">{{ i.ejecutado|million }} </span>
+                                                        <span class="font-color-yellow font-17px">{{ i.ejecutado|million }} </span>
                                                         <br/>
                                                         <span>{{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%</span>
                                                     </h5>
