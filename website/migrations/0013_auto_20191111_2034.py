@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='documento',
-            options={'ordering': ['titulo'], 'verbose_name': 'Documentos', 'verbose_name_plural': 'Documentos'},
+            options={'ordering': ['titulo'], 'verbose_name': 'Documentos',
+                     'verbose_name_plural': 'Documentos'},
         ),
         migrations.AlterField(
             model_name='tipodoc',

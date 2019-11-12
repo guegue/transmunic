@@ -68,8 +68,8 @@ class Migration(migrations.Migration):
             name='slug',
             field=autoslug.fields.AutoSlugField(editable=False, populate_from=b'nombre'),
         ),
-        #migrations.AlterUniqueTogether(
+        # migrations.AlterUniqueTogether(
         #    name='ingresodetalle',
         #    unique_together=set([('ingreso', 'codigo')]),
-        #),
+        # ),
     ]
