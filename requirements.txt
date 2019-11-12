@@ -14,3 +14,4 @@ django-lockdown==2.0.0
 django-debug-toolbar==1.4
 django-smart-selects==1.2.9
 django-environ==0.4.5
+openpyxl==2.6.4
