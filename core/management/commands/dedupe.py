@@ -15,7 +15,7 @@ class Command(BaseCommand):
                 ingreso=row['ingreso'], codigo=row['codigo']).exclude(id=row['id']).delete()
             self.stdout.write(self.style.SUCCESS('Successfully deleted {} rows (ingreso={},\
                                                  codigo={})'.format(deleted, row['ingreso'],
-                                                 row['codigo'])))
+                                                                    row['codigo'])))
         rows = GastoDetalle.objects.values('gasto', 'codigo').annotate(
             id=Max('id'), count=Count('*')).filter(count__gt=1)
         for row in rows:
@@ -25,10 +25,10 @@ class Command(BaseCommand):
                 'Successfully deleted {} rows (gasto={}, codigo={})'.format(deleted, row['gasto'],
                                                                             row['codigo'])))
         rows = Proyecto.objects.filter(codigo__isnull=False).values('inversion', 'codigo').annotate(
-                id=Max('id'), count=Count('*')).filter(count__gt=1)
+            id=Max('id'), count=Count('*')).filter(count__gt=1)
         for row in rows:
             deleted = Proyecto.objects.filter(inversion=row['inversion'], codigo=row['codigo']).\
-                    exclude(id=row['id']).delete()
+                exclude(id=row['id']).delete()
             self.stdout.write(self.style.SUCCESS('Successfully deleted {} rows (inversion={},\
                                                  codigo={})'.format(deleted, row['inversion'],
-                                                 row['codigo'])))
+                                                                    row['codigo'])))

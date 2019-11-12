@@ -349,20 +349,20 @@ class Proyecto(models.Model):
         (OTROS, 'Otros'),
     )
     inversion = models.ForeignKey(
-            Inversion, related_name='inversion', null=False)
+        Inversion, related_name='inversion', null=False)
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(
-            TipoProyecto, related_name='tipo_proyecto', null=True, blank=True)
+        TipoProyecto, related_name='tipo_proyecto', null=True, blank=True)
     catinversion = models.ForeignKey(
-            CatInversion, related_name='categoria_inversion',
-            null=True, blank=True, verbose_name=u"Categoría de Inversión")
+        CatInversion, related_name='categoria_inversion',
+        null=True, blank=True, verbose_name=u"Categoría de Inversión")
     areageografica = models.CharField(
-            choices=AREA_CHOICES, max_length=1, null=True, blank=True)
+        choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
+        max_digits=12, decimal_places=2, blank=False, null=False)
     ficha = models.FileField(upload_to='proyecto', blank=True, null=True)
 
     @property
