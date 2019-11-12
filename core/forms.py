@@ -38,10 +38,10 @@ class DetallePresupuestoForm(forms.Form):
                               )
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        widget=forms.ModelChoiceField.widget(
-                                        attrs={'class': "form-control required"},
-                                       ),
-                                       required=True
-                                       )
+        attrs={'class': "form-control required"},
+    ),
+        required=True
+    )
     tipo = forms.ChoiceField(choices=MODELS,
                              widget=forms.ChoiceField.widget(
                                  attrs={'class': "form-control required"},
@@ -50,7 +50,7 @@ class DetallePresupuestoForm(forms.Form):
                              )
     catinversion = forms.ModelChoiceField(queryset=CatInversion.objects.all(),
                                           widget=forms.ModelChoiceField.widget(
-                                            attrs={'class': "form-control required"},
-                                          ),
-                                          required=True
-                                          )
+        attrs={'class': "form-control required"},
+    ),
+        required=True
+    )
