@@ -266,6 +266,7 @@ class IngresoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
+        unique_together = [['ingreso', 'codigo']]
         verbose_name_plural = 'Detalle de ingresos'
         ordering = ['ingreso']
 
@@ -306,6 +307,7 @@ class GastoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
+        unique_together = [['gasto', 'codigo']]
         verbose_name_plural = 'Detalle de gastos'
         ordering = ['gasto']
 
@@ -375,6 +377,7 @@ class Proyecto(models.Model):
         return self.areageografica
 
     class Meta:
+        unique_together = [['inversion', 'codigo']]
         verbose_name_plural = 'Proyectos'
 
     def __unicode__(self):
