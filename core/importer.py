@@ -1,6 +1,7 @@
 from datetime import date
 
-from django.views.generic.edit import FormView
+from django.urls import reverse
+from django.views.generic import FormView, DetailView
 
 from openpyxl import load_workbook
 
@@ -47,16 +48,24 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id})
             print(u"{} ({}:{}:{}:{}) | {} | {} | {}".
                   format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
+    return ingreso
 
 
 class UploadExcelView(FormView):
     template_name = 'upload_excel.html'
     form_class = UploadExcelForm
-    success_url = '/gracias/'
+    ingreso = 0
+
+    def get_success_url(self):
+        return reverse('ingreso-detail', kwargs={'pk': self.ingreso.pk})
 
     def form_valid(self, form):
         data = form.cleaned_data
-        import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
+        self.ingreso = import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
                     year=data['year'], periodo=data['periodo'], start_row=data['start_row'],
                     end_row=data['end_row'])
+
         return super(UploadExcelView, self).form_valid(form)
+
+class IngresoDetailView(DetailView):
+    model = Ingreso
