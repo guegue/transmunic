@@ -62,10 +62,11 @@ class UploadExcelView(FormView):
     def form_valid(self, form):
         data = form.cleaned_data
         self.ingreso = import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
-                    year=data['year'], periodo=data['periodo'], start_row=data['start_row'],
-                    end_row=data['end_row'])
+                                   year=data['year'], periodo=data['periodo'], start_row=data['start_row'],
+                                   end_row=data['end_row'])
 
         return super(UploadExcelView, self).form_valid(form)
+
 
 class IngresoDetailView(DetailView):
     model = Ingreso
