@@ -730,7 +730,7 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         ejecutado_porcentaje += row['ejecutado_percent']
 
-        if row.get('actualizado_asignado') and row['actualizado_asigando'] > 0:
+        if row.get('actualizado_asignado') and row['actualizado_asignado'] > 0:
             row['actualizado_asignado_percent'] = round(
                 (row['actualizado_asignado'] / actualizado_asignado) * 100, 1)
 
