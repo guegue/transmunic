@@ -62,6 +62,7 @@ class InversionAdmin(admin.ModelAdmin):
     list_display = ['id','departamento','municipio', 'fecha','periodo']
     list_filter = ('departamento','municipio', 'periodo', 'anio')
 
+admin.site.register(Profile)
 admin.site.register(Organizacion)
 admin.site.register(Anio)
 admin.site.register(Grafico)

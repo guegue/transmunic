@@ -3,6 +3,7 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum, Max, Min
 
@@ -31,6 +32,19 @@ AREAGEOGRAFICA_VERBOSE = {
     '': 'Vacio',
     None: 'None'}
 CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    municipio = models.ForeignKey(Municipio)
+
+    class Meta:
+        verbose_name = u'Perfil'
+        verbose_name_plural = u'Perfiles'
+        ordering = ['user']
+
+    def __unicode__(self):
+        return self.user.username
 
 
 class Organizacion(models.Model):

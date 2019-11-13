@@ -46,8 +46,6 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                 objects.update_or_create(codigo=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id})
-            print(u"{} ({}:{}:{}:{}) | {} | {} | {}".
-                  format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
     return ingreso
 
 
@@ -55,6 +53,11 @@ class UploadExcelView(FormView):
     template_name = 'upload_excel.html'
     form_class = UploadExcelForm
     ingreso = 0
+
+    def get_form_kwargs(self):
+        kwargs = super(UploadExcelView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         return reverse('ingreso-detail', kwargs={'pk': self.ingreso.pk})
