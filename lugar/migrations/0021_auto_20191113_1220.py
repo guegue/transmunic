@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='departamento',
             name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from=b'nombre', unique=True),
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from=b'nombre', unique=True),
         ),
         migrations.AlterField(
             model_name='municipio',
@@ -31,6 +32,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='municipio',
             name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from=b'nombre', unique=True, verbose_name=b'municipio'),
+            field=autoslug.fields.AutoSlugField(
+                editable=False, populate_from=b'nombre', unique=True, verbose_name=b'municipio'),
         ),
     ]
