@@ -18,10 +18,10 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import (Anio, IngresoDetalle, Ingreso,
                          TipoIngreso, OrigenRecurso,
-                         Municipio, ClasificacionMunicAno)
+                         Municipio)
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue, getPeriods, xnumber
-from lugar.models import Poblacion
+from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
 

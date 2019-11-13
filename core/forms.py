@@ -6,7 +6,15 @@ import datetime
 
 
 class UploadExcelForm(forms.Form):
-    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(), empty_label="(Municipio)")
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(UploadExcelForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['municipio'].queryset = Municipio.objects.for_user(user)
+
+    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
+                                       empty_label="(Municipio)")
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
                               attrs={'class': "form-control required"}),
                               initial=lambda: datetime.date.today().year, required=True)

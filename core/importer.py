@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.views.generic import FormView, DetailView
 
@@ -46,8 +47,6 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                 objects.update_or_create(codigo=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id})
-            print(u"{} ({}:{}:{}:{}) | {} | {} | {}".
-                  format(codigo, tipo, subtipo, subsubtipo, cuenta, nombre, asignado, ejecutado))
     return ingreso
 
 
@@ -56,11 +55,20 @@ class UploadExcelView(FormView):
     form_class = UploadExcelForm
     ingreso = 0
 
+    def get_form_kwargs(self):
+        kwargs = super(UploadExcelView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_success_url(self):
         return reverse('ingreso-detail', kwargs={'pk': self.ingreso.pk})
 
     def form_valid(self, form):
         data = form.cleaned_data
+        if hasattr(self.request.user, 'profile') and\
+                self.request.user.profile.municipio != data['municipio']:
+            raise PermissionDenied("Limite de municipio excedido {} <> {}.".
+                                   format(self.request.user.profile.municipio, data['municipio']))
         self.ingreso = import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
                                    year=data['year'], periodo=data['periodo'],
                                    start_row=data['start_row'], end_row=data['end_row'])

@@ -8,11 +8,11 @@ from django.db.models import Sum, Avg
 from chartit import DataPool, Chart, RawDataPool
 
 from core.models import Anio, Proyecto, Inversion, Municipio, \
-    InversionFuenteDetalle, ClasificacionMunicAno
+    InversionFuenteDetalle
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     AREAGEOGRAFICA_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
-from lugar.models import Poblacion
+from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
 
