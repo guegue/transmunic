@@ -15,11 +15,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='profile',
-            options={'ordering': ['user'], 'verbose_name': 'Perfil', 'verbose_name_plural': 'Perfiles'},
+            options={'ordering': ['user'], 'verbose_name': 'Perfil',
+                     'verbose_name_plural': 'Perfiles'},
         ),
         migrations.AlterField(
             model_name='profile',
             name='municipio',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
         ),
     ]
