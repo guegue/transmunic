@@ -22,7 +22,7 @@ from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PER
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
-from lugar.models import Poblacion, ClasificacionMunicAno
+from lugar.models import ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
 
