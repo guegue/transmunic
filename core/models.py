@@ -12,7 +12,7 @@ from sorl.thumbnail import ImageField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
 from django.utils.encoding import python_2_unicode_compatible
 
-from lugar.models import Municipio, Departamento, ClasificacionMunicAno
+from lugar.models import Municipio, Departamento
 
 PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
