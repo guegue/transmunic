@@ -12,10 +12,10 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, \
-        Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, \
-        InversionFuente, InversionFuenteDetalle, CatInversion
+    Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, \
+    InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
-        PERIODO_VERBOSE
+    PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
