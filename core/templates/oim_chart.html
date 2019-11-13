@@ -13,7 +13,7 @@
         <thead>
         <tr class="bg-primary">
             <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
-            <th rowspan="1" colspan="2" style="border-bottom: none;" class="text-center">
+            <th rowspan="1" colspan="2" class="no-border-bottom text-center">
                 {% if periodo_list|keyvalue:year == 'I' %}
                     Inicial
                 {% else %}
@@ -22,8 +22,8 @@
             </th>
         </tr>
         <tr class="bg-primary">
-            <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
-            <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
+            <th colspan="1" class="no-border-top text-right">Cordobas</th>
+            <th colspan="1" class="no-border-top text-right">%</th>
         </tr>
         </thead>
         {% for row in rubros %}
@@ -150,8 +150,8 @@
                                 </th>
                             </tr>
                             <tr class="blanco pma-bg-blue">
-                                <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
-                                <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
+                                <th colspan="1" class="no-border-top text-right">Cordobas</th>
+                                <th colspan="1" class="no-border-top text-right">%</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -440,7 +440,7 @@
                                 Cordobas
                             </th>
                             <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
-                                Porcentaje
+                                %
                             </th>
                         {% endfor %}
                     </tr>
@@ -490,11 +490,11 @@
                         </tr>
                         <tr class="bg-primary">
                             <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" style="border-top: none;">%</th>
                             <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" style="border-top: none;">%</th>
                             <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" style="border-top: none;">%</th>
                         </tr>
                         </thead>
                         <tbody>
