@@ -35,8 +35,8 @@ CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    municipio = models.ForeignKey(Municipio)
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    municipio = models.ForeignKey('Municipio')
 
     class Meta:
         verbose_name = u'Perfil'
