@@ -66,8 +66,8 @@ class UploadExcelView(FormView):
         data = form.cleaned_data
         if hasattr(self.request.user, 'profile') and\
                 self.request.user.profile.municipio != data['municipio']:
-            raise PermissionDenied("Limite de municipio excedido {} <> {}.".\
-                    format(self.request.user.profile.municipio, data['municipio']))
+            raise PermissionDenied("Limite de municipio excedido {} <> {}.".
+                                   format(self.request.user.profile.municipio, data['municipio']))
         self.ingreso = import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
                                    year=data['year'], periodo=data['periodo'],
                                    start_row=data['start_row'], end_row=data['end_row'])
