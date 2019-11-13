@@ -18,11 +18,13 @@
 .tb-details{
 }
 
-.tb-details thead tr th:nth-child(1),td:nth-child(1),
-.tb-details tbody tr th:nth-child(1),td:nth-child(1){
+.tb-details thead tr th:nth-child(1),
+.tb-details thead tr td:nth-child(1),
+.tb-details tbody tr th:nth-child(1),
+.tb-details tbody tr td:nth-child(1){
     border-right: 1px solid #ddd;
 }
-.tb-details tbody tr:nth-child(1) td{
+.tb-details > tbody tr:nth-child(1) td{
     padding-left: 2px;
     border-top: none !important;
 }
