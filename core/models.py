@@ -3,6 +3,7 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum, Max, Min
 
@@ -11,7 +12,7 @@ from sorl.thumbnail import ImageField
 from pixelfields_smart_selects.db_fields import ChainedForeignKey
 from django.utils.encoding import python_2_unicode_compatible
 
-from lugar.models import *
+from lugar.models import Municipio, Departamento
 
 PERIODO_INICIAL = 'I'
 PERIODO_ACTUALIZADO = 'A'
@@ -31,6 +32,19 @@ AREAGEOGRAFICA_VERBOSE = {
     '': 'Vacio',
     None: 'None'}
 CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None'}
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+
+    class Meta:
+        verbose_name = u'Perfil'
+        verbose_name_plural = u'Perfiles'
+        ordering = ['user']
+
+    def __unicode__(self):
+        return self.user.username
 
 
 class Organizacion(models.Model):

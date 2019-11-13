@@ -16,28 +16,43 @@ class ClasificacionMunic(models.Model):
 
     class Meta:
         ordering = ['clasificacion']
+
     def __unicode__(self):
         return self.clasificacion
 
+
 class Departamento(models.Model):
-    nombre = models.CharField(max_length=120)
-    slug = AutoSlugField(populate_from='nombre')
-    codigo = models.CharField('Codigo',max_length=15,blank=True)
-    latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=5, blank=True, null=True)
-    longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=5, blank=True, null=True)
+    nombre = models.CharField(max_length=120, unique=True)
+    slug = AutoSlugField(populate_from='nombre', unique=True)
+    codigo = models.CharField('Codigo', max_length=15, blank=True)
+    latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=5, blank=True, null=True)
+    longitud = models.DecimalField('Longitud', max_digits=10,
+                                   decimal_places=5, blank=True, null=True)
 
     class Meta:
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
 
+
+class MunicipioQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if hasattr(user, 'profile') and user.profile.municipio:
+            return self.filter(id=user.profile.municipio.id)
+        return self
+
+
 class Municipio(models.Model):
-    nombre = models.CharField(max_length=120)
+    nombre = models.CharField(max_length=120, unique=True)
     depto = models.ForeignKey(Departamento, related_name='departamento')
-    slug = AutoSlugField(populate_from='nombre', verbose_name="municipio")
-    latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
-    longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
+    slug = AutoSlugField(populate_from='nombre', verbose_name="municipio", unique=True)
+    latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
+    longitud = models.DecimalField('Longitud', max_digits=10,
+                                   decimal_places=6, blank=True, null=True)
     clasificaciones = models.ManyToManyField(ClasificacionMunic, through='ClasificacionMunicAno')
+
+    objects = MunicipioQuerySet.as_manager()
 
     class Meta:
         ordering = [u'nombre']
