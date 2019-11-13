@@ -11,6 +11,9 @@
 .mb-1px{
     margin-bottom: 1px !important;
 }
+.mt-0{
+    margin-top: 0 !important;
+}
 
 .tb-details{
 }
@@ -25,4 +28,10 @@
 }
 .font-color-yellow{
     color: yellow;
+}
+
+.ver-mas{
+    height: 65px;
+    width: 65px;
+    padding-top: 10px;
 }
