@@ -16,7 +16,9 @@ from django.template import RequestContext
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, TipoIngreso, OrigenRecurso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
+from core.models import (Anio, IngresoDetalle, Ingreso,
+                         TipoIngreso, OrigenRecurso,
+                         Municipio)
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue, getPeriods, xnumber
 from lugar.models import Poblacion, ClasificacionMunicAno
@@ -702,27 +704,43 @@ def oim_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(
-            row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(
-            row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = 0
+        row['asignado_percent'] = 0
+        if total['ejecutado'] > 0:
+            row['ejecutado_percent'] = round(
+                row['ejecutado'] / total['ejecutado'] * 100, 1)
+        if total['asignado'] > 0:
+            row['asignado_percent'] = round(
+                row['asignado'] / total['asignado'] * 100, 1)
 
-    actualizado_asignado = (sum(xnumber(r['actualizado_asignado']) for r in rubros))
+    actualizado_asignado = 0
+    for r in rubros:
+        if r.get('actualizado_asignado'):
+            actualizado_asignado += xnumber(r['actualizado_asignado'])
+
     asignado_porcentaje = 0
     actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
     for row in rubros:
-        row['ejecutado_percent'] = round(
-            (row['ejecutado'] / ejecutado) * 100, 1) if row['ejecutado'] > 0 else 0
-        ejecutado_porcentaje = ejecutado_porcentaje + row['ejecutado_percent']
-        row['actualizado_asignado_percent'] = round(
-            (row['actualizado_asignado'] / actualizado_asignado) * 100, 1) if row['actualizado_asignado'] > 0 else 0
-        actualizado_porcentaje = actualizado_porcentaje + \
-            row['actualizado_asignado_percent']
-        row['inicial_asignado_percent'] = round(
-            (row['inicial_asignado'] / asignado) * 100, 1) if row['inicial_asignado'] > 0 else 0
-        asignado_porcentaje = asignado_porcentaje + \
-            row['inicial_asignado_percent']
+        row['ejecutado_percent'] = 0
+        row['actualizado_asignado_percent'] = 0
+        row['inicial_asignado_percent'] = 0
+        if row.get('ejecutado') and row['ejecutado'] > 0:
+            row['ejecutado_percent'] = round((row['ejecutado'] / ejecutado) * 100, 1)
+
+        ejecutado_porcentaje += row['ejecutado_percent']
+
+        if row.get('actualizado_asignado') and row['actualizado_asigando'] > 0:
+            row['actualizado_asignado_percent'] = round(
+                (row['actualizado_asignado'] / actualizado_asignado) * 100, 1)
+
+        actualizado_porcentaje += row['actualizado_asignado_percent']
+
+        if row.get('inicial_asignado') and row['inicial_asignado'] > 0:
+            row['inicial_asignado_percent'] = round(
+                (row['inicial_asignado'] / asignado) * 100, 1)
+
+        asignado_porcentaje += row['inicial_asignado_percent']
 
     total_asignado_ranking = 0
     total_ejecutado_ranking = 0
