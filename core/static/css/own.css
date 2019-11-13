@@ -37,3 +37,11 @@
     width: 65px;
     padding-top: 10px;
 }
+
+.no-border-top{
+    border-top: none !important;
+}
+
+.no-border-bottom{
+    border-bottom: none !important;
+}
