@@ -17,10 +17,8 @@ from django.template import RequestContext
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import (Anio, IngresoDetalle, Ingreso,
-                         TipoIngreso, OrigenRecurso, GastoDetalle,
-                         Gasto, Inversion, Proyecto, Municipio,
-                         TipoGasto, InversionFuente, InversionFuenteDetalle,
-                         CatInversion, ClasificacionMunicAno)
+                         TipoIngreso, OrigenRecurso,
+                         Municipio,ClasificacionMunicAno)
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue, getPeriods, xnumber
 from lugar.models import Poblacion
