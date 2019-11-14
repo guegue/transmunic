@@ -35,15 +35,15 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                     if tipo == '00':
                         raise('Tipo no puede ser 00')
                     tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo,
-                            defaults={'nombre': nombre})
+                                                                      defaults={'nombre': nombre})
                 else:
                     subsubtipo, created = SubTipoIngreso.\
                         objects.get_or_create(codigo=codigo, tipoingreso_id=tipo_id,
-                                defaults={'nombre': nombre})
+                                              defaults={'nombre': nombre})
             else:
                 subsubtipo, created = SubSubTipoIngreso.\
                     objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
-                            defaults={'nombre': nombre})
+                                          defaults={'nombre': nombre})
         else:
             asignado = row[1].value
             ejecutado = row[2].value
