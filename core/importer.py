@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.views.generic import FormView, DetailView
@@ -26,31 +27,36 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
         subtipo = codigo[2:4]
         subtipo_id = "{}{}0000".format(tipo, subtipo)
         subsubtipo = codigo[4:6]
+        subsubtipo_id = "{}{}{}00".format(tipo, subtipo, subsubtipo)
         cuenta = codigo[6:8]
         if cuenta == '00':
             if subsubtipo == '00':
                 if subtipo == '00':
                     if tipo == '00':
                         raise('Tipo no puede ser 00')
-                    tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo, nombre=nombre)
+                    tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo,
+                            defaults={'nombre': nombre})
                 else:
                     subsubtipo, created = SubTipoIngreso.\
-                        objects.get_or_create(codigo=codigo, tipoingreso_id=tipo_id, nombre=nombre)
+                        objects.get_or_create(codigo=codigo, tipoingreso_id=tipo_id,
+                                defaults={'nombre': nombre})
             else:
                 subsubtipo, created = SubSubTipoIngreso.\
                     objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
-                                          nombre=nombre)
+                            defaults={'nombre': nombre})
         else:
             asignado = row[1].value
             ejecutado = row[2].value
             ingresodetalle, created = IngresoDetalle.\
                 objects.update_or_create(codigo=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
-                                                   'cuenta': nombre, 'tipoingreso_id': tipo_id})
+                                                   'cuenta': nombre, 'tipoingreso_id': tipo_id,
+                                                   'subtipoingreso_id': subtipo_id,
+                                                   'subsubtipoingreso_id': subsubtipo_id})
     return ingreso
 
 
-class UploadExcelView(FormView):
+class UploadExcelView(LoginRequiredMixin, FormView):
     template_name = 'upload_excel.html'
     form_class = UploadExcelForm
     ingreso = 0
@@ -76,5 +82,5 @@ class UploadExcelView(FormView):
         return super(UploadExcelView, self).form_valid(form)
 
 
-class IngresoDetailView(DetailView):
+class IngresoDetailView(LoginRequiredMixin, DetailView):
     model = Ingreso
