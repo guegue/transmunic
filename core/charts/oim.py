@@ -775,31 +775,34 @@ def oim_chart(municipio=None, year=None, portada=False):
     ys = source_cuadro.order_by('subsubtipoingreso__origen__nombre').values(
         'subsubtipoingreso__origen__nombre').distinct()
     for y in ys:
-        label = y['subsubtipoingreso__origen__nombre']
+        name = y['subsubtipoingreso__origen__nombre']
+        label = name if name else 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo,
-                                         subsubtipoingreso__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
+                                         subsubtipoingreso__origen__nombre=name).aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
             porano_table[label][ayear]['raw'] = value if value else ''
             if not ayear in ano_table:
                 ano_table[ayear] = 0
             ano_table[ayear] += value if value else 0
+
+        #validamos si el municipio no es null con el anio
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=label, \
+            value = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=name, \
                     ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
                     aggregate(total=Sum(quesumar))['total']
             if value:
                 value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
     for y in ys:
-        label = y['subsubtipoingreso__origen__nombre']
+        name = y['subsubtipoingreso__origen__nombre']
+        label = name if name else 'Sin Clasificar'
         for ayear in year_list:
-            aaa = porano_table[label][ayear]['raw']
             if porano_table[label][ayear]['raw']:
                 porano_table[label][ayear]['percent'] = format(
                     porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
