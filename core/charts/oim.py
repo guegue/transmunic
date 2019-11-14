@@ -789,13 +789,13 @@ def oim_chart(municipio=None, year=None, portada=False):
                 ano_table[ayear] = 0
             ano_table[ayear] += value if value else 0
 
-        #validamos si el municipio no es null con el anio
+        # validamos si el municipio no es null con el anio
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=name, \
-                    ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
-                    aggregate(total=Sum(quesumar))['total']
+            value = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, subsubtipoingreso__origen__nombre=name,
+                                                  ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, ingreso__municipio__clase__anio=year).\
+                aggregate(total=Sum(quesumar))['total']
             if value:
                 value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
