@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='gastodetalle',
-            options={'ordering': ['gasto', 'codigo'], 'verbose_name': 'Detalle de gastos', 'verbose_name_plural': 'Detalles de gastos'},
+            options={'ordering': ['gasto', 'codigo'], 'verbose_name': 'Detalle de gastos',
+                     'verbose_name_plural': 'Detalles de gastos'},
         ),
         migrations.AlterModelOptions(
             name='ingreso',
@@ -26,19 +27,23 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='ingresodetalle',
-            options={'ordering': ['ingreso', 'codigo'], 'verbose_name': 'Detalle de ingresos', 'verbose_name_plural': 'Detalles de ingresos'},
+            options={'ordering': ['ingreso', 'codigo'], 'verbose_name': 'Detalle de ingresos',
+                     'verbose_name_plural': 'Detalles de ingresos'},
         ),
         migrations.AlterModelOptions(
             name='inversion',
-            options={'ordering': ['anio', 'periodo', 'municipio'], 'verbose_name': 'Inversi\xf3n', 'verbose_name_plural': 'Inversiones'},
+            options={'ordering': ['anio', 'periodo', 'municipio'],
+                     'verbose_name': 'Inversi\xf3n', 'verbose_name_plural': 'Inversiones'},
         ),
         migrations.AlterModelOptions(
             name='inversionfuente',
-            options={'ordering': ['anio', 'periodo', 'municipio'], 'verbose_name': 'Inversi\xf3n de fuentes de financiamiento', 'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
+            options={'ordering': ['anio', 'periodo', 'municipio'], 'verbose_name': 'Inversi\xf3n de fuentes de financiamiento',
+                     'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
         ),
         migrations.AlterModelOptions(
             name='inversionfuentedetalle',
-            options={'ordering': ['inversionfuente', 'tipofuente', 'fuente'], 'verbose_name': 'Detalle de inversi\xf3n por fuente', 'verbose_name_plural': 'Detalles de inversi\xf3n por fuente'},
+            options={'ordering': ['inversionfuente', 'tipofuente', 'fuente'],
+                     'verbose_name': 'Detalle de inversi\xf3n por fuente', 'verbose_name_plural': 'Detalles de inversi\xf3n por fuente'},
         ),
         migrations.AlterModelOptions(
             name='proyecto',

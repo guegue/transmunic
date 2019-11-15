@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='inversion',
-            options={'ordering': ['fecha'], 'verbose_name': 'Inversi\xf3n', 'verbose_name_plural': 'Inversiones'},
+            options={'ordering': ['fecha'], 'verbose_name': 'Inversi\xf3n',
+                     'verbose_name_plural': 'Inversiones'},
         ),
         migrations.AlterField(
             model_name='anio',

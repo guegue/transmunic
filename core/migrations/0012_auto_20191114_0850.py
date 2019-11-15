@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='fuentefmto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Fuente de financiamiento', 'verbose_name_plural': 'Fuentes de financiamiento'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Fuente de financiamiento',
+                     'verbose_name_plural': 'Fuentes de financiamiento'},
         ),
         migrations.AlterModelOptions(
             name='grafico',
@@ -26,19 +27,23 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='inversionfuente',
-            options={'verbose_name': 'Inversion de fuentes de financiamiento', 'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
+            options={'verbose_name': 'Inversion de fuentes de financiamiento',
+                     'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
         ),
         migrations.AlterModelOptions(
             name='inversionfuentedetalle',
-            options={'ordering': ['inversionfuente'], 'verbose_name': 'Detalle de inversion por fuente', 'verbose_name_plural': 'Detalles de inversion por fuente'},
+            options={'ordering': ['inversionfuente'], 'verbose_name': 'Detalle de inversion por fuente',
+                     'verbose_name_plural': 'Detalles de inversion por fuente'},
         ),
         migrations.AlterModelOptions(
             name='organizacion',
-            options={'ordering': ['nombre'], 'verbose_name': 'Organizaci\xf3n', 'verbose_name_plural': 'Organizaciones'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Organizaci\xf3n',
+                     'verbose_name_plural': 'Organizaciones'},
         ),
         migrations.AlterModelOptions(
             name='tipofuentefmto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Tipo de Fuente de financiamiento', 'verbose_name_plural': 'Tipos de Fuentes de financiamiento'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Tipo de Fuente de financiamiento',
+                     'verbose_name_plural': 'Tipos de Fuentes de financiamiento'},
         ),
         migrations.AlterField(
             model_name='catinversion',

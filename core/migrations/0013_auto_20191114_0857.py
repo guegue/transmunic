@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='catinversion',
-            options={'ordering': ['nombre'], 'verbose_name': 'Categor\xeda de inversi\xf3n', 'verbose_name_plural': 'Categor\xedas de inversi\xf3n'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Categor\xeda de inversi\xf3n',
+                     'verbose_name_plural': 'Categor\xedas de inversi\xf3n'},
         ),
         migrations.AlterModelOptions(
             name='gasto',
@@ -22,7 +23,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='gastodetalle',
-            options={'ordering': ['gasto'], 'verbose_name': 'Detalle de gastos', 'verbose_name_plural': 'Detalles de gastos'},
+            options={'ordering': ['gasto'], 'verbose_name': 'Detalle de gastos',
+                     'verbose_name_plural': 'Detalles de gastos'},
         ),
         migrations.AlterModelOptions(
             name='ingreso',
@@ -30,7 +32,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='ingresodetalle',
-            options={'ordering': ['ingreso'], 'verbose_name': 'Detalle de ingresos', 'verbose_name_plural': 'Detalles de ingresos'},
+            options={'ordering': ['ingreso'], 'verbose_name': 'Detalle de ingresos',
+                     'verbose_name_plural': 'Detalles de ingresos'},
         ),
         migrations.AlterModelOptions(
             name='inversion',
@@ -38,19 +41,23 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='inversionfuente',
-            options={'verbose_name': 'Inversi\xf3n de fuentes de financiamiento', 'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
+            options={'verbose_name': 'Inversi\xf3n de fuentes de financiamiento',
+                     'verbose_name_plural': 'Inversiones de fuentes de financiamiento'},
         ),
         migrations.AlterModelOptions(
             name='inversionfuentedetalle',
-            options={'ordering': ['inversionfuente'], 'verbose_name': 'Detalle de inversi\xf3n por fuente', 'verbose_name_plural': 'Detalles de inversi\xf3n por fuente'},
+            options={'ordering': ['inversionfuente'], 'verbose_name': 'Detalle de inversi\xf3n por fuente',
+                     'verbose_name_plural': 'Detalles de inversi\xf3n por fuente'},
         ),
         migrations.AlterModelOptions(
             name='origengasto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Origen de los gastos', 'verbose_name_plural': 'Origenes de los gastos'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Origen de los gastos',
+                     'verbose_name_plural': 'Origenes de los gastos'},
         ),
         migrations.AlterModelOptions(
             name='origenrecurso',
-            options={'ordering': ['nombre'], 'verbose_name': 'Origen de los recursos', 'verbose_name_plural': 'Origenes de los recursos'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Origen de los recursos',
+                     'verbose_name_plural': 'Origenes de los recursos'},
         ),
         migrations.AlterModelOptions(
             name='proyecto',
@@ -58,30 +65,37 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='subsubtipogasto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Sub sub tipo de gastos', 'verbose_name_plural': 'Sub sub tipos de gastos'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Sub sub tipo de gastos',
+                     'verbose_name_plural': 'Sub sub tipos de gastos'},
         ),
         migrations.AlterModelOptions(
             name='subsubtipoingreso',
-            options={'ordering': ['codigo'], 'verbose_name': 'Sub-subtipo de ingreso', 'verbose_name_plural': 'Sub-subtipos de ingreso'},
+            options={'ordering': ['codigo'], 'verbose_name': 'Sub-subtipo de ingreso',
+                     'verbose_name_plural': 'Sub-subtipos de ingreso'},
         ),
         migrations.AlterModelOptions(
             name='subtipogasto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Sub tipo de gastos', 'verbose_name_plural': 'Sub tipos de gastos'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Sub tipo de gastos',
+                     'verbose_name_plural': 'Sub tipos de gastos'},
         ),
         migrations.AlterModelOptions(
             name='subtipoingreso',
-            options={'ordering': ['codigo'], 'verbose_name': 'Subtipo de ingreso', 'verbose_name_plural': 'Subtipos de ingreso'},
+            options={'ordering': ['codigo'], 'verbose_name': 'Subtipo de ingreso',
+                     'verbose_name_plural': 'Subtipos de ingreso'},
         ),
         migrations.AlterModelOptions(
             name='tipogasto',
-            options={'ordering': ['codigo'], 'verbose_name': 'Tipo de gastos', 'verbose_name_plural': 'Tipos de gastos'},
+            options={'ordering': ['codigo'], 'verbose_name': 'Tipo de gastos',
+                     'verbose_name_plural': 'Tipos de gastos'},
         ),
         migrations.AlterModelOptions(
             name='tipoingreso',
-            options={'ordering': ['codigo'], 'verbose_name': 'Tipo de ingreso', 'verbose_name_plural': 'Tipos de ingreso'},
+            options={'ordering': ['codigo'], 'verbose_name': 'Tipo de ingreso',
+                     'verbose_name_plural': 'Tipos de ingreso'},
         ),
         migrations.AlterModelOptions(
             name='tipoproyecto',
-            options={'ordering': ['nombre'], 'verbose_name': 'Tipo de proyectos', 'verbose_name_plural': 'Tipos de proyectos'},
+            options={'ordering': ['nombre'], 'verbose_name': 'Tipo de proyectos',
+                     'verbose_name_plural': 'Tipos de proyectos'},
         ),
     ]

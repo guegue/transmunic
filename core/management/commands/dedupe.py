@@ -10,25 +10,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         models = {
-                IngresoDetalle: ('ingreso', 'codigo'),
-                GastoDetalle: ('gasto', 'codigo'),
-                Proyecto: ('inversion', 'codigo'),
-                Inversion: ('anio', 'periodo', 'municipio_id'),
-                Gasto: ('anio', 'periodo', 'municipio_id'),
-                Ingreso: ('anio', 'periodo', 'municipio_id'),
-                FuenteFmto: ('nombre', 'slug')
-                }
+            IngresoDetalle: ('ingreso', 'codigo'),
+            GastoDetalle: ('gasto', 'codigo'),
+            Proyecto: ('inversion', 'codigo'),
+            Inversion: ('anio', 'periodo', 'municipio_id'),
+            Gasto: ('anio', 'periodo', 'municipio_id'),
+            Ingreso: ('anio', 'periodo', 'municipio_id'),
+            FuenteFmto: ('nombre', 'slug')
+        }
 
         for model in models:
             print(model)
             related_models = [f for f in model._meta.get_fields()
-                    if f.auto_created and not f.concrete]
+                              if f.auto_created and not f.concrete]
 
             fields = models[model]
 
             # gets dupes
-            rows = model.objects.values(*fields).order_by().annotate(id=Max('id'),\
-                    count=Count('*')).filter(count__gt=1)
+            rows = model.objects.values(*fields).order_by().annotate(id=Max('id'),
+                                                                     count=Count('*')).filter(count__gt=1)
 
             # filter out records with null values
             nullout = Q(pk__isnull=False)  # start with always true
@@ -54,5 +54,5 @@ class Command(BaseCommand):
                         rows_tb_update.update(**{fk: row['id']})
 
                 deleted = rows_tb_deleted.delete()
-                self.stdout.write(self.style.SUCCESS('Successfully deleted {} rows ({}:{})'.\
-                                                 format(deleted, row['id'], fields[0])))
+                self.stdout.write(self.style.SUCCESS('Successfully deleted {} rows ({}:{})'.
+                                                     format(deleted, row['id'], fields[0])))
