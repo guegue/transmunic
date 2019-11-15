@@ -126,40 +126,6 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     'label': label,
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
-                child_l3 = []
-                level_3_sql = """select sum(sd.asignado) as asignado,
-                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
-                    sd.shortname
-                    from (
-                        select id.asignado, id.ejecutado, id.gasto_id,
-                            id.subsubtipogasto_id, i.municipio_id, i.periodo,
-                            i.anio, ssti.subtipogasto_id as codigo,
-                            ssti.nombre, ssti.shortname
-                            from core_gastodetalle as id
-                            left join core_gasto as i on id.gasto_id = i.id
-                            left join core_subsubtipogasto as ssti
-                            on id.subsubtipogasto_id=ssti.codigo
-                            where i.anio = %s
-                            and i.periodo = %s
-                            and i.municipio_id = %s
-                            and ssti.subtipogasto_id = %s) as sd
-                        group by sd.nombre, sd.shortname, sd.codigo"""
-                cursor = connection.cursor()
-                cursor.execute(
-                    level_3_sql,
-                    [year_data.anio, periodo, municipio_id, subtype['codigo']])
-                subsubtype_list = dictfetchall(cursor)
-                for subsubtype in subsubtype_list:
-                    if subsubtype['shortname'] is not None:
-                        label = subsubtype['shortname']
-                    else:
-                        label = subsubtype['nombre']
-                    subsubtype_data = {
-                        'label': label,
-                        'amount': round(subsubtype[data_source]/1000000, 2)
-                        }
-                    child_l3.append(subsubtype_data)
-                subtype_data['children'] = child_l3
                 child_l2.append(subtype_data)
             source_data['children'] = child_l2
             child_l1.append(source_data)
@@ -259,40 +225,7 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     'label': label,
                     'amount': round(subtype[data_source]/1000000, 2)
                     }
-                child_l3 = []
-                level_3_sql = """select sum(sd.asignado) as asignado,
-                    sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
-                    sd.shortname
-                    from (
-                        select id.asignado, id.ejecutado, id.gasto_id,
-                        id.subsubtipogasto_id, i.municipio_id, i.periodo,
-                        i.anio, ssti.subtipogasto_id as codigo, ssti.nombre,
-                        ssti.shortname
-                        from core_gastodetalle as id
-                        left join core_gasto as i
-                        on id.gasto_id = i.id
-                        left join core_subsubtipogasto as ssti
-                        on id.subsubtipogasto_id=ssti.codigo
-                        where i.anio = %s
-                        and i.periodo = %s
-                        and ssti.subtipogasto_id = %s) as sd
-                    group by sd.nombre, sd.shortname, sd.codigo"""
-                cursor = connection.cursor()
-                cursor.execute(
-                    level_3_sql,
-                    [year_data.anio, periodo, subtype['codigo']])
-                subsubtype_list = dictfetchall(cursor)
-                for subsubtype in subsubtype_list:
-                    if subsubtype['shortname'] is not None:
-                        label = subsubtype['shortname']
-                    else:
-                        label = subsubtype['nombre']
-                    subsubtype_data = {
-                        'label': label,
-                        'amount': round(subsubtype[data_source]/1000000, 2)
-                        }
-                    child_l3.append(subsubtype_data)
-                subtype_data['children'] = child_l3
+
                 child_l2.append(subtype_data)
             source_data['children'] = child_l2
             child_l1.append(source_data)
