@@ -171,6 +171,7 @@ def municipio(request, slug=None, year=None):
                 'catinversion__slug',
                 'catinversion__minimo',
                 'catinversion__nombre')\
+            .order_by()\
             .annotate(ejecutado=Sum(quesumar))
         inversion_categoria2 = Proyecto.objects.filter(
             inversion__municipio__slug=slug,
@@ -182,6 +183,7 @@ def municipio(request, slug=None, year=None):
                 'catinversion__minimo',
                 'catinversion__nombre',
                 'catinversion__id')\
+            .order_by()\
             .annotate(ejecutado=Sum(quesumar))
     else:
         total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
@@ -192,6 +194,7 @@ def municipio(request, slug=None, year=None):
                 'catinversion__slug',
                 'catinversion__minimo',
                 'catinversion__nombre')\
+            .order_by()\
             .annotate(ejecutado=Sum(quesumar))
         inversion_categoria2 = Proyecto.objects.filter(
             inversion__anio=investyear,
@@ -202,6 +205,7 @@ def municipio(request, slug=None, year=None):
                 'catinversion__minimo',
                 'catinversion__nombre',
                 'catinversion__id')\
+            .order_by()\
             .annotate(ejecutado=Sum(quesumar))
 
     context = {
