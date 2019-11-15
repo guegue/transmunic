@@ -37,3 +37,28 @@
     width: 65px;
     padding-top: 10px;
 }
+
+.no-border-top{
+    border-top: none !important;
+}
+
+.no-border-bottom{
+    border-bottom: none !important;
+}
+.border-sides{
+    border-right: 1px solid #ddd !important;
+    border-left: 1px solid #ddd !important;
+}
+.border-left{
+    border-left: 1px solid #ddd !important;
+}
+.border-right{
+    border-right: 1px solid #ddd !important;
+}
+
+.background-color-gray{
+    background-color: #f3f3f3;
+}
+.background-color-white{
+    background-color: #fff;
+}

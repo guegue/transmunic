@@ -13,7 +13,7 @@
         <thead>
         <tr class="bg-primary">
             <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
-            <th rowspan="1" colspan="2" style="border-bottom: none;" class="text-center">
+            <th rowspan="1" colspan="2" class="no-border-bottom text-center">
                 {% if periodo_list|keyvalue:year == 'I' %}
                     Inicial
                 {% else %}
@@ -22,8 +22,8 @@
             </th>
         </tr>
         <tr class="bg-primary">
-            <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
-            <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
+            <th colspan="1" class="no-border-top text-right">Cordobas</th>
+            <th colspan="1" class="no-border-top text-right">%</th>
         </tr>
         </thead>
         {% for row in rubros %}
@@ -150,8 +150,8 @@
                                 </th>
                             </tr>
                             <tr class="blanco pma-bg-blue">
-                                <th colspan="1" style="border-top: none;" class="text-right">Cordobas</th>
-                                <th colspan="1" style="border-top: none;" class="text-right">Porcentaje</th>
+                                <th colspan="1" class="no-border-top text-right">Cordobas</th>
+                                <th colspan="1" class="no-border-top text-right">%</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -222,11 +222,16 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><strong>Ranking de recaudación </strong> <br>
+                        <h2>
+                            <strong>Ranking de recaudación </strong>
+                            <br>
                             por habitante categoría municipal
-                            "{{ mi_clase.clasificacion }}"</h2>
-                        <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
-                            ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
+                            "{{ mi_clase.clasificacion }}"
+                        </h2>
+                        <h5>
+                            Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
+                            ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
+                        </h5>
                         <hr class="pma-line-3"/>
                     </div>
                 </div>
@@ -366,8 +371,11 @@
     <div class="container wide">
         <div class="row">
             <div class="col-md-12">
-                <h2><strong>Información Histórica</strong><br>
-                    Ejecución Presupuestaria {% if not municipio %}Consolidado municipal {% endif %} </h2>
+                <h2>
+                    <strong>Información Histórica</strong>
+                    <br>
+                    Ejecución Presupuestaria {% if not municipio %}Consolidado municipal {% endif %}
+                </h2>
                 <hr class="pma-line-2"/>
             </div>
         </div>
@@ -404,9 +412,11 @@
         <div class="events-content">
             <ol>
                 {% for row in anuales %}
-                    <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
+                    <li>
+                        <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
                             {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
-                           style="left:{{ forloop.counter|mul:"130" }}px;"></a></li>
+                           style="left:{{ forloop.counter|mul:"130" }}px;"></a>
+                    </li>
                 {% endfor %}
             </ol>
         </div> <!-- .events-content -->
@@ -422,25 +432,25 @@
     </div>
     <div id="detail-3" class="container medium">
         <div class="row">
-            <div class="col-xs-12 col-md-12 table-responsive">
+            <div class="col-xs-12 col-md-12 table-responsive" style="height: 495px">
                 <table class="table">
                     <thead>
-                    <tr class="bg-primary">
-                        <th rowspan="2" colspan="1"></th>
+                    <tr>
+                        <th rowspan="2" colspan="1" class="text-center">Rubros</th>
                         {% for year in year_list %}
-                            <th rowspan="1" colspan="2" class="text-center" style="border-bottom: none">
+                            <th rowspan="1" colspan="2" class="text-center no-border-bottom border-sides {% cycle 'background-color-gray' 'background-color-white' %}">
                                 <strong>{{ year }}</strong>
                                 {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
                             </th>
                         {% endfor %}
                     </tr>
-                    <tr class="bg-primary">
+                    <tr>
                         {% for year in year_list %}
-                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
+                            <th rowspan="1" colspan="1" class="no-border-top text-center border-left {% cycle 'background-color-gray' 'background-color-white' %}">
                                 Cordobas
                             </th>
-                            <th rowspan="1" colspan="1" style="border-top: none" class="text-center">
-                                Porcentaje
+                            <th rowspan="1" colspan="1" class="no-border-top text-center border-right {% cycle 'background-color-gray' 'background-color-white' %}">
+                                %
                             </th>
                         {% endfor %}
                     </tr>
@@ -448,11 +458,11 @@
                     <tbody>
                     {% for key, data in porano.items %}
                         <tr>
-                            <td class="text-left">{{ key }}</td>
+                            <td class="text-left border-right">{{ key }}</td>
                             {% for year in year_list %}
                                 {% with year_data=data|keyvalue:year %}
-                                    <td class="text-right">{{ year_data.raw|million|intcomma }}</td>
-                                    <td class="text-right">{{ year_data.percent|default:"0%" }}</td>
+                                    <td class="text-right border-left {% cycle 'background-color-gray' 'background-color-white' %}">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right border-right {% cycle 'background-color-gray' 'background-color-white' %}">{{ year_data.percent|default:"0%" }}</td>
                                 {% endwith %}
                             {% endfor %}
                         </tr>
@@ -484,17 +494,17 @@
                         <thead>
                         <tr class="bg-primary">
                             <th rowspan="2" colspan="1">Rubros de ingresos</th>
-                            <th colspan="2" class="text-center" style="border-bottom: none;">Inicial</th>
-                            <th colspan="2" class="text-center" style="border-bottom: none;">Actualizado</th>
-                            <th colspan="2" class="text-center" style="border-bottom: none;">Ejecutado</th>
+                            <th colspan="2" class="text-center no-border-bottom">Inicial</th>
+                            <th colspan="2" class="text-center no-border-bottom">Actualizado</th>
+                            <th colspan="2" class="text-center no-border-bottom">Ejecutado</th>
                         </tr>
                         <tr class="bg-primary">
-                            <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
-                            <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
-                            <th colspan="1" style="border-top: none;">Cordobas</th>
-                            <th colspan="1" style="border-top: none;">Porcentaje</th>
+                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">%</th>
+                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">%</th>
+                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">%</th>
                         </tr>
                         </thead>
                         <tbody>
