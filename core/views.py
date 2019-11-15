@@ -77,6 +77,7 @@ def home(request):
         .values(
             'catinversion__slug', 'catinversion__minimo',
             'catinversion__nombre', 'catinversion__id')\
+        .order_by()\
         .annotate(ejecutado=Sum(quesumar))
     inversion_categoria2 = Proyecto.objects.filter(
         inversion__anio=year, inversion__periodo=periodo,
@@ -84,6 +85,7 @@ def home(request):
         .values(
             'catinversion__slug', 'catinversion__minimo',
             'catinversion__nombre', 'catinversion__id')\
+            .order_by()\
         .annotate(ejecutado=Sum(quesumar))
     context = { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
         'charts':(
