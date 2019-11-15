@@ -14,15 +14,27 @@ class UploadExcelForm(forms.Form):
             self.fields['municipio'].queryset = Municipio.objects.for_user(user)
 
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
-                                       empty_label="(Municipio)")
+                                       empty_label="(Municipio)",
+                                       widget=forms.ChoiceField.widget(
+                                           attrs={'class': "form-control required"})
+                                       )
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
-                              attrs={'class': "form-control required"}),
+        attrs={'class': "form-control required"}),
                               initial=lambda: datetime.date.today().year, required=True)
     periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
-                                attrs={'class': "form-control required"}), required=True)
-    start_row = forms.IntegerField(min_value=1, max_value=1000)
-    end_row = forms.IntegerField(min_value=1, max_value=10000)
-    excel_file = forms.FileField()
+        attrs={'class': "form-control required"}), required=True)
+    start_row = forms.IntegerField(min_value=1, max_value=1000,
+                                   widget=forms.IntegerField.widget(
+                                       attrs={'class': "form-control required"})
+                                   )
+    end_row = forms.IntegerField(min_value=1, max_value=10000,
+                                 widget=forms.IntegerField.widget(
+                                     attrs={'class': "form-control required"})
+                                 )
+    excel_file = forms.FileField(widget=forms.FileField.widget(
+        attrs={'class': 'form-control required'}
+    )
+    )
 
 
 class DetallePresupuestoForm(forms.Form):
@@ -39,17 +51,17 @@ class DetallePresupuestoForm(forms.Form):
                                 )
     year = forms.IntegerField(label=u"Año",
                               widget=forms.IntegerField.widget(
-                                    attrs={'class': "form-control required"},
+                                  attrs={'class': "form-control required"},
                               ),
                               initial=lambda: datetime.date.today().year,
                               required=True
                               )
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        widget=forms.ModelChoiceField.widget(
-        attrs={'class': "form-control required"},
-    ),
-        required=True
-    )
+                                           attrs={'class': "form-control required"},
+                                       ),
+                                       required=True
+                                       )
     tipo = forms.ChoiceField(choices=MODELS,
                              widget=forms.ChoiceField.widget(
                                  attrs={'class': "form-control required"},
@@ -58,7 +70,7 @@ class DetallePresupuestoForm(forms.Form):
                              )
     catinversion = forms.ModelChoiceField(queryset=CatInversion.objects.all(),
                                           widget=forms.ModelChoiceField.widget(
-        attrs={'class': "form-control required"},
-    ),
-        required=True
-    )
+                                              attrs={'class': "form-control required"},
+                                          ),
+                                          required=True
+                                          )
