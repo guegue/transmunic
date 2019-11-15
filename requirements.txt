@@ -4,7 +4,7 @@ gunicorn==19.9.0
 Fabric==1.6.1
 django-autoslug==1.9.6
 sorl-thumbnail==12.5.0
--e git://bitbucket.org/javierwilson/smart-selects.git#egg=pixelfields_smart_selects
+-e git+https://bitbucket.org/javierwilson/smart-selects.git#egg=pixelfields_smart_selects
 -e git://github.com/javierwilson/django-chartit.git#egg=django_chartit
 -e git://github.com/javierwilson/django-model-report.git@930f2b2a793cdb1bafd8927100d4aaacfc299721#egg=django_model_report
 -e git://github.com/jakewins/django-money.git@fe0b20831a15cef3f5225392276fdd4737de216f#egg=django_money
