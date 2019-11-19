@@ -346,153 +346,6 @@
 {% endblock %}
 
 {% block section4 %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 historico">
-                <h2>Información Histórica<br>
-                    <strong>Ejecución presupuestaria del gasto {% if not municipio %}Consolidado
-                        municipal {% endif %}</strong></h2>
-                <hr class="pma-line-3"/>
-                <section class="cd-horizontal-timeline loaded historico">
-                    <div class="timeline">
-                        <div class="events-wrapper">
-                            <div class="events" style="width: {{ anuales|length|add:1|mul:135 }}px;">
-                                <ol>
-                                    {% for row in anuales %}
-                                        <li><a href="#0" data-date="01/01/{{ row.gasto__anio }} 00:00"
-                                                {% if row.gasto__anio == year|add:"0" %} class="selected" {% endif %}
-                                               style="left:{{ forloop.counter|mul:135 }}px;"><span
-                                                class="posicion">{{ row.gasto__anio }}</span><br/>
-                                            {% if row.gasto__periodo == 'I' %}
-                                                <span class="line-cifra text-right">{{ row.asignado|million|intcomma }}</span>
-                                            {% else %}
-                                                <span class="line-cifra text-right">{{ row.ejecutado|million|intcomma }}</span>
-                                            {% endif %}
-                                        </a></li>
-                                    {% endfor %}
-                                </ol>
-
-                                <span class="filling-line" aria-hidden="true"
-                                      style="transform: scaleX(0.0772222);"></span>
-                            </div> <!-- .events -->
-                        </div> <!-- .events-wrapper -->
-
-                        <ul class="cd-timeline-navigation">
-                            <li><a href="#0" class="prev inactive">Prev</a></li>
-                            <li><a href="#0" class="next">Next</a></li>
-                        </ul> <!-- .cd-timeline-navigation -->
-                    </div> <!-- .timeline -->
-
-                    <div class="events-content">
-                        <ol>
-                            {% for row in anuales %}
-                                <li data-date="01/01/{{ row.gasto__anio }} 00:00"
-                                        {% if row.gasto__anio == year|add:"0" %} class="selected" {% endif %}>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                    </div> <!-- .events-content -->
-                </section>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
-                        Ver detalles en tabla
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="detail-3" class="container medium">
-            <div class="row">
-                <div class="col-xs-12 text-center table-responsive">
-                    <h3>Gastos por per&iacute;odo</h3>
-                    <hr class="pma-line-4"/>
-                    <div class="col-md-offset-4 col-md-5">
-                        <table class="table table-condensed">
-                            <thead>
-                            <tr class="info">
-                                <th>Años</th>
-                                <th>Inicial</th>
-                                <th>Ejecutado</th>
-                                <th class="text-center">
-                                    <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial"
-                                       class="link-info">%</a>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for row in anuales %}
-                                <tr>
-                                    <td>{{ row.gasto__anio }}</td>
-                                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                                    {% if row.asignado %}
-                                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                            <tr>
-                                <td>TOTAL</td>
-                                <td class="text-right">{{ anuales|total_sum:'asignado'|million }}</td>
-                                <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
-                                <td class="montos">
-                                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}
-                                        {{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}
-                                        %
-                                    {% endwith %}
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr class="pma-bg-white">
-                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
-                                    propia a partir
-                                    de transmunic.gob.ni<strong>.</strong></th>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h3>Gastos por per&iacute;odos por rubros</h3>
-                        <hr class="pma-line-4"/>
-                        <table class="table">
-                            <thead>
-                            <tr class="bg-primary">
-                                <th></th>
-                                {% for year in year_list %}
-                                    <th class="text-center"><strong>{{ year }}</strong>
-                                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
-                                {% endfor %}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for key, data in porano.items %}
-                                <tr>
-                                    <td class="text-left">{{ key }}</td>
-                                    {% for year in year_list %}
-                                        <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                            <tfoot>
-                            <tr class="pma-bg-white">
-                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
-                                    propia a partir
-                                    de transmunic.gob.ni<strong>.</strong></th>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-{% endblock %}
-
-{% block section5 %}
     <div class="container wide">
         <div class="row">
             <div class="col-md-12">
@@ -795,6 +648,153 @@
                 </table>
             </div>
         </div>
+    </div>
+{% endblock %}
+
+{% block section5 %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 historico">
+                <h2>Información Histórica<br>
+                    <strong>Ejecución presupuestaria del gasto {% if not municipio %}Consolidado
+                        municipal {% endif %}</strong></h2>
+                <hr class="pma-line-3"/>
+                <section class="cd-horizontal-timeline loaded historico">
+                    <div class="timeline">
+                        <div class="events-wrapper">
+                            <div class="events" style="width: {{ anuales|length|add:1|mul:135 }}px;">
+                                <ol>
+                                    {% for row in anuales %}
+                                        <li><a href="#0" data-date="01/01/{{ row.gasto__anio }} 00:00"
+                                                {% if row.gasto__anio == year|add:"0" %} class="selected" {% endif %}
+                                               style="left:{{ forloop.counter|mul:135 }}px;"><span
+                                                class="posicion">{{ row.gasto__anio }}</span><br/>
+                                            {% if row.gasto__periodo == 'I' %}
+                                                <span class="line-cifra text-right">{{ row.asignado|million|intcomma }}</span>
+                                            {% else %}
+                                                <span class="line-cifra text-right">{{ row.ejecutado|million|intcomma }}</span>
+                                            {% endif %}
+                                        </a></li>
+                                    {% endfor %}
+                                </ol>
+
+                                <span class="filling-line" aria-hidden="true"
+                                      style="transform: scaleX(0.0772222);"></span>
+                            </div> <!-- .events -->
+                        </div> <!-- .events-wrapper -->
+
+                        <ul class="cd-timeline-navigation">
+                            <li><a href="#0" class="prev inactive">Prev</a></li>
+                            <li><a href="#0" class="next">Next</a></li>
+                        </ul> <!-- .cd-timeline-navigation -->
+                    </div> <!-- .timeline -->
+
+                    <div class="events-content">
+                        <ol>
+                            {% for row in anuales %}
+                                <li data-date="01/01/{{ row.gasto__anio }} 00:00"
+                                        {% if row.gasto__anio == year|add:"0" %} class="selected" {% endif %}>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </div> <!-- .events-content -->
+                </section>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
+                        Ver detalles en tabla
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="detail-3" class="container medium">
+            <div class="row">
+                <div class="col-xs-12 text-center table-responsive">
+                    <h3>Gastos por per&iacute;odo</h3>
+                    <hr class="pma-line-4"/>
+                    <div class="col-md-offset-4 col-md-5">
+                        <table class="table table-condensed">
+                            <thead>
+                            <tr class="info">
+                                <th>Años</th>
+                                <th>Inicial</th>
+                                <th>Ejecutado</th>
+                                <th class="text-center">
+                                    <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial"
+                                       class="link-info">%</a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in anuales %}
+                                <tr>
+                                    <td>{{ row.gasto__anio }}</td>
+                                    <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                                    {% if row.asignado %}
+                                        <td class="montos">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>TOTAL</td>
+                                <td class="text-right">{{ anuales|total_sum:'asignado'|million }}</td>
+                                <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
+                                <td class="montos">
+                                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}
+                                        {{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}
+                                        %
+                                    {% endwith %}
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="col-md-offset-2 col-md-8 text-center">
+                        <h3>Gastos por per&iacute;odos por rubros</h3>
+                        <hr class="pma-line-4"/>
+                        <table class="table">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th></th>
+                                {% for year in year_list %}
+                                    <th class="text-center"><strong>{{ year }}</strong>
+                                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key, data in porano.items %}
+                                <tr>
+                                    <td class="text-left">{{ key }}</td>
+                                    {% for year in year_list %}
+                                        <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
 
