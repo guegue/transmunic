@@ -174,12 +174,20 @@
     {% block section1 %}
         <div class="container">
             <div class="row">
-                <div class="text-center">
+                <div>
                     <h3>
-                        Ingresos presupuesto {% if periodo_list|keyvalue:year == 'F' %}
-                        cierre {% elif periodo_list|keyvalue:year == 'A' %}
-                        intermedio {% elif periodo_list|keyvalue:year == 'I' %}inicial {% endif %}
-                        <br/>Periodo {{ year }}
+                        <strong>
+                            Ingresos Presupuesto
+                            {% if periodo_list|keyvalue:year == 'F' %}
+                                Cierre
+                            {% elif periodo_list|keyvalue:year == 'A' %}
+                                Intermedio
+                            {% elif periodo_list|keyvalue:year == 'I' %}
+                                Inicial
+                            {% endif %}
+                        </strong>
+                        <br/>
+                        Per&iacute;odo {{ year }}
                     </h3>
                     <h5>Millones de córdobas corrientes</h5>
                     <hr class="pma-line-2 text-center">
