@@ -10,6 +10,17 @@
 
 {% block main_table %}
     <table class="table">
+        <caption>
+            Rubros de ingresos para el per&iacute;odo {{ year }}
+            {% if periodo_list|keyvalue:year == 'F' %}
+                cierre
+            {% elif periodo_list|keyvalue:year == 'A' %}
+                intermedio
+            {% elif periodo_list|keyvalue:year == 'I' %}
+                inicial
+            {% endif %}
+            .
+        </caption>
         <thead>
         <tr class="bg-primary">
             <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
@@ -22,35 +33,40 @@
             </th>
         </tr>
         <tr class="bg-primary">
-            <th colspan="1" class="no-border-top text-right">Cordobas</th>
-            <th colspan="1" class="no-border-top text-right">%</th>
+            <th colspan="1" class="no-border-top text-center">M. de c&oacute;rdobas</th>
+            <th colspan="1" class="no-border-top text-center">%</th>
         </tr>
         </thead>
+        <tbody>
         {% for row in rubros %}
             <tr>
                 {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
                     <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                    <td colspan="1" class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td colspan="1" class="text-right">{{ row.inicial_asignado_percent }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
                 {% else %}
                     {% if row.ejecutado > 0 %}
                         <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                        <td colspan="1" class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
-                        <td colspan="1" class="text-right">{{ row.ejecutado_percent }}</td>
+                        <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                        <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
                     {% endif %}
                 {% endif %}
             </tr>
         {% endfor %}
-        <tfoot>
-        <tr class="">
+        <tr>
             <td colspan="1">TOTAL</td>
             {% if periodo_list|keyvalue:year == 'I' %}
-                <td colspan="1" class="text-right">{{ asignado|million|intcomma }}</td>
-                <td colspan="1" class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                <td colspan="1" class="text-center">{{ asignado|million|intcomma }}</td>
+                <td colspan="1" class="text-center">{{ asignado_porcentaje|floatformat:"0" }}%</td>
             {% else %}
-                <td colspan="1" class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
-                <td colspan="1" class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
+                <td colspan="1" class="text-center">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                <td colspan="1" class="text-center">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
             {% endif %}
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a partir de transmunic.gob.ni<strong>.</strong></th>
         </tr>
         </tfoot>
     </table>
@@ -150,7 +166,7 @@
                                 </th>
                             </tr>
                             <tr class="blanco pma-bg-blue">
-                                <th colspan="1" class="no-border-top text-right">Cordobas</th>
+                                <th colspan="1" class="no-border-top text-right">C&oacute;rdobas</th>
                                 <th colspan="1" class="no-border-top text-right">%</th>
                             </tr>
                             </thead>
@@ -414,7 +430,7 @@
                 {% for row in anuales %}
                     <li>
                         <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
-                            {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
+                                {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
                            style="left:{{ forloop.counter|mul:"130" }}px;"></a>
                     </li>
                 {% endfor %}
@@ -438,7 +454,8 @@
                     <tr>
                         <th rowspan="2" colspan="1" class="text-center">Rubros</th>
                         {% for year in year_list %}
-                            <th rowspan="1" colspan="2" class="text-center no-border-bottom border-sides {% cycle 'background-color-gray' 'background-color-white' %}">
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides {% cycle 'background-color-gray' 'background-color-white' %}">
                                 <strong>{{ year }}</strong>
                                 {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
                             </th>
@@ -446,10 +463,12 @@
                     </tr>
                     <tr>
                         {% for year in year_list %}
-                            <th rowspan="1" colspan="1" class="no-border-top text-center border-left {% cycle 'background-color-gray' 'background-color-white' %}">
-                                Cordobas
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-left {% cycle 'background-color-gray' 'background-color-white' %}">
+                                C&oacute;rdobas
                             </th>
-                            <th rowspan="1" colspan="1" class="no-border-top text-center border-right {% cycle 'background-color-gray' 'background-color-white' %}">
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-right {% cycle 'background-color-gray' 'background-color-white' %}">
                                 %
                             </th>
                         {% endfor %}
@@ -484,7 +503,7 @@
                         <br>
                         municipal de ingresos
                     </h2>
-                    <h4>Millones de cordobas</h4>
+                    <h4>Millones de c&oacute;rdobas</h4>
                     <hr class="pma-line-2"/>
                 </div>
             </div>
@@ -499,11 +518,11 @@
                             <th colspan="2" class="text-center no-border-bottom">Ejecutado</th>
                         </tr>
                         <tr class="bg-primary">
-                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">C&oacute;rdobas</th>
                             <th colspan="1" class="no-border-top">%</th>
-                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">C&oacute;rdobas</th>
                             <th colspan="1" class="no-border-top">%</th>
-                            <th colspan="1" class="no-border-top">Cordobas</th>
+                            <th colspan="1" class="no-border-top">C&oacute;rdobas</th>
                             <th colspan="1" class="no-border-top">%</th>
                         </tr>
                         </thead>
@@ -523,21 +542,21 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-right">
-                                     {{ row.ejecutado_percent }}%
+                                    {{ row.ejecutado_percent }}%
                                 </td>
                             </tr>
                         {% endfor %}
                         </tbody>
                         <tfoot>
-                            <tr class="bold">
-                                <td>TOTAL</td>
-                                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                                <td class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
-                                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                                <td class="text-right">{{ actualizado_porcentaje|floatformat:"0" }}%</td>
-                                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                                <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
-                            </tr>
+                        <tr class="bold">
+                            <td>TOTAL</td>
+                            <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                            <td class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                            <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                            <td class="text-right">{{ actualizado_porcentaje|floatformat:"0" }}%</td>
+                            <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                            <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
+                        </tr>
                         </tfoot>
                     </table>
                 </div>
