@@ -82,7 +82,16 @@
                             <h2>Recaudaci&oacute;n por habitante</h2>
                         {% else %}
                             <h2>
-                                <strong>Ranquin de recaudaci&oacute;n </strong>
+                                <strong>
+                                    Ranquin de recaudaci&oacute;n {{ year }}
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        cierre
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        intermedio
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        inicial
+                                    {% endif %}
+                                </strong>
                                 <br>
                                 {% if mi_clase.clasificacion %}
                                     por habitante categor&iacute;a municipal "{{ mi_clase.clasificacion }}"
