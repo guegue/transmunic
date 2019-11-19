@@ -10,6 +10,17 @@
 
 {% block main_table %}
     <table class="table">
+        <caption>
+            Rubros de ingresos para el per&iacute;odo {{ year }}
+            {% if periodo_list|keyvalue:year == 'F' %}
+                cierre
+            {% elif periodo_list|keyvalue:year == 'A' %}
+                intermedio
+            {% elif periodo_list|keyvalue:year == 'I' %}
+                inicial
+            {% endif %}
+            .
+        </caption>
         <thead>
         <tr class="bg-primary">
             <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
@@ -22,35 +33,41 @@
             </th>
         </tr>
         <tr class="bg-primary">
-            <th colspan="1" class="no-border-top text-right">Cordobas</th>
-            <th colspan="1" class="no-border-top text-right">%</th>
+            <th colspan="1" class="no-border-top text-center">M. de c&oacute;rdobas</th>
+            <th colspan="1" class="no-border-top text-center">%</th>
         </tr>
         </thead>
+        <tbody>
         {% for row in rubros %}
             <tr>
                 {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
                     <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                    <td colspan="1" class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td colspan="1" class="text-right">{{ row.inicial_asignado_percent }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
                 {% else %}
                     {% if row.ejecutado > 0 %}
                         <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                        <td colspan="1" class="text-right">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
-                        <td colspan="1" class="text-right">{{ row.ejecutado_percent }}</td>
+                        <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                        <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
                     {% endif %}
                 {% endif %}
             </tr>
         {% endfor %}
-        <tfoot>
-        <tr class="">
+        <tr>
             <td colspan="1">TOTAL</td>
             {% if periodo_list|keyvalue:year == 'I' %}
-                <td colspan="1" class="text-right">{{ asignado|million|intcomma }}</td>
-                <td colspan="1" class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                <td colspan="1" class="text-center">{{ asignado|million|intcomma }}</td>
+                <td colspan="1" class="text-center">{{ asignado_porcentaje|floatformat:"0" }}%</td>
             {% else %}
-                <td colspan="1" class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
-                <td colspan="1" class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
+                <td colspan="1" class="text-center">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                <td colspan="1" class="text-center">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
             {% endif %}
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a partir
+                de transmunic.gob.ni<strong>.</strong></th>
         </tr>
         </tfoot>
     </table>
@@ -63,16 +80,28 @@
                 <div class="row">
                     <div class="col-md-12">
                         {% if year == '2016' %}
-                            <h2>Recaudación por habitante</h2>
+                            <h2>Recaudaci&oacute;n por habitante</h2>
                         {% else %}
-                            <h2><strong>Ranquin de recaudación </strong> <br>
+                            <h2>
+                                <strong>
+                                    Ranquin de recaudaci&oacute;n {{ year }}
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        cierre
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        intermedio
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        inicial
+                                    {% endif %}
+                                </strong>
+                                <br>
                                 {% if mi_clase.clasificacion %}
-                                    por habitante categoría municipal "{{ mi_clase.clasificacion }}"
+                                    por habitante categor&iacute;a municipal "{{ mi_clase.clasificacion }}"
                                 {% else %}
-                                    según categoría de municipios
+                                    según categor&iacute;a de municipios
                                 {% endif %}
                             </h2>
-                            <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
+                            <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
+                                base a
                                 ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
                         {% endif %}
                         <hr class="pma-line-3"/>
@@ -136,11 +165,13 @@
             </div>
             <div class="container" id="detail-1">
                 <div class="row">
-                    <div class="col-md-offset-4 col-md-4 table-responsive">
+                    <div class="col-md-offset-4 col-md-5 table-responsive">
                         <table class="table">
                             <thead>
                             <tr class="blanco pma-bg-blue">
-                                <th rowspan="2" colspan="1" style="vertical-align: middle">Categoría de municipio</th>
+                                <th rowspan="2" colspan="1" style="vertical-align: middle">Categor&iacute;a de
+                                    municipio
+                                </th>
                                 <th rowspan="1" colspan="2" style="border-bottom: none;" class="text-center">
                                     {% if periodo_list|keyvalue:year == 'I' %}
                                         Presupuestado
@@ -150,7 +181,7 @@
                                 </th>
                             </tr>
                             <tr class="blanco pma-bg-blue">
-                                <th colspan="1" class="no-border-top text-right">Cordobas</th>
+                                <th colspan="1" class="no-border-top text-right">C&oacute;rdobas</th>
                                 <th colspan="1" class="no-border-top text-right">%</th>
                             </tr>
                             </thead>
@@ -191,9 +222,7 @@
                                     {% endif %}
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                            <tfoot>
-                            <tr class="blanco pma-bg-blue">
+                            <tr class="pma-bg-white">
                                 <th colspan="1">Media Nacional</th>
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <td class="text-right">
@@ -207,6 +236,12 @@
                                     <td class="text-right">{{ total_ejecutado_ranking_porcenteje|floatformat:0 }}</td>
                                 {% endif %}
                             </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
                             </tfoot>
                         </table>
                     </div>
@@ -223,13 +258,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h2>
-                            <strong>Ranking de recaudación </strong>
+                            <strong>Ranking de recaudaci&oacute;n </strong>
                             <br>
-                            por habitante categoría municipal
+                            por habitante categor&iacute;a municipal
                             "{{ mi_clase.clasificacion }}"
                         </h2>
                         <h5>
-                            Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
+                            C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
                         </h5>
                         <hr class="pma-line-3"/>
@@ -298,12 +333,12 @@
                         <table class="table table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
-                                <th class="text-center"><strong>Posición</strong></th>
+                                <th class="text-center"><strong>Posici&oacute;n</strong></th>
                                 <th class="text-center"><strong>Municipios</strong></th>
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-center"><strong>P. Inicial</strong></th>
                                 {% else %}
-                                    <th class="text-center"><strong>Ejecución</strong></th></tr>
+                                    <th class="text-center"><strong>Ejecuci&oacute;n</strong></th></tr>
                                 {% endif %}
                             </thead>
                             {% if ejecutado <= 0 %}
@@ -368,113 +403,6 @@
 {% endblock %}
 
 {% block section4 %}
-    <div class="container wide">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>
-                    <strong>Información Histórica</strong>
-                    <br>
-                    Ejecución Presupuestaria {% if not municipio %}Consolidado municipal {% endif %}
-                </h2>
-                <hr class="pma-line-2"/>
-            </div>
-        </div>
-    </div>
-    <div class="cd-horizontal-timeline loaded">
-        <div class="timeline container historico">
-            <div class="events-wrapper">
-                <div class="events" style="width:{{ anuales|length|add:1|mul:"135" }}px">
-                    <ol>
-                        {% for row in anuales %}
-                            <li><a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
-                                    {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
-                                   style="left:{{ forloop.counter|mul:"135" }}px;"><span
-                                    class="posicion">{{ row.ingreso__anio }}</span>
-                                <br/>
-                                {% if row.ingreso__periodo == 'I' %}
-                                    <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
-                                {% else %}
-                                    <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
-                                {% endif %}
-                            </a></li>
-                        {% endfor %}
-                    </ol>
-                    <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                </div> <!-- .events -->
-            </div> <!-- .events-wrapper -->
-
-            <ul class="cd-timeline-navigation">
-                <li><a href="#0" class="prev inactive">Prev</a></li>
-                <li><a href="#0" class="next">Next</a></li>
-            </ul> <!-- .cd-timeline-navigation -->
-        </div> <!-- .timeline -->
-
-        <div class="events-content">
-            <ol>
-                {% for row in anuales %}
-                    <li>
-                        <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
-                            {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
-                           style="left:{{ forloop.counter|mul:"130" }}px;"></a>
-                    </li>
-                {% endfor %}
-            </ol>
-        </div> <!-- .events-content -->
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center medium">
-                <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
-                    Ver detalles en tabla
-                </button>
-            </div>
-        </div>
-    </div>
-    <div id="detail-3" class="container medium">
-        <div class="row">
-            <div class="col-xs-12 col-md-12 table-responsive" style="height: 495px">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th rowspan="2" colspan="1" class="text-center">Rubros</th>
-                        {% for year in year_list %}
-                            <th rowspan="1" colspan="2" class="text-center no-border-bottom border-sides {% cycle 'background-color-gray' 'background-color-white' %}">
-                                <strong>{{ year }}</strong>
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
-                            </th>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        {% for year in year_list %}
-                            <th rowspan="1" colspan="1" class="no-border-top text-center border-left {% cycle 'background-color-gray' 'background-color-white' %}">
-                                Cordobas
-                            </th>
-                            <th rowspan="1" colspan="1" class="no-border-top text-center border-right {% cycle 'background-color-gray' 'background-color-white' %}">
-                                %
-                            </th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for key, data in porano.items %}
-                        <tr>
-                            <td class="text-left border-right">{{ key }}</td>
-                            {% for year in year_list %}
-                                {% with year_data=data|keyvalue:year %}
-                                    <td class="text-right border-left {% cycle 'background-color-gray' 'background-color-white' %}">{{ year_data.raw|million|intcomma }}</td>
-                                    <td class="text-right border-right {% cycle 'background-color-gray' 'background-color-white' %}">{{ year_data.percent|default:"0%" }}</td>
-                                {% endwith %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block section5 %}
     {% if rubros|total_sum:'actualizado_asignado' > 0 %} <!--No mostramos tablas si no hay actualizacion -->
         <div class="container wide">
             <div class="row">
@@ -484,7 +412,7 @@
                         <br>
                         municipal de ingresos
                     </h2>
-                    <h4>Millones de cordobas</h4>
+                    <h4>Millones de c&oacute;rdobas</h4>
                     <hr class="pma-line-2"/>
                 </div>
             </div>
@@ -499,12 +427,12 @@
                             <th colspan="2" class="text-center no-border-bottom">Ejecutado</th>
                         </tr>
                         <tr class="bg-primary">
-                            <th colspan="1" class="no-border-top">Cordobas</th>
-                            <th colspan="1" class="no-border-top">%</th>
-                            <th colspan="1" class="no-border-top">Cordobas</th>
-                            <th colspan="1" class="no-border-top">%</th>
-                            <th colspan="1" class="no-border-top">Cordobas</th>
-                            <th colspan="1" class="no-border-top">%</th>
+                            <th colspan="1" class="no-border-top text-center">M. de C&oacute;rdobas</th>
+                            <th colspan="1" class="no-border-top text-center">%</th>
+                            <th colspan="1" class="no-border-top text-center">M. de C&oacute;rdobas</th>
+                            <th colspan="1" class="no-border-top text-center">%</th>
+                            <th colspan="1" class="no-border-top text-center">M. de C&oacute;rdobas</th>
+                            <th colspan="1" class="no-border-top text-center">%</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -523,21 +451,24 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-right">
-                                     {{ row.ejecutado_percent }}%
+                                    {{ row.ejecutado_percent }}%
                                 </td>
                             </tr>
                         {% endfor %}
+                        <tr class="bold">
+                            <td>TOTAL</td>
+                            <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                            <td class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                            <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                            <td class="text-right">{{ actualizado_porcentaje|floatformat:"0" }}%</td>
+                            <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                            <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
+                        </tr>
                         </tbody>
                         <tfoot>
-                            <tr class="bold">
-                                <td>TOTAL</td>
-                                <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                                <td class="text-right">{{ asignado_porcentaje|floatformat:"0" }}%</td>
-                                <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                                <td class="text-right">{{ actualizado_porcentaje|floatformat:"0" }}%</td>
-                                <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                                <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
-                            </tr>
+                        <th colspan="8" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
                         </tfoot>
                     </table>
                 </div>
@@ -566,20 +497,20 @@
                         </div>
                     </div>
                     <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <td></td>
-                            <td></td>
+                            <td colspan="2"></td>
                             <th colspan="4" class="text-center">
-                                <h4>Modificación intermedia
+                                <h4>Modificaci&oacute;n intermedia
                                     <a href="#" data-toggle="tooltip"
-                                       data-original-title="Modificación al {{ year_data.actualizado }}"
+                                       data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
                                        class="link-info">*</a>
                                 </h4>
                             </th>
                             <td colspan="4" class="text-center">
-                                <h4>Modificación al cierre
+                                <h4>Modificaci&oacute;n al cierre
                                     <a href="#" data-toggle="tooltip"
-                                       data-original-title="Modificación al {{ year_data.final }}"
+                                       data-original-title="Modificaci&oacute;n al {{ year_data.final }}"
                                        class="link-info">*</a></h4>
                             </th>
                         </tr>
@@ -587,16 +518,18 @@
                             <th>Rubros de ingresos</th>
                             <th>Inicial</th>
                             <th>Actualizado</th>
-                            <th>Modificación</th>
+                            <th>Modificaci&oacute;n</th>
                             <th>Ejecutado</th>
                             <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                    class="link-info">%</a></th>
                             <th>Actualizado</th>
-                            <th>Modificación</th>
+                            <th>Modificaci&oacute;n</th>
                             <th>Ejecutado</th>
                             <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                    class="link-info">%</a></th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for row in rubros %}
                             <tr>
                                 <td>{{ row.subsubtipoingreso__origen__nombre }}</td>
@@ -670,33 +603,45 @@
                                 </td>
                             {% endwith %}
                         </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                        </tfoot>
                     </table>
                     <br/>
                     <!-- /fin oim-tabla5 -->
-                    <h3><strong>Recaudación municipal</strong></h3>
-                    <h4>Millones de córdobas corrientes</h4>
+                    <h3>
+                        <strong>Recaudaci&oacute;n municipal</strong>
+                    </h3>
+                    <h4>Millones de c&oacute;rdobas corrientes</h4>
                     <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td colspan="4" class="text-center"><h4>Modificación al {{ year_data.actualizado }}</h4>
+                            <td colspan="2"></td>
+                            <td colspan="4" class="text-center"><h4>Modificaci&oacute;n
+                                al {{ year_data.actualizado }}</h4>
                             </td>
-                            <td colspan="4"><h4>Modificación al {{ year_data.final }}</h4></td>
+                            <td colspan="4"><h4>Modificaci&oacute;n al {{ year_data.final }}</h4></td>
                         </tr>
                         <tr>
                             <th>Rubros de ingresos</th>
                             <th>Inicial</th>
                             <th>Actualizado</th>
-                            <th>Modificación</th>
+                            <th>Modificaci&oacute;n</th>
                             <th>Ejecutado</th>
                             <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                    class="link-info">%</a></th>
                             <th>Actualizado</th>
-                            <th>Modificación</th>
+                            <th>Modificaci&oacute;n</th>
                             <th>Ejecutado</th>
                             <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                    class="link-info">%</a></th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for row in rubrosp %}
                             <tr>
                                 <td>{{ row.subtipoingreso__nombre }}</td>
@@ -769,12 +714,139 @@
                                 </td>
                             {% endwith %}
                         </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                        </tfoot>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
     {% else %}
     {% endif %}
+
+{% endblock %}
+
+{% block section5 %}
+    <div class="container wide">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    <strong>Informaci&oacute;n Hist&oacute;rica</strong>
+                    <br>
+                    Ejecuci&oacute;n Presupuestaria {% if not municipio %}Consolidado municipal {% endif %}
+                </h2>
+                <hr class="pma-line-2"/>
+            </div>
+        </div>
+    </div>
+    <div class="cd-horizontal-timeline loaded">
+        <div class="timeline container historico">
+            <div class="events-wrapper">
+                <div class="events" style="width:{{ anuales|length|add:1|mul:"135" }}px">
+                    <ol>
+                        {% for row in anuales %}
+                            <li>
+                                <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
+                                        {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
+                                   style="left:{{ forloop.counter|mul:"135" }}px;">
+                                    <span class="posicion">{{ row.ingreso__anio }}</span>
+                                    <br/>
+                                    {% if row.ingreso__periodo == 'I' %}
+                                        <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
+                                    {% else %}
+                                        <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                    <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+                </div> <!-- .events -->
+            </div> <!-- .events-wrapper -->
+
+            <ul class="cd-timeline-navigation">
+                <li><a href="#0" class="prev inactive">Prev</a></li>
+                <li><a href="#0" class="next">Next</a></li>
+            </ul> <!-- .cd-timeline-navigation -->
+        </div> <!-- .timeline -->
+
+        <div class="events-content">
+            <ol>
+                {% for row in anuales %}
+                    <li>
+                        <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
+                                {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
+                           style="left:{{ forloop.counter|mul:"130" }}px;"></a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div> <!-- .events-content -->
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
+                    Ver detalles en tabla
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="detail-3" class="container medium">
+        <div class="row">
+            <div class="col-xs-12 col-md-12 table-responsive" style="height: 560px">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th rowspan="2" colspan="1" class="text-center">Rubros</th>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                <strong>{{ year }}</strong>
+                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                M. de C&oacute;rdobas
+                            </th>
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                %
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, data in porano.items %}
+                        <tr>
+                            <td class="text-left border-right">{{ key }}</td>
+                            {% for year in year_list %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-right border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">{{ year_data.percent|default:"0%" }}</td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong></th>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
