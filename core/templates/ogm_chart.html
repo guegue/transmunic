@@ -20,7 +20,11 @@
 {% block section1 %}
     <div class="container">
         <div class="row">
-            <h2><strong>Detalle de Gastos</strong> <br/> del período</h2>
+            <h2>
+                <strong>Detalle de Gastos</strong>
+                <br/>
+                del per&iacute;odo
+            </h2>
             <hr class="pma-line-2">
             <div class="col-xs-12 col-sm-12 col-md-7">
                 <div class="chart-update col-xs-12 col-sm-12 col-md-1 float-left">
@@ -46,6 +50,7 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-5 table-responsive">
                 <table class="table table-condensed">
+                    <thead>
                     <tr class="bg-primary">
                         <th>Rubros de gastos</th>
                         {% if periodo_list|keyvalue:year == 'I' %}
@@ -54,6 +59,8 @@
                             <th>Ejecutado</th>
                         {% endif %}
                     </tr>
+                    </thead>
+                    <tbody>
                     {% for row in rubros %}
                         <tr>
                             <td>{{ row.subsubtipogasto__origen__nombre }}</td>
@@ -64,13 +71,21 @@
                             {% endif %}
                         </tr>
                     {% endfor %}
-                    <tr class="bg-primary bold">
+                    <tr>
                         <td>TOTAL</td>
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <td class="text-right">{{ asignado|million|intcomma }}</td>
                         {% else %}
                             <td class="text-right">{{ ejecutado|million|intcomma }}</td>
                         {% endif %}
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="pma-bg-white">
+                        <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -83,7 +98,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Gastos de personal por habitante en cada categoría municipal</h2>
+                        <h2>Gastos de personal por habitante en cada categor&iacute;a municipal</h2>
                     </div>
                 </div>
             </div>
@@ -140,12 +155,15 @@
             </div>
             </div>
             <div class="container" id="detail-1">
-                <div class="row col-md-4 col-md-offset-4">
+                <div class="row col-md-5 col-md-offset-4">
                     <table class="table table-condensed pma-bg-white">
+                        <thead>
                         <tr class="bg-primary">
-                            <th>Categoría de municipio</th> {% if periodo_list|keyvalue:year == 'I' %}
+                            <th>Categor&iacute;a de municipio</th> {% if periodo_list|keyvalue:year == 'I' %}
                             <th>Asignado</th> {% else %}
                             <th>Ejecutado</th>{% endif %}</tr>
+                        </thead>
+                        <tbody>
                         {% for row in porclasep %}
                             <tr>
                                 <td class="text-center">{{ row.clasificacion }}</td>
@@ -160,30 +178,36 @@
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                        <tr class="success">
-                            <td><strong>TOTAL</strong></td>
+                        <tr>
+                            <td>
+                                <strong>TOTAL</strong>
+                            </td>
                             {% if periodo_list|keyvalue:year == 'I' %}
                                 <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong></td>
+                                    <strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong>
+                                </td>
                             {% else %}
                                 <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong></td>
+                                    <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong>
+                                </td>
                             {% endif %}
                         </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                        </tfoot>
                     </table>
                 </div>
-            </div>
-
-
-            </div>
-            </div>
             </div>
         {% else %}
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <h2><strong>Ranking de recaudación </strong> <br>
-                            por habitante categoría municipal
+                            por habitante categor&iacute;a municipal
                             "{{ mi_clase.clasificacion }}"</h2>
                         <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
@@ -384,17 +408,22 @@
         <div id="detail-3" class="container medium">
             <div class="row">
                 <div class="col-xs-12 text-center table-responsive">
-                    <h3>Gastos por período</h3>
+                    <h3>Gastos por per&iacute;odo</h3>
                     <hr class="pma-line-4"/>
-                    <div class="col-md-offset-4 col-md-4">
+                    <div class="col-md-offset-4 col-md-5">
                         <table class="table table-condensed">
+                            <thead>
                             <tr class="info">
                                 <th>Años</th>
                                 <th>Inicial</th>
                                 <th>Ejecutado</th>
-                                <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial"
-                                       class="link-info">%</a></th>
+                                <th class="text-center">
+                                    <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial"
+                                       class="link-info">%</a>
+                                </th>
                             </tr>
+                            </thead>
+                            <tbody>
                             {% for row in anuales %}
                                 <tr>
                                     <td>{{ row.gasto__anio }}</td>
@@ -405,20 +434,31 @@
                                     {% endif %}
                                 </tr>
                             {% endfor %}
-                            <tr class="success bold">
+                            <tr>
                                 <td>TOTAL</td>
                                 <td class="text-right">{{ anuales|total_sum:'asignado'|million }}</td>
                                 <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
-                                {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
-                                    <td class="montos">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
-                                {% endwith %}
+                                <td class="montos">
+                                    {% with total_sum_asignado=anuales|total_sum:'asignado' %}
+                                        {{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}
+                                        %
+                                    {% endwith %}
+                                </td>
                             </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="col-md-offset-2 col-md-8 text-center">
-                        <h3>Gastos por períodos por rubros</h3>
+                        <h3>Gastos por per&iacute;odos por rubros</h3>
                         <hr class="pma-line-4"/>
                         <table class="table">
+                            <thead>
                             <tr class="bg-primary">
                                 <th></th>
                                 {% for year in year_list %}
@@ -426,6 +466,8 @@
                                         {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
                                 {% endfor %}
                             </tr>
+                            </thead>
+                            <tbody>
                             {% for key, data in porano.items %}
                                 <tr>
                                     <td class="text-left">{{ key }}</td>
@@ -434,6 +476,13 @@
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -464,6 +513,7 @@
                         </th>
                     </tr>
                     </thead>
+                    <tbody>
                     {% for row in rubros %}
                         <tr>
                             <td>{{ row.subsubtipogasto__origen__nombre }}</td>
@@ -474,13 +524,18 @@
                                     0{% endif %}</td>
                         </tr>
                     {% endfor %}
-                    <tfoot>
-                    <tr class="bold">
+                    <tr>
                         <td>TOTAL</td>
                         <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                         <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
                         <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
                     </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="pma-bg-white">
+                        <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
                     </tfoot>
                 </table>
             </div>
@@ -501,8 +556,7 @@
                 <table class="table table-condensed table-bordered">
                     <thead>
                     <tr class="bg-primary">
-                        <td></td>
-                        <td></td>
+                        <td colspan="2"></td>
                         <td colspan="4" class="text-center">
                             <h4>Modificación intermedia
                                 <a href="#" data-toggle="tooltip"
@@ -537,6 +591,7 @@
                         </th>
                     </tr>
                     </thead>
+                    <tbody>
                     {% for row in rubros %}
                         <tr>
                             <td class="text-left">{% firstof row.tipogasto__nombre row.subsubtipogasto__origen__nombre %}</td>
@@ -570,7 +625,7 @@
 
                         </tr>
                     {% endfor %}
-                    <tfoot>
+
                     <tr class="bold">
                         <td>TOTAL</td>
                         <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
@@ -614,6 +669,12 @@
                             </td>
                         {% endwith %}
                     </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="pma-bg-white">
+                        <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
                     </tfoot>
                 </table>
             </div>
@@ -625,9 +686,9 @@
             </div>
             <div class="col-md-12">
                 <table class="table table-bordered">
+                    <thead>
                     <tr class="bg-primary">
-                        <td></td>
-                        <td></td>
+                        <td colspan="2"></td>
                         <td colspan="4" class="text-center">
                             <h4>Modificación{% if year_data.actualizado %} al {{ year_data.actualizado }}{% else %}
                                 Inicial{% endif %}</h4></td>
@@ -648,7 +709,8 @@
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                class="blanco">%</a></th>
                     </tr>
-
+                    </thead>
+                    <tbody>
                     {% for row in rubrosp %}
                         <tr>
                             <td class="">{{ row.subsubtipogasto__nombre }}</td>
@@ -680,7 +742,7 @@
                             {% endif %}
                         </tr>
                     {% endfor %}
-                    <tr class="success bold">
+                    <tr>
                         <td>TOTAL</td>
                         <td class="text-right">{{ rubrosp|total_sum:'inicial_asignado'|million|intcomma }}</td>
                         <td class="text-right">{{ rubrosp|total_sum:'actualizado_asignado'|million|intcomma }}</td>
@@ -723,6 +785,13 @@
                             </td>
                         {% endwith %}
                     </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="pma-bg-white">
+                        <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
+                    </tfoot>
                 </table>
             </div>
         </div>
