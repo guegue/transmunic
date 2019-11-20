@@ -11,11 +11,16 @@
 .mb-1px{
     margin-bottom: 1px !important;
 }
+.mb-5px{
+    margin-bottom: 5px;
+}
 .mt-0{
     margin-top: 0 !important;
 }
 
-.info-box-number{
+.info-box-number,
+.bubbletree .bubbletree-amount,
+.events{
     font-family: Roboto, sans-serif;
 }
 
