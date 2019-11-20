@@ -15,7 +15,8 @@
     margin-top: 0 !important;
 }
 
-.info-box-number{
+.info-box-number,
+.bubbletree .bubbletree-amount{
     font-family: Roboto, sans-serif;
 }
 
