@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('codigo', models.CharField(max_length=25, primary_key=True, serialize=False)),
                 ('nombre', models.CharField(max_length=200)),
-                ('subsubtipogasto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoGasto')),
+                ('subsubtipogasto', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoGasto')),
             ],
             options={
                 'ordering': ['subsubtipogasto', 'codigo'],
@@ -30,7 +31,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('codigo', models.CharField(max_length=25, primary_key=True, serialize=False)),
                 ('nombre', models.CharField(max_length=200)),
-                ('subsubtipoingreso', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso')),
+                ('subsubtipoingreso', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso')),
             ],
             options={
                 'ordering': ['subsubtipoingreso', 'codigo'],
