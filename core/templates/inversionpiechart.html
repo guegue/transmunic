@@ -53,7 +53,7 @@
                         <div class="tab-pane pma-summary pma-index-inversion-icons  active" id="home">
                             <div class="row categorias_inversion">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
-                                    {% for i in bubble_data.children %}
+                                    {% for i in bubble_data_nojson.children %}
                                         <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center height-categoria">
                                             <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}">
                                                 <span class="info-box-icon pma-icon {{ i.slug }}"></span>

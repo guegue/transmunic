@@ -302,28 +302,40 @@ def inversion_categoria_view(request):
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = {
-            'municipio': data['municipio'], 'year': data['year'],
-            'mi_clase': data['mi_clase'], 'porano': data['porano'],
-            'cat': data['cat'], 'anuales': data['anuales'],
-            'porclasep': data['porclasep'], 'otros': data['otros'],
-            'totales': data['totales'], 'charts': data['charts'],
+            'municipio': data['municipio'],
+            'year': data['year'],
+            'mi_clase': data['mi_clase'],
+            'porano': data['porano'],
+            'cat': data['cat'],
+            'anuales': data['anuales'],
+            'porclasep': data['porclasep'],
+            'otros': data['otros'],
+            'totales': data['totales'],
+            'charts': data['charts'],
             'year_list': data['year_list'],
             'municipio_list': data['municipio_list'],
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado']}
+            'asignado': data['asignado'],
+            'ejecutado': data['ejecutado']}
         return obtener_excel_response(reporte=reporte, data=data)
 
     context = {
             'indicator_name': indicator_name,
-            'municipio': data['municipio'], 'year': data['year'],
-            'mi_clase': data['mi_clase'], 'porano': data['porano'],
-            'cat': data['cat'], 'anuales': data['anuales'],
-            'porclasep': data['porclasep'], 'otros': data['otros'],
-            'totales': data['totales'], 'charts': data['charts'],
+            'municipio': data['municipio'],
+            'year': data['year'],
+            'mi_clase': data['mi_clase'],
+            'porano': data['porano'],
+            'cat': data['cat'], 'anuales':
+            data['anuales'],
+            'porclasep': data['porclasep'],
+            'otros': data['otros'],
+            'totales': data['totales'],
+            'charts': data['charts'],
             'year_list': data['year_list'],
             'municipio_list': data['municipio_list'],
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
-            'bubble_data_json': bubble_source,
-            'bubble_data': bubble_data
+            'asignado': data['asignado'],
+            'ejecutado': data['ejecutado'],
+            'bubble_data': bubble_source,
+            'bubble_data_nojson': bubble_data
         }
     return render(request, template_name, context)
 
