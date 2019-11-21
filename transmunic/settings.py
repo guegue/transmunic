@@ -20,7 +20,10 @@ DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 DATABASES = {
     'default': env.db(),
+    'readonly': env.db('DATABASERO_URL'),
 }
+EXPLORER_CONNECTIONS = {'Default': 'readonly'}
+EXPLORER_DEFAULT_CONNECTION = 'readonly'
 
 ADMINS = getaddresses([env('DJANGO_ADMINS')])
 MANAGERS = ADMINS
@@ -68,6 +71,7 @@ INSTALLED_APPS = (
     'pixelfields_smart_selects',
     'chartit',
     'mathfilters',
+    'explorer',
 
     'lugar',
     'core',
