@@ -7,8 +7,8 @@
 }
 
 .height-rubro-home {
-    min-height: 70px;
     height: 170px;
+    min-height: 70px;
 }
 
 .mb-1px {
@@ -29,9 +29,6 @@
     font-family: Roboto, sans-serif;
 }
 
-.tb-details {
-}
-
 .tb-details thead tr th:nth-child(1),
 .tb-details thead tr td:nth-child(1),
 .tb-details tbody tr th:nth-child(1),
@@ -40,8 +37,8 @@
 }
 
 .tb-details > tbody tr:nth-child(1) td {
-    padding-left: 2px;
     border-top: none !important;
+    padding-left: 2px;
 }
 
 .font-color-yellow {
@@ -50,29 +47,29 @@
 
 .ver-mas {
     height: 65px;
-    width: 65px;
     padding-top: 10px;
+    width: 65px;
 }
 
 .no-border-top {
-    border-top: none !important;
+    border-top: none;
 }
 
 .no-border-bottom {
-    border-bottom: none !important;
+    border-bottom: none;
 }
 
 .border-sides {
-    border-right: 1px solid #ddd !important;
-    border-left: 1px solid #ddd !important;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }
 
 .border-left {
-    border-left: 1px solid #ddd !important;
+    border-left: 1px solid #ddd;
 }
 
 .border-right {
-    border-right: 1px solid #ddd !important;
+    border-right: 1px solid #ddd;
 }
 
 .background-color-gray {
@@ -84,9 +81,9 @@
 }
 
 .icon-wrapper {
-    width: 100%;
     height: 100%;
     position: absolute;
+    width: 100%;
 }
 
 /*TABS*/
@@ -102,10 +99,10 @@
 .tabs-left > li.active > a,
 .tabs-left > li.active > a:hover,
 .tabs-left > li.active > a:focus {
-    background-color: transparent !important;
-    border-bottom-color:  transparent !important;
-    border-right-color: transparent;
+    background-color: transparent;
     border: none;
+    border-bottom-color:  transparent;
+    border-right-color: transparent;
     border-radius: 0;
     margin: 0;
 }
