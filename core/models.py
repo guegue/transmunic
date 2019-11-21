@@ -491,3 +491,22 @@ class InversionFuenteDetalle(models.Model):
         verbose_name_plural = u'Detalles de inversión por fuente'
         ordering = ['inversionfuente', 'tipofuente', 'fuente']
 
+
+class RenglonIngreso(models.Model):
+    codigo = models.CharField(max_length=25, primary_key=True)
+    nombre = models.CharField(max_length=200)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
+
+    class Meta:
+        verbose_name = u'Renglón Ingreso'
+        ordering = ['subsubtipoingreso', 'codigo']
+
+
+class RenglonGasto(models.Model):
+    codigo = models.CharField(max_length=25, primary_key=True)
+    nombre = models.CharField(max_length=200)
+    subsubtipogasto = models.ForeignKey(SubSubTipoGasto)
+
+    class Meta:
+        verbose_name = u'Renglón Gasto'
+        ordering = ['subsubtipogasto', 'codigo']
