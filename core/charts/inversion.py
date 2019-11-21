@@ -141,7 +141,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(inicial_asignado=Sum('asignado'))\
             .order_by('catinversion')
 
@@ -151,7 +152,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 actualizado_asignado=Sum('asignado'),
                 actualizado_ejecutado=Sum('ejecutado'))\
@@ -163,7 +165,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 final_ejecutado=Sum('ejecutado'),
                 final_asignado=Sum('asignado'))\
@@ -175,7 +178,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 ejecutado=Sum('ejecutado'),
                 asignado=Sum('asignado'))\
@@ -438,14 +442,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=PERIODO_INICIAL, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(inicial_asignado=Sum('asignado'))\
             .order_by('catinversion')
         cat_actualizado = Proyecto.objects.filter(
             inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 actualizado_asignado=Sum('asignado'),
                 actualizado_ejecutado=Sum('ejecutado'))\
@@ -454,7 +460,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=PERIODO_FINAL, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 final_asignado=Sum('asignado'),
                 final_ejecutado=Sum('ejecutado'))\
@@ -463,7 +470,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=periodo, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))\
             .order_by('catinversion')
         cat2 = superglue(
