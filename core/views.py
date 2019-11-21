@@ -274,12 +274,12 @@ def inversion_categoria_view(request):
     year_list = getYears(InversionFuente)
     year = year_list[-1]
     data_fuentes = fuentes_chart(year=year)
-    data['charts'].append( data_fuentes['charts'][1] )
+    data['charts'].append(data_fuentes['charts'][1])
 
     bubble_data = {
         'label': "Total",
         'amount': round(data['asignado']/1000000, 2)
-        }
+    }
     child_l1 = []
     for child in data['cat']:
 
@@ -298,7 +298,7 @@ def inversion_categoria_view(request):
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         data = {
@@ -319,12 +319,12 @@ def inversion_categoria_view(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     context = {
-            'indicator_name': indicator_name,
-            'municipio': data['municipio'],
-            'year': data['year'],
-            'mi_clase': data['mi_clase'],
-            'porano': data['porano'],
-            'cat': data['cat'],
+        'indicator_name': indicator_name,
+        'municipio': data['municipio'],
+        'year': data['year'],
+        'mi_clase': data['mi_clase'],
+        'porano': data['porano'],
+        'cat': data['cat'],
             'anuales': data['anuales'],
             'porclasep': data['porclasep'],
             'otros': data['otros'],
