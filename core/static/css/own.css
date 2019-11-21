@@ -97,8 +97,8 @@
 }
 
 .tabs-left > li.active > a,
-.tabs-left > li.active > a:hover,
-.tabs-left > li.active > a:focus {
+.tabs-left > li.active > a:focus,
+.tabs-left > li.active > a:hover {
     background-color: transparent;
     border: none;
     border-bottom-color:  transparent;
