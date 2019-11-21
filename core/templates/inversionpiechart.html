@@ -226,7 +226,6 @@
     {% endif %}
     {% if municipio %}
         <div class="cd-horizontal-timeline loaded pma-gradient inverted">
-            {% if municipio %}
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -305,6 +304,7 @@
                                     {% endif %}
                                 </tr>
                                 </thead>
+                                <tbody>
                                 {% if ejecutado <= 0 %}
                                     {% for row in otros|dictsortreversed:"asignado_percent" %}
                                         {% if municipio.slug == row.inversion__municipio__slug %}
@@ -336,77 +336,35 @@
                                         <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                                     {% endif %}
                                     </tr>
-                                    {% endfor %} {% endif %}
-                                <!--
-                            <tr class="">
-                                <td colspan="2">TOTAL</td>
-                                <td class="text-right">
-                                    {% if numerador > 0 %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
-                                         {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    {% endif %}
-                                </td>
-                                {% if year != '2016' %}
-                                <td class="text-right">
-                                    {% if denominador > 0 %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
-                                         {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    {% endif %}
-                                </td>
+                                    {% endfor %}
                                 {% endif %}
-                            </tr>
-                        -->
+                                </tbody>
+                                <tfoot>
+                                <tr class="">
+                                    <td colspan="2">TOTAL</td>
+                                    <td class="text-right">
+                                        {% if numerador > 0 %}
+
+                                            {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                                                {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                        {% endif %}
+                                    </td>
+                                    {% if year != '2016' %}
+                                        <td class="text-right">
+                                            {% if denominador > 0 %}
+
+                                                {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                                                    {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                </tfoot>
+
                             </table>
                         </div>
                     </div>
                 </div>
-            {% endif %}
         </div>
     {% endif %}
 {% endblock %}
