@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^chaining/', include('pixelfields_smart_selects.urls')),
     url(r'^resumen-municipal', municipio, name='budget-summary'),
     url(r'^resumen-municipal/(?P<year>[0-9]{4})/$', municipio, name='anual-budget-summary'),
-    url(r'^(?P<slug>[-\w]+)/$', municipio, name='municipio'),
     url(r'^documento/(?P<slug>[-\w]+)/$', DocumentoTipoListView.as_view(), name='documento_by_tipo'),
+    url(r'^explorer/', include('explorer.urls')),
+    url(r'^(?P<slug>[-\w]+)/$', municipio, name='municipio'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
