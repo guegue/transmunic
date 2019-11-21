@@ -325,20 +325,21 @@ def inversion_categoria_view(request):
         'mi_clase': data['mi_clase'],
         'porano': data['porano'],
         'cat': data['cat'],
-            'anuales': data['anuales'],
-            'porclasep': data['porclasep'],
-            'otros': data['otros'],
-            'totales': data['totales'],
-            'charts': data['charts'],
-            'year_list': data['year_list'],
+        'anuales': data['anuales'],
+        'porclasep': data['porclasep'],
+        'otros': data['otros'],
+        'totales': data['totales'],
+        'charts': data['charts'],
+        'year_list': data['year_list'],
             'periodo': data['periodo'],
             'municipio_list': data['municipio_list'],
             'asignado': data['asignado'],
             'ejecutado': data['ejecutado'],
             'bubble_data': bubble_source,
             'bubble_data_nojson': bubble_data
-        }
+    }
     return render(request, template_name, context)
+
 
 def ogm_view(request):
     template_name = 'ogm_chart.html'
