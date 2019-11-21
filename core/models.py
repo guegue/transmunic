@@ -492,7 +492,7 @@ class InversionFuenteDetalle(models.Model):
         ordering = ['inversionfuente', 'tipofuente', 'fuente']
 
 
-class RenglonIngreso(models.Model):
+class IngresoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
     subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
@@ -502,7 +502,7 @@ class RenglonIngreso(models.Model):
         ordering = ['subsubtipoingreso', 'codigo']
 
 
-class RenglonGasto(models.Model):
+class GastoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
     subsubtipogasto = models.ForeignKey(SubSubTipoGasto)
