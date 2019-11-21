@@ -282,11 +282,18 @@ def inversion_categoria_view(request):
         }
     child_l1 = []
     for child in data['cat']:
+
+        label = child['catinversion__nombre']
+        if child['catinversion__shortname']:
+            label = child['catinversion__shortname']
+
         child_data = {
             'color': child['catinversion__color'],
             'name': child['catinversion__id'],
-            'label': child['catinversion__shortname'] if child['catinversion__shortname'] else child['catinversion__nombre'],
-            'amount': round(child['asignado']/1000000, 2)}
+            'slug': child['catinversion__slug'],
+            'label': label,
+            'amount': round(child['asignado']/1000000, 2)
+        }
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
     bubble_source = json.dumps(bubble_data)
@@ -315,7 +322,8 @@ def inversion_categoria_view(request):
             'year_list': data['year_list'],
             'municipio_list': data['municipio_list'],
             'asignado': data['asignado'], 'ejecutado': data['ejecutado'],
-            'bubble_data': bubble_source
+            'bubble_data_json': bubble_source,
+            'bubble_data': bubble_data
         }
     return render(request, template_name, context)
 
