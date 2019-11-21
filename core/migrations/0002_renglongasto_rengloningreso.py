@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='RenglonGasto',
+            name='GastoRenglon',
             fields=[
                 ('codigo', models.CharField(max_length=25, primary_key=True, serialize=False)),
                 ('nombre', models.CharField(max_length=200)),
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RenglonIngreso',
+            name='IngresoRenglon',
             fields=[
                 ('codigo', models.CharField(max_length=25, primary_key=True, serialize=False)),
                 ('nombre', models.CharField(max_length=200)),
