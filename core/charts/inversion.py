@@ -797,6 +797,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'ejecutado': ejecutado,
         'asignado': asignado,
         'porclasep': porclasep,
+        'periodo': periodo,
         'otros': otros,
         'year_list': year_list,
         'municipio_list': municipio_list,
