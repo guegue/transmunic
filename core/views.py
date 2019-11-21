@@ -331,12 +331,12 @@ def inversion_categoria_view(request):
         'totales': data['totales'],
         'charts': data['charts'],
         'year_list': data['year_list'],
-            'periodo': data['periodo'],
-            'municipio_list': data['municipio_list'],
-            'asignado': data['asignado'],
-            'ejecutado': data['ejecutado'],
-            'bubble_data': bubble_source,
-            'bubble_data_nojson': bubble_data
+        'periodo': data['periodo'],
+        'municipio_list': data['municipio_list'],
+        'asignado': data['asignado'],
+        'ejecutado': data['ejecutado'],
+        'bubble_data': bubble_source,
+        'bubble_data_nojson': bubble_data
     }
     return render(request, template_name, context)
 
