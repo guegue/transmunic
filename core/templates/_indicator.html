@@ -197,12 +197,18 @@
                 {% block charts %}
                     <div class="col-xs-12 col-sm-12 col-md-7">
                         <div class="chart-update col-xs-12 col-sm-12 col-md-1 text-right">
-                    <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
-                          aria-hidden="true" id="chart-bubble-1" data-chartcontainer="bubble-1"></span>
-                            <span id="chart-pie-1" class="pma-icon pe-7s-graph
-                        pma-fg-gray toggle-chart" data-chartcontainer="pie"></span>
-                            <span id="chart-bar-1" class="pma-icon pe-7s-graph3
-                        pma-fg-gray toggle-chart" data-chartcontainer="bar"></span>
+                            <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
+                                  aria-hidden="true" id="chart-bubble-1"
+                                  data-chartcontainer="bubble-1">
+                            </span>
+                            <span id="chart-pie-1"
+                                  class="pma-icon pe-7s-graph pma-fg-gray toggle-chart"
+                                  data-chartcontainer="pie">
+                            </span>
+                            <span id="chart-bar-1"
+                                  class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart"
+                                  data-chartcontainer="bar">
+                            </span>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-11 bubbletree-container chart-container">
                             <div id="bubble-1" class="bubbletree-wrapper view-main">
@@ -213,8 +219,9 @@
                         </div>
                     </div>
                 {% endblock %}
-                <div class="col-md-5 table-responsive">
-                    {% block main_table %}
+
+                {% block main_table %}
+                    <div class="col-md-5 table-responsive">
                         <h3>Destino de la inversion municipal<br>
                             Presupuesto de
                             {% if periodo == 'F' %}Cierre
@@ -254,8 +261,9 @@
                             </tr>
                             </tfoot>
                         </table>
-                    {% endblock %}
-                </div>
+                    </div>
+                {% endblock %}
+
             </div>
         </div>
     {% endblock %}

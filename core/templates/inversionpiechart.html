@@ -4,39 +4,123 @@
 {% load core_extras %}
 {% load mathfilters %}
 
+{% block charts %}
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div role="tabpanel">
+            <div class="row">
+                <!-- Nav tabs -->
+                <div class="chart-update col-lg-1 col-md-1 col-sm-1 col-xs-1 mt-0">
+                    <ul class="nav nav-tabs tabs-left sideways" role="tablist">
+                        <li class="active">
+                            <a href="#home" aria-controls="home" role="tab"
+                               data-toggle="tab">
+                                  <span class="pma-icon fa fa-info-circle pma-fg-gray"
+                                        aria-hidden="true" id="chart-bubble-1"
+                                        data-chartcontainer="bubble-1">
+                                  </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#profile" aria-controls="profile" role="tab"
+                               data-toggle="tab">
+                                <span id="chart-pie-1"
+                                      class="pma-icon pe-7s-graph pma-fg-gray"
+                                      data-chartcontainer="pie">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+                                 <span id="chart-bar-1"
+                                       class="pma-icon pe-7s-graph3 pma-fg-gray"
+                                       data-chartcontainer="bar">
+                                 </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
+                                    <span id="table"
+                                          class="pma-icon fa fa-table pma-fg-gray"
+                                          data-chartcontainer="table">
+                                    </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-11 col-xs-11">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane pma-summary pma-index-inversion-icons  active" id="home">
+                            <div class="row categorias_inversion">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    {% for i in bubble_data_nojson.children %}
+                                        <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center height-categoria">
+                                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}">
+                                                <span class="info-box-icon pma-icon {{ i.slug }}"></span>
+                                            </a>
+                                            <h5 class="text-center">
+                                                <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}"
+                                                   class="">
+                                                    <strong>{{ i.label }}</strong>
+                                                </a>
+                                                <br/>
+                                                <span class="font-17px">{{ i.amount }}</span>
+                                            </h5>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="profile">
+                            <div id="pie" class="view-alternative"> Chart will be rendered here</div>
+                        </div>
+                        <div class="tab-pane" id="messages">
+                            <div id="bar" class="view-alternative"> Chart will be rendered here</div>
+                        </div>
+                        <div class="tab-pane" id="settings">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th>Clasificación</th>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <th class="text-right">Inicial</th>
+                                    {% else %}
+                                        <th class="text-right">Ejecutado</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                {% for row in cat %}
+                                    <tr>
+                                        <td class="text-left">{{ row.catinversion__nombre }}</td>
+                                        {% if periodo_list|keyvalue:year == 'I' %}
+                                            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                                        {% else %}
+                                            <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                <tfoot>
+                                <tr class="">
+                                    <td>TOTAL</td>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <td class="text-right">{{ asignado|million|intcomma }}</td>
+                                    {% else %}
+                                        <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                                    {% endif %}
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
 {% block main_table %}
-    <table class="table table-striped table-hover">
-        <thead>
-        <tr class="bg-primary">
-            <th>Clasificación</th>
-            {% if periodo_list|keyvalue:year == 'I' %}
-                <th class="text-right">Inicial</th>
-            {% else %}
-                <th class="text-right">Ejecutado</th>
-            {% endif %}
-        </tr>
-        </thead>
-        {% for row in cat %}
-            <tr>
-                <td class="text-left">{{ row.catinversion__nombre }}</td>
-                {% if periodo_list|keyvalue:year == 'I' %}
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                {% else %}
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-        <tfoot>
-        <tr class="">
-            <td>TOTAL</td>
-            {% if periodo_list|keyvalue:year == 'I' %}
-                <td class="text-right">{{ asignado|million|intcomma }}</td>
-            {% else %}
-                <td class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
-            {% endif %}
-        </tr>
-        </tfoot>
-    </table>
+
 {% endblock %}
 
 {% block section2 %}
@@ -111,13 +195,16 @@
                 <div class="row">
                     <div class="col-md-offset-4 col-md-4 table-responsive">
                         <table class="table">
-                            <tr class="info">
+                            <thead>
+                            <tr class="blanco pma-bg-blue">
                                 <th>Categoría de municipio</th>
                                 <th>Asignado</th>
                                 <th>Ejecutado</th>
                             </tr>
+                            </thead>
+                            <tbody>
                             {% for row in porclasep %}
-                                <tr>
+                                <tr class="pma-bg-white">
                                     <td>{{ row.clasificacion }}</td>
                                     <td class="tex-center">
                                         {% if row.asignado %}{{ row.asignado|floatformat:2 }}{% else %}
@@ -127,13 +214,16 @@
                                             0 {% endif %}</td>
                                 </tr>
                             {% endfor %}
-                            <tr class="success">
+                            </tbody>
+                            <tfoot>
+                            <tr class="pma-bg-white">
                                 <td><strong>TOTAL</strong></td>
                                 <td class="text-right">
                                     <strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
                                 <td class="text-right">
                                     <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
                             </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -142,143 +232,143 @@
     {% endif %}
     {% if municipio %}
         <div class="cd-horizontal-timeline loaded pma-gradient inverted">
-            {% if municipio %}
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h2><strong>Ranquin de municipio</strong> de misma categoría municipal</h2>
-                            <h4>Córdobas corrientes por habitante</h4>
-                            <hr class="pma-line-3"/>
-                        </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>
+                            <strong>Ranquin de municipio</strong>
+                            de misma categoría municipal</h2>
+                        <h4>Córdobas corrientes por habitante</h4>
+                        <hr class="pma-line-3"/>
                     </div>
                 </div>
-                <div class="timeline container rankin">
-                    <div class="events-wrapper">
-                        <div class="events" style="width: {{ otros|length|mul:200 }}px;">
-                            <ol>
-                                {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                    <li>
-                                        <a href=""
-                                           data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                                {% if municipio.slug == row.inversion__municipio__slug %}
-                                           class="selected"{% endif %}
-                                           style="left: {{ forloop.counter|mul:200 }}px;"><span
-                                                class="posicion"> {{ forloop.counter }}</span>
-                                            <div class="municipio_nombre">{{ row.inversion__municipio__nombre }}</div>
-                                            {% if periodo_list|keyvalue:year == 'I' %}
-                                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}
-                                </span><br/>
-                                            {% else %}
-                                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ol>
-                            <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                        </div> <!-- .events -->
-                    </div> <!-- .events-wrapper -->
+            </div>
+            <div class="timeline container rankin">
+                <div class="events-wrapper">
+                    <div class="events" style="width: {{ otros|length|mul:200 }}px;">
+                        <ol>
+                            {% for row in otros|dictsortreversed:"asignado_percent" %}
+                                <li>
+                                    <a href=""
+                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
+                                            {% if municipio.slug == row.inversion__municipio__slug %}
+                                       class="selected"{% endif %}
+                                       style="left: {{ forloop.counter|mul:200 }}px;">
+                                        <span class="posicion"> {{ forloop.counter }}</span>
+                                        <div class="municipio_nombre">{{ row.inversion__municipio__nombre }}</div>
+                                        {% if periodo_list|keyvalue:year == 'I' %}
+                                            <span class="line-cifra">{{ row.asignado_percent|intcomma }}
+                                            </span>
+                                            <br/>
+                                        {% else %}
+                                            <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
+                    </div> <!-- .events -->
+                </div> <!-- .events-wrapper -->
 
-                    <ul class="cd-timeline-navigation">
-                        <li><a href="#0" class="prev inactive">Prev</a></li>
-                        <li><a href="#0" class="next">Next</a></li>
-                    </ul> <!-- .cd-timeline-navigation -->
-                </div> <!-- .timeline -->
-                <div class="events-content container text-center">
-                    <ol>
-                        {% for row in otros|dictsortreversed:"asignado_percent" %}
-                            <li{% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %}
-                                                                                         data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-                                <!-- <h4>{{ row.inversion__municipio__nombre }}</h4>
+                <ul class="cd-timeline-navigation">
+                    <li><a href="#0" class="prev inactive">Prev</a></li>
+                    <li><a href="#0" class="next">Next</a></li>
+                </ul> <!-- .cd-timeline-navigation -->
+            </div> <!-- .timeline -->
+            <div class="events-content container text-center">
+                <ol>
+                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                        <li{% if municipio.slug == row.inversion__municipio__slug %} class="selected"{% endif %}
+                                                                                     data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+                            <!-- <h4>{{ row.inversion__municipio__nombre }}</h4>
         <span> Asignado: {{ row.asignado_percent|intcomma }}
         </span><br/>
         <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
-                            </li>
-                        {% endfor %}
-                    </ol>
-                </div> <!-- .events-content -->
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 text-center medium">
-                            <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                                Ver detalles en tabla
-                            </button>
-                        </div>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div> <!-- .events-content -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center medium">
+                        <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                            Ver detalles en tabla
+                        </button>
                     </div>
                 </div>
-                <div id="detail-1" class="container">
-                    <div class="row">
-                        <div class="col-md-offset-4 col-md-5 table-responsive">
-                            <table class="table table-condensed table-striped pma-bg-white">
-                                <thead class="thead-inverse">
-                                <tr class="bg-primary">
-                                    <th class="text-center"><strong>Posición {{ periodo_list }}</strong></th>
-                                    <th class="text-center"><strong>Municipios</strong></th>
-                                    {% if periodo_list|keyvalue:year == 'I' %}
-                                        <th class="text-center"><strong>P. Inicial</strong></th>
-                                    {% else %}
-                                        <th class="text-center"><strong>Ejecución</strong></th>
-                                    {% endif %}
-                                </tr>
-                                </thead>
-                                {% if ejecutado <= 0 %}
-                                    {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                        {% if municipio.slug == row.inversion__municipio__slug %}
-                                            <tr class="info">
-                                                {% else %}
-                                            <tr>
-                                        {% endif %}
-                                    <td class="text-center"> {{ forloop.counter }} </td>
-                                    <td>{{ row.inversion__municipio__nombre }}</td>
-                                    {% if row.inversion__periodo == 'I' %}
-                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                    {% else %}
-                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                    {% endif %}
-                                    </tr>
-                                    {% endfor %}
+            </div>
+            <div id="detail-1" class="container">
+                <div class="row">
+                    <div class="col-md-offset-4 col-md-5 table-responsive">
+                        <table class="table table-condensed table-striped pma-bg-white">
+                            <thead class="thead-inverse">
+                            <tr class="bg-primary">
+                                <th class="text-center">
+                                    <strong>Posición {{ periodo_list }}</strong>
+                                </th>
+                                <th class="text-center">
+                                    <strong>Municipios</strong>
+                                </th>
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    <th class="text-center"><strong>P. Inicial</strong></th>
                                 {% else %}
-                                    {% for row in otros %}
-                                        {% if municipio.slug == row.inversion__municipio__slug %}
-                                            <tr class="info">
-                                                {% else %}
-                                            <tr>
-                                        {% endif %}
-                                    <td class="text-center"> {{ forloop.counter }} </td>
-                                    <td>{{ row.inversion__municipio__nombre }}</td>
-                                    {% if row.ingreso__periodo == 'I' %}
-                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                    {% else %}
-                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                    {% endif %}
-                                    </tr>
-                                    {% endfor %} {% endif %}
-                                <!--
-                            <tr class="">
-                                <td colspan="2">TOTAL</td>
-                                <td class="text-right">
-                                    {% if numerador > 0 %}
-
-                                    {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
-                                         {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    {% endif %}
-                                </td>
-                                {% if year != '2016' %}
-                                <td class="text-right">
-                                    {% if denominador > 0 %}
-
-                                    {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
-                                         {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    {% endif %}
-                                </td>
+                                    <th class="text-center"><strong>Ejecución</strong></th>
                                 {% endif %}
                             </tr>
-                        -->
-                            </table>
-                        </div>
+                            </thead>
+                            <tbody>
+                            {% if ejecutado <= 0 %}
+                                {% for row in otros|dictsortreversed:"asignado_percent" %}
+                                    <tr {% if municipio.slug == row.inversion__municipio__slug %}class="info"{% endif %}>
+                                        <td class="text-center"> {{ forloop.counter }} </td>
+                                        <td>{{ row.inversion__municipio__nombre }}</td>
+                                        {% if row.inversion__periodo == 'I' %}
+                                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                        {% else %}
+                                            <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                {% for row in otros %}
+                                    <tr {% if municipio.slug == row.inversion__municipio__slug %}class="info"{% endif %}>
+                                        <td class="text-center"> {{ forloop.counter }} </td>
+                                        <td>{{ row.inversion__municipio__nombre }}</td>
+                                        {% if row.ingreso__periodo == 'I' %}
+                                            <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                        {% else %}
+                                            <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                            {% comment %}
+                            <tfoot>
+                            <tr class="">
+                                <td colspan="2">TOTAL</td>
+                                {% if numerador > 0 %}
+                                    <td class="text-right">
+                                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                                            {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    </td>
+                                {% else %}
+                                    <td class="text-right">0</td>
+                                {% endif %}
+                                {% if denominador > 0 and year != '2016' %}
+                                    <td class="text-right">
+                                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                                            {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            </tfoot>
+                            {% endcomment %}
+                        </table>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
     {% endif %}
 {% endblock %}
