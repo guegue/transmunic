@@ -1,5 +1,8 @@
 from django.contrib import admin
-from core.models import *
+from core.models import (Profile, Organizacion, Anio, Grafico, CatInversion, TipoGasto,
+        SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, TipoIngreso, SubSubTipoIngreso,
+        SubTipoIngreso,TipoFuenteFmto, FuenteFmto, InversionFuente,Inversion,Proyecto, Ingreso,
+        Gasto, IngresoRenglon, GastoRenglon, GastoDetalle, IngresoDetalle, InversionFuenteDetalle)
 
 # Register your models here.
 class SubSubTipoIngresoInline(admin.TabularInline):
