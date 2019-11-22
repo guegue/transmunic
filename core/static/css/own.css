@@ -52,11 +52,11 @@
 }
 
 .no-border-top {
-    border-top: none;
+    border-top: none !important;
 }
 
 .no-border-bottom {
-    border-bottom: none;
+    border-bottom: none !important;
 }
 
 .border-sides {
