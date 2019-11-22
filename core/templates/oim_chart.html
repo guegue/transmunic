@@ -9,32 +9,25 @@
 {% endblock %}
 
 {% block main_table %}
-    <table class="table">
-        <caption>
-            Rubros de ingresos para el per&iacute;odo {{ year }}
-            {% if periodo_list|keyvalue:year == 'F' %}
-                cierre
-            {% elif periodo_list|keyvalue:year == 'A' %}
-                intermedio
-            {% elif periodo_list|keyvalue:year == 'I' %}
-                inicial
-            {% endif %}
-            .
-        </caption>
+    <table class="table table-bordered">
         <thead>
+          <tr>
+	    <td colspan="3">
+            {% if periodo_list|keyvalue:year == 'F' %}
+		Ejecuci&oacute;n de ingresos 
+            {% elif periodo_list|keyvalue:year == 'A' %}
+		Ejecuci&oacute;n intermedia de ingresos 
+            {% elif periodo_list|keyvalue:year == 'I' %}
+                Presupuesto inicial de ingresos
+            {% endif %}
+		{{ year }}<br />
+		Por su origen
+	    </td>
+	</tr>
         <tr class="bg-primary">
-            <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
-            <th rowspan="1" colspan="2" class="no-border-bottom text-center">
-                {% if periodo_list|keyvalue:year == 'I' %}
-                    Inicial
-                {% else %}
-                    Ejecutado
-                {% endif %}
-            </th>
-        </tr>
-        <tr class="bg-primary">
-            <th colspan="1" class="no-border-top text-center">M. de c&oacute;rdobas</th>
-            <th colspan="1" class="no-border-top text-center">%</th>
+            <th>Rubros de ingresos</th>
+            <th class="no-border-top text-center">M. de c&oacute;rdobas</th>
+            <th class="no-border-top text-center">%</th>
         </tr>
         </thead>
         <tbody>
