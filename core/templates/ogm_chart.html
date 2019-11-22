@@ -206,11 +206,19 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><strong>Ranking de recaudación </strong> <br>
-                            por habitante categor&iacute;a municipal
-                            "{{ mi_clase.clasificacion }}"</h2>
-                        <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
-                            ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
+                        <h2><strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong> <br>
+                            Gasto por habitante
+                        </h2>
+                        <h5>Córdobas corrientes por habitante en base a presupuesto 
+				{% if periodo_list|keyvalue:year == 'I' %} inicial 
+				{% else %} 
+				  {% if periodo_list|keyvalue:year == 'A' %} ejecuci&oacute;n intermedia 
+				  {% else %}
+					de cierre 
+				  {% endif %}
+				{% endif %}
+				{{ year }}
+				</h5>
                         <hr class="pma-line-3"/>
                     </div>
                 </div>
@@ -219,7 +227,7 @@
                 <div class="events-wrapper">
                     <div class="events" style="width: {{ otros|length|mul:130 }}px;">
                         <ol>
-                            {% for row in otros|dictsortreversed:"asignado_percent" %}
+                            {% for row in otros %}
                                 <li>
                                     <a href="" data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
                                             {% if municipio.slug == row.gasto__municipio__slug %}
