@@ -16,11 +16,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gastodetalle',
             name='codigo',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.GastoRenglon'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='core.GastoRenglon'),
         ),
         migrations.AlterField(
             model_name='ingresodetalle',
             name='codigo',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.IngresoRenglon'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='core.IngresoRenglon'),
         ),
     ]
