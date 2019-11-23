@@ -15,7 +15,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
     book = load_workbook(filename=excel_file)
     sheet = book.active
     today = date.today()
-    ingreso = Ingreso.objects.create(municipio=municipio, anio=year, periodo=periodo, fecha=today)
+    ingreso = Ingreso.objects.get_or_create(municipio=municipio, anio=year, periodo=periodo, fecha=today)
 
     for row in sheet[start_row:end_row]:
         joined = unicode(row[0].value)
