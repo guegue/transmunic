@@ -2,6 +2,7 @@
 
 import collections
 import decimal
+from django.conf import settings
 
 
 def xnumber(number):
@@ -11,9 +12,21 @@ def xnumber(number):
         return number
     if str(number).isdigit():
         return int(number)
+    if isinstance(number, basestring):
+        # uses default comma
+        comma = settings.THOUSAND_SEPARATOR
+
+        # point character equals comma, so reverse
+        if len(number) >= 3 and number[-3] == comma:
+            reverse = {'.': ',', ',': '.'}
+            point = number[-3]
+            comma = reverse[point]
+            number = number.replace(point, comma)
+
+        number = number.replace(comma, '')
     try:
         return decimal.Decimal(number)
-    except ValueError:
+    except:
         return 0
 
 def getPeriods(model):  # ;)
