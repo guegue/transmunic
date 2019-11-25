@@ -7,7 +7,8 @@ from django.views.generic import FormView, DetailView
 
 from openpyxl import load_workbook
 
-from core.models import Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso
+from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
+                         IngresoRenglon)
 from core.forms import UploadExcelForm
 from core.tools import xnumber
 
@@ -32,6 +33,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
         subsubtipo_id = "{}{}{}00".format(tipo, subtipo, subsubtipo)
         cuenta = codigo[6:8]
         if cuenta == '00':
+            # no agrega un entrada en detalle
             if subsubtipo == '00':
                 if subtipo == '00':
                     if tipo == '00':
@@ -47,6 +49,11 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                     objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
                                           defaults={'nombre': nombre})
         else:
+            # entrada en detalle (referencia a renglon)
+            renglon, created = IngresoRenglon.\
+                    objects.get_or_create(codigo=codigo,
+                                          defaults={'subsubtipoingreso_id': subsubtipo_id,
+                                                    'nombre': nombre})
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
             ingresodetalle, created = IngresoDetalle.\
