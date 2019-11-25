@@ -534,10 +534,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         # para luego obtener valores para este año y nada más? FIXME !
         source_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL,).\
-            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),
+            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),\
                                                asignado=Sum('asignado')).order_by()
         source_final = Proyecto.objects.filter(inversion__periodo=periodo,).\
-            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),
+            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),\
                                                asignado=Sum('asignado')).order_by()
 
         # obtiene valores para este año de las listas
