@@ -81,7 +81,7 @@
                             <table class="table table-striped table-hover">
                                 <thead>
                                 <tr class="bg-primary">
-                                    <th>Clasificación</th>
+                                    <th>Clasificaci&oacute;n</th>
                                     {% if periodo_list|keyvalue:year == 'I' %}
                                         <th class="text-right">Inicial</th>
                                     {% else %}
@@ -129,8 +129,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><strong>Ranquin de municipio </strong>de misma categoría municipal</h2>
-                        <h5>Córdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
+                        <h2><strong>Ranquin de municipio </strong>de misma categor&iacute;a municipal</h2>
+                        <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
                         <hr class="pma-line-3"/>
                     </div>
@@ -197,7 +197,7 @@
                         <table class="table">
                             <thead>
                             <tr class="blanco pma-bg-blue">
-                                <th>Categoría de municipio</th>
+                                <th>Categor&iacute;a de municipio</th>
                                 <th>Asignado</th>
                                 <th>Ejecutado</th>
                             </tr>
@@ -237,8 +237,8 @@
                     <div class="col-md-12">
                         <h2>
                             <strong>Ranquin de municipio</strong>
-                            de misma categoría municipal</h2>
-                        <h4>Córdobas corrientes por habitante</h4>
+                            de misma categor&iacute;a municipal</h2>
+                        <h4>C&oacute;rdobas corrientes por habitante</h4>
                         <hr class="pma-line-3"/>
                     </div>
                 </div>
@@ -305,7 +305,7 @@
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-center">
-                                    <strong>Posición {{ periodo_list }}</strong>
+                                    <strong>Posici&oacute;n {{ periodo_list }}</strong>
                                 </th>
                                 <th class="text-center">
                                     <strong>Municipios</strong>
@@ -313,7 +313,7 @@
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-center"><strong>P. Inicial</strong></th>
                                 {% else %}
-                                    <th class="text-center"><strong>Ejecución</strong></th>
+                                    <th class="text-center"><strong>Ejecuci&oacute;n</strong></th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -377,10 +377,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2><strong>Información Histórica</strong><br>
-                    Comportamiento histórico de las inversiones anuales {% if not municipio %}Consolidado
+                <h2><strong>Informaci&oacute;n Hist&oacute;rica</strong><br>
+                    Comportamiento hist&oacute;rico de las inversiones anuales {% if not municipio %}Consolidado
                         municipal {% endif %} </h2>
-                <h4>En millones de córdobas corrientes </h4>
+                <h4>En millones de c&oacute;rdobas corrientes </h4>
                 <hr class="pma-line-3"/>
             </div>
         </div>
@@ -461,7 +461,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h2><strong>Modificaciones al presupuesto</strong> municipal de inversiones</h2>
-                <h4>Millones de córdobas corrientes </h4>
+                <h4>Millones de c&oacute;rdobas corrientes </h4>
                 <hr class="pma-line-3"/>
             </div>
         </div>
@@ -470,10 +470,10 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                     <tr class="bg-primary">
-                        <th>Rubros de inversión</th>
+                        <th>Rubros de inversi&oacute;n</th>
                         <th class="text-right">Inicial</th>
                         <th class="text-right">Actualizado</th>
-                        <th class="text-right">Modificación</th>
+                        <th class="text-right">Modificaci&oacute;n</th>
                     </tr>
                     </thead>
                     {% for row in cat %}
@@ -514,29 +514,29 @@
                         <td></td>
                         <td></td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificación intermedia
+                            <h4>Modificaci&oacute;n intermedia
                                 <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificación al {{ year_data.actualizado }}"
+                                   data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
                                    class="link-info">*</a>
                             </h4>
                         </td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificación al cierre
+                            <h4>Modificaci&oacute;n al cierre
                                 <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
+                                   data-original-title="Modificaci&oacute;n al {{ year_data.final }}" class="link-info">*</a>
                             </h4>
                         </td>
                     </tr>
                     <tr class="bg-primary">
-                        <th>Rubros de inversión</th>
+                        <th>Rubros de inversi&oacute;n</th>
                         <th>Inicial</th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                class="link-info">%</a></th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                class="link-info">%</a></th>
