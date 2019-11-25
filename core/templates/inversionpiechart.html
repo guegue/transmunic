@@ -402,89 +402,6 @@
 {% endblock %}
 
 {% block section4 %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2><strong>Informaci&oacute;n Hist&oacute;rica</strong><br>
-                    Comportamiento hist&oacute;rico de las inversiones anuales {% if not municipio %}Consolidado
-                        municipal {% endif %} </h2>
-                <h4>En millones de c&oacute;rdobas corrientes </h4>
-                <hr class="pma-line-3"/>
-            </div>
-        </div>
-    </div>
-    <div class="cd-horizontal-timeline loaded historico">
-        <div class="timeline container">
-            <div class="events-wrapper">
-                <div class="events" style="width:{{ anuales|length|add:1|mul:"135" }}px">
-                    <ol>
-                        {% for row in anuales %}
-                            <li><a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
-                                    {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}
-                                   style="left:{{ forloop.counter|mul:"135" }}px;"><span
-                                    class="posicion">{{ row.inversion__anio }}</span>
-                                <br/>
-                                {% if row.inversion__periodo == 'I' %}
-                                    <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
-                                {% else %}
-                                    <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
-                                {% endif %}
-                            </a></li>
-                        {% endfor %}
-                    </ol>
-                    <span class="filling-line" aria-hidden="true" style="transform:scaleX(0.8);"></span>
-                </div> <!-- .events -->
-            </div> <!-- .events-wrapper -->
-
-            <ul class="cd-timeline-navigation">
-                <li><a href="#0" class="prev inactive">Prev</a></li>
-                <li><a href="#0" class="next">Next</a></li>
-            </ul> <!-- .cd-timeline-navigation -->
-        </div> <!-- .timeline -->
-
-        <div class="events-content">
-            <ol>
-                <li data-date="01/01/{{ row.inversion__anio }} 00:00"
-                        {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}>
-                </li>
-            </ol>
-        </div> <!-- .events-content -->
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center medium">
-                <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
-                    Ver dealles en tabla
-                </button>
-            </div>
-        </div>
-    </div>
-    <div id="detail-3" class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-9 table-responsive">
-                <table class="table table-condensed">
-                    <tr class="bg-primary">
-                        <th></th>
-                        {% for year in year_list %}
-                            <th class="text-center">{{ year }}
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
-                        {% endfor %}
-                    </tr>
-                    {% for key, data in porano.items %}
-                        <tr>
-                            <td class="text-left">{{ key }}</td>
-                            {% for year in year_list %}
-                                <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block section5 %}
     <div class="container wide">
         <div class="row">
             <div class="col-md-12">
@@ -494,7 +411,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-offset-2 col-md-8">
+            <div class="col-md-offset-2 col-md-9">
                 <table class="table table-condensed table-striped">
                     <thead>
                     <tr class="bg-primary">
@@ -648,7 +565,89 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
+{% block section5 %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2><strong>Informaci&oacute;n Hist&oacute;rica</strong><br>
+                    Comportamiento hist&oacute;rico de las inversiones anuales {% if not municipio %}Consolidado
+                        municipal {% endif %} </h2>
+                <h4>En millones de c&oacute;rdobas corrientes </h4>
+                <hr class="pma-line-3"/>
+            </div>
+        </div>
+    </div>
+    <div class="cd-horizontal-timeline loaded historico">
+        <div class="timeline container">
+            <div class="events-wrapper">
+                <div class="events" style="width:{{ anuales|length|add:1|mul:"135" }}px">
+                    <ol>
+                        {% for row in anuales %}
+                            <li><a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
+                                    {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}
+                                   style="left:{{ forloop.counter|mul:"135" }}px;"><span
+                                    class="posicion">{{ row.inversion__anio }}</span>
+                                <br/>
+                                {% if row.inversion__periodo == 'I' %}
+                                    <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
+                                {% else %}
+                                    <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
+                                {% endif %}
+                            </a></li>
+                        {% endfor %}
+                    </ol>
+                    <span class="filling-line" aria-hidden="true" style="transform:scaleX(0.8);"></span>
+                </div> <!-- .events -->
+            </div> <!-- .events-wrapper -->
+
+            <ul class="cd-timeline-navigation">
+                <li><a href="#0" class="prev inactive">Prev</a></li>
+                <li><a href="#0" class="next">Next</a></li>
+            </ul> <!-- .cd-timeline-navigation -->
+        </div> <!-- .timeline -->
+
+        <div class="events-content">
+            <ol>
+                <li data-date="01/01/{{ row.inversion__anio }} 00:00"
+                        {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}>
+                </li>
+            </ol>
+        </div> <!-- .events-content -->
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center medium">
+                <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
+                    Ver dealles en tabla
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="detail-3" class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-9 table-responsive">
+                <table class="table table-condensed">
+                    <tr class="bg-primary">
+                        <th></th>
+                        {% for year in year_list %}
+                            <th class="text-center">{{ year }}
+                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for key, data in porano.items %}
+                        <tr>
+                            <td class="text-left">{{ key }}</td>
+                            {% for year in year_list %}
+                                <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block custom_scripts %}
