@@ -51,9 +51,9 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
         else:
             # entrada en detalle (referencia a renglon)
             renglon, created = IngresoRenglon.\
-                    objects.get_or_create(codigo=codigo,
-                                          defaults={'subsubtipoingreso_id': subsubtipo_id,
-                                                    'nombre': nombre})
+                objects.get_or_create(codigo=codigo,
+                                      defaults={'subsubtipoingreso_id': subsubtipo_id,
+                                                'nombre': nombre})
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
             ingresodetalle, created = IngresoDetalle.\
