@@ -415,28 +415,48 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                     <tr class="bg-primary">
-                        <th>Rubros de inversi&oacute;n</th>
-                        <th class="text-right">Inicial</th>
-                        <th class="text-right">Actualizado</th>
-                        <th class="text-right">Modificaci&oacute;n</th>
+                        <th colspan="1" rowspan="2">Rubros de inversi&oacute;n</th>
+                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Inicial</th>
+                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Actualizado</th>
+                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Modificaci&oacute;n</th>
+                    </tr>
+                    <tr class="bg-primary">
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">M. de C&oacute;rdobas</th>
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">%</th>
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">M. de C&oacute;rdobas</th>
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">%</th>
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">M. de C&oacute;rdobas</th>
+                        <th colspan="1" rowspan="1" class="text-center no-border-top">%</th>
                     </tr>
                     </thead>
+                    <tbody>
                     {% for row in cat %}
                         <tr>
                             <td class="text-left">{{ row.catinversion__nombre }}</td>
-                            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                            <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                            <td class="text-right">
-                                {% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}
-                                    0{% endif %}</td>
+                            <td class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center">{{ row.actualizado_asignado|million|intcomma }}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center">
+                                {% if row.final_ejecutado %}
+                                    {{ row.final_ejecutado|million|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td class="text-center"></td>
                         </tr>
                     {% endfor %}
+                    </tbody>
                     <tfoot>
                     <tr class="bold">
                         <td>TOTAL</td>
-                        <td class="text-right">{{ cat|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ cat|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ cat|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                        <td class="text-center">{{ cat|total_sum:'inicial_asignado'|million|intcomma }}</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">{{ cat|total_sum:'actualizado_asignado'|million|intcomma }}</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">{{ cat|total_sum:'final_ejecutado'|million|intcomma }}</td>
+                        <td class="text-center"></td>
                     </tr>
                     </tfoot>
                 </table>
@@ -456,8 +476,7 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                     <tr class="bg-primary">
-                        <td></td>
-                        <td></td>
+                        <td colspan="2"></td>
                         <td colspan="4" class="text-center">
                             <h4>Modificaci&oacute;n intermedia
                                 <a href="#" data-toggle="tooltip"
@@ -478,13 +497,15 @@
                         <th>Actualizado</th>
                         <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
-                        <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
-                               class="link-info">%</a></th>
+                        <th>
+                            <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
+                               class="link-info font-color-white">%</a>
+                        </th>
                         <th>Actualizado</th>
                         <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
-                               class="link-info">%</a></th>
+                               class="link-info font-color-white">%</a></th>
                     </tr>
                     </thead>
                     {% for row in cat %}
@@ -516,6 +537,7 @@
 
                         </tr>
                     {% endfor %}
+                {% comment %}
                     <tfoot>
                     <tr class="bold">
                         <td>TOTAL</td>
@@ -561,6 +583,7 @@
                         {% endwith %}
                     </tr>
                     </tfoot>
+                {% endcomment %}
                 </table>
             </div>
         </div>
