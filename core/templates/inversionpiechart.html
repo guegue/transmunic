@@ -537,7 +537,7 @@
 
                         </tr>
                     {% endfor %}
-                {% comment %}
+                    {% comment %}
                     <tfoot>
                     <tr class="bold">
                         <td>TOTAL</td>
@@ -643,30 +643,59 @@
         <div class="row">
             <div class="col-md-12 text-center medium">
                 <button id="show-detail-3" class="blanco btn pma-bg-blue more" type="submit">
-                    Ver dealles en tabla
+                    Ver detalles en tabla
                 </button>
             </div>
         </div>
     </div>
     <div id="detail-3" class="container">
         <div class="row">
-            <div class="col-md-offset-2 col-md-9 table-responsive">
-                <table class="table table-condensed">
-                    <tr class="bg-primary">
-                        <th></th>
+            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive" style="height: 560px">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th colspan="1" rowspan="2" class="text-center">Categor&iacute;as</th>
                         {% for year in year_list %}
-                            <th class="text-center">{{ year }}
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                <strong>{{ year }}</strong>
+                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
+                            </th>
                         {% endfor %}
                     </tr>
+                    <tr>
+                        {% for year in year_list %}
+                            <th colspan="1"
+                                class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                M. de C&oacute;rdobas
+                            </th>
+                            <th colspan="1"
+                                class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                %
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
                     {% for key, data in porano.items %}
                         <tr>
                             <td class="text-left">{{ key }}</td>
                             {% for year in year_list %}
-                                <td class="text-right">{{ data|keyvalue:year|million|intcomma }}</td>
+                                <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    {{ data|keyvalue:year|million|intcomma }}
+                                </td>
+                                <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+
+                                </td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong></th>
+                    </tfoot>
                 </table>
             </div>
         </div>
