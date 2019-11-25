@@ -57,7 +57,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
             ingresodetalle, created = IngresoDetalle.\
-                objects.update_or_create(codigo=codigo, ingreso=ingreso,
+                objects.update_or_create(codigo_id=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id,
                                                    'subtipoingreso_id': subtipo_id,
