@@ -110,19 +110,23 @@
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
-                                </tbody>
-                                <tfoot>
                                 <tr class="">
                                     <td colspan="1">TOTAL</td>
                                     {% if periodo_list|keyvalue:year == 'I' %}
-                                        <td colspan="1" class="text-right">{{ asignado|million|intcomma }}</td>
-                                        <td colspan="1" class="text-right"></td>
+                                        <td colspan="1" class="text-center">{{ asignado|million|intcomma }}</td>
+                                        <td colspan="1" class="text-center"></td>
                                     {% else %}
                                         <td colspan="1"
-                                            class="text-right">{{ ejecutado|million|intcomma|default:"0" }}</td>
-                                        <td colspan="1" class="text-right"></td>
+                                            class="text-center">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                                        <td colspan="1" class="text-center"></td>
                                     {% endif %}
                                 </tr>
+                                </tbody>
+                                <tfoot>
+                                <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                                    <strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
                                 </tfoot>
                             </table>
                         </div>
@@ -237,8 +241,6 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                            <tfoot>
                             <tr class="pma-bg-white">
                                 <td><strong>TOTAL</strong></td>
                                 <td class="text-right">
@@ -246,6 +248,12 @@
                                 <td class="text-right">
                                     <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
                             </tr>
+                            </tbody>
+                            <tfoot>
+                            <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                                <strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
                             </tfoot>
                         </table>
                     </div>
@@ -372,6 +380,12 @@
                                 {% endfor %}
                             {% endif %}
                             </tbody>
+                            <tfoot>
+                            <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                                <strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
                             {% comment %}
                             <tfoot>
                             <tr class="">
@@ -447,8 +461,6 @@
                             <td class="text-center"></td>
                         </tr>
                     {% endfor %}
-                    </tbody>
-                    <tfoot>
                     <tr class="bold">
                         <td>TOTAL</td>
                         <td class="text-center">{{ cat|total_sum:'inicial_asignado'|million|intcomma }}</td>
@@ -458,6 +470,12 @@
                         <td class="text-center">{{ cat|total_sum:'final_ejecutado'|million|intcomma }}</td>
                         <td class="text-center"></td>
                     </tr>
+                    </tbody>
+                    <tfoot>
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                        <strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong></th>
                     </tfoot>
                 </table>
             </div>
@@ -508,6 +526,7 @@
                                class="link-info font-color-white">%</a></th>
                     </tr>
                     </thead>
+                    <tbody>
                     {% for row in cat %}
                         <tr>
                             <td class="text-left">{{ row.catinversion__nombre }}</td>
@@ -537,6 +556,12 @@
 
                         </tr>
                     {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong></th>
+                    </tfoot>
                     {% comment %}
                     <tfoot>
                     <tr class="bold">
@@ -650,7 +675,7 @@
     </div>
     <div id="detail-3" class="container">
         <div class="row">
-            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive" style="height: 560px">
+            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
