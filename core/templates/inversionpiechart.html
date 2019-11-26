@@ -50,13 +50,13 @@
                 <div class="col-lg-10 col-md-10 col-sm-11 col-xs-11">
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div class="tab-pane pma-summary pma-index-inversion-icons " id="icons">
+                        <div class="tab-pane pma-summary pma-index-inversion-icons active" id="icons">
                             <div class="row categorias_inversion">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     {% for i in bubble_data_nojson.children %}
                                         <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center height-categoria">
                                             <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}"
-                                                class="font-color-celeste">
+                                               class="font-color-celeste">
                                                 <span class="info-box-icon pma-icon {{ i.slug }}"></span>
                                             </a>
                                             <h5 class="text-center">
@@ -78,7 +78,7 @@
                         <div class="tab-pane" id="bar">
                             <div id="bar" class="view-alternative"> Chart will be rendered here</div>
                         </div>
-                        <div class="tab-pane active" id="table_">
+                        <div class="tab-pane" id="table_">
                             <table class="table table-striped table-hover">
                                 <thead>
                                 <tr class="bg-primary">
@@ -250,7 +250,7 @@
                                     <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
                             </tr>
                             </tbody>
-                            <tfoot>
+                            <tfoot class="font-12px font-color-azul">
                             <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
                                 <strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
@@ -347,7 +347,6 @@
                                 {% else %}
                                     <th class="text-center"><strong>Ejecuci&oacute;n</strong></th>
                                 {% endif %}
-                                <th class="text-center"><strong>%</strong></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -358,10 +357,8 @@
                                         <td>{{ row.inversion__municipio__nombre }}</td>
                                         {% if row.inversion__periodo == 'I' %}
                                             <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                            <td class="text-right"></td>
                                         {% else %}
                                             <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                            <td class="text-right"></td>
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
@@ -372,16 +369,14 @@
                                         <td>{{ row.inversion__municipio__nombre }}</td>
                                         {% if row.ingreso__periodo == 'I' %}
                                             <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                            <td class="text-right"></td>
                                         {% else %}
                                             <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                            <td class="text-right"></td>
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
                             {% endif %}
                             </tbody>
-                            <tfoot>
+                            <tfoot class="font-12px font-color-azul">
                             <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
                                 <strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
@@ -472,7 +467,7 @@
                         <td class="text-center"></td>
                     </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
                         <strong>Fuente: </strong>Elaboraci&oacute;n
                         propia a partir
@@ -558,7 +553,7 @@
                         </tr>
                     {% endfor %}
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                         propia a partir
                         de transmunic.gob.ni<strong>.</strong></th>
@@ -717,7 +712,7 @@
                         </tr>
                     {% endfor %}
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                         propia a partir
                         de transmunic.gob.ni<strong>.</strong></th>
