@@ -792,20 +792,36 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     # tabla: get inversions por año
     porano_table = {}
+    ano_table = {}
     ys = source_ultimos.order_by('catinversion__nombre').values('catinversion__nombre').distinct()
     for y in ys:
-        label = y['catinversion__nombre']
+        name = y['catinversion__nombre']
+        label = name if name else 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
             value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear] = value if value else ''
+            porano_table[label][ayear] = {}
+            porano_table[label][ayear]['raw'] = value if value else ''
+
+            if not ayear in ano_table:
+                ano_table[ayear] = 0
+            ano_table[ayear] += value if value else 0
+
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=label, \
+            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=name, \
                     inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
                     aggregate(total=Avg(quesumar))['total']
-            porano_table[label]['extra'] = value if value else '...'
+            porano_table[name]['extra'] = value if value else '...'
+
+    for y in ys:
+        name = y['catinversion__nombre']
+        label = name if name else 'Sin Clasificar'
+        for ayear in year_list:
+            if porano_table[label][ayear]['raw']:
+                porano_table[label][ayear]['percent'] = format(
+                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     charts = [pie, bar]
 
