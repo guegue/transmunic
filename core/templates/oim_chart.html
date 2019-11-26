@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block main_table %}
-  <div class="col-md-5 table-responsive">
-    <table class="table table-bordered">
-      <caption>
+    <div class="col-md-5 table-responsive">
+        <table class="table table-bordered">
+            <caption>
                 Rubros de ingresos para el per&iacute;odo {{ year }}
                 {% if periodo_list|keyvalue:year == 'F' %}
                     cierre
@@ -21,41 +21,41 @@
                     inicial
                 {% endif %}
                 .
-        </caption>
-        <thead>
-          <tr>
-	          <td colspan="3">
-              {% if periodo_list|keyvalue:year == 'F' %}
-	          	  Ejecuci&oacute;n de ingresos 
-              {% elif periodo_list|keyvalue:year == 'A' %}
-	  	          Ejecuci&oacute;n intermedia de ingresos 
-              {% elif periodo_list|keyvalue:year == 'I' %}
-                Presupuesto inicial de ingresos
-              {% endif %}
-		          {{ year }}<br />
-		          Por su origen
-	          </td>
-	      </tr>
-        <tr class="bg-primary">
-            <th>Rubros de ingresos</th>
-            <th class="no-border-top text-center">M. de c&oacute;rdobas</th>
-            <th class="no-border-top text-center">%</th>
-        </tr>
-        </thead>
-        <tbody>
-        ```{% for row in rubros %}
-            ````<tr>
-                  {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
-                    <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                    <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
-                    <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
-                  {% else %}
-                    {% if row.ejecutado > 0 %}
+            </caption>
+            <thead>
+            <tr>
+                <td colspan="3" rowspan="1" class="text-justify">
+                    {% if periodo_list|keyvalue:year == 'F' %}
+                        Ejecuci&oacute;n de ingresos
+                    {% elif periodo_list|keyvalue:year == 'A' %}
+                        Ejecuci&oacute;n intermedia de ingresos
+                    {% elif periodo_list|keyvalue:year == 'I' %}
+                        Presupuesto inicial de ingresos
+                    {% endif %}
+                    {{ year }}
+                    Por su origen
+                </td>
+            </tr>
+            <tr class="bg-primary">
+                <th>Rubros de ingresos</th>
+                <th class="no-border-top text-center">M. de c&oacute;rdobas</th>
+                <th class="no-border-top text-center">%</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in rubros %}
+                <tr>
+                    {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
+                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                        <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
+                        <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
+                    {% else %}
+                        {% if row.ejecutado > 0 %}
                             <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
-                     {% endif %}
-                  {% endif %}
+                        {% endif %}
+                    {% endif %}
                 </tr>
             {% endfor %}
             <tr>
@@ -69,7 +69,7 @@
                 {% endif %}
             </tr>
             </tbody>
-            <tfoot>
+            <tfoot class="font-12px font-color-azul">
             <tr>
                 <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a
                     partir
@@ -244,7 +244,7 @@
                                 {% endif %}
                             </tr>
                             </tbody>
-                            <tfoot>
+                            <tfoot class="font-12px font-color-azul">
                             <tr class="pma-bg-white">
                                 <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                     propia a partir
@@ -337,7 +337,7 @@
             <div id="detail-1" class="container">
                 <div class="row">
                     <div class="col-md-offset-3 col-md-6 table-responsive">
-                        <table class="table table-striped pma-bg-white">
+                        <table class="table table-bordered table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-center"><strong>Posici&oacute;n</strong></th>
@@ -472,7 +472,7 @@
                             <td class="text-right">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
                         </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot class="font-12px font-color-azul">
                         <th colspan="8" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                             propia a partir
                             de transmunic.gob.ni<strong>.</strong></th>
@@ -611,7 +611,7 @@
                             {% endwith %}
                         </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot class="font-12px font-color-azul">
                         <tr>
                             <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
@@ -722,13 +722,11 @@
                             {% endwith %}
                         </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot class="font-12px font-color-azul">
                         <tr>
                             <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
                                 de transmunic.gob.ni<strong>.</strong></th>
-                        </tfoot>
-                        </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -815,7 +813,6 @@
                             <th rowspan="1" colspan="2"
                                 class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
                                 <strong>{{ year }}</strong>
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
                             </th>
                         {% endfor %}
                     </tr>
@@ -845,7 +842,7 @@
                         </tr>
                     {% endfor %}
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                         propia a partir
                         de transmunic.gob.ni<strong>.</strong></th>
