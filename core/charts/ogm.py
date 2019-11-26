@@ -6,19 +6,16 @@
 ##############################################################################
 
 from itertools import chain
-from datetime import datetime, time
 from operator import itemgetter
 
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.db.models import  Sum
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
-from core.models import Anio, GastoDetalle, Gasto, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
+from core.models import (Anio, GastoDetalle, Gasto, Municipio, TipoGasto)
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, dictfetchall, glue, superglue, Percentage, xnumber
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -758,30 +755,58 @@ def ogm_chart(municipio=None, year=None, portada=False):
         row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
         row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
+    actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
+
+    for row in rubros:
+        row['ini_asig_porcentaje'] = Percentage(row['inicial_asignado'], asignado)
+        row['actualizado_porcentaje'] = Percentage(row.get('actualizado_asignado'), actualizado)
+        row['ejec_porcentaje'] = Percentage(row['ejecutado'], ejecutado)
+
     # tabla: get gastos por año
     if municipio:
         source_cuadro = GastoDetalle.objects.filter(gasto__municipio__slug=municipio)
     else:
         source_cuadro = GastoDetalle.objects.all()
     porano_table = {}
+    ano_table = {}
     ys = source_cuadro.order_by('subsubtipogasto__origen__nombre').values('subsubtipogasto__origen__nombre').distinct()
     for y in ys:
-        label = y['subsubtipogasto__origen__nombre']
+        name = y['subsubtipogasto__origen__nombre']
+        label = name if name else 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-            value = source_cuadro.filter(gasto__anio=ayear, gasto__periodo=periodo, subsubtipogasto__origen__nombre=label).aggregate(total=Sum(quesumar))['total']
-            porano_table[label][ayear] = value if value else ''
+            value = source_cuadro.\
+                filter(gasto__anio=ayear, gasto__periodo=periodo,
+                        subsubtipogasto__origen__nombre=name).\
+                aggregate(total=Sum(quesumar))['total']
+            porano_table[label][ayear] = {}
+            porano_table[label][ayear]['raw'] = value if value else ''
+            if not ayear in ano_table:
+                ano_table[ayear] = 0
+            ano_table[ayear] += value if value else 0
+
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, subsubtipogasto__origen__nombre=label, \
-                    gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            value = GastoDetalle.objects.\
+                    filter(gasto__anio=year, gasto__periodo=periodo,
+                        subsubtipogasto__origen__nombre=name,
+                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                        gasto__municipio__clase__anio=year).\
                     aggregate(total=Sum(quesumar))['total']
             if value:
                 value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
+
+    for y in ys:
+        name = y['subsubtipogasto__origen__nombre']
+        label = name if name else 'Sin Clasificar'
+        for ayear in year_list:
+            if porano_table[label][ayear]['raw']:
+                porano_table[label][ayear]['percent'] = format(
+                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     if portada:
         charts = (ejecutado_pie,)
