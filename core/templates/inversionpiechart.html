@@ -531,33 +531,47 @@
                             <td class="text-left">{{ row.catinversion__nombre }}</td>
                             <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                            <td class="text-right">{% if row.actualizado_asignado and row.inicial_asignado %}
-                                {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}
-                                0{% endif %}</td>
+                            <td class="text-right">
+                                {% if row.actualizado_asignado and row.inicial_asignado %}
+                                    {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
                             <td class="text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
                             {% if row.actualizado_asignado %}
                                 <td class="montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
                             {% else %}
-                                <td class="montos">0</td>
+                                <td class="montos">0%</td>
                             {% endif %}
                             <td class="text-right">
-                                {% if row.final_asignado %}{{ row.final_asignado|million|intcomma }}{% else %}
-                                    0 {% endif %}</td>
-                            <td class="text-right">{% if row.final_asignado and row.inicial_asignado %}
-                                {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}{% else %}
-                                0{% endif %}</td>
+                                {% if row.final_asignado %}
+                                    {{ row.final_asignado|million|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}</td>
                             <td class="text-right">
-                                {% if row.final_ejecutado %}{{ row.final_ejecutado|million|intcomma }}{% else %}
-                                    0{% endif %}</td>
+                                {% if row.final_asignado and row.inicial_asignado %}
+                                    {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}</td>
+                            <td class="text-right">
+                                {% if row.final_ejecutado %}
+                                    {{ row.final_ejecutado|million|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
                             {% if row.final_asignado %}
                                 <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
                             {% endif %}
-
                         </tr>
                     {% endfor %}
                     </tbody>
                     <tfoot class="font-12px font-color-azul">
-                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                        <strong>Fuente: </strong>Elaboraci&oacute;n
                         propia a partir
                         de transmunic.gob.ni<strong>.</strong></th>
                     </tfoot>
@@ -632,17 +646,19 @@
                 <div class="events" style="width:{{ anuales|length|add:1|mul:"135" }}px">
                     <ol>
                         {% for row in anuales %}
-                            <li><a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
+                            <li>
+                                <a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
                                     {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}
                                    style="left:{{ forloop.counter|mul:"135" }}px;"><span
                                     class="posicion">{{ row.inversion__anio }}</span>
                                 <br/>
-                                {% if row.inversion__periodo == 'I' %}
-                                    <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
-                                {% else %}
-                                    <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
-                                {% endif %}
-                            </a></li>
+                                    {% if row.inversion__periodo == 'I' %}
+                                        <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
+                                    {% else %}
+                                        <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
                         {% endfor %}
                     </ol>
                     <span class="filling-line" aria-hidden="true" style="transform:scaleX(0.8);"></span>
