@@ -261,6 +261,19 @@ class SubSubTipoIngreso(models.Model):
 
 
 # Ingresos del municipio
+class IngresoRenglon(models.Model):
+    codigo = models.CharField(max_length=25, primary_key=True)
+    nombre = models.CharField(max_length=200)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
+
+    class Meta:
+        verbose_name = u'Renglón Ingreso'
+        ordering = ['subsubtipoingreso', 'codigo']
+
+    def __unicode__(self):
+        return u"{}: {}".format(self.codigo, self.nombre)
+
+
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
@@ -286,7 +299,7 @@ class Ingreso(models.Model):
 
 class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso)
-    codigo = models.CharField(max_length=15, null=False)
+    codigo = models.ForeignKey(IngresoRenglon)
     tipoingreso = models.ForeignKey(TipoIngreso)
     subtipoingreso = ChainedForeignKey(
             SubTipoIngreso, chained_field='tipoingreso',
@@ -310,6 +323,7 @@ class IngresoDetalle(models.Model):
         return u"{}:{}:{}".format(self.id, self.codigo, self.cuenta)
 
 
+# gastos del municipio
 class Gasto(models.Model):
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
@@ -327,10 +341,23 @@ class Gasto(models.Model):
     def __unicode__(self):
         return u"{}:{}:{}".format(self.anio, self.periodo, self.municipio)
 
-# detalle del gasto
+
+class GastoRenglon(models.Model):
+    codigo = models.CharField(max_length=25, primary_key=True)
+    nombre = models.CharField(max_length=200)
+    subsubtipogasto = models.ForeignKey(SubSubTipoGasto)
+
+    class Meta:
+        verbose_name = u'Renglón Gasto'
+        ordering = ['subsubtipogasto', 'codigo']
+
+    def __unicode__(self):
+        return u"{}: {}".format(self.codigo, self.nombre)
+
+
 class GastoDetalle(models.Model):
     gasto = models.ForeignKey(Gasto)
-    codigo = models.CharField(max_length=15, null=False)
+    codigo = models.ForeignKey(GastoRenglon)
     tipogasto = models.ForeignKey(TipoGasto)
     subtipogasto = ChainedForeignKey(
             SubTipoGasto, chained_field='tipogasto',
@@ -490,4 +517,3 @@ class InversionFuenteDetalle(models.Model):
         verbose_name = u'Detalle de inversión por fuente'
         verbose_name_plural = u'Detalles de inversión por fuente'
         ordering = ['inversionfuente', 'tipofuente', 'fuente']
-

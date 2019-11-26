@@ -9,21 +9,33 @@
 {% endblock %}
 
 {% block main_table %}
+  <div class="col-md-5 table-responsive">
     <table class="table table-bordered">
+      <caption>
+                Rubros de ingresos para el per&iacute;odo {{ year }}
+                {% if periodo_list|keyvalue:year == 'F' %}
+                    cierre
+                {% elif periodo_list|keyvalue:year == 'A' %}
+                    intermedio
+                {% elif periodo_list|keyvalue:year == 'I' %}
+                    inicial
+                {% endif %}
+                .
+        </caption>
         <thead>
           <tr>
-	    <td colspan="3">
-            {% if periodo_list|keyvalue:year == 'F' %}
-		Ejecuci&oacute;n de ingresos 
-            {% elif periodo_list|keyvalue:year == 'A' %}
-		Ejecuci&oacute;n intermedia de ingresos 
-            {% elif periodo_list|keyvalue:year == 'I' %}
+	          <td colspan="3">
+              {% if periodo_list|keyvalue:year == 'F' %}
+	          	  Ejecuci&oacute;n de ingresos 
+              {% elif periodo_list|keyvalue:year == 'A' %}
+	  	          Ejecuci&oacute;n intermedia de ingresos 
+              {% elif periodo_list|keyvalue:year == 'I' %}
                 Presupuesto inicial de ingresos
-            {% endif %}
-		{{ year }}<br />
-		Por su origen
-	    </td>
-	</tr>
+              {% endif %}
+		          {{ year }}<br />
+		          Por su origen
+	          </td>
+	      </tr>
         <tr class="bg-primary">
             <th>Rubros de ingresos</th>
             <th class="no-border-top text-center">M. de c&oacute;rdobas</th>
@@ -31,39 +43,41 @@
         </tr>
         </thead>
         <tbody>
-        {% for row in rubros %}
-            <tr>
-                {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
+        ```{% for row in rubros %}
+            ````<tr>
+                  {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
                     <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
                     <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
-                {% else %}
+                  {% else %}
                     {% if row.ejecutado > 0 %}
-                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                        <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
-                        <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
-                    {% endif %}
+                            <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                            <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
+                            <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
+                     {% endif %}
+                  {% endif %}
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="1">TOTAL</td>
+                {% if periodo_list|keyvalue:year == 'I' %}
+                    <td colspan="1" class="text-center">{{ asignado|million|intcomma }}</td>
+                    <td colspan="1" class="text-center">{{ asignado_porcentaje|floatformat:"0" }}%</td>
+                {% else %}
+                    <td colspan="1" class="text-center">{{ ejecutado|million|intcomma|default:"0" }}</td>
+                    <td colspan="1" class="text-center">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
                 {% endif %}
             </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="1">TOTAL</td>
-            {% if periodo_list|keyvalue:year == 'I' %}
-                <td colspan="1" class="text-center">{{ asignado|million|intcomma }}</td>
-                <td colspan="1" class="text-center">{{ asignado_porcentaje|floatformat:"0" }}%</td>
-            {% else %}
-                <td colspan="1" class="text-center">{{ ejecutado|million|intcomma|default:"0" }}</td>
-                <td colspan="1" class="text-center">{{ ejecutado_porcentaje|floatformat:"0" }}%</td>
-            {% endif %}
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a partir
-                de transmunic.gob.ni<strong>.</strong></th>
-        </tr>
-        </tfoot>
-    </table>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a
+                    partir
+                    de transmunic.gob.ni<strong>.</strong></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 {% endblock %}
 
 {% block section2 %}

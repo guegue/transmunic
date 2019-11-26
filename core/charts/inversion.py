@@ -141,7 +141,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(inicial_asignado=Sum('asignado'))\
             .order_by('catinversion')
 
@@ -151,7 +152,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 actualizado_asignado=Sum('asignado'),
                 actualizado_ejecutado=Sum('ejecutado'))\
@@ -163,7 +165,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 final_ejecutado=Sum('ejecutado'),
                 final_asignado=Sum('asignado'))\
@@ -175,7 +178,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 ejecutado=Sum('ejecutado'),
                 asignado=Sum('asignado'))\
@@ -369,18 +373,21 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         source_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, \
             inversion__municipio__slug=municipio).\
-            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('inversion__anio').\
+            annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by()
         source_final = Proyecto.objects.filter(inversion__periodo=periodo, \
             inversion__municipio__slug=municipio).\
-            values('inversion__anio')\
-            .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('inversion__anio').\
+            annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by()
         # obtiene valores para este año de las listas
         try:
-            asignado = (item for item in source_inicial if item["inversion__anio"] == int(year)).next()['asignado']
+            asignado = (item for item in source_inicial
+                        if item["inversion__anio"] == int(year)).next()['asignado']
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["inversion__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_final
+                         if item["inversion__anio"] == int(year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
 
@@ -438,14 +445,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=PERIODO_INICIAL, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(inicial_asignado=Sum('asignado'))\
             .order_by('catinversion')
         cat_actualizado = Proyecto.objects.filter(
             inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 actualizado_asignado=Sum('asignado'),
                 actualizado_ejecutado=Sum('ejecutado'))\
@@ -454,7 +463,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=PERIODO_FINAL, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(
                 final_asignado=Sum('asignado'),
                 final_ejecutado=Sum('ejecutado'))\
@@ -463,7 +473,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             inversion__periodo=periodo, inversion__anio=year)\
             .values(
                 'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color')\
+                'catinversion__shortname', 'catinversion__color',
+                'catinversion__slug')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))\
             .order_by('catinversion')
         cat2 = superglue(
@@ -523,17 +534,21 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         # para luego obtener valores para este año y nada más? FIXME !
         source_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL,).\
-            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),
+                                               asignado=Sum('asignado')).order_by()
         source_final = Proyecto.objects.filter(inversion__periodo=periodo,).\
-            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+            values('inversion__anio').annotate(ejecutado=Sum('ejecutado'),
+                                               asignado=Sum('asignado')).order_by()
 
         # obtiene valores para este año de las listas
         try:
-            asignado = (item for item in source_inicial if item["inversion__anio"] == int(year)).next()['asignado']
+            asignado = (item for item in source_inicial
+                        if item["inversion__anio"] == int(year)).next()['asignado']
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["inversion__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_final
+                         if item["inversion__anio"] == int(year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
         # FIXME que es esto: ???
@@ -789,6 +804,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'ejecutado': ejecutado,
         'asignado': asignado,
         'porclasep': porclasep,
+        'periodo': periodo,
         'otros': otros,
         'year_list': year_list,
         'municipio_list': municipio_list,

@@ -7,15 +7,18 @@ from django.views.generic import FormView, DetailView
 
 from openpyxl import load_workbook
 
-from core.models import Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso
+from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
+                         IngresoRenglon)
 from core.forms import UploadExcelForm
+from core.tools import xnumber
 
 
 def import_file(excel_file, municipio, year, periodo, start_row, end_row):
     book = load_workbook(filename=excel_file)
     sheet = book.active
     today = date.today()
-    ingreso = Ingreso.objects.create(municipio=municipio, anio=year, periodo=periodo, fecha=today)
+    ingreso, created = Ingreso.objects.get_or_create(municipio=municipio, anio=year,
+                                                     periodo=periodo, defaults={'fecha': today})
 
     for row in sheet[start_row:end_row]:
         joined = unicode(row[0].value)
@@ -30,6 +33,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
         subsubtipo_id = "{}{}{}00".format(tipo, subtipo, subsubtipo)
         cuenta = codigo[6:8]
         if cuenta == '00':
+            # no agrega un entrada en detalle
             if subsubtipo == '00':
                 if subtipo == '00':
                     if tipo == '00':
@@ -45,10 +49,15 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
                     objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
                                           defaults={'nombre': nombre})
         else:
-            asignado = row[1].value
-            ejecutado = row[2].value
+            # entrada en detalle (referencia a renglon)
+            renglon, created = IngresoRenglon.\
+                objects.get_or_create(codigo=codigo,
+                                      defaults={'subsubtipoingreso_id': subsubtipo_id,
+                                                'nombre': nombre})
+            asignado = xnumber(row[1].value)
+            ejecutado = xnumber(row[2].value)
             ingresodetalle, created = IngresoDetalle.\
-                objects.update_or_create(codigo=codigo, ingreso=ingreso,
+                objects.update_or_create(codigo_id=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id,
                                                    'subtipoingreso_id': subtipo_id,

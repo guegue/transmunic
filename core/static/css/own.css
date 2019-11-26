@@ -1,68 +1,116 @@
-.font-13px{
+.font-13px {
     font-size: 13px;
 }
-.font-17px{
+
+.font-17px {
     font-size: 17px;
 }
-.height-rubro-home{
-    min-height: 70px;
+
+.height-rubro-home {
     height: 170px;
+    min-height: 70px;
 }
-.mb-1px{
+
+.mb-1px {
     margin-bottom: 1px !important;
 }
-.mt-0{
+
+.mb-5px {
+    margin-bottom: 5px;
+}
+
+.mt-0 {
     margin-top: 0 !important;
 }
 
-.info-box-number{
+.info-box-number,
+.bubbletree .bubbletree-amount,
+.events {
     font-family: Roboto, sans-serif;
-}
-
-.tb-details{
 }
 
 .tb-details thead tr th:nth-child(1),
 .tb-details thead tr td:nth-child(1),
 .tb-details tbody tr th:nth-child(1),
-.tb-details tbody tr td:nth-child(1){
+.tb-details tbody tr td:nth-child(1) {
     border-right: 1px solid #ddd;
 }
-.tb-details > tbody tr:nth-child(1) td{
-    padding-left: 2px;
+
+.tb-details > tbody tr:nth-child(1) td {
     border-top: none !important;
+    padding-left: 2px;
 }
-.font-color-yellow{
+
+.font-color-yellow {
     color: yellow;
 }
 
-.ver-mas{
+.ver-mas {
     height: 65px;
-    width: 65px;
     padding-top: 10px;
+    width: 65px;
 }
 
-.no-border-top{
+.no-border-top {
     border-top: none !important;
 }
 
-.no-border-bottom{
+.no-border-bottom {
     border-bottom: none !important;
 }
-.border-sides{
-    border-right: 1px solid #ddd !important;
-    border-left: 1px solid #ddd !important;
-}
-.border-left{
-    border-left: 1px solid #ddd !important;
-}
-.border-right{
-    border-right: 1px solid #ddd !important;
+
+.border-sides {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }
 
-.background-color-gray{
+.border-left {
+    border-left: 1px solid #ddd;
+}
+
+.border-right {
+    border-right: 1px solid #ddd;
+}
+
+.background-color-gray {
     background-color: #f3f3f3;
 }
-.background-color-white{
+
+.background-color-white {
     background-color: #fff;
+}
+
+.icon-wrapper {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+/*TABS*/
+.tabs-left {
+    border-bottom: none;
+}
+
+.tabs-left > li {
+    float: none;
+    margin: 0;
+}
+
+.tabs-left > li.active > a,
+.tabs-left > li.active > a:focus,
+.tabs-left > li.active > a:hover {
+    background-color: transparent;
+    border: none;
+    border-bottom-color:  transparent;
+    border-right-color: transparent;
+    border-radius: 0;
+    margin: 0;
+}
+
+.tabs-left > li.active > a > span{
+    color: #00a7b3;
+}
+
+.height-categoria{
+    height: 115px;
 }
