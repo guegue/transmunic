@@ -1,3 +1,6 @@
+.font-12px{
+    font-size: 12px;
+}
 .font-13px {
     font-size: 13px;
 }
@@ -47,6 +50,12 @@
 
 .font-color-white {
     color: white;
+}
+.font-color-celeste{
+    color: #00a7b2;
+}
+.font-color-azul{
+    color: #4949a5aa;
 }
 
 .ver-mas {
@@ -117,4 +126,8 @@
 
 .height-categoria{
     height: 115px;
+}
+
+.pma-gradient{
+    background-color: #48a1b1;
 }
