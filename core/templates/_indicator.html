@@ -106,8 +106,8 @@
                         <h4 class="text-center">
                             <strong>{% block indicator_title_text %}{{ indicator_name }}{% endblock %}
                                 {% if periodo_list|keyvalue:year == 'F' %}
-                                    cierre {% elif periodo_list|keyvalue:year == 'A' %}
-                                    intermedio {% elif periodo_list|keyvalue:year == 'I' %}inicial {% endif %}
+                                    presupuesto cierre {% elif periodo_list|keyvalue:year == 'A' %}
+                                    ejecuci&oacute;n intermedia {% elif periodo_list|keyvalue:year == 'I' %}presupuesto inicial {% endif %}
                                 {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
                         </h4>
                         <p class="text-center metric-description container"> {% block indicator_description %} Son los
@@ -127,17 +127,16 @@
                 <div>
                     <h3>
                         <strong>
-                            Ingresos Presupuesto
+                            Ingresos 
                             {% if periodo_list|keyvalue:year == 'F' %}
-                                Cierre
+                                Ejecutados 
                             {% elif periodo_list|keyvalue:year == 'A' %}
-                                Intermedio
+                                Ejecutado Intermedio
                             {% elif periodo_list|keyvalue:year == 'I' %}
-                                Inicial
+                                Presupuesto Inicial
                             {% endif %}
                         </strong>
-                        <br/>
-                        Per&iacute;odo {{ year }}
+                        {{ year }}
                     </h3>
                     <h5>Millones de córdobas corrientes</h5>
                     <hr class="pma-line-2 text-center">
@@ -162,7 +161,7 @@
                                 </span>
                                 <div class="info-box-content">
                                     <span class="info-box-number font-17px">
-                                        <strong>Ejecutado {{ ejecutado|million|intcomma }}</strong>
+                                        <strong>Cierre {{ ejecutado|million|intcomma }}</strong>
                                     </span>
                                 </div>
                             </div>

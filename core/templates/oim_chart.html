@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block main_table %}
-    <div class="col-md-5 table-responsive">
-        <table class="table">
-            <caption>
+  <div class="col-md-5 table-responsive">
+    <table class="table table-bordered">
+      <caption>
                 Rubros de ingresos para el per&iacute;odo {{ year }}
                 {% if periodo_list|keyvalue:year == 'F' %}
                     cierre
@@ -21,37 +21,41 @@
                     inicial
                 {% endif %}
                 .
-            </caption>
-            <thead>
-            <tr class="bg-primary">
-                <th rowspan="2" colspan="1" style="vertical-align: middle">Rubros de ingresos</th>
-                <th rowspan="1" colspan="2" class="no-border-bottom text-center">
-                    {% if periodo_list|keyvalue:year == 'I' %}
-                        Inicial
-                    {% else %}
-                        Ejecutado
-                    {% endif %}
-                </th>
-            </tr>
-            <tr class="bg-primary">
-                <th colspan="1" class="no-border-top text-center">M. de c&oacute;rdobas</th>
-                <th colspan="1" class="no-border-top text-center">%</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for row in rubros %}
-                <tr>
-                    {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
-                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
-                        <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
-                        <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
-                    {% else %}
-                        {% if row.ejecutado > 0 %}
+        </caption>
+        <thead>
+          <tr>
+	          <td colspan="3">
+              {% if periodo_list|keyvalue:year == 'F' %}
+	          	  Ejecuci&oacute;n de ingresos 
+              {% elif periodo_list|keyvalue:year == 'A' %}
+	  	          Ejecuci&oacute;n intermedia de ingresos 
+              {% elif periodo_list|keyvalue:year == 'I' %}
+                Presupuesto inicial de ingresos
+              {% endif %}
+		          {{ year }}<br />
+		          Por su origen
+	          </td>
+	      </tr>
+        <tr class="bg-primary">
+            <th>Rubros de ingresos</th>
+            <th class="no-border-top text-center">M. de c&oacute;rdobas</th>
+            <th class="no-border-top text-center">%</th>
+        </tr>
+        </thead>
+        <tbody>
+        ```{% for row in rubros %}
+            ````<tr>
+                  {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
+                    <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
+                  {% else %}
+                    {% if row.ejecutado > 0 %}
                             <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
-                        {% endif %}
-                    {% endif %}
+                     {% endif %}
+                  {% endif %}
                 </tr>
             {% endfor %}
             <tr>
