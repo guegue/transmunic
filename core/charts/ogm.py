@@ -9,7 +9,7 @@ from itertools import chain
 from operator import itemgetter
 
 from django.db import connection
-from django.db.models import  Sum
+from django.db.models import Sum
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
@@ -769,7 +769,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         source_cuadro = GastoDetalle.objects.all()
     porano_table = {}
     ano_table = {}
-    ys = source_cuadro.order_by('subsubtipogasto__origen__nombre').values('subsubtipogasto__origen__nombre').distinct()
+    ys = source_cuadro.order_by('subsubtipogasto__origen__nombre').values(
+        'subsubtipogasto__origen__nombre').distinct()
     for y in ys:
         name = y['subsubtipogasto__origen__nombre']
         label = name if name else 'Sin Clasificar'
@@ -779,7 +780,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.\
                 filter(gasto__anio=ayear, gasto__periodo=periodo,
-                        subsubtipogasto__origen__nombre=name).\
+                       subsubtipogasto__origen__nombre=name).\
                 aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
             porano_table[label][ayear]['raw'] = value if value else ''
@@ -791,11 +792,11 @@ def ogm_chart(municipio=None, year=None, portada=False):
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
             value = GastoDetalle.objects.\
-                    filter(gasto__anio=year, gasto__periodo=periodo,
-                        subsubtipogasto__origen__nombre=name,
-                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
-                        gasto__municipio__clase__anio=year).\
-                    aggregate(total=Sum(quesumar))['total']
+                filter(gasto__anio=year, gasto__periodo=periodo,
+                       subsubtipogasto__origen__nombre=name,
+                       gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                       gasto__municipio__clase__anio=year).\
+                aggregate(total=Sum(quesumar))['total']
             if value:
                 value = value / mi_clase_count
             porano_table[label]['extra'] = value if value else '...'
