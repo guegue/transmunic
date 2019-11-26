@@ -11,7 +11,7 @@ from core.models import Anio, Proyecto, Inversion, Municipio, \
     InversionFuenteDetalle
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     AREAGEOGRAFICA_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, dictfetchall, glue, superglue, Percentage
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -764,6 +764,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     #for row in source:
     #    row['percent'] = round(row['ejecutado'] / total * 100, 1)
 
+    #calculando porcentaje de cada categoria y suma total de los porcentajes
+    total_asig_porcentaje = 0
+    total_ejec_porcentaje = 0
+    for row in cat3:
+        row['ini_asig_porcentaje'] = Percentage(row['asignado'], asignado)
+        total_asig_porcentaje += row['ini_asig_porcentaje']
+        row['ejec_porcentaje'] = Percentage(row['ejecutado'], ejecutado)
+        total_ejec_porcentaje += row['ejec_porcentaje']
+
+
     if source_clase:
         total_clase = source_clase.aggregate(total=Sum('clase'))['total']
         for row in source_clase:
@@ -802,7 +812,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'cat': cat3,
         'anuales': anual3,
         'ejecutado': ejecutado,
+        'ejecutado_porcentaje': total_ejec_porcentaje,
         'asignado': asignado,
+        'asignado_porcentaje': total_asig_porcentaje,
         'porclasep': porclasep,
         'periodo': periodo,
         'otros': otros,

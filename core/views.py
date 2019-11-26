@@ -334,7 +334,9 @@ def inversion_categoria_view(request):
         'periodo': data['periodo'],
         'municipio_list': data['municipio_list'],
         'asignado': data['asignado'],
+        'asignado_porcentaje': data['asignado_porcentaje'],
         'ejecutado': data['ejecutado'],
+        'ejecutado_porcentaje': data['ejecutado_porcentaje'],
         'bubble_data': bubble_source,
         'bubble_data_nojson': bubble_data
     }
