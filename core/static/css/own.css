@@ -72,6 +72,13 @@
     border-bottom: none !important;
 }
 
+.no-border-right {
+    border-right: none !important;
+}
+.no-border-left {
+    border-left: none !important;
+}
+
 .border-sides {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
