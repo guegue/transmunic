@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-5 table-responsive">
-                <table class="table table-condensed">
+                <table class="table table-bordered  table-condensed">
                     <thead>
                     <tr class="bg-primary">
                         <th>Rubros de gastos</th>
@@ -80,7 +80,7 @@
                         {% endif %}
                     </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <tr class="pma-bg-white">
                         <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                             propia a partir
@@ -156,7 +156,7 @@
             </div>
             <div class="container" id="detail-1">
                 <div class="row col-md-5 col-md-offset-4">
-                    <table class="table table-condensed pma-bg-white">
+                    <table class="table table-bordered  table-condensed pma-bg-white">
                         <thead>
                         <tr class="bg-primary">
                             <th>Categor&iacute;a de municipio</th> {% if periodo_list|keyvalue:year == 'I' %}
@@ -193,7 +193,7 @@
                             {% endif %}
                         </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot class="font-12px font-color-azul">
                         <tr>
                             <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
@@ -285,7 +285,7 @@
             <div id="detail-1" class="container">
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8 table-responsive">
-                        <table class="table table-condensed table-striped pma-bg-white">
+                        <table class="table table-bordered  table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-center"><strong>Posición</strong></th>
@@ -364,7 +364,7 @@
         </div>
         <div class="row">
             <div class="col-md-offset-2 col-md-7">
-                <table class="table table-condensed table-striped">
+                <table class="table table-bordered  table-condensed table-striped">
                     <thead>
                     <tr class="bg-primary">
                         <th>Rubros de gastos</th>
@@ -392,7 +392,7 @@
                         <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
                     </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <tr class="pma-bg-white">
                         <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                             propia a partir
@@ -414,7 +414,7 @@
 
         <div id="detail-2" class="row">
             <div class="col-md-12">
-                <table class="table table-condensed table-bordered">
+                <table class="table table-bordered  table-condensed table-bordered">
                     <thead>
                     <tr class="bg-primary">
                         <td colspan="2"></td>
@@ -531,7 +531,7 @@
                         {% endwith %}
                     </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <tr class="pma-bg-white">
                         <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                             propia a partir
@@ -647,7 +647,7 @@
                         {% endwith %}
                     </tr>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="font-12px font-color-azul">
                     <tr class="pma-bg-white">
                         <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                             propia a partir
@@ -760,7 +760,7 @@
                                 </td>
                             </tr>
                             </tbody>
-                            <tfoot>
+                            <tfoot class="font-12px font-color-azul">
                             <tr class="pma-bg-white">
                                 <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                     propia a partir
@@ -771,7 +771,7 @@
                     <div class="col-md-offset-2 col-md-8 text-center">
                         <h3>Gastos por per&iacute;odos por rubros</h3>
                         <hr class="pma-line-4"/>
-                        <table class="table">
+                        <table class="table table-bordered ">
                             <thead>
                             <tr class="bg-primary">
                                 <th></th>
@@ -791,7 +791,7 @@
                                 </tr>
                             {% endfor %}
                             </tbody>
-                            <tfoot>
+                            <tfoot class="font-12px font-color-azul">
                             <tr class="pma-bg-white">
                                 <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
                                     propia a partir

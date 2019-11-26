@@ -11,7 +11,8 @@ from core.models import Anio, Proyecto, Inversion, Municipio, \
     InversionFuenteDetalle
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     AREAGEOGRAFICA_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import (getYears, dictfetchall, glue, superglue, Percentage,
+                        xnumber)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -764,6 +765,21 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     #for row in source:
     #    row['percent'] = round(row['ejecutado'] / total * 100, 1)
 
+    actualizado_asignado = sum(xnumber(row.get('actualizado_asignado')) for row in cat3)
+
+    #calculando porcentaje de cada categoria y suma total de los porcentajes
+    total_asig_porcentaje = 0
+    total_ejec_porcentaje = 0
+    total_act_porcentaje = 0
+    for row in cat3:
+        row['ini_asig_porcentaje'] = Percentage(row['asignado'], asignado)
+        total_asig_porcentaje += row['ini_asig_porcentaje']
+        row['act_porcentaje'] = Percentage(row.get('actualizado_asignado'), actualizado_asignado)
+        total_act_porcentaje += row['act_porcentaje']
+        row['ejec_porcentaje'] = Percentage(row['ejecutado'], ejecutado)
+        total_ejec_porcentaje += row['ejec_porcentaje']
+
+
     if source_clase:
         total_clase = source_clase.aggregate(total=Sum('clase'))['total']
         for row in source_clase:
@@ -776,20 +792,36 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     # tabla: get inversions por año
     porano_table = {}
+    ano_table = {}
     ys = source_ultimos.order_by('catinversion__nombre').values('catinversion__nombre').distinct()
     for y in ys:
-        label = y['catinversion__nombre']
+        name = y['catinversion__nombre']
+        label = name if name else 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
             value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear] = value if value else ''
+            porano_table[label][ayear] = {}
+            porano_table[label][ayear]['raw'] = value if value else ''
+
+            if not ayear in ano_table:
+                ano_table[ayear] = 0
+            ano_table[ayear] += value if value else 0
+
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=label, \
+            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=name, \
                     inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
                     aggregate(total=Avg(quesumar))['total']
-            porano_table[label]['extra'] = value if value else '...'
+            porano_table[name]['extra'] = value if value else '...'
+
+    for y in ys:
+        name = y['catinversion__nombre']
+        label = name if name else 'Sin Clasificar'
+        for ayear in year_list:
+            if porano_table[label][ayear]['raw']:
+                porano_table[label][ayear]['percent'] = format(
+                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     charts = [pie, bar]
 
@@ -802,7 +834,10 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'cat': cat3,
         'anuales': anual3,
         'ejecutado': ejecutado,
+        'ejecutado_porcentaje': total_ejec_porcentaje,
         'asignado': asignado,
+        'asignado_porcentaje': total_asig_porcentaje,
+        'actualizado_porcentaje': actualizado_asignado,
         'porclasep': porclasep,
         'periodo': periodo,
         'otros': otros,

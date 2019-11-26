@@ -29,6 +29,19 @@ def xnumber(number):
     except:
         return 0
 
+def Percentage(dividend, divider):
+
+    print dividend,divider
+
+    if not dividend:
+        return 0
+    if not divider:
+        return 0
+    if divider == 0:
+        return 0
+
+    return round(dividend / xnumber(divider) * 100, 1)
+
 def getPeriods(model):  # ;)
     "Gets all years and their period with data from a model.anio"
 

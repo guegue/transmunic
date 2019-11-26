@@ -155,3 +155,6 @@
 .pe-7s-bubble:before {
 	content: "\e649";
 }
+.pe-7s-info:before {
+	content: "\e647";
+}
