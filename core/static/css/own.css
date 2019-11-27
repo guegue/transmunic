@@ -25,6 +25,9 @@
 .mt-0 {
     margin-top: 0 !important;
 }
+.mt-1 {
+    margin-top: 1em;
+}
 
 .info-box-number,
 .bubbletree .bubbletree-amount,
@@ -57,6 +60,9 @@
 .font-color-azul{
     color: #4949a5aa;
 }
+.font-color-black{
+    color: #000;
+}
 
 .ver-mas {
     height: 65px;
@@ -75,7 +81,7 @@
 .no-border-right {
     border-right: none !important;
 }
-.no-border-left {
+.no-border-left {]
     border-left: none !important;
 }
 
