@@ -3,12 +3,12 @@ from datetime import date
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.views.generic import FormView, DetailView
-
+from django.views.generic import FormView, DetailView, TemplateView
+from django.db.models import F
 from openpyxl import load_workbook
 
-from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
-                         IngresoRenglon)
+from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso,
+                         SubSubTipoIngreso, IngresoRenglon)
 from core.forms import UploadExcelForm
 from core.tools import xnumber
 
@@ -37,26 +37,26 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row):
             if subsubtipo == '00':
                 if subtipo == '00':
                     if tipo == '00':
-                        raise('Tipo no puede ser 00')
+                        raise ('Tipo no puede ser 00')
                     tipo, created = TipoIngreso.objects.get_or_create(codigo=codigo,
                                                                       defaults={'nombre': nombre})
                 else:
-                    subsubtipo, created = SubTipoIngreso.\
+                    subsubtipo, created = SubTipoIngreso. \
                         objects.get_or_create(codigo=codigo, tipoingreso_id=tipo_id,
                                               defaults={'nombre': nombre})
             else:
-                subsubtipo, created = SubSubTipoIngreso.\
+                subsubtipo, created = SubSubTipoIngreso. \
                     objects.get_or_create(codigo=codigo, subtipoingreso_id=subtipo_id,
                                           defaults={'nombre': nombre})
         else:
             # entrada en detalle (referencia a renglon)
-            renglon, created = IngresoRenglon.\
+            renglon, created = IngresoRenglon. \
                 objects.get_or_create(codigo=codigo,
                                       defaults={'subsubtipoingreso_id': subsubtipo_id,
                                                 'nombre': nombre})
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
-            ingresodetalle, created = IngresoDetalle.\
+            ingresodetalle, created = IngresoDetalle. \
                 objects.update_or_create(codigo_id=codigo, ingreso=ingreso,
                                          defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre, 'tipoingreso_id': tipo_id,
@@ -80,7 +80,7 @@ class UploadExcelView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        if hasattr(self.request.user, 'profile') and\
+        if hasattr(self.request.user, 'profile') and \
                 self.request.user.profile.municipio != data['municipio']:
             raise PermissionDenied("Limite de municipio excedido {} <> {}.".
                                    format(self.request.user.profile.municipio, data['municipio']))
@@ -93,3 +93,28 @@ class UploadExcelView(LoginRequiredMixin, FormView):
 
 class IngresoDetailView(LoginRequiredMixin, DetailView):
     model = Ingreso
+
+
+class ReglonIngresosView(LoginRequiredMixin, TemplateView):
+    template_name = 'reglon_ingreso.html'
+
+    def get_context_data(self, **kwargs):
+        print self.request.GET.getlist('reglon[][]')
+        context = {}
+        tipos_ingresos = IngresoRenglon.objects. \
+            order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
+            values(tipo_ing_codigo=
+                   F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
+                   tipo_ing_nombre=
+                   F('subsubtipoingreso__subtipoingreso__tipoingreso__nombre')). \
+            distinct()
+
+        for row in tipos_ingresos:
+            ingreso_reglon = IngresoRenglon.objects. \
+                filter(subsubtipoingreso__subtipoingreso__tipoingreso__codigo=
+                       row['tipo_ing_codigo']). \
+                values('codigo', 'nombre').all()
+            row['ingreso_reglon'] = ingreso_reglon
+
+        context['tipos_ingresos'] = tipos_ingresos
+        return context
