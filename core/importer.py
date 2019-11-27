@@ -110,7 +110,7 @@ class ReglonIngresosView(LoginRequiredMixin, TemplateView):
         for row in tipos_ingresos:
             ingreso_reglon = IngresoRenglon.objects. \
                 filter(
-                subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
+                    subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
                 values('codigo', 'nombre').all()
             row['ingreso_reglon'] = ingreso_reglon
 
