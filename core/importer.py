@@ -103,18 +103,13 @@ class ReglonIngresosView(LoginRequiredMixin, TemplateView):
         context = {}
         tipos_ingresos = IngresoRenglon.objects. \
             order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
-            values(tipo_ing_codigo=
-                   F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
-                   tipo_ing_nombre=
-                   F('subsubtipoingreso__subtipoingreso__tipoingreso__nombre')). \
+            values(tipo_ing_codigo=F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
+                   tipo_ing_nombre=F('subsubtipoingreso__subtipoingreso__tipoingreso__nombre')). \
             distinct()
 
         for row in tipos_ingresos:
-            ingreso_reglon = IngresoRenglon. \
-                objects. \
-                filter(
-                subsubtipoingreso__subtipoingreso__tipoingreso__codigo=
-                row['tipo_ing_codigo']). \
+            ingreso_reglon = IngresoRenglon.objects. \
+                filter(subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
                 values('codigo', 'nombre').all()
             row['ingreso_reglon'] = ingreso_reglon
 
