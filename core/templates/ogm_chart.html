@@ -26,6 +26,59 @@
                 del per&iacute;odo
             </h2>
             <hr class="pma-line-2">
+
+             <div class="row pma-header-summary wide">
+                    {% block indicator_summary %}
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-icon initial">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number font-17px">
+                                        <strong>Inicial {{ asignado|million|intcomma }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon pma-icon executed">
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number font-17px">
+                                        <strong>Cierre {{ ejecutado|million|intcomma }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% if municipio %}
+                            <div class="col-xs-12 col-sm-12 col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon pma-icon municipality-category">
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-number font-17px">
+                                            <strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-xs-12 col-sm-12 col-md-4">
+                                <div class="info-box">
+                                    <span class="info-box-icon pma-icon pe-7s-date">
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-number font-17px">
+                                            <strong>Año {{ year }}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+
             <div class="col-xs-12 col-sm-12 col-md-7">
                 <div class="chart-update col-xs-12 col-sm-12 col-md-1 float-left">
                     <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
