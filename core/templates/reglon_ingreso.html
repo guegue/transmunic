@@ -1,84 +1,86 @@
 {% extends "base.html" %}
 {% block main_content %}
-    <br>
-    <br>
-    <br>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-11 col-lg-11" style="margin-left: 19%">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <h4>
-                        <strong>Formulario de importaci&oacute;n</strong>
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                    </h4>
-
-                    <div class="form-group row">
-                        <label for="" class="col-md-12 col-form-label">{{ form.municipio.label }}</label>
-                        <div class="col-md-8">
-                            {{ form.municipio }}
-                        </div>
-                    </div>
-
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <form action="." method="GET">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group row">
-                                <label for="" class="col-md-12 col-form-label">{{ form.year.label }}</label>
-                                <div class="col-md-12">
-                                    {{ form.year }}
-                                </div>
+                        {% csrf_token %}
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h3>Ingresos</h3>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <input type="submit" value="Submit" class="btn btn-primary">
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 mt-1">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+                                {% for tipo_ingreso in tipos_ingresos %}
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading{{ forloop.counter0 }}">
+                                            <h4 class="panel-title font-color-black">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion"
+                                                   href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
+                                                   aria-controls="collapse{{ forloop.counter0 }}">
+                                                    <strong>{{ tipo_ingreso.tipo_ing_nombre }}</strong>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse{{ forloop.counter0 }}"
+                                             class="panel-collapse collapse {% if forloop.first %} in {% endif %}"
+                                             role="tabpanel"
+                                             aria-labelledby="heading{{ forloop.counter0 }}">
+                                            <div class="panel-body">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Rengl&oacute;n C&oacute;digo</th>
+                                                        <th class="text-center">Rengl&oacute;n Nombre</th>
+                                                        <th class="text-center">Asignado</th>
+                                                        <th class="text-center">Ejecutado</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for reglon in tipo_ingreso.ingreso_reglon %}
+                                                        <tr>
+                                                            <td class="text-center">{{ forloop.counter }}</td>
+                                                            <td>
+                                                                <input type="hidden"
+                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][{{ reglon.codigo }}]"
+                                                                       value="{{ reglon.codigo }}">
+                                                                {{ reglon.codigo }}
+                                                            </td>
+                                                            <td>{{ reglon.nombre }}</td>
+                                                            <td>
+                                                                <input type="number" class="form-control"
+                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][asignado]"
+                                                                       value="">
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" class="form-control"
+                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][ejecutado]"
+                                                                       value="">
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group row">
-                                <label for="" class="col-md-12 col-form-label">{{ form.periodo.label }}</label>
-                                <div class="col-md-12">
-                                    {{ form.periodo }}
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
 
-
-                    <div class="form-group row">
-                        <label for="" class="col-md-3 col-form-label" style="width: 23.6%;padding-top: 5px">
-                            Comenzar el registro desde la fila #:
-                        </label>
-                        <div class="col-md-2">
-                            {{ form.start_row }}
-                        </div>
-
-                        <label for="" class="col-md-2 col-form-label" style="width: 10%;padding-top: 5px">
-                            hasta la fila #:
-                        </label>
-                        <div class="col-md-2">
-                            {{ form.end_row }}
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="" class="col-md-3 col-form-label" style="width: 23.6%;padding-top: 5px">
-                            Adjuntar Archivo a importar:
-                        </label>
-                        <div class="col-md-5" style="width: 43.3%">
-                            {{ form.excel_file }}
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-3 col-lg-3 col-lg-offset-7 col-md-offset7">
-                            <input type="submit" value="Submit" class="btn btn-primary"
-                                   style="background-color: #337ab7;color: #fff;">
-                        </div>
-                    </div>
                 </form>
+
             </div>
         </div>
+
+
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
 {% endblock %}
