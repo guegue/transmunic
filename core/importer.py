@@ -134,8 +134,8 @@ class ReglonIngresosView(LoginRequiredMixin, TemplateView):
 
         context['tipos_ingresos'] = tipos_ingresos
         return context
-      
- 
+
+
 class ResultadoDetailView(LoginRequiredMixin, DetailView):
     template_name = 'import_results.html'
 
