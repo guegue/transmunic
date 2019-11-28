@@ -100,9 +100,9 @@ class UploadExcelView(LoginRequiredMixin, FormView):
             raise PermissionDenied("Limite de municipio excedido {} <> {}.".
                                    format(self.request.user.profile.municipio, data['municipio']))
         self.record = import_file(self.request.FILES['excel_file'], municipio=data['municipio'],
-                                   year=data['year'], periodo=data['periodo'],
-                                   start_row=data['start_row'], end_row=data['end_row'],
-                                   table=data['table'])
+                                  year=data['year'], periodo=data['periodo'],
+                                  start_row=data['start_row'], end_row=data['end_row'],
+                                  table=data['table'])
 
         return super(UploadExcelView, self).form_valid(form)
 
@@ -113,4 +113,3 @@ class ResultadoDetailView(LoginRequiredMixin, DetailView):
     def get_object(self):
         self.model = apps.get_model('core', self.kwargs['table'])
         return super(ResultadoDetailView, self).get_object()
-
