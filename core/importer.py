@@ -4,7 +4,7 @@ from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.views.generic import FormView, DetailView, TemplateView
+from django.views.generic import FormView, DetailView
 from django.db.models import F
 from openpyxl import load_workbook
 
@@ -12,7 +12,7 @@ from openpyxl import load_workbook
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
                          IngresoRenglon, Gasto, GastoDetalle, TipoGasto, SubTipoGasto,
                          SubSubTipoGasto, GastoRenglon)
-from core.forms import UploadExcelForm
+from core.forms import UploadExcelForm, RenglonIngresoForm
 from core.tools import xnumber
 
 
@@ -113,12 +113,17 @@ class IngresoDetailView(LoginRequiredMixin, DetailView):
     model = Ingreso
 
 
-class ReglonIngresosView(LoginRequiredMixin, TemplateView):
+class ReglonIngresosView(LoginRequiredMixin, FormView):
     template_name = 'reglon_ingreso.html'
+    form_class = RenglonIngresoForm
+    form = RenglonIngresoForm
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        self.send_mail(data)
+        return super(ReglonIngresosView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        print self.request.GET.getlist('reglon[][]')
-        context = {}
         tipos_ingresos = IngresoRenglon.objects. \
             order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
             values(tipo_ing_codigo=F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
@@ -132,6 +137,7 @@ class ReglonIngresosView(LoginRequiredMixin, TemplateView):
                 values('codigo', 'nombre').all()
             row['ingreso_reglon'] = ingreso_reglon
 
+        context = super(ReglonIngresosView, self).get_context_data(**kwargs)
         context['tipos_ingresos'] = tipos_ingresos
         return context
 
