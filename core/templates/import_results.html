@@ -7,7 +7,7 @@ Municipio: {{ object.municipio }}
 <br/>
 Año: {{ object.anio }}
 <br/>
-Detalles: {{ object.ingresodetalle_set.count }}
+Detalles: {{ object.ingresodetalle_set.count|default:object.gastodetalle_set.count }}
 <br/>
 Fecha de importación: {{ object.fecha }}
 <br/>
