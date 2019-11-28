@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form action="." method="GET">
+                <form action="." method="POST">
                     <div class="row">
                         {% csrf_token %}
 
@@ -65,20 +65,20 @@
                                                             <td class="text-center">{{ forloop.counter }}</td>
                                                             <td>
                                                                 <input type="hidden"
-                                                                       name="reglon[{{ forloop.counter0 }}][codigo]"
+                                                                       name="reglon[]"
                                                                        value="{{ reglon.codigo }}">
                                                                 {{ reglon.codigo }}
                                                             </td>
                                                             <td>{{ reglon.nombre }}</td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[{{ forloop.counter0 }}][asignado]"
-                                                                       value="">
+                                                                       name="reglon[]"
+                                                                       value="0">
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[{{ forloop.counter0 }}][ejecutado]"
-                                                                       value="">
+                                                                       name="reglon[]"
+                                                                       value="0">
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
