@@ -9,7 +9,8 @@ from django.views.generic import FormView, DetailView
 from openpyxl import load_workbook
 
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
-                         IngresoRenglon)
+                         IngresoRenglon, Gasto, GastoDetalle, TipoGasto, SubTipoGasto,
+                         SubSubTipoGasto, GastoRenglon)
 from core.forms import UploadExcelForm
 from core.tools import xnumber
 
@@ -67,7 +68,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
 
-            lookup_dict = {'codigo': codigo, table: main_object}
+            lookup_dict = {'codigo_id': codigo, table: main_object}
             detalle, created = t['detalle'].\
                 objects.update_or_create(defaults={'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre,
@@ -90,8 +91,8 @@ class UploadExcelView(LoginRequiredMixin, FormView):
         return kwargs
 
     def get_success_url(self):
-        table = record._meta.model_name
-        return reverse('{}-detail'.format(table), kwargs={'pk': self.record.pk})
+        table = self.record._meta.model_name
+        return reverse('importar-resultado', kwargs={'table': table, 'pk': self.record.pk})
 
     def form_valid(self, form):
         data = form.cleaned_data
