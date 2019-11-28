@@ -120,8 +120,10 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        self.send_mail(data)
         return super(ReglonIngresosView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('regloningreso')
 
     def get_context_data(self, **kwargs):
         tipos_ingresos = IngresoRenglon.objects. \
