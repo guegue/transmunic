@@ -31,10 +31,10 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                                                      periodo=periodo, defaults={'fecha': today})
 
     for row in sheet[start_row:end_row]:
-        joined = unicode(row[0].value)
+        joined = unicode(row[0].value).replace(u'\xa0', u' ').strip()
         if ' ' not in joined:
             continue
-        (codigo, nombre) = row[0].value.split(' ', 1)
+        (codigo, nombre) = joined.split(' ', 1)
         tipo = codigo[0:2]
         tipo_id = "{}000000".format(tipo)
         subtipo = codigo[2:4]
