@@ -1,6 +1,7 @@
-.font-12px{
+.font-12px {
     font-size: 12px;
 }
+
 .font-13px {
     font-size: 13px;
 }
@@ -25,6 +26,7 @@
 .mt-0 {
     margin-top: 0 !important;
 }
+
 .mt-1 {
     margin-top: 1em;
 }
@@ -54,13 +56,16 @@
 .font-color-white {
     color: white;
 }
-.font-color-celeste{
+
+.font-color-celeste {
     color: #00a7b2;
 }
-.font-color-azul{
+
+.font-color-azul {
     color: #4949a5aa;
 }
-.font-color-black{
+
+.font-color-black {
     color: #000;
 }
 
@@ -81,6 +86,7 @@
 .no-border-right {
     border-right: none !important;
 }
+
 .no-border-left {
     border-left: none !important;
 }
@@ -127,20 +133,48 @@
 .tabs-left > li.active > a:hover {
     background-color: transparent;
     border: none;
-    border-bottom-color:  transparent;
+    border-bottom-color: transparent;
     border-right-color: transparent;
     border-radius: 0;
     margin: 0;
 }
 
-.tabs-left > li.active > a > span{
+.tabs-left > li.active > a > span {
     color: #00a7b3;
 }
 
-.height-categoria{
+.height-categoria {
     height: 115px;
 }
 
-.pma-gradient{
+.pma-gradient {
     background-color: #48a1b1;
+}
+
+.greater {
+    background-image: linear-gradient(45deg, #423638, #4f4345, #615559, #4f4345);
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+    height: 100px;
+    margin-top: 1em;
+}
+
+.draw {
+    height: 110px;
+    margin-top: 1em;
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+    background-color: pink;
+}
+
+#greater-middle-lower .draw:nth-child(1) {
+    background-image: linear-gradient(10deg, #5f5355 35%, #55494b 50%, #413537 60%);
+}
+
+#greater-middle-lower .draw:nth-child(2) {
+    background: linear-gradient(10deg, #7d7e80 35%, #7b7c7e 50%, #696a6c 60%);
+}
+
+#greater-middle-lower .draw:nth-child(3) {
+    background: linear-gradient(10deg, #ec3f4c 35%, #ec3642 50%, #ea212c 60%);
 }
