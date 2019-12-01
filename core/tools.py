@@ -31,8 +31,6 @@ def xnumber(number):
 
 def Percentage(dividend, divider):
 
-    print dividend,divider
-
     if not dividend:
         return 0
     if not divider:

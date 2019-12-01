@@ -52,9 +52,6 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                                                                       defaults={'nombre': nombre})
                 else:
                     lookup_dict = {'codigo': codigo, 'tipo{}_id'.format(table): tipo_id}
-                    print(lookup_dict)
-                    print("OK")
-                    print(t['subtipo'])
                     subsubtipo, created = t['subtipo'].objects.\
                         get_or_create(defaults={'nombre': nombre}, **lookup_dict)
             else:
@@ -117,7 +114,6 @@ class ReglonIngresosView(LoginRequiredMixin, TemplateView):
     template_name = 'reglon_ingreso.html'
 
     def get_context_data(self, **kwargs):
-        print self.request.GET.getlist('reglon[][]')
         context = {}
         tipos_ingresos = IngresoRenglon.objects. \
             order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
