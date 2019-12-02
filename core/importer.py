@@ -120,16 +120,16 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        #get the data from the form
+        # get the data from the form
         renglon_codigo = self.request.POST.getlist('renglon[codigo]')
         municipio = self.request.POST.get('municipio')
         anio = self.request.POST.get('year')
         periodo = self.request.POST.get('periodo')
 
-        #obteniendo detalles del municipio seleccionado
+        # obteniendo detalles del municipio seleccionado
         municipio = Municipio.objects.filter(id=municipio).first()
 
-        #insertando en core_ingreso
+        # insertando en core_ingreso
         ingreso = Ingreso()
         ingreso.fecha = date.today()
         ingreso.departamento_id = municipio.depto_id
@@ -138,9 +138,9 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         ingreso.periodo = periodo
         ingreso.save()
 
-        #insertando en core_ingresodetalle
+        # insertando en core_ingresodetalle
         for codigo in renglon_codigo:
-            #obteniendo el asignado y ejecutado de un renglon
+            # obteniendo el asignado y ejecutado de un renglon
             renglon_asignado = self.request.POST.get('renglon_{}_asignado'.format(codigo))
             renglon_ejecutado = self.request.POST.get('renglon_{}_ejecutado'.format(codigo))
             if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) > 0:
@@ -151,7 +151,7 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
                            id_tipo=F('subtipoingreso__tipoingreso_id')). \
                     first()
 
-                #guardando el detalle de cada renglon
+                # guardando el detalle de cada renglon
                 ingreso_detalle = IngresoDetalle()
                 ingreso_detalle.codigo_id = codigo
                 ingreso_detalle.asignado = xnumber(renglon_asignado)
@@ -178,7 +178,7 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         for row in tipos_ingresos:
             ingreso_renglon = IngresoRenglon.objects. \
                 filter(
-                subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
+                    subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
                 values('codigo', 'nombre').all()
             row['ingreso_renglon'] = ingreso_renglon
 
