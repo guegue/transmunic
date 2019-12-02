@@ -11,7 +11,7 @@ report.autodiscover()
 
 urlpatterns = [
     url(r'^importar/$', UploadExcelView.as_view()),
-    url(r'^reglon/ingresos/$', ReglonIngresosView.as_view(), name='regloningreso'),
+    url(r'^renglon/ingresos/$', ReglonIngresosView.as_view(), name='rengloningreso'),
     url(r'^resultado/(?P<table>ingreso|gasto)/(?P<pk>\d+)/$', ResultadoDetailView.as_view(),
         name='importar-resultado'),
     url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
