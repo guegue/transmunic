@@ -28,10 +28,10 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     sheet = book.active
     today = date.today()
     main_object, created = t['main'].objects.\
-                    get_or_create(municipio=municipio,
-                                  anio=year,
-                                  periodo=periodo,
-                                  defaults={'fecha': today})
+        get_or_create(municipio=municipio,
+                      anio=year,
+                      periodo=periodo,
+                      defaults={'fecha': today})
 
     for row in sheet[start_row:end_row]:
         joined = unicode(row[0].value)
@@ -123,7 +123,7 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         form.cleaned_data
-        #get the data from the form
+        # get the data from the form
         renglon_codigo = self.request.POST.getlist('renglon[codigo]')
         municipio = self.request.POST.get('municipio')
         anio = self.request.POST.get('year')
