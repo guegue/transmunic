@@ -60,24 +60,24 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {% for reglon in tipo_ingreso.ingreso_reglon %}
+                                                    {% for renglon in tipo_ingreso.ingreso_renglon %}
                                                         <tr>
                                                             <td class="text-center">{{ forloop.counter }}</td>
                                                             <td>
                                                                 <input type="hidden"
-                                                                       name="reglon[]"
-                                                                       value="{{ reglon.codigo }}">
-                                                                {{ reglon.codigo }}
+                                                                       name="renglon[codigo]"
+                                                                       value="{{ renglon.codigo }}">
+                                                                {{ renglon.codigo }}
                                                             </td>
-                                                            <td>{{ reglon.nombre }}</td>
+                                                            <td>{{ renglon.nombre }}</td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[]"
+                                                                       name="renglon_{{ renglon.codigo }}_asignado"
                                                                        value="0">
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[]"
+                                                                       name="renglon_{{ renglon.codigo }}_ejecutado"
                                                                        value="0">
                                                             </td>
                                                         </tr>
