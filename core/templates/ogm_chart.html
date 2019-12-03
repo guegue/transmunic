@@ -270,7 +270,7 @@
                         <h2><strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong> <br>
                             Gasto por habitante
                         </h2>
-                        <h5>Córdobas corrientes por habitante en base a presupuesto
+                        <h5>C&oacute;rdobas corrientes por habitante en base a presupuesto
                             {% if periodo_list|keyvalue:year == 'I' %} inicial
                             {% else %}
                                 {% if periodo_list|keyvalue:year == 'A' %} ejecuci&oacute;n intermedia
@@ -319,12 +319,12 @@
                         <table class="table table-bordered  table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
-                                <th class="text-center"><strong>Posición</strong></th>
+                                <th class="text-center"><strong>Posici&oacute;n</strong></th>
                                 <th class="text-center"><strong>Municipios</strong></th>
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-center"><strong>P. Inicial</strong></th>
                                 {% else %}
-                                    <th class="text-center"><strong>Ejecución</strong></th></tr>
+                                    <th class="text-center"><strong>Ejecuci&oacute;n</strong></th></tr>
                                 {% endif %}
                             </thead>
                             {% if ejecutado <= 0 %}
@@ -391,7 +391,7 @@
                 <h2>
                     <strong>Modificaciones al presupuesto municipal de gastos</strong>
                 </h2>
-                <h4>Millones de córdobas corrientes </h4>
+                <h4>Millones de c&oacute;rdobas corrientes </h4>
                 <hr class="pma-line-3"/>
             </div>
         </div>
@@ -470,16 +470,16 @@
                     <tr class="bg-primary">
                         <td colspan="2"></td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificación intermedia
+                            <h4>Modificaci&oacute;n intermedia
                                 <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificación al {{ year_data.actualizado }}"
+                                   data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
                                    class="link-info">*</a>
                             </h4>
                         </td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificación al cierre
+                            <h4>Modificaci&oacute;n al cierre
                                 <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificación al {{ year_data.final }}" class="link-info">*</a>
+                                   data-original-title="Modificaci&oacute;n al {{ year_data.final }}" class="link-info">*</a>
                             </h4>
                         </td>
                     </tr>
@@ -487,7 +487,7 @@
                         <th>Rubros de gastos</th>
                         <th>Inicial</th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th>
                             <a href="#" data-toggle="tooltip"
@@ -495,7 +495,7 @@
                                class="link-info font-color-white">%</a>
                         </th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip"
                                data-original-title="Ejecutado/Actualizado"
@@ -603,7 +603,7 @@
             <div class="col-md-12 text-center">
                 <h3><strong>Modificaciones al presupuesto municipal de gastos</strong><br/>Gasto de personal permanente
                 </h3>
-                <h4>Millones de córdobas corrientes</h4>
+                <h4>Millones de c&oacute;rdobas corrientes</h4>
                 <hr class="pma-line-4"/>
             </div>
             <div class="col-md-12">
@@ -612,21 +612,21 @@
                     <tr class="bg-primary">
                         <td colspan="2"></td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificación{% if year_data.actualizado %} al {{ year_data.actualizado }}{% else %}
+                            <h4>Modificaci&oacute;n{% if year_data.actualizado %} al {{ year_data.actualizado }}{% else %}
                                 Inicial{% endif %}</h4></td>
-                        <td colspan="4"><h4>Modificación al {{ year_data.final }}</h4>
+                        <td colspan="4"><h4>Modificaci&oacute;n al {{ year_data.final }}</h4>
                         </td>
                     </tr>
                     <tr class="bg-primary">
                         <th>Rubros de gastos</th>
                         <th>Inicial</th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                class="link-info blanco">%</a></th>
                         <th>Actualizado</th>
-                        <th>Modificación</th>
+                        <th>Modificaci&oacute;n</th>
                         <th>Ejecutado</th>
                         <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
                                class="blanco">%</a></th>
@@ -726,8 +726,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 historico">
-                <h2>Información Histórica<br>
-                    <strong>Ejecución presupuestaria del gasto {% if not municipio %}Consolidado
+                <h2>Informaci&oacute;n Hist&oacute;rica<br>
+                    <strong>Ejecuci&oacute;n presupuestaria del gasto {% if not municipio %}Consolidado
                         municipal {% endif %}</strong></h2>
                 <hr class="pma-line-3"/>
                 <section class="cd-horizontal-timeline loaded historico">
