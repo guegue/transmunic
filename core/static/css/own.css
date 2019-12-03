@@ -9,6 +9,9 @@
 .font-17px {
     font-size: 17px;
 }
+.font-35px {
+    font-size: 35px;
+}
 
 .height-rubro-home {
     height: 170px;
@@ -29,6 +32,10 @@
 
 .mt-1 {
     margin-top: 1em;
+}
+
+.pt-0_8{
+    padding-top: 0.8em;
 }
 
 .info-box-number,
