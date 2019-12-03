@@ -748,47 +748,49 @@ def ogm_chart(municipio=None, year=None, portada=False):
             }],
         chart_options=chart_options)
 
-    data_bar_horizontal = RawDataPool(
-            series=[
+    if otros:
+        data_bar_horizontal = RawDataPool(
+                series=[
+                    {
+                        'options': {'source': otros},
+                        'terms': [
+                            'gasto__municipio__nombre',
+                            '{}_percent'.format(quesumar)
+                        ]
+                    }
+                ]
+        )
+
+        #bar horizontal
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
                 {
-                    'options': {'source': otros},
-                    'terms': [
-                        'gasto__municipio__nombre',
-                        '{}_percent'.format(quesumar)
-                    ]
-                }
-            ]
-    )
-    #bar horizontal
-    bar_horizontal = Chart(
-        datasource=data_bar_horizontal,
-        series_options=[
-            {
-                'options': {
-                    'type': 'bar',
-                    'colorByPoint': True,
-                },
-                'terms': {
-                    'gasto__municipio__nombre': [
-                        '{}_percent'.format(quesumar)
-                    ]
-                },
-            }],
-        chart_options={
-            'title': {
-                'text':'Ranking de municipio categoría'
-            },
-            'xAxis': {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'gasto__municipio__nombre': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
                 'title': {
-                    'text': 'Municipio'
+                    'text':'Ranking de municipio categoría'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
                 }
-            },
-            'yAxis': {
-                'title': {
-                    'text': 'Gasto por habitante'
-                }
-            }
-        })
+            })
 
     # tabla: get total and percent
     total = {}
