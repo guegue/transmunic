@@ -32,6 +32,8 @@
     <link href="{% static 'css/menu.css' %}" rel="stylesheet">
     <link href="{% static 'css/own.css' %}" rel="stylesheet">
     <script src="{% static 'js/jquery.min.js' %}"></script>
+
+
     <!-- <script src="{% static 'highcharts.js' %}"></script> -->
     <script src="{% static 'js/jquery.imagemapster.js' %}"></script>
 
@@ -174,7 +176,7 @@
 
 					});
 				//add active class on menu
-				$('ul li').click(function(e) {
+				$('#top-menu ul li').click(function(e) {
 					e.preventDefault();
 					$('li').removeClass('active');
 					$(this).addClass('active');

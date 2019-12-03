@@ -660,7 +660,6 @@ def gpersonal_chart(request):
 
     # Bubble tree data
     bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)
-    print bubble_source
 
     #Descarga en Excel
     reporte = request.POST.get("reporte","")

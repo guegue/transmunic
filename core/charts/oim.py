@@ -730,6 +730,12 @@ def oim_chart(municipio=None, year=None, portada=False):
     actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
     for row in rubros:
+        if 'ejecutado' not in row:
+            row['ejecutado'] = 0
+        if 'inicial_asignado' not in row:
+            row['inicial_asignado'] = 0
+        if 'actualizado_asignado' not in row:
+            row['actualizado_asignado'] = 0
         row['ejecutado_percent'] = 0
         row['actualizado_asignado_percent'] = 0
         row['inicial_asignado_percent'] = 0
