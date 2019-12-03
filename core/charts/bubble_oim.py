@@ -18,6 +18,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
     else:
         data_source = 'ejecutado'
 
+    saldo_caja = '39000000'
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
         municipio_id = municipio_row.id
@@ -34,12 +35,13 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             where i.anio = %s
             and i.periodo = %s
             and i.municipio_id = %s
+            and id.tipoingreso_id != %s
             and origen_id is not null)
         as sd
         left join core_origenrecurso as o
         on sd.origen_id=o.id"""
         cursor = connection.cursor()
-        cursor.execute(level_0_sql, [year_data.anio, periodo, municipio_id])
+        cursor.execute(level_0_sql, [year_data.anio, periodo, municipio_id,saldo_caja])
         totals = dictfetchall(cursor)
         if totals[0][data_source] is not None:
             data = {
@@ -66,13 +68,14 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 where i.anio = %s
                 and i.periodo = %s
                 and i.municipio_id = %s
+                and id.tipoingreso_id != %s
                 and origen_id is not null)
             as sd
             left join core_origenrecurso as o
             on sd.origen_id=o.id
             group by nombre, shortname, id"""
         cursor = connection.cursor()
-        cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id])
+        cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id,saldo_caja])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             source_data = {
@@ -102,12 +105,13 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     where i.anio = %s
                     and i.periodo = %s
                     and i.municipio_id = %s
+                    and id.tipoingreso_id != %s
                     and ssti.origen_id = '%s') as sd
                 group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
             cursor.execute(
                 level_2_sql,
-                [year_data.anio, periodo, municipio_id, source['id']])
+                [year_data.anio, periodo, municipio_id, saldo_caja, source['id']])
             subtype_list = dictfetchall(cursor)
 
             for subtype in subtype_list:
@@ -133,10 +137,11 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 on id.subsubtipoingreso_id=ssti.codigo
                 where i.anio = %s
                 and i.periodo = %s
+                and id.tipoingreso_id != %s
                 and origen_id is not null) as sd
             left join core_origenrecurso as o on sd.origen_id=o.id"""
         cursor = connection.cursor()
-        cursor.execute(level_0_sql, [year_data.anio, periodo])
+        cursor.execute(level_0_sql, [year_data.anio, periodo,saldo_caja])
         totals = dictfetchall(cursor)
         data = {
             'label': "Ingresos Totales",
@@ -156,12 +161,13 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 on id.subsubtipoingreso_id=ssti.codigo
                 where i.anio = %s
                 and i.periodo = %s
+                and id.tipoingreso_id != %s
                 and origen_id is not null) as sd
             left join core_origenrecurso as o
             on sd.origen_id=o.id
             group by nombre, shortname, id"""
         cursor = connection.cursor()
-        cursor.execute(level_1_sql, [year_data.anio, periodo])
+        cursor.execute(level_1_sql, [year_data.anio, periodo,saldo_caja])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             source_data = {
@@ -188,12 +194,13 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     on sti.codigo= ssti.subtipoingreso_id
                     where i.anio = %s
                     and i.periodo = %s
+                    and id.tipoingreso_id != %s
                     and ssti.origen_id = '%s') as sd
                 group by sd.nombre, sd.shortname, sd.codigo"""
             cursor = connection.cursor()
             cursor.execute(
                 level_2_sql,
-                [year_data.anio, periodo, source['id']])
+                [year_data.anio, periodo, saldo_caja,source['id']])
             subtype_list = dictfetchall(cursor)
 
             for subtype in subtype_list:
