@@ -287,40 +287,7 @@
 
             {% include 'ranking_municipio.html' %}
 
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ otros|length|mul:130 }}px;">
-                        <ol>
-                            {% for row in otros %}
-                                <li>
-                                    <a href="" data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                            {% if municipio.slug == row.gasto__municipio__slug %}
-                                       class="selected"{% endif %} style="left: {{ forloop.counter|mul:150 }}px;">
-                                        <span class="posicion">{{ forloop.counter }}</span><br/>
-                                        <span class="municipio_nombre">{{ row.gasto__municipio__nombre }}</span>
-                                        <br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado_percent %}
-                                                {{ row.asignado_percent|million|floatformat:2|intcomma }}{% else %}
-                                                0 {% endif %}</span><br/>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado_percent %}
-                                                {{ row.ejecutado_percent|floatformat:2|intcomma }} {% else %}
-                                                0 {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
 
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
             <div class="events-content container text-center">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
