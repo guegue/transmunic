@@ -750,18 +750,18 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
     if otros:
         data_bar_horizontal = RawDataPool(
-                series=[
-                    {
-                        'options': {'source': otros},
-                        'terms': [
-                            'gasto__municipio__nombre',
-                            '{}_percent'.format(quesumar)
-                        ]
-                    }
-                ]
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'gasto__municipio__nombre',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
         )
 
-        #bar horizontal
+        # bar horizontal
         bar_horizontal = Chart(
             datasource=data_bar_horizontal,
             series_options=[
@@ -778,7 +778,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }],
             chart_options={
                 'title': {
-                    'text':'Ranking de municipio categoría'
+                    'text': 'Ranking de municipio categoría'
                 },
                 'xAxis': {
                     'title': {
@@ -797,8 +797,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(
+            row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(
+            row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
