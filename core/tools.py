@@ -29,8 +29,8 @@ def xnumber(number):
     except:
         return 0
 
-def Percentage(dividend, divider):
 
+def percentage(dividend, divider):
     if not dividend:
         return 0
     if not divider:

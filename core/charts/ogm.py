@@ -15,7 +15,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import (Anio, GastoDetalle, Gasto, Municipio, TipoGasto)
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue, Percentage, xnumber
+from core.tools import getYears, dictfetchall, glue, superglue, percentage, xnumber
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -167,6 +167,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 'gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
         otros = glue(municipios_inicial, municipios_final,
                      'gasto__municipio__nombre', actualizado=municipios_actualizado)
+
         # inserta porcentages de total de gastos
         for row in otros:
             #total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
@@ -747,26 +748,66 @@ def ogm_chart(municipio=None, year=None, portada=False):
             }],
         chart_options=chart_options)
 
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'gasto__municipio__nombre',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
+        )
+
+        # bar horizontal
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'gasto__municipio__nombre': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
+                'title': {
+                    'text': 'Ranking de municipio categoría'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+
     # tabla: get total and percent
     total = {}
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = round(
+            row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
+        row['asignado_percent'] = round(
+            row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
 
     actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
     for row in rubros:
-        if 'ejecutado' not in row:
-            row['ejecutado'] = 0
-        if 'inicial_asignado' not in row:
-            row['inicial_asignado'] = 0
-        if 'actualizado_asignado' not in row:
-            row['actualizado_asignado'] = 0
-        row['ini_asig_porcentaje'] = Percentage(row['inicial_asignado'], asignado)
-        row['actualizado_porcentaje'] = Percentage(row.get('actualizado_asignado'), actualizado)
-        row['ejec_porcentaje'] = Percentage(row['ejecutado'], ejecutado)
+        row['ini_asig_porcentaje'] = percentage(row['inicial_asignado'], asignado)
+        row['actualizado_porcentaje'] = percentage(row.get('actualizado_asignado'), actualizado)
+        row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
 
     # tabla: get gastos por año
     if municipio:
@@ -818,7 +859,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     if portada:
         charts = (ejecutado_pie,)
     else:
-        charts = (pie, bar)
+        charts = (pie, bar, bar_horizontal)
 
     return {
         'charts': charts,

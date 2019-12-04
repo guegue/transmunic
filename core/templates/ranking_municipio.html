@@ -1,0 +1,125 @@
+{% load core_extras %}
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="container">
+            <div class="col-lg-6 col-md-6 col-sm-12" id="greater-middle-lower">
+                <div class="row">
+                    {% if periodo_list|keyvalue:year == 'I' %}
+                        {% for row in otros|dictsortreversed:'asignado_percent' %}
+                            {% if forloop.first and municipio.slug == row.gasto__municipio__slug %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif forloop.first %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif  municipio.slug == row.gasto__municipio__slug %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if forloop.last %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% for row in otros|dictsortreversed:'ejecutado_percent' %}
+                            {% if forloop.first and municipio.slug == row.gasto__municipio__slug %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif forloop.first %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif  municipio.slug == row.gasto__municipio__slug %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if forloop.last %}
+                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                            <span class="font-35px">{{ forloop.counter }}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                            <p class="font-17px">{{ row.gasto__municipio__nombre }}</p>
+                                            <p class="font-17px info-box-number">{{ row.ejecutado_percent }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

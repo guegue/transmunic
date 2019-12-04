@@ -11,7 +11,7 @@ from core.models import Anio, Proyecto, Inversion, Municipio, \
     InversionFuenteDetalle
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     AREAGEOGRAFICA_VERBOSE
-from core.tools import (getYears, dictfetchall, glue, superglue, Percentage,
+from core.tools import (getYears, dictfetchall, glue, superglue, percentage,
                         xnumber)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
@@ -772,11 +772,11 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     total_ejec_porcentaje = 0
     total_act_porcentaje = 0
     for row in cat3:
-        row['ini_asig_porcentaje'] = Percentage(row['asignado'], asignado)
+        row['ini_asig_porcentaje'] = percentage(row['asignado'], asignado)
         total_asig_porcentaje += row['ini_asig_porcentaje']
-        row['act_porcentaje'] = Percentage(row.get('actualizado_asignado'), actualizado_asignado)
+        row['act_porcentaje'] = percentage(row.get('actualizado_asignado'), actualizado_asignado)
         total_act_porcentaje += row['act_porcentaje']
-        row['ejec_porcentaje'] = Percentage(row['ejecutado'], ejecutado)
+        row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
         total_ejec_porcentaje += row['ejec_porcentaje']
 
 
