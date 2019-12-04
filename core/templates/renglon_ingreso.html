@@ -3,13 +3,30 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form action="." method="GET">
+                <form action="." method="POST">
                     <div class="row">
                         {% csrf_token %}
+
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <h3>Ingresos</h3>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12">
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for=""> {{ form.municipio.label }}</label>
+                            {{ form.municipio }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for="">{{ form.year.label }}</label>
+                            {{ form.year }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for="">{{ form.periodo.label }}</label>
+                            {{ form.periodo }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3" style="margin-top: 1.7em">
                             <input type="submit" value="Submit" class="btn btn-primary">
                         </div>
 
@@ -43,25 +60,25 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {% for reglon in tipo_ingreso.ingreso_reglon %}
+                                                    {% for renglon in tipo_ingreso.ingreso_renglon %}
                                                         <tr>
                                                             <td class="text-center">{{ forloop.counter }}</td>
                                                             <td>
                                                                 <input type="hidden"
-                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][{{ reglon.codigo }}]"
-                                                                       value="{{ reglon.codigo }}">
-                                                                {{ reglon.codigo }}
+                                                                       name="renglon[codigo]"
+                                                                       value="{{ renglon.codigo }}">
+                                                                {{ renglon.codigo }}
                                                             </td>
-                                                            <td>{{ reglon.nombre }}</td>
+                                                            <td>{{ renglon.nombre }}</td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][asignado]"
-                                                                       value="">
+                                                                       name="renglon_{{ renglon.codigo }}_asignado"
+                                                                       value="0">
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control"
-                                                                       name="reglon[{{ tipo_ingreso.tipo_ing_codigo }}][{{ forloop.counter0 }}][ejecutado]"
-                                                                       value="">
+                                                                       name="renglon_{{ renglon.codigo }}_ejecutado"
+                                                                       value="0">
                                                             </td>
                                                         </tr>
                                                     {% endfor %}

@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Sum, Max, Min
 
@@ -85,6 +86,7 @@ class Anio(models.Model):
     inicial = models.DateField(null=True, blank=True)
     actualizado = models.DateField(null=True, blank=True)
     final = models.DateField(null=True, blank=True)
+    mapping = JSONField()
 
     class Meta:
         verbose_name = u'Año'
@@ -281,7 +283,7 @@ class Ingreso(models.Model):
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
         Municipio, chained_field='departamento',
-        chained_model_field='depto', null=True, blank=True)
+        chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -330,13 +332,18 @@ class Gasto(models.Model):
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
-            Municipio, chained_field='departamento',
-            chained_model_field='depto', null=True, blank=True)
+        Municipio, chained_field='departamento',
+        chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]
         ordering = ['anio', 'periodo', 'municipio']
+
+    def save(self, *args, **kwargs):
+        if not self.departamento_id and self.municipio_id:
+            self.departamento_id = self.municipio.depto_id
+        super(Gasto, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u"{}:{}:{}".format(self.anio, self.periodo, self.municipio)
