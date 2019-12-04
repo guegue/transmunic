@@ -27,57 +27,57 @@
             </h2>
             <hr class="pma-line-2">
 
-             <div class="row pma-header-summary wide">
-                    {% block indicator_summary %}
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="info-box">
+            <div class="row pma-header-summary wide">
+                {% block indicator_summary %}
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="info-box">
                                 <span class="info-box-icon pma-icon initial">
                                 </span>
-                                <div class="info-box-content">
+                            <div class="info-box-content">
                                     <span class="info-box-number font-17px">
                                         <strong>Inicial {{ asignado|million|intcomma }}</strong>
                                     </span>
-                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="info-box">
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="info-box">
                                 <span class="info-box-icon pma-icon executed">
                                 </span>
-                                <div class="info-box-content">
+                            <div class="info-box-content">
                                     <span class="info-box-number font-17px">
                                         <strong>Cierre {{ ejecutado|million|intcomma }}</strong>
                                     </span>
-                                </div>
                             </div>
                         </div>
-                        {% if municipio %}
-                            <div class="col-xs-12 col-sm-12 col-md-4">
-                                <div class="info-box">
+                    </div>
+                    {% if municipio %}
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div class="info-box">
                                     <span class="info-box-icon pma-icon municipality-category">
                                     </span>
-                                    <div class="info-box-content">
+                                <div class="info-box-content">
                                         <span class="info-box-number font-17px">
                                             <strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong>
                                         </span>
-                                    </div>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="col-xs-12 col-sm-12 col-md-4">
-                                <div class="info-box">
+                        </div>
+                    {% else %}
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div class="info-box">
                                     <span class="info-box-icon pma-icon pe-7s-date">
                                     </span>
-                                    <div class="info-box-content">
+                                <div class="info-box-content">
                                         <span class="info-box-number font-17px">
                                             <strong>Año {{ year }}</strong>
                                         </span>
-                                    </div>
                                 </div>
                             </div>
-                        {% endif %}
-                    {% endblock %}
-                </div>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
 
             <div class="col-xs-12 col-sm-12 col-md-7">
                 <div class="chart-update col-xs-12 col-sm-12 col-md-1 float-left">
@@ -154,7 +154,7 @@
 {% endblock %}
 
 {% block section3 %}
-    <div class="inverted loaded pma-gradient">
+    <div class="{% if not municipio %} cd-horizontal-timeline {% endif %} inverted loaded pma-gradient">
         {% if not municipio %}
             <div class="container">
                 <div class="row">
@@ -612,7 +612,8 @@
                     <tr class="bg-primary">
                         <td colspan="2"></td>
                         <td colspan="4" class="text-center">
-                            <h4>Modificaci&oacute;n{% if year_data.actualizado %} al {{ year_data.actualizado }}{% else %}
+                            <h4>Modificaci&oacute;n{% if year_data.actualizado %} al
+                                {{ year_data.actualizado }}{% else %}
                                 Inicial{% endif %}</h4></td>
                         <td colspan="4"><h4>Modificaci&oacute;n al {{ year_data.final }}</h4>
                         </td>
@@ -860,7 +861,7 @@
                                 <tr>
                                     <td class="text-left">{{ key }}</td>
                                     {% for year in year_list %}
-                                         {% with year_data=data|keyvalue:year %}
+                                        {% with year_data=data|keyvalue:year %}
                                             <td class="text-right border-left">{{ year_data.raw|million|intcomma }}</td>
                                             <td class="text-right border-right">{{ year_data.percent|default:"0%" }}</td>
                                         {% endwith %}
@@ -870,7 +871,8 @@
                             </tbody>
                             <tfoot class="font-12px font-color-azul">
                             <tr class="pma-bg-white">
-                                <th colspan="{{ year_list|length|mul:2|add:1 }}" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                <th colspan="{{ year_list|length|mul:2|add:1 }}" rowspan="1" class="text-justify">
+                                    <strong>Fuente: </strong>Elaboraci&oacute;n
                                     propia a partir
                                     de transmunic.gob.ni<strong>.</strong></th>
                             </tfoot>
@@ -879,10 +881,16 @@
                 </div>
             </div>
         </div>
+        {{ charts|length }}
 
     </div>
 {% endblock %}
 
 {% block custom_scripts %}
-    {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% if charts|length == 3 %}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% else %}
+        {{ charts|load_charts:"pie,bar" }}
+    {% endif %}
+
 {% endblock %}
