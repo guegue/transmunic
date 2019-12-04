@@ -49,7 +49,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         year = year_list[-2]
 
     # obtiene último periodo del año que se quiere ver
-    year_data = Anio.objects.get(anio=year)
+    year_data = Anio.objects.get(anio=2014)
     periodo = year_data.periodo
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
@@ -748,6 +748,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             }],
         chart_options=chart_options)
 
+    bar_horizontal = None
     if otros:
         data_bar_horizontal = RawDataPool(
             series=[
@@ -858,8 +859,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
     if portada:
         charts = (ejecutado_pie,)
-    else:
+    elif bar_horizontal:
         charts = (pie, bar, bar_horizontal)
+    else:
+        charts = (pie, bar)
 
     return {
         'charts': charts,
