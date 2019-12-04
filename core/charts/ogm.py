@@ -749,6 +749,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         chart_options=chart_options)
 
     bar_horizontal = None
+
+    # bar horizontal
     if otros:
         data_bar_horizontal = RawDataPool(
             series=[
@@ -761,8 +763,6 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }
             ]
         )
-
-        # bar horizontal
         bar_horizontal = Chart(
             datasource=data_bar_horizontal,
             series_options=[
@@ -778,8 +778,56 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                 }],
             chart_options={
+                'legend':{
+                  'enabled':False
+                },
                 'title': {
-                    'text': 'Ranking de municipio categoría'
+                    'text': "Ranking de Municipio Categoría '{}'".\
+                        format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Categoria '
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+    elif porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend':{
+                  'enabled':False
+                },
+                'title': {
+                    'text': 'Ranking de Municipio por Categoría'
                 },
                 'xAxis': {
                     'title': {
