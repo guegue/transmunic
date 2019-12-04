@@ -24,13 +24,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gasto',
             name='municipio',
-            field=pixelfields_smart_selects.db_fields.ChainedForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
+            field=pixelfields_smart_selects.db_fields.ChainedForeignKey(
+                default=0, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='ingreso',
             name='municipio',
-            field=pixelfields_smart_selects.db_fields.ChainedForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
+            field=pixelfields_smart_selects.db_fields.ChainedForeignKey(
+                default=0, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio'),
             preserve_default=False,
         ),
     ]
