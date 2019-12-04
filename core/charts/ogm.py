@@ -49,7 +49,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         year = year_list[-2]
 
     # obtiene último periodo del año que se quiere ver
-    year_data = Anio.objects.get(anio=2014)
+    year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
