@@ -163,6 +163,9 @@
                     </div>
                 </div>
             </div>
+
+            {% include 'ranking_categoria.html' %}
+
             <div class="timeline container rankin">
                 <div class="events-wrapper">
                     <div class="events" style="width: {{ porclase|length|mul:130 }}px;">
@@ -881,8 +884,6 @@
                 </div>
             </div>
         </div>
-        {{ charts|length }}
-
     </div>
 {% endblock %}
 
