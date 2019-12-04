@@ -330,8 +330,8 @@ class Gasto(models.Model):
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
-            Municipio, chained_field='departamento',
-            chained_model_field='depto')
+        Municipio, chained_field='departamento',
+        chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
 
     class Meta:
