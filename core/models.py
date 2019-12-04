@@ -281,7 +281,7 @@ class Ingreso(models.Model):
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
         Municipio, chained_field='departamento',
-        chained_model_field='depto', null=True, blank=True)
+        chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -331,12 +331,17 @@ class Gasto(models.Model):
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
             Municipio, chained_field='departamento',
-            chained_model_field='depto', null=True, blank=True)
+            chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]
         ordering = ['anio', 'periodo', 'municipio']
+
+    def save(self, *args, **kwargs):
+        if not self.departamento_id and self.municipio_id:
+            self.departamento_id = self.municipio.depto_id
+        super(Gasto, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u"{}:{}:{}".format(self.anio, self.periodo, self.municipio)
