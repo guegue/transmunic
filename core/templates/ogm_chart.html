@@ -154,7 +154,7 @@
 {% endblock %}
 
 {% block section3 %}
-    <div class="{% if not municipio %} cd-horizontal-timeline {% endif %} inverted loaded pma-gradient">
+    <div class="inverted loaded pma-gradient">
         {% if not municipio %}
             <div class="container">
                 <div class="row">
@@ -166,38 +166,6 @@
 
             {% include 'ranking_categoria.html' %}
 
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ porclase|length|mul:130 }}px;">
-                        <ol>
-                            {% for row in porclasep %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                       {% if forloop.first %}class="selected"{% endif %}
-                                       style="left: {{ forloop.counter|mul:120 }}px;"><span
-                                            class="posicion">{{ row.clasificacion }}</span><br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado %}
-                                                {{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span>
-                                            <br/>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2|intcomma }} {% else %}
-                                                0 {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
             <div class="events-content container text-center">
                 <ol>
                     {% for row in porclasep %}
@@ -217,53 +185,54 @@
                     </button>
                 </div>
             </div>
-            </div>
             <div class="container" id="detail-1">
-                <div class="row col-md-5 col-md-offset-4">
-                    <table class="table table-bordered  table-condensed pma-bg-white">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>Categor&iacute;a de municipio</th> {% if periodo_list|keyvalue:year == 'I' %}
-                            <th>Asignado</th> {% else %}
-                            <th>Ejecutado</th>{% endif %}</tr>
-                        </thead>
-                        <tbody>
-                        {% for row in porclasep %}
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 table-responsive">
+                        <table class="table table-bordered table-condensed pma-bg-white">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th>Categor&iacute;a de municipio</th> {% if periodo_list|keyvalue:year == 'I' %}
+                                <th>Asignado</th> {% else %}
+                                <th>Ejecutado</th>{% endif %}</tr>
+                            </thead>
+                            <tbody>
+                            {% for row in porclasep %}
+                                <tr>
+                                    <td class="text-center">{{ row.clasificacion }}</td>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <td class="text-right">
+                                            {% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %}
+                                                0 {% endif %}</td>
+                                    {% else %}
+                                        <td class="text-right">
+                                            {% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %}
+                                                0 {% endif %}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
                             <tr>
-                                <td class="text-center">{{ row.clasificacion }}</td>
+                                <td>
+                                    <strong>TOTAL</strong>
+                                </td>
                                 {% if periodo_list|keyvalue:year == 'I' %}
                                     <td class="text-right">
-                                        {% if row.asignado %}{{ row.asignado|floatformat:2|intcomma }}{% else %}
-                                            0 {% endif %}</td>
+                                        <strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong>
+                                    </td>
                                 {% else %}
                                     <td class="text-right">
-                                        {% if row.ejecutado %}{{ row.ejecutado|floatformat:2|intcomma }} {% else %}
-                                            0 {% endif %}</td>
+                                        <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong>
+                                    </td>
                                 {% endif %}
                             </tr>
-                        {% endfor %}
-                        <tr>
-                            <td>
-                                <strong>TOTAL</strong>
-                            </td>
-                            {% if periodo_list|keyvalue:year == 'I' %}
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'asignado'|floatformat:2|intcomma }}</strong>
-                                </td>
-                            {% else %}
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2|intcomma }}</strong>
-                                </td>
-                            {% endif %}
-                        </tr>
-                        </tbody>
-                        <tfoot class="font-12px font-color-azul">
-                        <tr>
-                            <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
-                                propia a partir
-                                de transmunic.gob.ni<strong>.</strong></th>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot class="font-12px font-color-azul">
+                            <tr>
+                                <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                    propia a partir
+                                    de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         {% else %}
@@ -290,7 +259,6 @@
 
             {% include 'ranking_municipio.html' %}
 
-
             <div class="events-content container text-center">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -316,7 +284,7 @@
                     </div>
                 </div>
             </div>
-            <div id="detail-1" class="container">
+            <div class="container" id="detail-1">
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8 table-responsive">
                         <table class="table table-bordered  table-condensed table-striped pma-bg-white">
