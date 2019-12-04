@@ -778,12 +778,12 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                 }],
             chart_options={
-                'legend':{
-                  'enabled':False
+                'legend': {
+                    'enabled': False
                 },
                 'title': {
-                    'text': "Ranking de Municipio Categoría '{}'".\
-                        format(mi_clase.clasificacion)
+                    'text': "Ranking de Municipio Categoría '{}'".
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -823,8 +823,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                 }],
             chart_options={
-                'legend':{
-                  'enabled':False
+                'legend': {
+                    'enabled': False
                 },
                 'title': {
                     'text': 'Ranking de Municipio por Categoría'
@@ -846,8 +846,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = percentage(row['ejecutado'],total['ejecutado'])
-        row['asignado_percent'] = percentage(row['asignado'],total['asignado'])
+        row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
     actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
