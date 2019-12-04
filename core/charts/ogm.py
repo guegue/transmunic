@@ -12,9 +12,9 @@ from django.db import connection
 from django.db.models import Sum
 
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
-
-from core.models import (Anio, GastoDetalle, Gasto, Municipio, TipoGasto)
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.models import (Anio, GastoDetalle, Gasto, Municipio,
+                         TipoGasto, PERIODO_INICIAL, PERIODO_ACTUALIZADO,
+                         PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import getYears, dictfetchall, glue, superglue, percentage, xnumber
 from lugar.models import Poblacion, ClasificacionMunicAno
 
@@ -749,6 +749,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
         chart_options=chart_options)
 
     bar_horizontal = None
+
+    # bar horizontal
     if otros:
         data_bar_horizontal = RawDataPool(
             series=[
@@ -761,8 +763,6 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 }
             ]
         )
-
-        # bar horizontal
         bar_horizontal = Chart(
             datasource=data_bar_horizontal,
             series_options=[
@@ -778,8 +778,56 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     },
                 }],
             chart_options={
+                'legend': {
+                    'enabled': False
+                },
                 'title': {
-                    'text': 'Ranking de municipio categoría'
+                    'text': "Ranking de Municipio Categoría '{}'".
+                    format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Categoria '
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+    elif porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'title': {
+                    'text': 'Ranking de Municipio por Categoría'
                 },
                 'xAxis': {
                     'title': {
@@ -798,10 +846,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = round(
-            row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(
-            row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
     actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
