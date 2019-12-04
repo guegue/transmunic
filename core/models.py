@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Sum, Max, Min
 
@@ -85,6 +86,7 @@ class Anio(models.Model):
     inicial = models.DateField(null=True, blank=True)
     actualizado = models.DateField(null=True, blank=True)
     final = models.DateField(null=True, blank=True)
+    mapping = JSONField()
 
     class Meta:
         verbose_name = u'Año'
