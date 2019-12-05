@@ -82,7 +82,7 @@
 
 {% block section2 %}
     {% if not municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient">
+        <div class="loaded pma-gradient">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -91,7 +91,7 @@
                         {% else %}
                             <h2>
                                 <strong>
-                                    Ranquin de recaudaci&oacute;n {{ year }}
+                                    Ranking de recaudaci&oacute;n {{ year }}
                                     {% if periodo_list|keyvalue:year == 'F' %}
                                         cierre
                                     {% elif periodo_list|keyvalue:year == 'A' %}
@@ -115,39 +115,9 @@
                     </div>
                 </div>
             </div>
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ porclase|length|add:1|mul:120 }}px;">
-                        <ol>
-                            {% for row in porclasep %}
-                                <li>
-                                    <a href="#0"
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                       {% if forloop.first %}class="selected"{% endif %}
-                                       style="left: {{ forloop.counter|mul:120 }}px;"><span
-                                            class="posicion">{{ row.clasificacion }}</span><br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado %}
-                                                {{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span>
-                                            <br/>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2|intcomma }} {% else %}
-                                                0 {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
 
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
+            {% include 'ranking_categoria.html' %}
+
             <div class="events-content container text-center">
                 <ol>
                     {% for row in porclasep %}
@@ -260,7 +230,7 @@
 
 {% block section3 %}
     {% if municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+        <div class="loaded pma-gradient inverted">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -278,39 +248,9 @@
                     </div>
                 </div>
             </div>
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ otros|length|mul:300 }}px;">
-                        <ol>
-                            {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                            {% if municipio.slug == row.ingreso__municipio__slug %}
-                                       class="selected"{% endif %}
-                                       style="left: {{ forloop.counter|mul:180 }}px;"><span
-                                            class="posicion"> {{ forloop.counter }}</span>
-                                        <br/>
-                                        <div class="municipio_nombre">{{ row.ingreso__municipio__nombre }}</div>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{{ row.asignado_percent|intcomma }}
-                                </span><br/>
-                                        {% else %}
-                                            <span class="line-cifra">{{ row.ejecutado_percent|intcomma }}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
 
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
+            {% include 'ranking_municipio.html' %}
+
             <div class="events-content container text-center">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
@@ -855,5 +795,9 @@
 {% endblock %}
 
 {% block custom_scripts %}
-    {{ charts|load_charts:"pie,bar" }}
+    {% if charts|length == 3 %}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% else %}
+        {{ charts|load_charts:"pie,bar" }}
+    {% endif %}
 {% endblock %}
