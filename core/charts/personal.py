@@ -58,6 +58,7 @@ def gpersonal_chart(request):
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
+    TipoGasto.PERSONAL = year_data.mapping['gpersonal']
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
