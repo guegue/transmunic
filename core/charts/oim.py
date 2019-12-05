@@ -741,7 +741,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 },
                 'title': {
                     'text': "Ranking de Municipio Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -804,8 +804,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
     total['asignado'] = sum(item['asignado'] for item in sources)
     for row in sources:
-        row['ejecutado_percent'] = percentage(row['ejecutado'],total['ejecutado'])
-        row['asignado_percent'] = percentage(row['asignado'],total['asignado'])
+        row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
     actualizado_asignado = 0
     for r in rubros:
