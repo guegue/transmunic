@@ -785,7 +785,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 },
                 'title': {
                     'text': "Ranking de Municipio Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -849,18 +849,18 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources if item['ejecutado'])
     total['asignado'] = sum(item['asignado'] for item in sources if item['asignado'])
     for row in sources:
-        row['ejecutado_percent'] = percentage(row['ejecutado'],total['ejecutado'])
-        row['asignado_percent'] = percentage(row['asignado'],total['asignado'])
+        row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
     # tabla: get total and percent
     #source_list = list(source)
     #total = source.aggregate(total=Sum('ejecutado'))['total']
-    #for row in source:
+    # for row in source:
     #    row['percent'] = round(row['ejecutado'] / total * 100, 1)
 
     actualizado_asignado = sum(xnumber(row.get('actualizado_asignado')) for row in cat3)
 
-    #calculando porcentaje de cada categoria y suma total de los porcentajes
+    # calculando porcentaje de cada categoria y suma total de los porcentajes
     total_asig_porcentaje = 0
     total_ejec_porcentaje = 0
     total_act_porcentaje = 0
