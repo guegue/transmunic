@@ -58,7 +58,9 @@ def gpersonal_chart(request):
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
-    TipoGasto.PERSONAL = year_data.mapping['gpersonal']
+
+    # obtiene codigo de tipo gasto de 'mapping' fallback a valor por defecto definido en models
+    TipoGasto.PERSONAL = year_data.mapping.get('gpersonal', TipoGasto.PERSONAL)
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
