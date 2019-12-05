@@ -145,50 +145,18 @@
 
 {% block section2 %}
     {% if not municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient">
+        <div class="loaded pma-gradient">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><strong>Ranquin de municipio </strong>de misma categor&iacute;a municipal</h2>
+                        <h2><strong>Ranking de municipio </strong>de misma categor&iacute;a municipal</h2>
                         <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
                         <hr class="pma-line-3"/>
                     </div>
                 </div>
             </div>
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ porclasep|length|mul:130 }}px;">
-                        <ol>
-                            {% for row in porclasep %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                       {% if forloop.first %}class="selected"{% endif %}
-                                       style="left: {{ forloop.counter|mul:120 }}px;"><span
-                                            class="posicion">{{ row.clasificacion }}</span><br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado %}
-                                                {{ row.asignado|floatformat:2|intcomma }}{% else %} 0 {% endif %}</span>
-                                            <br/>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2|intcomma }} {% else %}
-                                                0 {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
-
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
+            {% include 'ranking_categoria.html' %}
             <div class="events-content container text-center">
                 <ol>
                     {% for row in porclasep %}
@@ -263,51 +231,19 @@
         </div>
     {% endif %}
     {% if municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+        <div class="loaded pma-gradient inverted">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <h2>
-                            <strong>Ranquin de municipio</strong>
+                            <strong>Ranking de municipio</strong>
                             de misma categor&iacute;a municipal</h2>
                         <h4>C&oacute;rdobas corrientes por habitante</h4>
                         <hr class="pma-line-3"/>
                     </div>
                 </div>
             </div>
-            <div class="timeline container rankin">
-                <div class="events-wrapper">
-                    <div class="events" style="width: {{ otros|length|mul:200 }}px;">
-                        <ol>
-                            {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                            {% if municipio.slug == row.inversion__municipio__slug %}
-                                       class="selected"{% endif %}
-                                       style="left: {{ forloop.counter|mul:200 }}px;">
-                                        <span class="posicion"> {{ forloop.counter }}</span>
-                                        <div class="municipio_nombre">{{ row.inversion__municipio__nombre }}</div>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{{ row.asignado_percent|intcomma }}
-                                            </span>
-                                            <br/>
-                                        {% else %}
-                                            <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
-
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
+            {% include 'ranking_municipio.html' %}
             <div class="events-content container text-center">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
