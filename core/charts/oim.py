@@ -706,6 +706,99 @@ def oim_chart(municipio=None, year=None, portada=False):
             }],
         chart_options=chart_options)
 
+    bar_horizontal = None
+
+    # bar horizontal
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'ingreso__municipio__nombre',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'ingreso__municipio__nombre': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'title': {
+                    'text': "Ranking de Municipio Categoría '{}'".
+                        format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+    elif porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'title': {
+                    'text': 'Ranking de Municipio por Categoría'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Categoria'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+
     # tabla: get total and percent
     total = {}
     total['ejecutado'] = sum(item['ejecutado'] for item in sources)
@@ -805,6 +898,8 @@ def oim_chart(municipio=None, year=None, portada=False):
 
     if portada:
         charts = (ejecutado_pie, )
+    elif bar_horizontal:
+        charts = (pie, bar, bar_horizontal)
     else:
         charts = (pie, bar)
 

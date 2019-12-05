@@ -795,5 +795,9 @@
 {% endblock %}
 
 {% block custom_scripts %}
-    {{ charts|load_charts:"pie,bar" }}
+    {% if charts|length == 3 %}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% else %}
+        {{ charts|load_charts:"pie,bar" }}
+    {% endif %}
 {% endblock %}
