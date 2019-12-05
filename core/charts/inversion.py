@@ -7,10 +7,10 @@ from django.db.models import Sum, Avg
 
 from chartit import DataPool, Chart, RawDataPool
 
-from core.models import Anio, Proyecto, Inversion, Municipio, \
-    InversionFuenteDetalle
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
-    AREAGEOGRAFICA_VERBOSE
+from core.models import (Anio, Proyecto, Inversion, Municipio,
+                         InversionFuenteDetalle, PERIODO_INICIAL,
+                         PERIODO_ACTUALIZADO, PERIODO_FINAL,
+                         AREAGEOGRAFICA_VERBOSE)
 from core.tools import (getYears, dictfetchall, glue, superglue, percentage,
                         xnumber)
 from lugar.models import Poblacion, ClasificacionMunicAno
@@ -756,8 +756,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     total['ejecutado'] = sum(item['ejecutado'] for item in sources if item['ejecutado'])
     total['asignado'] = sum(item['asignado'] for item in sources if item['asignado'])
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = percentage(row['ejecutado'],total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'],total['asignado'])
 
     # tabla: get total and percent
     #source_list = list(source)
