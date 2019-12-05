@@ -7,10 +7,10 @@ from django.db.models import Sum, Avg
 
 from chartit import DataPool, Chart, RawDataPool
 
-from core.models import Anio, Proyecto, Inversion, Municipio, \
-    InversionFuenteDetalle
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
-    AREAGEOGRAFICA_VERBOSE
+from core.models import (Anio, Proyecto, Inversion, Municipio,
+                         InversionFuenteDetalle, PERIODO_INICIAL,
+                         PERIODO_ACTUALIZADO, PERIODO_FINAL,
+                         AREAGEOGRAFICA_VERBOSE)
 from core.tools import (getYears, dictfetchall, glue, superglue, percentage,
                         xnumber)
 from lugar.models import Poblacion, ClasificacionMunicAno
@@ -750,24 +750,117 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
+    bar_horizontal = None
+
+    # bar horizontal
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'inversion__municipio__slug',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'inversion__municipio__slug': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'title': {
+                    'text': "Ranking de Municipio Categoría '{}'".
+                    format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+    elif porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'title': {
+                    'text': 'Ranking de Municipio por Categoría'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Categoria'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+
     # tabla: get total and percent
     total = {}
     # sum if not None
     total['ejecutado'] = sum(item['ejecutado'] for item in sources if item['ejecutado'])
     total['asignado'] = sum(item['asignado'] for item in sources if item['asignado'])
     for row in sources:
-        row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 1) if total['ejecutado'] > 0 else 0
-        row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 1) if total['asignado'] > 0 else 0
+        row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+        row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
     # tabla: get total and percent
     #source_list = list(source)
     #total = source.aggregate(total=Sum('ejecutado'))['total']
-    #for row in source:
+    # for row in source:
     #    row['percent'] = round(row['ejecutado'] / total * 100, 1)
 
     actualizado_asignado = sum(xnumber(row.get('actualizado_asignado')) for row in cat3)
 
-    #calculando porcentaje de cada categoria y suma total de los porcentajes
+    # calculando porcentaje de cada categoria y suma total de los porcentajes
     total_asig_porcentaje = 0
     total_ejec_porcentaje = 0
     total_act_porcentaje = 0
@@ -823,7 +916,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 porano_table[label][ayear]['percent'] = format(
                     porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
-    charts = [pie, bar]
+    charts = [pie, bar, bar_horizontal]
 
     return {
         'charts': charts,
