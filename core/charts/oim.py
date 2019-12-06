@@ -807,28 +807,18 @@ def oim_chart(municipio=None, year=None, portada=False):
         row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
         row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
 
-    actualizado_asignado = 0
-    for r in rubros:
-        if r.get('actualizado_asignado'):
-            actualizado_asignado += xnumber(r['actualizado_asignado'])
+    actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
     asignado_porcentaje = 0
     actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
     for row in rubros:
-        if 'ejecutado' not in row:
-            row['ejecutado'] = 0
-        if 'inicial_asignado' not in row:
-            row['inicial_asignado'] = 0
-        if 'actualizado_asignado' not in row:
-            row['actualizado_asignado'] = 0
-        row['ejecutado_percent'] = percentage(row['ejecutado'], ejecutado)
+        row['ejecutado_percent'] = percentage(row.get('ejecutado', 0), ejecutado)
         ejecutado_porcentaje += row['ejecutado_percent']
-        row['actualizado_asignado_percent'] = percentage(row['actualizado_asignado'],
-                                                         actualizado_asignado)
+        row['actualizado_asignado_percent'] = percentage(row.get('actualizado_asignado', 0),
+                                                         actualizado)
         actualizado_porcentaje += row['actualizado_asignado_percent']
-        row['inicial_asignado_percent'] = percentage(row['inicial_asignado'],
-                                                     asignado)
+        row['inicial_asignado_percent'] = percentage(row.get('inicial_asignado', 0), asignado)
         asignado_porcentaje += row['inicial_asignado_percent']
 
     total_asignado_ranking = 0
