@@ -816,18 +816,19 @@ def oim_chart(municipio=None, year=None, portada=False):
     actualizado_porcentaje = 0
     ejecutado_porcentaje = 0
     for row in rubros:
+        if 'ejecutado' not in row:
+            row['ejecutado'] = 0
+        if 'inicial_asignado' not in row:
+            row['inicial_asignado'] = 0
+        if 'actualizado_asignado' not in row:
+            row['actualizado_asignado'] = 0
         row['ejecutado_percent'] = percentage(row['ejecutado'], ejecutado)
-
         ejecutado_porcentaje += row['ejecutado_percent']
-
         row['actualizado_asignado_percent'] = percentage(row['actualizado_asignado'],
                                                          actualizado_asignado)
-
         actualizado_porcentaje += row['actualizado_asignado_percent']
-
         row['inicial_asignado_percent'] = percentage(row['inicial_asignado'],
                                                      asignado)
-
         asignado_porcentaje += row['inicial_asignado_percent']
 
     total_asignado_ranking = 0
