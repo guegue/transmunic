@@ -852,15 +852,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
     actualizado = sum(xnumber(row.get('actualizado_asignado')) for row in rubros)
 
     for row in rubros:
-        if 'ejecutado' not in row:
-            row['ejecutado'] = 0
-        if 'inicial_asignado' not in row:
-            row['inicial_asignado'] = 0
-        if 'actualizado_asignado' not in row:
-            row['actualizado_asignado'] = 0
-        row['ini_asig_porcentaje'] = percentage(row['inicial_asignado'], asignado)
-        row['actualizado_porcentaje'] = percentage(row.get('actualizado_asignado'), actualizado)
-        row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
+        row['ini_asig_porcentaje'] = percentage(row.get('inicial_asignado', 0), asignado)
+        row['actualizado_porcentaje'] = percentage(row.get('actualizado_asignado', 0), actualizado)
+        row['ejec_porcentaje'] = percentage(row.get('ejecutado', 0), ejecutado)
 
     # tabla: get gastos por año
     if municipio:
