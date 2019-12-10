@@ -10,8 +10,8 @@
     font-size: 17px;
 }
 
-.font-35px {
-    font-size: 35px;
+.font-30px {
+    font-size: 30px;
 }
 
 .height-rubro-home {
@@ -26,6 +26,9 @@
 
 .height-horizontal-bar div#bar_horizontal {
     height: 100%;
+}
+.m-0{
+    margin: 0 !important;
 }
 
 .mb-1px {
@@ -185,11 +188,11 @@
 }
 
 .first-child {
-    background-color: #999;
+    background-color: #2b7ab3;
 }
 
 .middle-child {
-    background-color: #2b7ab3;
+    background-color: #00a7b2;
 }
 
 .last-child {
