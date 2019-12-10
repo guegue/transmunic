@@ -40,8 +40,8 @@ colorscheme = getattr(
 
 colors_array = [
     '#37a2da',
-    '#32c5e9',
-    '#67e0e3',
+    '#314454',
+    '#ce8266',
     '#9ee6b7',
     '#ffdb5c',
     '#ff9f7e',
@@ -50,7 +50,7 @@ colors_array = [
     '#e690d2',
     '#e7bcf3',
     '#9d95f5',
-    '#8378ea',
+    '#67a0a8',
     '#96bfff',
 ]
 
@@ -856,7 +856,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'legend': {
                     'enabled': False
                 },
-                'colors':colors_array,
+                'colors': colors_array,
                 'title': {
                     'text': 'Ranking de Municipio por Categoría'
                 },

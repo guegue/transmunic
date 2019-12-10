@@ -34,6 +34,22 @@ colorscheme = getattr(
         '#FFE070',
         '#25AAE1'])
 
+colors_array = [
+    '#37a2da',
+    '#314454',
+    '#ce8266',
+    '#9ee6b7',
+    '#ffdb5c',
+    '#ff9f7e',
+    '#fb7292',
+    '#e062ae',
+    '#e690d2',
+    '#e7bcf3',
+    '#9d95f5',
+    '#67a0a8',
+    '#96bfff',
+]
+
 chart_options = getattr(
     pma_settings,
     'CHART_OPTIONS',
@@ -781,6 +797,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 'legend': {
                     'enabled': False
                 },
+                'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipio Categoría '{}'".
                     format(mi_clase.clasificacion)
@@ -826,6 +843,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 'legend': {
                     'enabled': False
                 },
+                'colors': colors_array,
                 'title': {
                     'text': 'Ranking de Municipio por Categoría'
                 },
