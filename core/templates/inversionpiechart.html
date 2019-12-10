@@ -148,15 +148,21 @@
         <div class="loaded pma-gradient">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2><strong>Ranking de municipio </strong>de misma categor&iacute;a municipal</h2>
                         <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en base a
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
                         <hr class="pma-line-3"/>
+                        {% include 'ranking_categoria.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
-            {% include 'ranking_categoria.html' %}
+
             <div class="events-content container text-center">
                 <ol>
                     {% for row in porclasep %}
@@ -234,16 +240,22 @@
         <div class="loaded pma-gradient inverted">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>
                             <strong>Ranking de municipio</strong>
                             de misma categor&iacute;a municipal</h2>
                         <h4>C&oacute;rdobas corrientes por habitante</h4>
                         <hr class="pma-line-3"/>
+                        {% include 'ranking_municipio.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
-            {% include 'ranking_municipio.html' %}
+
             <div class="events-content container text-center">
                 <ol>
                     {% for row in otros|dictsortreversed:"asignado_percent" %}
