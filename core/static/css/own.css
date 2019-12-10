@@ -18,6 +18,15 @@
     min-height: 70px;
 }
 
+.height-horizontal-bar {
+    height: 550px;
+    min-height: 500px;
+}
+
+.height-horizontal-bar div#bar_horizontal{
+    height: 100%;
+}
+
 .mb-1px {
     margin-bottom: 1px !important;
 }
