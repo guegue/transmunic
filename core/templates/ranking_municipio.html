@@ -5,9 +5,9 @@
             {% if periodo_list|keyvalue:year == 'I' %}
                 {% for row in otros|dictsortreversed:'asignado_percent' %}
                     {% if forloop.first and municipio|lower == row.gasto__municipio__slug|lower or forloop.first and municipio|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio|lower == row.inversion__municipio__nombre|lower %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
@@ -22,9 +22,9 @@
                             </div>
                         </div>
                     {% elif forloop.first %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
@@ -39,9 +39,9 @@
                             </div>
                         </div>
                     {% elif  municipio|lower == row.gasto__municipio__slug|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
-                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 draw">
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 middle-child">
                             <div class="row">
-                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
@@ -58,9 +58,9 @@
                     {% endif %}
 
                     {% if forloop.last %}
-                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 draw">
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 last-child">
                             <div class="row">
-                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
@@ -79,9 +79,9 @@
             {% else %}
                 {% for row in otros|dictsortreversed:'ejecutado_percent' %}
                     {% if forloop.first and municipio|lower == row.gasto__municipio__slug|lower or forloop.first and municipio|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio|lower == row.inversion__municipio__nombre|lower %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
@@ -94,9 +94,9 @@
                             </div>
                         </div>
                     {% elif forloop.first %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
@@ -109,9 +109,9 @@
                             </div>
                         </div>
                     {% elif  municipio|lower == row.gasto__municipio__slug|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
-                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 draw">
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 middle-child">
                             <div class="row">
-                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
@@ -126,9 +126,9 @@
                     {% endif %}
 
                     {% if forloop.last %}
-                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 draw">
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 last-child">
                             <div class="row">
-                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
                                 <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
