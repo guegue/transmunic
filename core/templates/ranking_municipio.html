@@ -4,7 +4,7 @@
         <div class="row">
             {% if periodo_list|keyvalue:year == 'I' %}
                 {% for row in otros|dictsortreversed:'asignado_percent' %}
-                    {% if forloop.first and municipio.slug|lower == row.gasto__municipio__slug|lower or forloop.first and municipio.slug|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio.slug|lower == row.inversion__municipio__slug|lower %}
+                    {% if forloop.first and municipio|lower == row.gasto__municipio__slug|lower or forloop.first and municipio|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio|lower == row.inversion__municipio__slug|lower %}
                         <div class="col-lg-12 col-md-12 col-sm-12 draw">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
@@ -14,7 +14,7 @@
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">
+                                    <p class="info-box-number">
                                         {{ row.asignado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas
                                     </p>
@@ -31,24 +31,24 @@
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">
+                                    <p class="info-box-number">
                                         {{ row.asignado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas
                                     </p>
                                 </div>
                             </div>
                         </div>
-                    {% elif  municipio.slug|lower == row.gasto__municipio__slug|lower or municipio.slug|lower == row.ingreso__municipio__nombre|lower or municipio.slug|lower == row.inversion__municipio__slug|lower %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                    {% elif  municipio|lower == row.gasto__municipio__slug|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__slug|lower %}
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 draw">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">
+                                    <p class="info-box-number">
                                         {{ row.asignado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas
                                     </p>
@@ -58,16 +58,16 @@
                     {% endif %}
 
                     {% if forloop.last %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 draw">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">
+                                    <p class="info-box-number">
                                         {{ row.asignado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas
                                     </p>
@@ -78,7 +78,7 @@
                 {% endfor %}
             {% else %}
                 {% for row in otros|dictsortreversed:'ejecutado_percent' %}
-                    {% if forloop.first and municipio.slug|lower == row.gasto__municipio__slug|lower or forloop.first and municipio.slug|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio.slug|lower == row.inversion__municipio__slug|lower %}
+                    {% if forloop.first and municipio|lower == row.gasto__municipio__slug|lower or forloop.first and municipio|lower == row.ingreso__municipio__nombre|lower or forloop.first and municipio|lower == row.inversion__municipio__slug|lower %}
                         <div class="col-lg-12 col-md-12 col-sm-12 draw">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
@@ -88,7 +88,7 @@
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
+                                    <p class="info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas</p>
                                 </div>
                             </div>
@@ -103,22 +103,22 @@
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
+                                    <p class="info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas</p>
                                 </div>
                             </div>
                         </div>
-                    {% elif  municipio.slug|lower == row.gasto__municipio__slug|lower or municipio.slug|lower == row.ingreso__municipio__nombre|lower or municipio.slug|lower == row.inversion__municipio__slug|lower %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                    {% elif  municipio|lower == row.gasto__municipio__slug|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__slug|lower %}
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-10 col-md-10 col-sm-10 draw">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
+                                    <p class="info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas</p>
                                 </div>
                             </div>
@@ -126,16 +126,16 @@
                     {% endif %}
 
                     {% if forloop.last %}
-                        <div class="col-lg-12 col-md-12 col-sm-12 draw">
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 draw">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center mt-1 pt-0_8">
                                     <span class="font-35px">{{ forloop.counter }}</span>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right mt-1">
                                     <p class="font-17px">
                                         {% firstof row.gasto__municipio__slug row.ingreso__municipio__nombre row.inversion__municipio__slug %}
                                     </p>
-                                    <p class="font-17px info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
+                                    <p class="info-box-number">{{ row.ejecutado_percent|floatformat:2|intcomma }}
                                         M. de C&oacute;rdobas</p>
                                 </div>
                             </div>
