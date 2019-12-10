@@ -158,13 +158,17 @@
         {% if not municipio %}
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>Gastos de personal por habitante en cada categor&iacute;a municipal</h2>
+                        {% include 'ranking_categoria.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {% include 'ranking_categoria.html' %}
 
             <div class="events-content container text-center">
                 <ol>
@@ -238,7 +242,7 @@
         {% else %}
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2><strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong> <br>
                             Gasto por habitante
                         </h2>
@@ -253,11 +257,15 @@
                             {{ year }}
                         </h5>
                         <hr class="pma-line-3"/>
+                        {% include 'ranking_municipio.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {% include 'ranking_municipio.html' %}
 
             <div class="events-content container text-center">
                 <ol>
