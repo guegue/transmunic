@@ -759,7 +759,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 {
                     'options': {'source': otros},
                     'terms': [
-                        'inversion__municipio__slug',
+                        'inversion__municipio__nombre',
                         '{}_percent'.format(quesumar)
                     ]
                 }
@@ -774,7 +774,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                         'colorByPoint': True,
                     },
                     'terms': {
-                        'inversion__municipio__slug': [
+                        'inversion__municipio__nombre': [
                             '{}_percent'.format(quesumar)
                         ]
                     },
