@@ -85,7 +85,7 @@
         <div class="loaded pma-gradient">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         {% if year == '2016' %}
                             <h2>Recaudaci&oacute;n por habitante</h2>
                         {% else %}
@@ -112,11 +112,17 @@
                                 ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
                         {% endif %}
                         <hr class="pma-line-3"/>
+
+                        {% include 'ranking_categoria.html' %}
                     </div>
+                    {# chart horizontal bar #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
+                    </div>
+
                 </div>
             </div>
-
-            {% include 'ranking_categoria.html' %}
 
             <div class="events-content container text-center">
                 <ol>
@@ -233,7 +239,7 @@
         <div class="loaded pma-gradient inverted">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>
                             <strong>Ranking de recaudaci&oacute;n </strong>
                             <br>
@@ -245,11 +251,16 @@
                             ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
                         </h5>
                         <hr class="pma-line-3"/>
+                        {% include 'ranking_municipio.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {% include 'ranking_municipio.html' %}
 
             <div class="events-content container text-center">
                 <ol>
