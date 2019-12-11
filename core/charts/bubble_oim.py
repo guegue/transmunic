@@ -41,18 +41,18 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         left join core_origenrecurso as o
         on sd.origen_id=o.id"""
         cursor = connection.cursor()
-        cursor.execute(level_0_sql, [year_data.anio, periodo, municipio_id,saldo_caja])
+        cursor.execute(level_0_sql, [year_data.anio, periodo, municipio_id, saldo_caja])
         totals = dictfetchall(cursor)
         if totals[0][data_source] is not None:
             data = {
                 'label': "Ingresos Totales",
                 'amount': round(totals[0][data_source]/1000000, 2)
-                }
+            }
         else:
             data = {
                 'label': "Ingresos Totales",
                 'amount': 0.00
-                }
+            }
 
         child_l1 = []
         level_1_sql = """SELECT SUM(sd.asignado) AS asignado,
@@ -75,7 +75,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             on sd.origen_id=o.id
             group by nombre, shortname, id"""
         cursor = connection.cursor()
-        cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id,saldo_caja])
+        cursor.execute(level_1_sql, [year_data.anio, periodo, municipio_id, saldo_caja])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             source_data = {
@@ -141,12 +141,12 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 and origen_id is not null) as sd
             left join core_origenrecurso as o on sd.origen_id=o.id"""
         cursor = connection.cursor()
-        cursor.execute(level_0_sql, [year_data.anio, periodo,saldo_caja])
+        cursor.execute(level_0_sql, [year_data.anio, periodo, saldo_caja])
         totals = dictfetchall(cursor)
         data = {
             'label': "Ingresos Totales",
             'amount': round(totals[0][data_source]/1000000, 2)
-            }
+        }
 
         child_l1 = []
         level_1_sql = """select sum(sd.asignado) as asignado,
@@ -167,7 +167,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             on sd.origen_id=o.id
             group by nombre, shortname, id"""
         cursor = connection.cursor()
-        cursor.execute(level_1_sql, [year_data.anio, periodo,saldo_caja])
+        cursor.execute(level_1_sql, [year_data.anio, periodo, saldo_caja])
         revenuesource_list = dictfetchall(cursor)
         for source in revenuesource_list:
             source_data = {
@@ -200,14 +200,14 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             cursor = connection.cursor()
             cursor.execute(
                 level_2_sql,
-                [year_data.anio, periodo, saldo_caja,source['id']])
+                [year_data.anio, periodo, saldo_caja, source['id']])
             subtype_list = dictfetchall(cursor)
 
             for subtype in subtype_list:
                 subtype_data = {
                     'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
                     'amount': round(subtype[data_source]/1000000, 2)
-                    }
+                }
 
                 child_l2.append(subtype_data)
             source_data['children'] = child_l2
