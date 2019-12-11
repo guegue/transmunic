@@ -59,8 +59,8 @@ class InversionFuenteAdmin(admin.ModelAdmin):
 
 class IngresoAdmin(admin.ModelAdmin):
     inlines = [IngresoDetalleInline]
-    list_display = ['id', 'fecha', 'departamento', 'municipio']
-    list_filter = ('fecha', 'departamento', 'municipio')
+    list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
+    list_filter = ('anio', 'departamento', 'municipio')
 
 
 class TipoIngresoAdmin(admin.ModelAdmin):
