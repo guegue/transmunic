@@ -51,6 +51,10 @@
     margin-top: 1em;
 }
 
+.mt-3 {
+    margin-top: 3em;
+}
+
 .pt-0_8 {
     padding-top: 0.8em;
 }
@@ -91,6 +95,10 @@
 
 .font-color-black {
     color: #000;
+}
+
+.font-color-darkblue {
+    color: darkblue;
 }
 
 .ver-mas {
@@ -201,4 +209,8 @@
 
 .last-child {
     background-color: #d65162;
+}
+
+.position-relative{
+    position: relative;
 }

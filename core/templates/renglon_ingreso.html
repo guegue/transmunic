@@ -30,18 +30,36 @@
                             <input type="submit" value="Submit" class="btn btn-primary">
                         </div>
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 mt-1">
+                        <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
                                 {% for tipo_ingreso in tipos_ingresos %}
                                     <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="heading{{ forloop.counter0 }}">
-                                            <h4 class="panel-title font-color-black">
+                                        <div class="panel-heading" role="tab"
+                                             id="heading{{ forloop.counter0 }}">
+                                            <h4 class="panel-title font-color-darkblue position-relative">
                                                 <a role="button" data-toggle="collapse" data-parent="#accordion"
                                                    href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
-                                                   aria-controls="collapse{{ forloop.counter0 }}">
-                                                    <strong>{{ tipo_ingreso.tipo_ing_nombre }}</strong>
+                                                   aria-controls="collapse{{ forloop.counter0 }}"
+                                                   class="position-relative change-icon">
+                                                    {{ tipo_ingreso.tipo_ing_nombre|upper }}
                                                 </a>
+                                                <span class="position-relative pull-right"
+                                                      style="right: 340px">
+                                                    Total Asignado:
+                                                    <strong id="asignado_{{ tipo_ingreso.tipo_ing_codigo }}">
+                                                        0
+                                                    </strong>
+                                                </span>
+                                                <span class="position-relative pull-right"
+                                                      style="right: -15px">
+                                                    Total Ejecutado:
+                                                    <strong id="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}">
+                                                        0
+                                                    </strong>
+                                                </span>
+                                                <i class="icon position-relative pull-right fa fa-angle-up"
+                                                   style="right: -240px"></i>
                                             </h4>
                                         </div>
                                         <div id="collapse{{ forloop.counter0 }}"
@@ -71,14 +89,17 @@
                                                             </td>
                                                             <td>{{ renglon.nombre }}</td>
                                                             <td>
-                                                                <input type="number" class="form-control"
+                                                                <input type="number" class="form-control input-asignado"
+                                                                       data-nombre_total="asignado_{{ tipo_ingreso.tipo_ing_codigo }}"
                                                                        name="renglon_{{ renglon.codigo }}_asignado"
-                                                                       value="0">
+                                                                       value="0" min="0">
                                                             </td>
                                                             <td>
-                                                                <input type="number" class="form-control"
+                                                                <input type="number"
+                                                                       class="form-control input-ejecutado"
+                                                                       data-nombre_total="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}"
                                                                        name="renglon_{{ renglon.codigo }}_ejecutado"
-                                                                       value="0">
+                                                                       value="0" min="0">
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
@@ -88,16 +109,60 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-
                             </div>
                         </div>
                     </div>
-
                 </form>
-
             </div>
         </div>
-
-
     </div>
+{% endblock %}
+
+{% block extras_js %}
+    <script>
+        $(function () {
+            $('.input-asignado').on('change', function () {
+                let body_table = $(this).parents('tbody');
+                let rows = body_table.find('tr');
+                let data = $(this).data('nombre_total');
+
+                let total_asignado = Sum(rows, '.input-asignado');
+
+                $(`#${data}`).html(total_asignado);
+            });
+            $('.input-ejecutado').on('change', function () {
+                let body_table = $(this).parents('tbody');
+                let rows = body_table.find('tr');
+                let data = $(this).data('nombre_total');
+
+                let total_ejecutado = Sum(rows, '.input-ejecutado');
+
+                $(`#${data}`).html(total_ejecutado);
+            });
+            $('.panel').on('show.bs.collapse', function () {
+                let icon = $(this).children('.panel-heading')
+                    .find('i');
+                icon.removeClass('fa-angle-up');
+                icon.addClass('fa-angle-down');
+            }).on('hide.bs.collapse', function () {
+                let icon = $(this).children('.panel-heading')
+                    .find('i');
+                icon.removeClass('fa-angle-down');
+                icon.addClass('fa-angle-up');
+            });
+
+
+            /**
+             * @return {number}
+             */
+            function Sum(array_elements, class_element) {
+                let total = 0;
+                array_elements.each(function () {
+                    let value = $(this).find(class_element).val();
+                    total += parseFloat(value);
+                });
+                return total;
+            }
+        });
+    </script>
 {% endblock %}
