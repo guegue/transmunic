@@ -69,8 +69,8 @@ def oim_chart(municipio=None, year=None, portada=False):
 
     ChartError = False
 
+    saldo_caja = '39000000'
     if municipio:
-        saldo_caja = '39000000'
         porclase = None
         porclasep = None
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -335,11 +335,17 @@ def oim_chart(municipio=None, year=None, portada=False):
             'ingreso__anio', 'ingreso__periodo').order_by('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
-        source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values(
+        source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).\
+                exclude(tipoingreso_id=saldo_caja).\
+                values(
             'subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(**{quesumar: Sum(quesumar)})
-        tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).values(
+        tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL).\
+                exclude(tipoingreso_id=saldo_caja).\
+                values(
             'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__slug').annotate(asignado=Sum('asignado')).order_by('subsubtipoingreso__origen__nombre')
-        tipos_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).values(
+        tipos_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).\
+                exclude(tipoingreso_id=saldo_caja).\
+                values(
             'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__nombre').annotate(ejecutado=Sum('ejecutado')).order_by('subsubtipoingreso__origen__nombre')
         sources = glue(tipos_inicial, tipos_final,
                        'subsubtipoingreso__origen__nombre')
@@ -350,18 +356,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene datos de ingresos en ditintos rubros
         rubrosp_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,
                                                         subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            exclude(tipoingreso_id=saldo_caja).\
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
                 'subtipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,
                                                             subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            exclude(tipoingreso_id=saldo_caja).\
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(
                 actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosp_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL,
                                                       subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            exclude(tipoingreso_id=saldo_caja).\
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
                 'subtipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubrosp_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo,
                                                         subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
+            exclude(tipoingreso_id=saldo_caja).\
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
                 'subtipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
         rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final,
@@ -369,48 +379,57 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos de ingresos en ditintos rubros
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, ).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
                 'subsubtipoingreso__origen__id').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, ).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
                 'subsubtipoingreso__origen__id').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL, ).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
                 'subsubtipoingreso__origen__id').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
                 'subsubtipoingreso__origen__id').annotate(ejecutado=Sum('ejecutado'))
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='subsubtipoingreso__origen__id')
 
         source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(
                 ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(
                 ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_periodo = IngresoDetalle.objects.filter(ingreso__periodo=periodo,).\
+                exclude(tipoingreso_id=saldo_caja).\
             values('ingreso__anio').order_by('ingreso__anio').annotate(
                 ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
         sql_tpl = "SELECT clasificacion,\
                 (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
+                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo \
+                JOIN core_origenrecurso ON core_subsubtipoingreso.origen_id=core_origenrecurso.id \
                 JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
+                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_INICIAL,)
+                             periodo=PERIODO_INICIAL,recaudacion=OrigenRecurso.RECAUDACION)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="ejecutado",
-                             year=year, periodo=PERIODO_FINAL,)
+                             year=year, periodo=PERIODO_FINAL,recaudacion=OrigenRecurso.RECAUDACION)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_ACTUALIZADO,)
+                             periodo=PERIODO_ACTUALIZADO,recaudacion=OrigenRecurso.RECAUDACION)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
@@ -427,23 +446,23 @@ def oim_chart(municipio=None, year=None, portada=False):
         sql_tpl = "SELECT clasificacion,\
                 (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
                 JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
+                WHERE core_IngresoDetalle.tipoingreso_id!='{saldo_caja}' AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
                 (SELECT SUM(poblacion) FROM lugar_Poblacion \
                 JOIN lugar_clasificacionmunicano ON lugar_Poblacion.municipio_id = lugar_clasificacionmunicano.municipio_id \
                 JOIN lugar_clasificacionmunic ON lugar_clasificacionmunicano.clasificacion_id=lugar_clasificacionmunic.id \
                 WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_INICIAL,)
+                             periodo=PERIODO_INICIAL,saldo_caja=saldo_caja)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo,)
+        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo,saldo_caja=saldo_caja)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_ACTUALIZADO,)
+                             periodo=PERIODO_ACTUALIZADO,saldo_caja=saldo_caja)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
