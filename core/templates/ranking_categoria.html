@@ -1,73 +1,74 @@
 {% load core_extras humanize %}
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="container">
-            <div class="col-lg-6 col-md-6 col-sm-12" id="greater-middle-lower">
-                <div class="row">
-                    {% if periodo_list|keyvalue:year == 'I' %}
-                        {% for row in porclasep|dictsortreversed:'asignado' %}
-                            {% if forloop.first %}
-                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
-                                            <span class="font-35px">{{ forloop.counter }}</span>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
-                                            <p class="font-17px">{{ row.clasificacion }}</p>
-                                            <p class="font-17px info-box-number">{{ row.asignado|floatformat:2|intcomma }}</p>
-                                        </div>
-                                    </div>
+<div class="container-fluid">
+    <div class="col-lg-12 col-md-12 col-sm-12" id="greater-middle-lower">
+        <div class="row">
+            {% if periodo_list|keyvalue:year == 'I' %}
+                {% for row in porclasep|dictsortreversed:'asignado' %}
+                    {% if forloop.first %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 text-center m-0">
+                                    Posici&oacute;n
+                                    <br>
+                                    <span class="font-30px">{{ forloop.counter }}</span>
                                 </div>
-                            {% elif forloop.last %}
-                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
-                                            <span class="font-35px">{{ forloop.counter }}</span>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
-                                            <p class="font-17px">{{ row.clasificacion }}</p>
-                                            <p class="font-17px info-box-number">{{ row.asignado|floatformat:2|intcomma }}</p>
-                                        </div>
-                                    </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 text-right m-0">
+                                    <p class="font-17px">{{ row.clasificacion }}</p>
+                                    <p class="info-box-number">{{ row.asignado|floatformat:2|intcomma }}</p>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        {% for row in porclasep|dictsortreversed:'ejecutado' %}
-                            {% if forloop.first %}
-                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
-                                            <span class="font-35px">{{ forloop.counter }}</span>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
-                                            <p class="font-17px">{{ row.clasificacion }}</p>
-                                            <p class="font-17px info-box-number">{{ row.ejecutado|floatformat:2|intcomma }} M. de C&oacute;rdobas</p>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
+                    {% elif forloop.last %}
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 last-child">
+                            <div class="row">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center m-0">
+                                    Posici&oacute;n
+                                    <br>
+                                    <span class="font-30px">{{ forloop.counter }}</span>
                                 </div>
-                                {% elif forloop.last %}
-                                <div class="col-lg-12 col-md-12 col-sm-12 draw">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-1 pt-0_8">
-                                            <span class="font-35px">{{ forloop.counter }}</span>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 text-right mt-1">
-                                            <p class="font-17px">{{ row.clasificacion }}</p>
-                                            <p class="font-17px info-box-number">{{ row.ejecutado|floatformat:2|intcomma }} M. de C&oacute;rdobas</p>
-                                        </div>
-                                    </div>
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right m-0">
+                                    <p class="font-17px">{{ row.clasificacion }}</p>
+                                    <p class="info-box-number">{{ row.asignado|floatformat:2|intcomma }}</p>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
+                            </div>
+                        </div>
                     {% endif %}
-
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
-                </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                {% for row in porclasep|dictsortreversed:'ejecutado' %}
+                    {% if forloop.first %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 first-child">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 text-center m-0">
+                                    Posici&oacute;n
+                                    <br>
+                                    <span class="font-30px">{{ forloop.counter }}</span>
+                                </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 text-right m-0">
+                                    <p class="font-17px">{{ row.clasificacion }}</p>
+                                    <p class="info-box-number">{{ row.ejecutado|floatformat:2|intcomma }}
+                                        M. de C&oacute;rdobas</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif forloop.last %}
+                        <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-lg-7 col-md-7 col-sm-7 last-child">
+                            <div class="row">
+                                <div class="col-lg-5 col-md-5 col-sm-5 text-center m-0">
+                                    Posici&oacute;n
+                                    <br>
+                                    <span class="font-30px">{{ forloop.counter }}</span>
+                                </div>
+                                <div class="col-lg-7 col-md-7 col-sm-7 text-right m-0">
+                                    <p class="font-17px">{{ row.clasificacion }}</p>
+                                    <p class="info-box-number">{{ row.ejecutado|floatformat:2|intcomma }}
+                                        M. de C&oacute;rdobas</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>

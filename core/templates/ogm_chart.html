@@ -154,17 +154,21 @@
 {% endblock %}
 
 {% block section3 %}
-    <div class="inverted loaded pma-gradient">
+    <div class="inverted loaded">
         {% if not municipio %}
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>Gastos de personal por habitante en cada categor&iacute;a municipal</h2>
+                        {% include 'ranking_categoria.html' %}
+                    </div>
+                    {# chart horizontal chart #}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {% include 'ranking_categoria.html' %}
 
             <div class="events-content container text-center">
                 <ol>
@@ -238,26 +242,49 @@
         {% else %}
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h2><strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong> <br>
+                    <div class="{% if municipio|lower == 'managua' %} col-lg-12 col-md-12 col-sm-12 {% else %} col-lg-6 col-md-6 col-sm-12 {% endif %}">
+                        <h2>
+                            <strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong>
+                            <br>
                             Gasto por habitante
+                            {% if municipio|lower == 'managua' %}
+                                categor&iacute;a municipal "{{ mi_clase.clasificacion }}" para el municipio de
+                                <strong>{{ municipio }}</strong>
+                                con
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    {{ otros.0.asignado_percent|intcomma }}
+                                {% else %}
+                                    {{ otros.0.ejecutado_percent|intcomma }}
+                                {% endif %}
+                                Cordobas.
+                            {% endif %}
                         </h2>
-                        <h5>C&oacute;rdobas corrientes por habitante en base a presupuesto
-                            {% if periodo_list|keyvalue:year == 'I' %} inicial
-                            {% else %}
-                                {% if periodo_list|keyvalue:year == 'A' %} ejecuci&oacute;n intermedia
+                        {% if municipio|lower != 'managua' %}
+                            <h5>C&oacute;rdobas corrientes por habitante en base a presupuesto
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    inicial
+                                {% elif periodo_list|keyvalue:year == 'A' %}
+                                    ejecuci&oacute;n intermedia
                                 {% else %}
                                     de cierre
                                 {% endif %}
-                            {% endif %}
-                            {{ year }}
-                        </h5>
+                                {{ year }}.
+                            </h5>
+                        {% endif %}
                         <hr class="pma-line-3"/>
+                        {% if municipio|lower != 'managua' %}
+                            {% include 'ranking_municipio.html' %}
+                        {% endif %}
                     </div>
+                    {% if municipio|lower != 'managua' %}
+                        {# chart horizontal chart #}
+                        <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                            <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-
-            {% include 'ranking_municipio.html' %}
 
             <div class="events-content container text-center">
                 <ol>
@@ -275,62 +302,63 @@
                 </ol>
             </div> <!-- .events-content -->
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center narrow">
-                        <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                            Ver detalles en tabla
-                        </button>
+            {% if municipio|lower != 'managua' %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center narrow">
+                            <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                                Ver detalles en tabla
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="container" id="detail-1">
-                <div class="row">
-                    <div class="col-md-offset-2 col-md-8 table-responsive">
-                        <table class="table table-bordered  table-condensed table-striped pma-bg-white">
-                            <thead class="thead-inverse">
-                            <tr class="bg-primary">
-                                <th class="text-center"><strong>Posici&oacute;n</strong></th>
-                                <th class="text-center"><strong>Municipios</strong></th>
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    <th class="text-center"><strong>P. Inicial</strong></th>
-                                {% else %}
-                                    <th class="text-center"><strong>Ejecuci&oacute;n</strong></th></tr>
-                                {% endif %}
-                            </thead>
-                            {% if ejecutado <= 0 %}
-                                {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                    {% if municipio.slug == row.gasto__municipio__slug %}
-                                        <tr class="info">
-                                            {% else %}
-                                        <tr>
+                <div class="container" id="detail-1">
+                    <div class="row">
+                        <div class="col-md-offset-2 col-md-8 table-responsive">
+                            <table class="table table-bordered  table-condensed table-striped pma-bg-white">
+                                <thead class="thead-inverse">
+                                <tr class="bg-primary">
+                                    <th class="text-center"><strong>Posici&oacute;n</strong></th>
+                                    <th class="text-center"><strong>Municipios</strong></th>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <th class="text-center"><strong>P. Inicial</strong></th>
+                                    {% else %}
+                                        <th class="text-center"><strong>Ejecuci&oacute;n</strong></th></tr>
                                     {% endif %}
-                                <td class="text-center"> {{ forloop.counter }} </td>
-                                <td>{{ row.gasto__municipio__nombre }}</td>
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                {% else %}
-                                    <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                {% endif %}
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                {% for row in otros %}
-                                    {% if municipio.slug == row.gasto__municipio__slug %}
-                                        <tr class="info">
-                                            {% else %}
-                                        <tr>
+                                </thead>
+                                {% if ejecutado <= 0 %}
+                                    {% for row in otros|dictsortreversed:"asignado_percent" %}
+                                        {% if municipio.slug == row.gasto__municipio__slug %}
+                                            <tr class="info">
+                                                {% else %}
+                                            <tr>
+                                        {% endif %}
+                                    <td class="text-center"> {{ forloop.counter }} </td>
+                                    <td>{{ row.gasto__municipio__nombre }}</td>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                    {% else %}
+                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
                                     {% endif %}
-                                <td class="text-center"> {{ forloop.counter }} </td>
-                                <td>{{ row.gasto__municipio__nombre }}</td>
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                    </tr>
+                                    {% endfor %}
                                 {% else %}
-                                    <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                {% endif %}
-                                </tr>
-                                {% endfor %} {% endif %}
-                            {% comment %}
+                                    {% for row in otros %}
+                                        {% if municipio.slug == row.gasto__municipio__slug %}
+                                            <tr class="info">
+                                                {% else %}
+                                            <tr>
+                                        {% endif %}
+                                    <td class="text-center"> {{ forloop.counter }} </td>
+                                    <td>{{ row.gasto__municipio__nombre }}</td>
+                                    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                                    {% else %}
+                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                                    {% endif %}
+                                    </tr>
+                                    {% endfor %} {% endif %}
+                                {% comment %}
                             <tr class="">
                                 <td colspan="2">TOTAL</td>
                                 <td class="text-right">
@@ -347,10 +375,11 @@
                                 {% endif %}
                             </tr>
                             {% endcomment %}
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}

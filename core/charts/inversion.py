@@ -31,6 +31,22 @@ colorscheme = getattr(
         '#FFE070',
         '#25AAE1'])
 
+colors_array = [
+    '#37a2da',
+    '#314454',
+    '#ce8266',
+    '#9ee6b7',
+    '#ffdb5c',
+    '#ff9f7e',
+    '#fb7292',
+    '#e062ae',
+    '#e690d2',
+    '#e7bcf3',
+    '#9d95f5',
+    '#67a0a8',
+    '#96bfff',
+]
+
 chart_options = getattr(
     pma_settings,
     'CHART_OPTIONS',
@@ -759,7 +775,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 {
                     'options': {'source': otros},
                     'terms': [
-                        'inversion__municipio__slug',
+                        'inversion__municipio__nombre',
                         '{}_percent'.format(quesumar)
                     ]
                 }
@@ -774,7 +790,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                         'colorByPoint': True,
                     },
                     'terms': {
-                        'inversion__municipio__slug': [
+                        'inversion__municipio__nombre': [
                             '{}_percent'.format(quesumar)
                         ]
                     },
