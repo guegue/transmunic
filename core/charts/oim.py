@@ -466,13 +466,31 @@ def oim_chart(municipio=None, year=None, portada=False):
             ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
-        sql_tpl = "SELECT clasificacion,\
-                (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
-                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo \
-                JOIN core_origenrecurso ON core_subsubtipoingreso.origen_id=core_origenrecurso.id \
-                JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
-                AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
+        sql_tpl = "SELECT clasificacion, (SELECT SUM({quesumar})\
+                FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id\
+                JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo\
+                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
+                ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
+                ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
+                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) AS {quesumar}_total,\
+                (SELECT SUM(poblacion) FROM lugar_poblacion JOIN lugar_clasificacionmunicano\
+                ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
+                AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
+                WHERE lugar_clasificacionmunicano.clasificacion_id=clase.id AND lugar_poblacion.anio={year}) AS poblacion,\
+                (SELECT SUM({quesumar})\
+                FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id\
+                JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo\
+                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
+                ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
+                ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
+                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                AND lugar_clasificacionmunicano.clasificacion_id=clase.id )/(SELECT SUM(poblacion)\
+                FROM lugar_poblacion JOIN lugar_clasificacionmunicano ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
+                AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
+                WHERE lugar_clasificacionmunicano.clasificacion_id=clase.id AND lugar_poblacion.anio={year}) AS {quesumar}\
+                FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
+
         sql = sql_tpl.format(quesumar="asignado", year=year,
                              periodo=PERIODO_INICIAL, recaudacion=OrigenRecurso.RECAUDACION)
 
@@ -502,29 +520,45 @@ def oim_chart(municipio=None, year=None, portada=False):
                 d['nivel'] = 0
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl = "SELECT clasificacion,\
-                (SELECT SUM({quesumar}) FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_IngresoDetalle.tipoingreso_id!='{saldo_caja}' AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
-                (SELECT SUM(poblacion) FROM lugar_Poblacion \
-                JOIN lugar_clasificacionmunicano ON lugar_Poblacion.municipio_id = lugar_clasificacionmunicano.municipio_id \
-                JOIN lugar_clasificacionmunic ON lugar_clasificacionmunicano.clasificacion_id=lugar_clasificacionmunic.id \
-                WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
-                AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
+        sql_tpl = "SELECT clasificacion, (SELECT SUM({quesumar})\
+                FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id\
+                JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo\
+                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
+                ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
+                ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
+                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) AS {quesumar}_total,\
+                (SELECT SUM(poblacion) FROM lugar_poblacion JOIN lugar_clasificacionmunicano\
+                ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
+                AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
+                WHERE lugar_clasificacionmunicano.clasificacion_id=clase.id AND lugar_poblacion.anio={year}) AS poblacion,\
+                (SELECT SUM({quesumar})\
+                FROM core_IngresoDetalle JOIN core_Ingreso ON core_IngresoDetalle.ingreso_id=core_Ingreso.id\
+                JOIN core_TipoIngreso ON core_IngresoDetalle.tipoingreso_id=core_TipoIngreso.codigo\
+                JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
+                ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
+                ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
+                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                AND lugar_clasificacionmunicano.clasificacion_id=clase.id )/(SELECT SUM(poblacion)\
+                FROM lugar_poblacion JOIN lugar_clasificacionmunicano ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
+                AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
+                WHERE lugar_clasificacionmunicano.clasificacion_id=clase.id AND lugar_poblacion.anio={year}) AS {quesumar}\
+                FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
+
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_INICIAL, saldo_caja=saldo_caja)
+                             periodo=PERIODO_INICIAL,recaudacion=OrigenRecurso.RECAUDACION)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="ejecutado", year=year,
-                             periodo=periodo, saldo_caja=saldo_caja)
+                             periodo=periodo,recaudacion=OrigenRecurso.RECAUDACION)
 
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="asignado", year=year,
                              periodo=PERIODO_ACTUALIZADO,
-                             saldo_caja=saldo_caja)
+                             recaudacion=OrigenRecurso.RECAUDACION)
 
         cursor = connection.cursor()
         cursor.execute(sql)
