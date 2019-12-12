@@ -118,8 +118,17 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
     form_class = RenglonIngresoForm
     form = RenglonIngresoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(ReglonIngresosView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
-        form.cleaned_data
+        data = form.cleaned_data
+        if hasattr(self.request.user, 'profile') and \
+                self.request.user.profile.municipio != data['municipio']:
+            raise PermissionDenied("Limite de municipio excedido {} <> {}.".
+                                   format(self.request.user.profile.municipio, data['municipio']))
         # get the data from the form
         renglon_codigo = self.request.POST.getlist('renglon[codigo]')
         municipio = self.request.POST.get('municipio')
