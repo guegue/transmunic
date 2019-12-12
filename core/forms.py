@@ -61,9 +61,9 @@ class DetallePresupuestoForm(forms.Form):
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        widget=forms.ModelChoiceField.widget(
                                            attrs={'class': "form-control required"},
-                                       ),
-                                       required=True
-                                       )
+    ),
+        required=True
+    )
     tipo = forms.ChoiceField(choices=MODELS,
                              widget=forms.ChoiceField.widget(
                                  attrs={'class': "form-control required"},
@@ -73,9 +73,9 @@ class DetallePresupuestoForm(forms.Form):
     catinversion = forms.ModelChoiceField(queryset=CatInversion.objects.all(),
                                           widget=forms.ModelChoiceField.widget(
                                               attrs={'class': "form-control required"},
-                                          ),
-                                          required=True
-                                          )
+    ),
+        required=True
+    )
 
 
 class RenglonIngresoForm(forms.Form):
@@ -93,6 +93,6 @@ class RenglonIngresoForm(forms.Form):
                                        )
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
         attrs={'class': "form-control required"}),
-                              initial=lambda: datetime.date.today().year, required=True)
+        initial=lambda: datetime.date.today().year, required=True)
     periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
         attrs={'class': "form-control required"}), required=True)
