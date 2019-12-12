@@ -79,6 +79,13 @@ class DetallePresupuestoForm(forms.Form):
 
 
 class RenglonIngresoForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(RenglonIngresoForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['municipio'].queryset = Municipio.objects.for_user(user)
+
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        empty_label="(Municipio)",
                                        widget=forms.ChoiceField.widget(
