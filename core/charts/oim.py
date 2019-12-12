@@ -546,12 +546,12 @@ def oim_chart(municipio=None, year=None, portada=False):
                 FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
 
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_INICIAL,recaudacion=OrigenRecurso.RECAUDACION)
+                             periodo=PERIODO_INICIAL, recaudacion=OrigenRecurso.RECAUDACION)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="ejecutado", year=year,
-                             periodo=periodo,recaudacion=OrigenRecurso.RECAUDACION)
+                             periodo=periodo, recaudacion=OrigenRecurso.RECAUDACION)
 
         cursor = connection.cursor()
         cursor.execute(sql)
