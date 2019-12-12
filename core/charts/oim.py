@@ -269,7 +269,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     found = True
                     try:
                         row['clase_final'] = row2['clase_final'] / \
-                                             mi_clase_anios_count[row['ingreso__anio']]
+                            mi_clase_anios_count[row['ingreso__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
@@ -312,7 +312,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             for row2 in final_clase:
                 if row2['ingreso__anio'] == row['ingreso__anio']:
                     row['clase_final'] = row2['clase_final'] / \
-                                         mi_clase_anios_count[row['ingreso__anio']]
+                        mi_clase_anios_count[row['ingreso__anio']]
         for row in inicial:
             found = False
             for row2 in final:
@@ -360,7 +360,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
         if actualizado:
             actualizado[0]['clase'] = actualizado_clase[0]['clase'] / \
-                                      mi_clase_count
+                mi_clase_count
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
         comparativo3 = list(chain(inicial, actualizado, final))
@@ -475,14 +475,14 @@ def oim_chart(municipio=None, year=None, portada=False):
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year,
                              periodo=PERIODO_INICIAL, recaudacion=OrigenRecurso.RECAUDACION)
-        
+
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="ejecutado",
                              year=year, periodo=PERIODO_FINAL,
                              recaudacion=OrigenRecurso.RECAUDACION)
-        
+
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
@@ -523,7 +523,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         cursor.execute(sql)
         final = dictfetchall(cursor)
         sql = sql_tpl.format(quesumar="asignado", year=year,
-                             periodo=PERIODO_ACTUALIZADO, 
+                             periodo=PERIODO_ACTUALIZADO,
                              saldo_caja=saldo_caja)
 
         cursor = connection.cursor()
@@ -600,7 +600,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                           u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms': {
                     'ingreso__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
-                },
+            },
             }],
             chart_options={
                 'title': {'text': ' ', },
@@ -622,7 +622,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'stacking': False},
                 'terms': {
                     'ingreso__anio': ['ejecutado', 'asignado'],
-                },
+            },
             }],
             chart_options={'title': {'text': ' '}},
         )
@@ -639,7 +639,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'stacking': False},
             'terms': {
                 'subsubtipoingreso__origen__nombre': ['ejecutado', 'asignado'],
-            },
+        },
         }],
         chart_options={
             'title': {'text': ' '},
@@ -653,8 +653,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': {
                      'ejecutado': Sum('ejecutado'),
                      'asignado': Sum('asignado'),
-                 }
-                 }],
+        }
+        }],
         # sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     asignado_barra = PivotChart(
@@ -674,8 +674,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': {
                      'ejecutado': Sum('ejecutado'),
                      'asignado': Sum('asignado'),
-                 }
-                 }],
+        }
+        }],
     )
     barra = PivotChart(
         datasource=oimdata_barra2,
@@ -693,8 +693,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': [
                      'subsubtipoingreso__origen__nombre',
                      quesumar,
-                 ]}
-                ])
+        ]}
+        ])
 
     asignado_pie = Chart(
         datasource=oimdata,
@@ -704,7 +704,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-            }}],
+        }}],
         chart_options={
             'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
             'plotOptions': {
@@ -724,7 +724,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-            }}],
+        }}],
         chart_options={
             'options3d': {'enabled': 'true', 'alpha': '45', 'beta': '0'},
             'title': {'text': ' '},
@@ -746,7 +746,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-            }}],
+        }}],
         chart_options={
             'options3d': {
                 'enabled': 'true',
@@ -834,10 +834,10 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'legend': {
                     'enabled': False
                 },
-                'colors':colors_array,
+                'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipio Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
