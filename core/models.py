@@ -262,11 +262,29 @@ class SubSubTipoIngreso(models.Model):
         return self.nombre
 
 
+class Sub3TipoIngreso(models.Model):
+    codigo = models.CharField(max_length=25,  primary_key=True)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, related_name='subsubtipo')
+    nombre = models.CharField(max_length=200)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    #origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True)
+
+    class Meta:
+        verbose_name_plural = 'Sub3 Tipo de ingreso'
+        verbose_name = 'Sub3 Tipo de ingreso'
+        ordering = ['codigo']
+
+    def __unicode__(self):
+        return self.nombre
+
+
 # Ingresos del municipio
 class IngresoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True)
+    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
 
     class Meta:
         verbose_name = u'Renglón Ingreso'
@@ -309,6 +327,7 @@ class IngresoDetalle(models.Model):
     subsubtipoingreso = ChainedForeignKey(
             SubSubTipoIngreso, chained_field='subtipoingreso',
             chained_model_field='subtipoingreso', null=True, blank=True)
+    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
             max_digits=12, decimal_places=2, blank=True, null=True)
