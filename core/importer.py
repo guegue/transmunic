@@ -165,7 +165,6 @@ class UploadExcelView(LoginRequiredMixin, FormView):
                                   start_row=data['start_row'], end_row=data['end_row'],
                                   table=data['table'])
 
-
         return super(UploadExcelView, self).form_valid(form)
 
 

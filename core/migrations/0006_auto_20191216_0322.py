@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sub3tipoingreso',
             name='subsubtipoingreso',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subsubtipo', to='core.SubSubTipoIngreso'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='subsubtipo', to='core.SubSubTipoIngreso'),
         ),
     ]

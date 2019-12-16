@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ingresodetalle',
             name='sub3tipoingreso',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Sub3TipoIngreso'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Sub3TipoIngreso'),
         ),
     ]

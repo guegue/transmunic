@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
                 ('nombre', models.CharField(max_length=200)),
                 ('slug', autoslug.fields.AutoSlugField(editable=False, populate_from=b'nombre')),
                 ('shortname', models.CharField(blank=True, max_length=25, null=True)),
-                ('subsubtipoingreso', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subsubtipo', to='core.SubTipoIngreso')),
+                ('subsubtipoingreso', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                        related_name='subsubtipo', to='core.SubTipoIngreso')),
             ],
             options={
                 'ordering': ['codigo'],
@@ -32,11 +33,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ingresorenglon',
             name='subsubtipoingreso',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso'),
         ),
         migrations.AddField(
             model_name='ingresorenglon',
             name='sub3tipoingreso',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Sub3TipoIngreso'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Sub3TipoIngreso'),
         ),
     ]
