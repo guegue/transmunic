@@ -9,8 +9,8 @@ from django.db.models import F
 from openpyxl import load_workbook
 
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
-                         IngresoRenglon, Gasto, GastoDetalle, TipoGasto, SubTipoGasto,
-                         SubSubTipoGasto, GastoRenglon)
+                         Sub3TipoIngreso, IngresoRenglon, Gasto, GastoDetalle, TipoGasto,
+                         SubTipoGasto, SubSubTipoGasto, GastoRenglon)
 from lugar.models import (Municipio)
 from core.forms import UploadExcelForm, RenglonIngresoForm
 from core.tools import xnumber
@@ -19,6 +19,7 @@ from core.tools import xnumber
 def import_file(excel_file, municipio, year, periodo, start_row, end_row, table):
     tables = {'ingreso': {'main': Ingreso, 'detalle': IngresoDetalle, 'tipo': TipoIngreso,
                           'subtipo': SubTipoIngreso, 'subsubtipo': SubSubTipoIngreso,
+                          'sub3tipo': Sub3TipoIngreso,
                           'renglon': IngresoRenglon},
               'gasto': {'main': Gasto, 'detalle': GastoDetalle, 'tipo': TipoGasto,
                         'subtipo': SubTipoGasto, 'subsubtipo': SubSubTipoGasto,
@@ -33,50 +34,108 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                       periodo=periodo,
                       defaults={'fecha': today})
 
+    # define structure
+    sub3 = False
+    tipo_start = 0
+    if year < 18:
+        code_len = 8
+        tipo_end = 2
+        subtipo_start = 2
+        subtipo_end = 4
+        subsubtipo_start = 4
+        subsubtipo_end = 6
+        cuenta_start = 6
+        cuenta_end = 8
+    if year >= 18 and table == 'gasto':
+        code_len = 5
+        tipo_end = 1
+        subtipo_start = 1
+        subtipo_end = 2
+        subsubtipo_start = 2
+        subsubtipo_end = 3
+        cuenta_start = 3
+        cuenta_end = 5
+    if year >= 18 and table == 'ingreso':
+        sub3 = True
+        code_len = 6
+        tipo_end = 2
+        subtipo_start = 2
+        subtipo_end = 3
+        subsubtipo_start = 3
+        subsubtipo_end = 4
+        sub3tipo_start = 4
+        sub3tipo_end = 5
+        cuenta_start = 5
+        cuenta_end = 6
+
     for row in sheet[start_row:end_row]:
         joined = unicode(row[0].value).replace(u'\xa0', u' ').strip()
         if ' ' not in joined:
             continue
         (codigo, nombre) = joined.split(' ', 1)
-        tipo = codigo[0:2]
-        tipo_id = "{}000000".format(tipo)
-        subtipo = codigo[2:4]
-        subtipo_id = "{}{}0000".format(tipo, subtipo)
-        subsubtipo = codigo[4:6]
-        subsubtipo_id = "{}{}{}00".format(tipo, subtipo, subsubtipo)
-        cuenta = codigo[6:8]
-        if cuenta == '00':
-            # no agrega un entrada en detalle
-            if subsubtipo == '00':
-                if subtipo == '00':
-                    if tipo == '00':
-                        raise ('Tipo no puede ser 00')
-                    tipo, created = t['tipo'].objects.get_or_create(codigo=codigo,
-                                                                    defaults={'nombre': nombre})
+        codigo = codigo.ljust(code_len, '0')
+        tipo = codigo[tipo_start:tipo_end]
+        tipo_id = tipo.ljust(code_len, '0')
+        subtipo = codigo[subtipo_start:subtipo_end]
+        print('subtipo:' + subtipo)
+        subtipo_id = "{}{}".format(tipo, subtipo)
+        subtipo_id = subtipo_id.ljust(code_len, '0')
+        print('subtipo_id:' + subtipo_id)
+        subsubtipo = codigo[subsubtipo_start:subsubtipo_end]
+        subsubtipo_id = "{}{}{}".format(tipo, subtipo, subsubtipo)
+        subsubtipo_id = subsubtipo_id.ljust(code_len, '0')
+        if sub3:
+            sub3tipo = codigo[sub3tipo_start:sub3tipo_end]
+            sub3tipo_id = "{}{}{}{}".format(tipo, subtipo, subsubtipo, sub3tipo)
+            sub3tipo_id = sub3tipo_id.ljust(code_len, '0')
+        cuenta = codigo[cuenta_start:cuenta_end]
+        print(codigo)
+        if int(cuenta) == 0:
+            # no agrega un entrada en detallea
+            if (sub3 and int(sub3tipo) == 0) or (not sub3):
+                if int(subsubtipo) == 0:
+                    if int(subtipo) == 0:
+                        if int(tipo) == 0:
+                            raise ('Tipo no puede ser 0')
+                        tipo, created = t['tipo'].objects.get_or_create(codigo=codigo,
+                                                                        defaults={'nombre': nombre})
+                    else:
+                        print('create subtipo')
+                        lookup_dict = {'codigo': codigo, 'tipo{}_id'.format(table): tipo_id}
+                        subtipo, created = t['subtipo'].objects.\
+                            get_or_create(defaults={'nombre': nombre}, **lookup_dict)
                 else:
-                    lookup_dict = {'codigo': codigo, 'tipo{}_id'.format(table): tipo_id}
-                    subsubtipo, created = t['subtipo'].objects.\
-                        get_or_create(defaults={'nombre': nombre}, **lookup_dict)
-            else:
-                lookup_dict = {'codigo': codigo, 'subtipo{}_id'.format(table): subtipo_id}
-                subsubtipo, created = t['subsubtipo']. \
+                    print('create subsubtipo, con padre {}'.format(subtipo_id))
+                    lookup_dict = {'codigo': codigo, 'subtipo{}_id'.format(table): subtipo_id}
+                    subsubtipo, created = t['subsubtipo']. \
+                        objects.get_or_create(defaults={'nombre': nombre}, **lookup_dict)
+            elif sub3:
+                print('create sub3tipo')
+                lookup_dict = {'codigo': codigo, 'subsubtipo{}_id'.format(table): subsubtipo_id}
+                sub3tipo, created = t['sub3tipo']. \
                     objects.get_or_create(defaults={'nombre': nombre}, **lookup_dict)
         else:
             # entrada en detalle (referencia a renglon)
-            lookup_dict = {'codigo': codigo, 'subsubtipo{}_id'.format(table): subsubtipo_id}
+            if sub3:
+                lookup_dict = {'codigo': codigo, 'sub3tipo{}_id'.format(table): sub3tipo_id}
+            else:
+                lookup_dict = {'codigo': codigo, 'subsubtipo{}_id'.format(table): subsubtipo_id}
             renglon, created = t['renglon']. \
                 objects.get_or_create(defaults={'nombre': nombre}, **lookup_dict)
             asignado = xnumber(row[1].value)
             ejecutado = xnumber(row[2].value)
 
             lookup_dict = {'codigo_id': codigo, table: main_object}
-            detalle, created = t['detalle']. \
-                objects.update_or_create(defaults={'asignado': asignado, 'ejecutado': ejecutado,
+            defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
                                                    'cuenta': nombre,
                                                    'tipo{}_id'.format(table): tipo_id,
                                                    'subtipo{}_id'.format(table): subtipo_id,
-                                                   'subsubtipo{}_id'.format(table): subsubtipo_id},
-                                         **lookup_dict)
+                                                   'subsubtipo{}_id'.format(table): subsubtipo_id}
+            if sub3:
+                defaults_dict['sub3tipo{}_id'.format(table)] = sub3tipo_id
+
+            detalle, created = t['detalle'].objects.update_or_create(defaults=defaults_dict,
+                                                                     **lookup_dict)
 
     return main_object
 
