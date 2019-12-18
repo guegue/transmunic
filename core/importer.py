@@ -16,6 +16,13 @@ from core.forms import UploadExcelForm, RenglonIngresoForm
 from core.tools import xnumber
 
 
+def not_or_zero(value, active_zero):
+    if value == '':
+        return True
+    if not active_zero and int(value) == 0:
+        return True
+    return False
+
 def import_file(excel_file, municipio, year, periodo, start_row, end_row, table):
     tables = {'ingreso': {'main': Ingreso, 'detalle': IngresoDetalle, 'tipo': TipoIngreso,
                           'subtipo': SubTipoIngreso, 'subsubtipo': SubSubTipoIngreso,
@@ -36,10 +43,12 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
 
     # define structure
     sub3 = False
+    active_zero = False
     tipo_start = 0
     year = int(year)
     if table == 'gasto':
         if year >= 2018:
+            active_zero = True
             code_len = 5
             tipo_end = 1
             subtipo_start = 1
@@ -59,6 +68,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             cuenta_end = 7
     if table == 'ingreso':
         if year >= 2018:
+            active_zero = True
             sub3 = True
             code_len = 6
             tipo_end = 2
@@ -81,34 +91,46 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             cuenta_end = 8
 
     for row in sheet[start_row:end_row]:
+        print(row[0].value)
         joined = unicode(row[0].value).replace(u'\xa0', u' ').strip()
         if ' ' not in joined:
             continue
         (codigo, nombre) = joined.split(' ', 1)
-        codigo = codigo.ljust(code_len, '0')
         tipo = codigo[tipo_start:tipo_end]
-        tipo_id = tipo.ljust(code_len, '0')
+        tipo_id = tipo
+        print('tipo:' + tipo)
         subtipo = codigo[subtipo_start:subtipo_end]
-        print('subtipo:' + subtipo)
         subtipo_id = "{}{}".format(tipo, subtipo)
-        subtipo_id = subtipo_id.ljust(code_len, '0')
+        print('subtipo:' + subtipo)
         print('subtipo_id:' + subtipo_id)
         subsubtipo = codigo[subsubtipo_start:subsubtipo_end]
         subsubtipo_id = "{}{}{}".format(tipo, subtipo, subsubtipo)
-        subsubtipo_id = subsubtipo_id.ljust(code_len, '0')
+        print('subsubtipo:' + subsubtipo)
+        print('subsubtipo_id:' + subsubtipo_id)
         if sub3:
             sub3tipo = codigo[sub3tipo_start:sub3tipo_end]
             sub3tipo_id = "{}{}{}{}".format(tipo, subtipo, subsubtipo, sub3tipo)
-            sub3tipo_id = sub3tipo_id.ljust(code_len, '0')
+            if not active_zero:
+                sub3tipo_id = sub3tipo_id.ljust(code_len, '0')
+            print('sub3tipo:' + sub3tipo)
+            print('sub3tipo_id:' + sub3tipo_id)
+        if not active_zero:
+            codigo = codigo.ljust(code_len, '0')
+            tipo_id = tipo.ljust(code_len, '0')
+            subtipo_id = subtipo_id.ljust(code_len, '0')
+            subsubtipo_id = subsubtipo_id.ljust(code_len, '0')
         cuenta = codigo[cuenta_start:cuenta_end]
+        print(cuenta)
         print(codigo)
-        if int(cuenta) == 0:
+        print(not_or_zero(cuenta, active_zero))
+        if not_or_zero(cuenta, active_zero):
             # no agrega un entrada en detallea
-            if (sub3 and int(sub3tipo) == 0) or (not sub3):
-                if int(subsubtipo) == 0:
-                    if int(subtipo) == 0:
-                        if int(tipo) == 0:
-                            raise ('Tipo no puede ser 0')
+            print(not_or_zero(sub3tipo, active_zero))
+            if not_or_zero(sub3tipo, active_zero) or not sub3:
+                if not_or_zero(subsubtipo, active_zero):
+                    if not_or_zero(subtipo, active_zero):
+                        if not_or_zero(tipo, active_zero):
+                            raise ('Debe indicarse el tipo.')
                         tipo, created = t['tipo'].objects.get_or_create(codigo=codigo,
                                                                         defaults={'nombre': nombre})
                     else:
