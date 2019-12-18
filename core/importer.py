@@ -91,41 +91,29 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             cuenta_end = 8
 
     for row in sheet[start_row:end_row]:
-        print(row[0].value)
         joined = unicode(row[0].value).replace(u'\xa0', u' ').strip()
         if ' ' not in joined:
             continue
         (codigo, nombre) = joined.split(' ', 1)
         tipo = codigo[tipo_start:tipo_end]
         tipo_id = tipo
-        print('tipo:' + tipo)
         subtipo = codigo[subtipo_start:subtipo_end]
         subtipo_id = "{}{}".format(tipo, subtipo)
-        print('subtipo:' + subtipo)
-        print('subtipo_id:' + subtipo_id)
         subsubtipo = codigo[subsubtipo_start:subsubtipo_end]
         subsubtipo_id = "{}{}{}".format(tipo, subtipo, subsubtipo)
-        print('subsubtipo:' + subsubtipo)
-        print('subsubtipo_id:' + subsubtipo_id)
         if sub3:
             sub3tipo = codigo[sub3tipo_start:sub3tipo_end]
             sub3tipo_id = "{}{}{}{}".format(tipo, subtipo, subsubtipo, sub3tipo)
             if not active_zero:
                 sub3tipo_id = sub3tipo_id.ljust(code_len, '0')
-            print('sub3tipo:' + sub3tipo)
-            print('sub3tipo_id:' + sub3tipo_id)
         if not active_zero:
             codigo = codigo.ljust(code_len, '0')
             tipo_id = tipo.ljust(code_len, '0')
             subtipo_id = subtipo_id.ljust(code_len, '0')
             subsubtipo_id = subsubtipo_id.ljust(code_len, '0')
         cuenta = codigo[cuenta_start:cuenta_end]
-        print(cuenta)
-        print(codigo)
-        print(not_or_zero(cuenta, active_zero))
         if not_or_zero(cuenta, active_zero):
             # no agrega un entrada en detallea
-            print(not_or_zero(sub3tipo, active_zero))
             if not_or_zero(sub3tipo, active_zero) or not sub3:
                 if not_or_zero(subsubtipo, active_zero):
                     if not_or_zero(subtipo, active_zero):
@@ -134,17 +122,17 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                         tipo, created = t['tipo'].objects.get_or_create(codigo=codigo,
                                                                         defaults={'nombre': nombre})
                     else:
-                        print('create subtipo')
+                        #print('create subtipo')
                         lookup_dict = {'codigo': codigo, 'tipo{}_id'.format(table): tipo_id}
                         subtipo, created = t['subtipo'].objects.\
                             get_or_create(defaults={'nombre': nombre}, **lookup_dict)
                 else:
-                    print('create subsubtipo, con padre {}'.format(subtipo_id))
+                    #print('create subsubtipo, con padre {}'.format(subtipo_id))
                     lookup_dict = {'codigo': codigo, 'subtipo{}_id'.format(table): subtipo_id}
                     subsubtipo, created = t['subsubtipo']. \
                         objects.get_or_create(defaults={'nombre': nombre}, **lookup_dict)
             elif sub3:
-                print('create sub3tipo')
+                #print('create sub3tipo')
                 lookup_dict = {'codigo': codigo, 'subsubtipo{}_id'.format(table): subsubtipo_id}
                 sub3tipo, created = t['sub3tipo']. \
                     objects.get_or_create(defaults={'nombre': nombre}, **lookup_dict)
