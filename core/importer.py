@@ -37,36 +37,48 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     # define structure
     sub3 = False
     tipo_start = 0
-    if year < 18:
-        code_len = 8
-        tipo_end = 2
-        subtipo_start = 2
-        subtipo_end = 4
-        subsubtipo_start = 4
-        subsubtipo_end = 6
-        cuenta_start = 6
-        cuenta_end = 8
-    if year >= 18 and table == 'gasto':
-        code_len = 5
-        tipo_end = 1
-        subtipo_start = 1
-        subtipo_end = 2
-        subsubtipo_start = 2
-        subsubtipo_end = 3
-        cuenta_start = 3
-        cuenta_end = 5
-    if year >= 18 and table == 'ingreso':
-        sub3 = True
-        code_len = 6
-        tipo_end = 2
-        subtipo_start = 2
-        subtipo_end = 3
-        subsubtipo_start = 3
-        subsubtipo_end = 4
-        sub3tipo_start = 4
-        sub3tipo_end = 5
-        cuenta_start = 5
-        cuenta_end = 6
+    year = int(year)
+    if table == 'gasto':
+        if year >= 2018:
+            code_len = 5
+            tipo_end = 1
+            subtipo_start = 1
+            subtipo_end = 2
+            subsubtipo_start = 2
+            subsubtipo_end = 3
+            cuenta_start = 3
+            cuenta_end = 5
+        if year < 2018:
+            code_len = 7
+            tipo_end = 1
+            subtipo_start = 1
+            subtipo_end = 2
+            subsubtipo_start = 2
+            subsubtipo_end = 4
+            cuenta_start = 4
+            cuenta_end = 7
+    if table == 'ingreso':
+        if year >= 2018:
+            sub3 = True
+            code_len = 6
+            tipo_end = 2
+            subtipo_start = 2
+            subtipo_end = 3
+            subsubtipo_start = 3
+            subsubtipo_end = 4
+            sub3tipo_start = 4
+            sub3tipo_end = 5
+            cuenta_start = 5
+            cuenta_end = 6
+        if year < 2018:
+            code_len = 8
+            tipo_end = 2
+            subtipo_start = 2
+            subtipo_end = 4
+            subsubtipo_start = 4
+            subsubtipo_end = 6
+            cuenta_start = 6
+            cuenta_end = 8
 
     for row in sheet[start_row:end_row]:
         joined = unicode(row[0].value).replace(u'\xa0', u' ').strip()
