@@ -10,7 +10,7 @@ import json
 from django.db import connection
 from core.models import Gasto, Anio
 from core.models import PERIODO_INICIAL
-from core.tools import getYears, dictfetchall
+from core.tools import getYears, dictfetchall, xnumber
 from lugar.models import Municipio
 
 
@@ -52,7 +52,7 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
         totals = dictfetchall(cursor)
         data = {
             'label': "Gastos Totales",
-            'amount': round(totals[0][data_source]/1000000, 2)
+            'amount': round(xnumber(totals[0][data_source])/1000000, 2)
             }
         child_l1 = []
         level_1_sql = """select sum(sd.asignado) as asignado,
