@@ -63,8 +63,8 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             subtipo_start = 1
             subtipo_end = 2
             subsubtipo_start = 2
-            subsubtipo_end = 4
-            cuenta_start = 4
+            subsubtipo_end = 3
+            cuenta_start = 3
             cuenta_end = 7
     if table == 'ingreso':
         if year >= 2018:
