@@ -114,7 +114,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
         cuenta = codigo[cuenta_start:cuenta_end]
         if not_or_zero(cuenta, active_zero):
             # no agrega un entrada en detallea
-            if not_or_zero(sub3tipo, active_zero) or not sub3:
+            if not sub3 or not_or_zero(sub3tipo, active_zero):
                 if not_or_zero(subsubtipo, active_zero):
                     if not_or_zero(subtipo, active_zero):
                         if not_or_zero(tipo, active_zero):
