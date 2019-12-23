@@ -989,7 +989,9 @@ def oim_chart(municipio=None, year=None, portada=False):
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo,
-                                         subsubtipoingreso__origen__nombre=name).aggregate(total=Sum(quesumar))['total']
+                                         subsubtipoingreso__origen__nombre=name).\
+                                                 exclude(tipoingreso_id=saldo_caja). \
+                                                 aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
             porano_table[label][ayear]['raw'] = value if value else ''
             if not ayear in ano_table:
@@ -1006,6 +1008,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                        subsubtipoingreso__origen__nombre=label,
                        ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
                        ingreso__municipio__clase__anio=year). \
+                exclude(tipoingreso_id=saldo_caja). \
                 aggregate(total=Sum(quesumar))['total']
             if value:
                 value = value / mi_clase_count
