@@ -990,8 +990,8 @@ def oim_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             value = source_cuadro.filter(ingreso__anio=ayear, ingreso__periodo=periodo,
                                          subsubtipoingreso__origen__nombre=name).\
-                                                 exclude(tipoingreso_id=saldo_caja). \
-                                                 aggregate(total=Sum(quesumar))['total']
+                exclude(tipoingreso_id=saldo_caja). \
+                aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
             porano_table[label][ayear]['raw'] = value if value else ''
             if not ayear in ano_table:
