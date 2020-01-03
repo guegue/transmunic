@@ -43,7 +43,6 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                       periodo=periodo,
                       defaults={'fecha': today})
 
-
     # proceso para 'inversion' es diferente
     if table == 'inversion':
         for row in sheet[start_row:end_row]:
@@ -58,7 +57,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
             asignado = xnumber(row[4].value)
             ejecutado = xnumber(row[5].value)
             defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
-                             'catinversion_id': catinversion_id, 'areageografica': areageografica,}
+                             'catinversion_id': catinversion_id, 'areageografica': areageografica, }
             proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
                                                                       inversion=main_object,
                                                                       defaults=defaults_dict)
