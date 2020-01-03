@@ -13,7 +13,7 @@ class UploadExcelForm(forms.Form):
         if user:
             self.fields['municipio'].queryset = Municipio.objects.for_user(user)
 
-    CHOICES = [('ingreso', 'Ingreso'), ('gasto', 'Gasto')]
+    CHOICES = [('ingreso', u'Ingreso'), ('gasto', u'Gasto'), ('inversion', u'Inversión')]
     table = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required=True)
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        empty_label="(Municipio)",
