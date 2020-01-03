@@ -10,7 +10,8 @@ from openpyxl import load_workbook
 
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
                          Sub3TipoIngreso, IngresoRenglon, Gasto, GastoDetalle, TipoGasto,
-                         SubTipoGasto, SubSubTipoGasto, GastoRenglon)
+                         SubTipoGasto, SubSubTipoGasto, GastoRenglon,
+                         Inversion, Proyecto, CatInversion)
 from lugar.models import (Municipio)
 from core.forms import UploadExcelForm, RenglonIngresoForm
 from core.tools import xnumber
@@ -30,7 +31,8 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                           'renglon': IngresoRenglon},
               'gasto': {'main': Gasto, 'detalle': GastoDetalle, 'tipo': TipoGasto,
                         'subtipo': SubTipoGasto, 'subsubtipo': SubSubTipoGasto,
-                        'renglon': GastoRenglon}}
+                        'renglon': GastoRenglon},
+              'inversion': {'main': Inversion, 'detalle': Proyecto, 'tipo': CatInversion}}
     t = tables[table]
     book = load_workbook(filename=excel_file)
     sheet = book.active
@@ -40,6 +42,27 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                       anio=year,
                       periodo=periodo,
                       defaults={'fecha': today})
+
+
+    # proceso para 'inversion' es diferente
+    if table == 'inversion':
+        for row in sheet[start_row:end_row]:
+            catinversion_id = xnumber(row[2].value)
+            if not catinversion_id:
+                catinversion_str = unicode(row[2].value)
+                catinversion_obj = t['tipo'].objects.get(nombre=catinversion_str)
+                catinversion_id = catinversion_obj.id
+
+            areageografica = str(row[3].value)[0]
+            nombre = unicode(row[1].value)
+            asignado = xnumber(row[4].value)
+            ejecutado = xnumber(row[5].value)
+            defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
+                             'catinversion_id': catinversion_id, 'areageografica': areageografica,}
+            proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
+                                                                      inversion=main_object,
+                                                                      defaults=defaults_dict)
+        return main_object
 
     # define structure
     sub3 = False
