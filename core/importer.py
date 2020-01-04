@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from datetime import date
 
 from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.urls import reverse
 from django.views.generic import FormView, DetailView
 from django.db.models import F
@@ -47,17 +49,22 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     if table == 'inversion':
         for row in sheet[start_row:end_row]:
             catinversion_id = xnumber(row[2].value)
-            if not catinversion_id:
-                catinversion_str = unicode(row[2].value)
-                catinversion_obj = t['tipo'].objects.get(nombre=catinversion_str)
-                catinversion_id = catinversion_obj.id
+            try:
+                if catinversion_id:
+                    catinversion = t['tipo'].objects.get(id=catinversion_id)
+                else:
+                    catinversion_id = unicode(row[2].value)
+                    catinversion = t['tipo'].objects.get(nombre=catinversion_id)
+            except ObjectDoesNotExist:
+                raise ObjectDoesNotExist(u'Categoría de Inversión %s no existe' % (catinversion_id,))
+
 
             areageografica = str(row[3].value)[0]
             nombre = unicode(row[1].value)
             asignado = xnumber(row[4].value)
             ejecutado = xnumber(row[5].value)
             defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
-                             'catinversion_id': catinversion_id, 'areageografica': areageografica, }
+                             'catinversion': catinversion, 'areageografica': areageografica, }
             proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
                                                                       inversion=main_object,
                                                                       defaults=defaults_dict)
