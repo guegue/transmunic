@@ -56,8 +56,8 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                     catinversion_id = unicode(row[2].value)
                     catinversion = t['tipo'].objects.get(nombre=catinversion_id)
             except ObjectDoesNotExist:
-                raise ObjectDoesNotExist(u'Categoría de Inversión %s no existe' % (catinversion_id,))
-
+                raise ObjectDoesNotExist(
+                    u'Categoría de Inversión %s no existe' % (catinversion_id,))
 
             areageografica = str(row[3].value)[0]
             nombre = unicode(row[1].value)
