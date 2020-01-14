@@ -268,7 +268,7 @@ class Sub3TipoIngreso(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    #origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True)
+    origen = models.ForeignKey(OrigenRecurso, related_name='origen_recurso', null=True)
 
     class Meta:
         verbose_name_plural = 'Sub3 Tipo de ingreso'
