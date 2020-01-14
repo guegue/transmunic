@@ -254,6 +254,7 @@
                            C&oacute;rdobas
 			  </span>
                       </h2>
+		      <h5> Córdobas corrientes por habitante en base a ingresos ejecutados </h5>
                       <hr class="pma-line-5"/>
 		  </div>
 		</div>
@@ -265,7 +266,6 @@
                             <br>
                             por habitante categor&iacute;a municipal
                             "{{ mi_clase.clasificacion }}"
-                            {% if municipio|lower == 'managua' %}
                                 para el municipio de
                                 <strong>{{ municipio }}</strong>
                                 con
@@ -275,7 +275,6 @@
                                     {{ otros.0.ejecutado_percent|intcomma }}
                                 {% endif %}
                                 Cordobas.
-                            {% endif %}
                         </h2>
                         <h5>
                             C&oacute;rdobas corrientes por habitante en base a
