@@ -31,63 +31,59 @@ def home(request):
     # descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
-    desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
+    #desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionsector = Grafico.objects.get(pk='inversion')
     # fin de descripcion de graficos de portada
     # consulta sobre consulta presupuestaria muelle de los bueyes
-    desc_consultamb = Grafico.objects.get(pk='consultamb')
+    #desc_consultamb = Grafico.objects.get(pk='consultamb')
 
     departamentos = Departamento.objects.all()
     categorias = CatInversion.objects.filter(destacar=True)
     otras_categorias = CatInversion.objects.filter(destacar=False)
 
     # InversionFuente tiene su propio último año
-    year_list = getYears(InversionFuente)
-    year = year_list[-1]
-    data_fuentes = fuentes_chart(year=year, portada=True)
+    #year_list = getYears(InversionFuente)
+    #year = year_list[-1]
+    #data_fuentes = fuentes_chart(year=year, portada=True)
 
     # obtiene último año
     year_list = getYears(Anio)
     year = year_list[-1]
 
     # obtiene periodo del año a ver
-    periodo = Anio.objects.get(anio=year).periodo
+    if year: 
+        periodo = Anio.objects.get(anio=year).periodo
 
+
+    data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
     # siempre sumar 'asginado'
     # quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     quesumar = 'asignado'
+    if year:
+        data_oim = oim_chart(year=year, portada=True)
+        data_ogm = ogm_chart(year=year, portada=True)
 
-    data_oim = oim_chart(year=year, portada=True)
-    data_ogm = ogm_chart(year=year, portada=True)
-
-    # FIXME no 'quesumar'? usa asignado y ejecutado
-    # data_inversion = inversion_chart()
-    # FIXME no 'quesumar'? solo usa ejecutado
-    # data_inversion_area = inversion_area_chart()
-
-    data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
-    data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
-
-    total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
-    inversion_categoria = Proyecto.objects.filter(
-        inversion__anio=year,
-        inversion__periodo=periodo,
-        catinversion__destacar=True)\
-        .values(
-            'catinversion__slug', 'catinversion__minimo',
-            'catinversion__nombre', 'catinversion__id')\
-        .order_by()\
-        .annotate(ejecutado=Sum(quesumar))
-    inversion_categoria2 = Proyecto.objects.filter(
-        inversion__anio=year, inversion__periodo=periodo,
-        catinversion__destacar=False)\
-        .values(
-            'catinversion__slug', 'catinversion__minimo',
-            'catinversion__nombre', 'catinversion__id')\
+        data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
+        total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
+        inversion_categoria = Proyecto.objects.filter(
+            inversion__anio=year,
+            inversion__periodo=periodo,
+            catinversion__destacar=True)\
+            .values(
+                'catinversion__slug', 'catinversion__minimo',
+                'catinversion__nombre', 'catinversion__id')\
             .order_by()\
-        .annotate(ejecutado=Sum(quesumar))
-    context = { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_invfuentes_chart':desc_invfuentes_chart,'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,'desc_consultamb':desc_consultamb,
+            .annotate(ejecutado=Sum(quesumar))
+        inversion_categoria2 = Proyecto.objects.filter(
+            inversion__anio=year, inversion__periodo=periodo,
+            catinversion__destacar=False)\
+            .values(
+                'catinversion__slug', 'catinversion__minimo',
+                'catinversion__nombre', 'catinversion__id')\
+            .order_by()\
+            .annotate(ejecutado=Sum(quesumar))
+    context = { 'banners': banners,'desc_oim_chart':desc_oim_chart,'desc_ogm_chart':desc_ogm_chart, 'desc_inversionminima':desc_inversionminima,'desc_inversionsector':desc_inversionsector,
         'charts':(
             data_oim['charts'][0],
             data_ogm['charts'][0],
@@ -95,7 +91,7 @@ def home(request):
             data_inversion_minima_sector['charts'][0],
             #data_inversion_area['charts'][0],
             data_inversion_minima_porclase['charts'][0],
-            data_fuentes['charts'][1],
+            #data_fuentes['charts'][1],
             ),
         'inversion_categoria': inversion_categoria,
         'inversion_categoria2': inversion_categoria2,
