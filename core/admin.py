@@ -17,11 +17,13 @@ class SubTipoIngresoAdmin(admin.ModelAdmin):
     inlines = [SubSubTipoIngresoInline]
     list_display = ('nombre', 'tipoingreso', 'slug')
     list_filter = ['tipoingreso']
+    search_fields = ('codigo','nombre')
 
 
 class SubSubTipoIngresoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'subtipoingreso', 'nombre', 'origen')
     list_filter = ['origen', 'subtipoingreso']
+    search_fields = ('codigo','nombre','subtipoingreso__codigo')
 
 
 class GastoDetalleInline(admin.TabularInline):
@@ -30,9 +32,9 @@ class GastoDetalleInline(admin.TabularInline):
 
 
 class GastoAdmin(admin.ModelAdmin):
-    list_display = ('municipio', 'departamento', 'fecha')
+    list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
     inlines = [GastoDetalleInline]
-    list_filter = ('fecha', 'departamento', 'municipio')
+    list_filter = ('anio', 'periodo','departamento', 'municipio')
 
 
 class IngresoDetalleInline(admin.TabularInline):
