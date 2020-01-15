@@ -1,0 +1,206 @@
+:root {
+    --width-chart: 600px;
+    --radio-border: 300px;
+    --size-left: calc((100% - 60%) + 40px);
+}
+
+
+/* titles and line inside the semi-donut chart*/
+.title-center-info, .title-center-category,
+.line-underline-category, .title-description {
+    position: absolute;
+}
+
+.title-center-info, .title-center-category {
+    left: var(--size-left);
+}
+
+.title-center-category, .title-description {
+    text-align: center;
+}
+
+.title-center-info {
+    top: calc(var(--width-chart) / 5);
+    width: calc(var(--width-chart) * 0.3);
+    font-weight: bold;
+}
+
+.title-center-category {
+    font-weight: bold;
+    top: calc(var(--width-chart) / 3.8);
+    width: calc(var(--width-chart) * 0.28);
+    color: #296FB0;
+}
+
+.line-underline-category {
+    top: calc(var(--width-chart) / 3.5);
+    width: calc(var(--width-chart) * 0.14);
+    left: calc((100% - 56%) + 35px);
+    border: 1px solid #296FB0;
+    border-radius: 10px;
+}
+
+.title-description {
+    top: calc(var(--width-chart) / 3);
+    width: calc(var(--width-chart) * 0.34);
+    left: calc((100% - 62%) + 40px);
+}
+
+/* RESET STYLES */
+.chart-skills {
+    margin: 0 auto;
+    padding: 0;
+    list-style-type: none;
+}
+
+.chart-skills *,
+.chart-skills::before {
+    box-sizing: border-box;
+}
+
+/* CHART-SKILLS STYLES */
+.chart-skills {
+    position: relative;
+    width: var(--width-chart);
+    height: calc(var(--width-chart) / 2);
+    overflow: hidden;
+}
+
+.chart-skills::before,
+.chart-skills::after {
+    position: absolute;
+}
+
+.chart-skills::before {
+    content: '';
+    width: inherit;
+    height: inherit;
+    border: 45px solid rgba(211, 211, 211, .3);
+    border-bottom: none;
+    border-top-left-radius: var(--radio-border);
+    border-top-right-radius: var(--radio-border);
+}
+
+.chart-skills::after {
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: cadetblue;
+}
+
+.chart-skills li {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    border: 60px solid;
+    border-top: none;
+    border-bottom-left-radius: var(--radio-border);
+    border-bottom-right-radius: var(--radio-border);
+    transform-origin: 50% 0;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    animation-fill-mode: forwards;
+    animation-duration: .4s;
+    animation-timing-function: linear;
+}
+
+.chart-skills li:nth-child(1) {
+    z-index: 4;
+    border-color: green;
+    animation-name: rotate-one;
+}
+
+.chart-skills li:nth-child(2) {
+    z-index: 3;
+    border-color: firebrick;
+    animation-name: rotate-two;
+    animation-delay: .4s;
+}
+
+.chart-skills li:nth-child(3) {
+    z-index: 2;
+    border-color: steelblue;
+    animation-name: rotate-three;
+    animation-delay: .8s;
+}
+
+.chart-skills span {
+    position: absolute;
+    font-size: .85rem;
+    backface-visibility: hidden;
+    animation: fade-in .4s linear forwards;
+}
+
+.chart-skills li:nth-child(1) span {
+    top: 5px;
+    left: 10px;
+    transform: rotate(-21.6deg);
+}
+
+.chart-skills li:nth-child(2) span {
+    top: 20px;
+    left: 10px;
+    transform: rotate(-79.2deg);
+    animation-delay: .4s;
+}
+
+.chart-skills li:nth-child(3) span {
+    top: 76px;
+    left: 40px;
+    transform: rotate(-180deg);
+    animation-delay: .8s;
+}
+
+
+/* ANIMATIONS
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+@keyframes rotate-one {
+    100% {
+        transform: rotate(21.6deg);
+        /**
+         * 12% => 21.6deg
+         */
+    }
+}
+
+@keyframes rotate-two {
+    0% {
+        transform: rotate(21.6deg);
+    }
+    100% {
+        transform: rotate(79.2deg);
+        /**
+         * 32% => 57.6deg
+         * 57.6 + 21.6 => 79.2deg
+         */
+    }
+}
+
+@keyframes rotate-three {
+    0% {
+        transform: rotate(79.2deg);
+    }
+    100% {
+        transform: rotate(180deg);
+        /**
+         * 34% => 61.2deg
+         * 61.2 + 79.2 => 140.4deg
+         */
+    }
+}
+
+
+@keyframes fade-in {
+    0%,
+    90% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
