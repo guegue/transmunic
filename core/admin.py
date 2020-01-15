@@ -87,6 +87,9 @@ class InversionAdmin(admin.ModelAdmin):
     list_display = ['id', 'departamento', 'municipio', 'fecha', 'periodo']
     list_filter = ('departamento', 'municipio', 'periodo', 'anio')
 
+class SubSubTipoGastoAdmin(admin.ModelAdmin):
+    list_display = ['codigo', 'nombre']
+    list_filter = ('origen','subtipogasto__codigo')
 
 admin.site.register(Profile)
 admin.site.register(Organizacion)
@@ -95,7 +98,7 @@ admin.site.register(Grafico)
 admin.site.register(CatInversion)
 admin.site.register(TipoGasto)
 admin.site.register(SubTipoGasto)
-admin.site.register(SubSubTipoGasto)
+admin.site.register(SubSubTipoGasto, SubSubTipoGastoAdmin)
 admin.site.register(OrigenRecurso)
 admin.site.register(OrigenGasto)
 admin.site.register(TipoIngreso,TipoIngresoAdmin)
