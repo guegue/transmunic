@@ -2,12 +2,15 @@
     --width-chart: 600px;
     --radio-border: 300px;
     --size-left: calc((100% - 60%) + 40px);
+    --width-balloon-dialog: 160px;
+    --first-color-position: #5159AC;
 }
 
 
 /* titles and line inside the semi-donut chart*/
 .title-center-info, .title-center-category,
-.line-underline-category, .title-description {
+.line-underline-category, .title-description,
+.balloon-dialog {
     position: absolute;
 }
 
@@ -15,7 +18,8 @@
     left: var(--size-left);
 }
 
-.title-center-category, .title-description {
+.title-center-category, .title-description,
+.dialog-inside {
     text-align: center;
 }
 
@@ -44,6 +48,61 @@
     top: calc(var(--width-chart) / 3);
     width: calc(var(--width-chart) * 0.34);
     left: calc((100% - 62%) + 40px);
+}
+
+/*Balloon dialog*/
+.first-balloon-dialog {
+    width: var(--width-balloon-dialog);
+    height: var(--width-balloon-dialog);
+    right: 12%;
+    border-radius: 100%;
+    background-color: var(--first-color-position);
+    z-index: 10;
+}
+
+.first-balloon-dialog .first-ballon-horn {
+    position: relative;
+    width: 32px;
+    height: 50px;
+    bottom: -10px;
+    background-color: var(--first-color-position);
+    left: 20px;
+    border-bottom-right-radius: 38px
+}
+
+.first-balloon-dialog span.name {
+    position: relative;
+    left: 10px;
+    text-align: center;
+    top: 22px;
+    white-space: nowrap;
+}
+.first-balloon-dialog span.number {
+    font-size: 14px;
+    position: relative;
+    left: 10px;
+    text-align: center;
+    top: 15px;
+    white-space: nowrap;
+}
+
+.dialog-inside {
+    width: calc(var(--width-balloon-dialog) - 70px);
+    height: calc(var(--width-balloon-dialog) - 70px);
+    border-radius: 100%;
+    background-color: #fff;
+    z-index: 11;
+    position: relative;
+    top: 22%;
+    left: 22%;
+}
+
+.dialog-inside h1 {
+    font-size: 3em;
+    letter-spacing: 5px;
+    font-weight: bold;
+    position: relative;
+    top: calc(50% - 30px);
 }
 
 /* RESET STYLES */
@@ -123,7 +182,7 @@
 
 .chart-skills li:nth-child(3) {
     z-index: 2;
-    border-color: steelblue;
+    border-color: var(--first-color-position);
     animation-name: rotate-three;
     animation-delay: .8s;
 }
@@ -134,27 +193,6 @@
     backface-visibility: hidden;
     animation: fade-in .4s linear forwards;
 }
-
-.chart-skills li:nth-child(1) span {
-    top: 5px;
-    left: 10px;
-    transform: rotate(-21.6deg);
-}
-
-.chart-skills li:nth-child(2) span {
-    top: 20px;
-    left: 10px;
-    transform: rotate(-79.2deg);
-    animation-delay: .4s;
-}
-
-.chart-skills li:nth-child(3) span {
-    top: 76px;
-    left: 40px;
-    transform: rotate(-180deg);
-    animation-delay: .8s;
-}
-
 
 /* ANIMATIONS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
