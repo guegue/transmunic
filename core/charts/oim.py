@@ -217,7 +217,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                                                          subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,
                                                          ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion). \
             values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
-            'ingreso__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
+            'ejecutado').annotate(ejecutado=Sum('ejecutado'))
         otros = glue(municipios_inicial, municipios_final,
                      'ingreso__municipio__nombre', actualizado=municipios_actualizado)
         # inserta porcentages de total de ingresos
@@ -855,7 +855,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {
-                        'type': 'bar',
+                        'type': 'column',
                         'colorByPoint': True,
                     },
                     'terms': {
@@ -901,7 +901,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {
-                        'type': 'bar',
+                        'type': 'column',
                         'colorByPoint': True,
                     },
                     'terms': {
