@@ -56,57 +56,65 @@
 }
 
 /*Balloon dialog*/
+.first-ballon-horn, .first-balloon-dialog span.name, .first-balloon-dialog span.number,
+.second-ballon-horn, .second-balloon-dialog span.name, .second-balloon-dialog span.number,
+.third-ballon-horn, .third-balloon-dialog span.name, .third-balloon-dialog span.number,
+.dialog-inside, .dialog-inside h1 {
+    position: relative;
+}
+
+.first-ballon-horn, .second-ballon-horn, .third-ballon-horn {
+    width: 32px;
+    height: 32px;
+}
+
+.first-balloon-dialog span.name, .second-balloon-dialog span.name, .third-balloon-dialog span.name,
+.first-balloon-dialog span.number, .second-balloon-dialog span.number, .third-balloon-dialog span.number {
+    white-space: nowrap;
+}
+
+.first-balloon-dialog, .second-balloon-dialog, .third-balloon-dialog,
+.dialog-inside {
+    border-radius: 100%;
+}
+
 .first-balloon-dialog {
     width: var(--width-balloon-dialog);
     height: var(--width-balloon-dialog);
     left: 10%;
-    border-radius: 100%;
     background-color: var(--first-color-position);
     z-index: 10;
     top: 40px;
 }
 
 .first-balloon-dialog .first-ballon-horn {
-    position: relative;
-    width: 32px;
-    height: 32px;
     transform: rotate(160deg);
     background-color: var(--first-color-position);
     right: -80%;
-    top: 10px;
+    top: -10px;
 }
 
 .first-balloon-dialog span.name {
-    position: relative;
-    top: -170px;
-    white-space: nowrap;
+    top: -175px;
     color: var(--first-color-position);
     font-weight: 500;
 }
 
 .first-balloon-dialog span.number {
     font-size: 14px;
-    position: relative;
-    left: 10px;
-    text-align: center;
-    top: -175px;
-    white-space: nowrap;
+    top: -180px;
 }
 
 .second-balloon-dialog {
     width: calc(var(--width-balloon-dialog) - 30px);
     height: calc(var(--width-balloon-dialog) - 30px);
     left: 45%;
-    border-radius: 100%;
     background-color: var(--second-color-position);
     z-index: 10;
     top: -150px;
 }
 
 .second-balloon-dialog .second-ballon-horn {
-    position: relative;
-    width: 32px;
-    height: 32px;
     transform: rotate(45deg);
     bottom: -10px;
     background-color: var(--second-color-position);;
@@ -114,20 +122,14 @@
 }
 
 .second-balloon-dialog span.name {
-    position: relative;
     top: -170px;
-    white-space: nowrap;
     color: var(--second-color-position);
     font-weight: 500;
 }
 
 .second-balloon-dialog span.number {
     font-size: 14px;
-    position: relative;
-    left: 10px;
-    text-align: center;
     top: -175px;
-    white-space: nowrap;
 }
 
 .third-balloon-dialog {
@@ -135,69 +137,71 @@
     height: calc(var(--width-balloon-dialog) - 40px);
     right: 12%;
     top: 75px;
-    border-radius: 100%;
     background-color: var(--third-color-position);
     z-index: 10;
 }
 
 .third-balloon-dialog .third-ballon-horn {
-    position: relative;
-    width: 32px;
-    height: 32px;
     bottom: 10px;
     background-color: var(--third-color-position);
     left: 5px;
 }
 
 .third-balloon-dialog span.name {
-    position: relative;
-    left: 10px;
-    text-align: center;
     top: 10px;
-    white-space: nowrap;
     color: var(--third-color-position);
     font-weight: 500;
 }
 
 .third-balloon-dialog span.number {
     font-size: 14px;
-    position: relative;
-    left: 10px;
-    text-align: center;
     top: 5px;
-    white-space: nowrap;
+}
+
+.dialog-inside h1 {
+    letter-spacing: 5px;
+    font-weight: bold;
+    top: calc(50% - 30px);
 }
 
 .first-balloon-dialog .dialog-inside {
-    top: 2.5rem;
-    left: 2.5rem;
+    width: calc(var(--width-balloon-dialog) - 60px);
+    height: calc(var(--width-balloon-dialog) - 60px);
+    top: 2.2rem;
+    left: 2.1rem;
+}
+
+.first-balloon-dialog .dialog-inside h1 {
+    font-size: 3em;
 }
 
 .second-balloon-dialog .dialog-inside {
+    width: calc(var(--width-balloon-dialog) - 70px);
+    height: calc(var(--width-balloon-dialog) - 70px);
     top: 1.5rem;
     left: 1.5rem;
 }
 
+.second-balloon-dialog .dialog-inside h1 {
+    font-size: 2.5em;
+    padding-top: 3px;
+}
+
 .third-balloon-dialog .dialog-inside {
-    top: 1.1rem;
-    left: 1.1rem;
+    width: calc(var(--width-balloon-dialog) - 80px);
+    height: calc(var(--width-balloon-dialog) - 80px);
+    top: 1.6rem;
+    left: 1.4rem;
+}
+
+.third-balloon-dialog .dialog-inside h1 {
+    font-size: 2.3em;
+    padding-top: 5px;
 }
 
 .dialog-inside {
-    width: calc(var(--width-balloon-dialog) - 70px);
-    height: calc(var(--width-balloon-dialog) - 70px);
-    border-radius: 100%;
     background-color: #fff;
     z-index: 11;
-    position: relative;
-}
-
-.dialog-inside h1 {
-    font-size: 3em;
-    letter-spacing: 5px;
-    font-weight: bold;
-    position: relative;
-    top: calc(50% - 30px);
 }
 
 /* RESET STYLES */
