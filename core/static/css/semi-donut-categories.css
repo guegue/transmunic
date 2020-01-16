@@ -4,9 +4,13 @@
     --size-left: calc((100% - 60%) + 40px);
     --width-balloon-dialog: 160px;
     --first-color-position: #5159AC;
+    --second-color-position: #14a0c1;
+    --third-color-position: #01cd9c;
 }
 
-
+.long-margin{
+    margin-top: 240px;
+}
 /* titles and line inside the semi-donut chart*/
 .title-center-info, .title-center-category,
 .line-underline-category, .title-description,
@@ -76,7 +80,10 @@
     text-align: center;
     top: 22px;
     white-space: nowrap;
+    color: var(--first-color-position);
+    font-weight: 500;
 }
+
 .first-balloon-dialog span.number {
     font-size: 14px;
     position: relative;
@@ -86,6 +93,93 @@
     white-space: nowrap;
 }
 
+.second-balloon-dialog {
+    width: calc(var(--width-balloon-dialog) - 10px);
+    height: calc(var(--width-balloon-dialog) - 10px);
+    left: 21%;
+    border-radius: 100%;
+    background-color: var(--second-color-position);
+    z-index: 10;
+    top: -70px;
+}
+
+.second-balloon-dialog .second-ballon-horn {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    transform: rotate(183deg);
+    bottom: -10px;
+    background-color: var(--second-color-position);;
+    right: -70%;
+}
+
+.second-balloon-dialog span.name {
+    position: relative;
+    top: -170px;
+    white-space: nowrap;
+    color: var(--second-color-position);
+    font-weight: 500;
+}
+
+.second-balloon-dialog span.number {
+    font-size: 14px;
+    position: relative;
+    left: 10px;
+    text-align: center;
+    top: -175px;
+    white-space: nowrap;
+}
+
+.third-balloon-dialog {
+    width: calc(var(--width-balloon-dialog) - 20px);
+    height: calc(var(--width-balloon-dialog) - 20px);
+    left: 10%;
+    border-radius: 100%;
+    background-color: var(--third-color-position);
+    z-index: 10;
+    top: 150px;
+}
+
+.third-balloon-dialog .third-ballon-horn {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    transform: rotate(45deg);
+    background-color: var(--third-color-position);
+    right: -80%;
+    top: -30px;
+}
+
+.third-balloon-dialog span.name {
+    position: relative;
+    top: -170px;
+    white-space: nowrap;
+    color: var(--third-color-position);
+    font-weight: 500;
+}
+
+.third-balloon-dialog span.number {
+    font-size: 14px;
+    position: relative;
+    left: 10px;
+    text-align: center;
+    top: -175px;
+    white-space: nowrap;
+}
+
+.first-balloon-dialog .dialog-inside{
+    top: 2.5rem;
+    left: 2.5rem;
+}
+.second-balloon-dialog .dialog-inside{
+    top: 2.2rem;
+    left: 2.2rem;
+}
+.third-balloon-dialog .dialog-inside{
+    top: 1.9rem;
+    left: 1.9rem;
+}
+
 .dialog-inside {
     width: calc(var(--width-balloon-dialog) - 70px);
     height: calc(var(--width-balloon-dialog) - 70px);
@@ -93,8 +187,7 @@
     background-color: #fff;
     z-index: 11;
     position: relative;
-    top: 22%;
-    left: 22%;
+
 }
 
 .dialog-inside h1 {
@@ -169,13 +262,13 @@
 
 .chart-skills li:nth-child(1) {
     z-index: 4;
-    border-color: green;
+    border-color: var(--third-color-position);
     animation-name: rotate-one;
 }
 
 .chart-skills li:nth-child(2) {
     z-index: 3;
-    border-color: firebrick;
+    border-color: var(--second-color-position);
     animation-name: rotate-two;
     animation-delay: .4s;
 }
@@ -194,41 +287,29 @@
     animation: fade-in .4s linear forwards;
 }
 
-/* ANIMATIONS
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* ANIMATIONS */
 
 @keyframes rotate-one {
     100% {
-        transform: rotate(21.6deg);
-        /**
-         * 12% => 21.6deg
-         */
+        transform: rotate(30deg);
     }
 }
 
 @keyframes rotate-two {
     0% {
-        transform: rotate(21.6deg);
+        transform: rotate(30deg);
     }
     100% {
-        transform: rotate(79.2deg);
-        /**
-         * 32% => 57.6deg
-         * 57.6 + 21.6 => 79.2deg
-         */
+        transform: rotate(80deg);
     }
 }
 
 @keyframes rotate-three {
     0% {
-        transform: rotate(79.2deg);
+        transform: rotate(80eg);
     }
     100% {
         transform: rotate(180deg);
-        /**
-         * 34% => 61.2deg
-         * 61.2 + 79.2 => 140.4deg
-         */
     }
 }
 
