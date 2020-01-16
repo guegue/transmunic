@@ -19,10 +19,10 @@
     min-height: 70px;
 }
 
-.height-horizontal-bar {
-    height: 550px;
-    min-height: 500px;
-}
+/*.height-horizontal-bar {
+    height: 1200px;
+    min-height: 700px;
+}*/
 
 .height-horizontal-bar div#bar_horizontal {
     height: 100%;
@@ -214,3 +214,4 @@
 .position-relative{
     position: relative;
 }
+#detail-1 .table > tbody > tr > td { padding: 5px; font-size: 12px; }
