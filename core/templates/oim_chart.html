@@ -87,9 +87,6 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        {% if year == '2016' %}
-                            <h2>Recaudaci&oacute;n por habitante</h2>
-                        {% else %}
                             <h2>
                                 <strong>
                                     Ranking de recaudaci&oacute;n {{ year }}
@@ -110,13 +107,13 @@
                             </h2>
                             <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
                                 base a
-                                ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}</h5>
-                        {% endif %}
+                                ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
+			    </h5>
                         <hr class="pma-line-3"/>
 
                     </div>
                     {# chart horizontal bar #}
-                    <div class="col-lg-12 col-md-12 col-sm-12 mt-1 height-horizontal-bar">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mt-1">
                         <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                         </div>
                     </div>
@@ -153,6 +150,7 @@
 			        <tr>
 				    <td colspan="3">
 		    			<h4>Ranking de recaudación por habitante
+					  {% descargar_excel "oim3" %}
                         		</h4>
 		                        <h5>
                 			  Córdobas corrientes por habitante en base a
@@ -164,7 +162,6 @@
                                               presupuesto inicial de ingresos
                                           {% endif %}
                                           {{ year }}
-					  {% descargar_excel "oim2" %}
 		                          </h5>
                                     </td>
                                 </tr>
@@ -357,6 +354,7 @@
                                               Presupuesto inicial de ingresos
                                           {% endif %}
                                           {{ year }}
+					  {% descargar_excel "oim8" %}
 		                          </h5>
                                       </td>
                                     </tr>
@@ -431,7 +429,7 @@
                             </table>
                         </div>
                         {# chart horizontal chart #}
-                        <div class="col-lg-7 col-md-7 col-sm-12 mt-1 height-horizontal-bar">
+                        <div class="col-lg-7 col-md-7 col-sm-12 mt-1 horizontal-bar">
                             <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                             </div>
                         </div>
@@ -842,7 +840,9 @@
                     <thead>
 		        <tr>
 			    <td colspan="10">
-		    	        <h4>Informaci&oacute;n hist&oacute;rica por rubros de ingresos</h4>
+		    	        <h4>Informaci&oacute;n hist&oacute;rica por rubros de ingresos
+				{% descargar_excel "oim7" %}
+				</h4>
                             </td>
 		        </tr>
                         <tr>

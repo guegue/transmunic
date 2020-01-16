@@ -20,8 +20,8 @@
 }
 
 .height-horizontal-bar {
-    height: 1200px;
-    min-height: 700px;
+    height: 700px;
+    min-height: 500px;
 }
 
 .height-horizontal-bar div#bar_horizontal {
