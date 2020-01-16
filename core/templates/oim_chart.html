@@ -34,7 +34,7 @@
                         Presupuesto inicial de ingresos
                     {% endif %}
                     {{ year }}
-		    Por su origen</h5>
+		    Por su origen {% descargar_excel "oim1" %}</h5>
                 </td>
             </tr>
             <tr class="bg-primary">
@@ -165,6 +165,7 @@
                                               presupuesto inicial de ingresos
                                           {% endif %}
                                           {{ year }}
+					  {% descargar_excel "oim2" %}
 		                          </h5>
                                     </td>
                                 </tr>
