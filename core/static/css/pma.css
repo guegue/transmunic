@@ -15,7 +15,8 @@ p {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
     margin: 1.2em 0 0.3em;
     font-family: 'Raleway', sans-serif;
     font-weight: inherit;
@@ -576,3 +577,4 @@ footer .copyright {
     top: 50%;
     width: 0;
 }
+table h4 { color: #48a1b1;}
