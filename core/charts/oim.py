@@ -855,7 +855,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {
-                        'type': 'column',
+                        'type': 'bar',
                         'colorByPoint': True,
                     },
                     'terms': {
@@ -870,7 +870,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 },
                 'colors': colors_array,
                 'title': {
-                    'text': "Ranking de Municipio Categoría '{}'".
+                    'text': "Ranking de Municipios Categoría '{}'".
                     format(mi_clase.clasificacion)
                 },
                 'xAxis': {
@@ -880,7 +880,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 },
                 'yAxis': {
                     'title': {
-                        'text': 'Gasto por habitante'
+                        'text': 'Recaudación por habitante en córdobas corrientes'
                     }
                 }
             })
