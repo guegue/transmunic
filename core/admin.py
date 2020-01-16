@@ -17,11 +17,13 @@ class SubTipoIngresoAdmin(admin.ModelAdmin):
     inlines = [SubSubTipoIngresoInline]
     list_display = ('nombre', 'tipoingreso', 'slug')
     list_filter = ['tipoingreso']
+    search_fields = ('codigo','nombre')
 
 
 class SubSubTipoIngresoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'subtipoingreso', 'nombre', 'origen')
     list_filter = ['origen', 'subtipoingreso']
+    search_fields = ('codigo','nombre','subtipoingreso__codigo')
 
 class Sub3TipoIngresoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'subsubtipoingreso', 'nombre', 'origen')
@@ -34,9 +36,9 @@ class GastoDetalleInline(admin.TabularInline):
 
 
 class GastoAdmin(admin.ModelAdmin):
-    list_display = ('municipio', 'departamento', 'fecha')
+    list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
     inlines = [GastoDetalleInline]
-    list_filter = ('fecha', 'departamento', 'municipio')
+    list_filter = ('anio', 'periodo','departamento', 'municipio')
 
 
 class IngresoDetalleInline(admin.TabularInline):
@@ -85,6 +87,9 @@ class InversionAdmin(admin.ModelAdmin):
     list_display = ['id', 'departamento', 'municipio', 'fecha', 'periodo']
     list_filter = ('departamento', 'municipio', 'periodo', 'anio')
 
+class SubSubTipoGastoAdmin(admin.ModelAdmin):
+    list_display = ['codigo', 'nombre']
+    list_filter = ('origen','subtipogasto__codigo')
 
 admin.site.register(Profile)
 admin.site.register(Organizacion)
@@ -93,7 +98,7 @@ admin.site.register(Grafico)
 admin.site.register(CatInversion)
 admin.site.register(TipoGasto)
 admin.site.register(SubTipoGasto)
-admin.site.register(SubSubTipoGasto)
+admin.site.register(SubSubTipoGasto, SubSubTipoGastoAdmin)
 admin.site.register(OrigenRecurso)
 admin.site.register(OrigenGasto)
 admin.site.register(TipoIngreso,TipoIngresoAdmin)
