@@ -95,6 +95,8 @@ local_settings.py
 .*.swo
 .*.swp
 .idea
+node_modules
+bower_components
 env
 /git-shell-commands/
 .lesshst
