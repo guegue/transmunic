@@ -119,7 +119,6 @@
                         <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -237,29 +236,31 @@
     {% if municipio %}
         <div class="loaded inverted">
             {% if municipio|lower == 'managua' %}
-	        <div class="container-fluid pma-bg-blue pma-fg-white text-center">
+                <div class="container-fluid pma-bg-blue pma-fg-white text-center">
                 <div class="row">
-		  <div class="col-lg-12 col-md-12 col-sm-12">
-                      <h2>
-                          <strong>La recaudaci&oacute;n por habitante</strong>
-			  para el municipio de <strong>{{ municipio }}</strong> <br />
-			  para el a&ntilde;o {{ year }} es de:
-			  <span class="amarillo pma-number">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <h2>
+                            <strong>La recaudaci&oacute;n por habitante</strong>
+                            para el municipio de <strong>{{ municipio }}</strong> <br/>
+                            para el a&ntilde;o {{ year }} es de:
+                            <span class="amarillo pma-number">
                            {% if periodo_list|keyvalue:year == 'I' %}
-                             {{ otros.0.asignado_percent|intcomma }}
+                               {{ otros.0.asignado_percent|intcomma }}
                            {% else %}
-                              {{ otros.0.ejecutado_percent|intcomma }}
+                               {{ otros.0.ejecutado_percent|intcomma }}
                            {% endif %}
-                           C&oacute;rdobas
+                                C&oacute;rdobas
 			  </span>
-                      </h2>
-		      <h5> Córdobas corrientes por habitante en base a ingresos ejecutados </h5>
-                      <hr class="pma-line-5"/>
-		  </div>
-		</div>
+                        </h2>
+                        <h5> Córdobas corrientes por habitante en base a ingresos ejecutados </h5>
+                        <hr class="pma-line-5"/>
+                    </div>
+                </div>
             {% else %}
-	        <div class="container">
-                    <div class="col-lg-5 col-md-5 col-sm-12">
+
+                <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>
                             <strong>Ranking de recaudaci&oacute;n </strong>
                             <br>
@@ -274,6 +275,7 @@
                                     {{ otros.0.ejecutado_percent|intcomma }}
                                 {% endif %}
                                 C&oacute;rdobas.
+
                         </h2>
                         <h5>
                             C&oacute;rdobas corrientes por habitante en base a
@@ -286,14 +288,14 @@
                         </h5>
                         <hr class="pma-line-3"/>
                     </div>
-		    <div class="col-lg-5 col-md-5 "><img src="/static/images/presupuesto.jpg" alt="rankin" class="img-responsive"/></div>
-                        {% include 'ranking_municipio.html' %}
-                        {# chart horizontal chart #}
-                        <div class="col-lg-12 col-md-12 col-sm-12 mt-1 height-horizontal-bar">
-                            <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
-                            </div>
+                    {% include 'ranking_municipio.html' %}
+                    {# chart horizontal chart #}
+                    <div class="col-lg-12 col-md-12 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                         </div>
+                    </div>
                 </div>
+                {% include 'semi-dona-municipal.html' %}
             {% endif %}
             </div>
 
