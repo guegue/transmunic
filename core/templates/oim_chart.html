@@ -113,57 +113,12 @@
                         {% endif %}
                         <hr class="pma-line-3"/>
 
-                        {#                        {% include 'ranking_categoria.html' %}#}
+                        {% include 'ranking_categoria.html' %}
                     </div>
                     {# chart horizontal bar #}
-                    {#                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">#}
-                    {#                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal#}
-                    {#                        </div>#}
-                    {#                    </div>#}
-
-                    <div class="col-12 position-relative long-margin">
-                        <h5 class="title-center-info">Ranking de recaudaci&oacute;n
-                            por habitante categor&iacute;a</h5>
-                        <h4 class="title-center-category">
-                            Municipal "C"
-                        </h4>
-                        <hr class="line-underline-category">
-                        <h6 class="title-description">
-                            C&oacute;rdobas corrientes por habitante en base a ingresos ejecutados.
-                        </h6>
-
-                        <div class="balloon-dialog first-balloon-dialog">
-                            <div class="dialog-inside">
-                                <h1>01</h1>
-                            </div>
-                            <div class="first-ballon-horn"></div>
-                            <span class="name">MI MUNICIPIO Managua</span>
-                            <span class="number">200.80 M. de C&oacute;rdobas</span>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                         </div>
-
-                         <div class="balloon-dialog second-balloon-dialog">
-                            <div class="dialog-inside">
-                                <h1>02</h1>
-                            </div>
-                            <div class="second-ballon-horn"></div>
-                            <span class="name">MI MUNICIPIO Managua</span>
-                            <span class="number">200.80 M. de C&oacute;rdobas</span>
-                        </div>
-
-                        <div class="balloon-dialog third-balloon-dialog">
-                            <div class="dialog-inside">
-                                <h1>03</h1>
-                            </div>
-                            <div class="third-ballon-horn"></div>
-                            <span class="name">MI MUNICIPIO Managua</span>
-                            <span class="number">200.80 M. de C&oacute;rdobas</span>
-                        </div>
-
-                        <ul class="chart-skills">
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -304,6 +259,7 @@
                 </div>
             {% else %}
                 <div class="container">
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>
                             <strong>Ranking de recaudaci&oacute;n </strong>
@@ -330,14 +286,10 @@
                             {% endif %}
                         </h5>
                         <hr class="pma-line-3"/>
-                        {% include 'ranking_municipio.html' %}
                     </div>
-                    {# chart horizontal chart #}
-                    <div class="col-lg-6 col-md-6 col-sm-12 mt-1 height-horizontal-bar">
-                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
-                        </div>
-                    </div>
+
                 </div>
+                {% include 'semi-dona-municipal.html' %}
             {% endif %}
             </div>
 
