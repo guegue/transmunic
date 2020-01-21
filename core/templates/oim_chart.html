@@ -47,7 +47,7 @@
             {% for row in rubros %}
                 <tr>
                     {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
-                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}</td>
+                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre|default:row.sub3tipoingreso__origen__nombre }}</td>
                         <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
                         <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
                     {% else %}
