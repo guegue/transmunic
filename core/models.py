@@ -552,10 +552,9 @@ class Transferencia(models.Model):
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     corriente = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     capital = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
-
+        max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]

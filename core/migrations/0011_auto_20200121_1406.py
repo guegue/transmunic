@@ -17,14 +17,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Transferencia',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('fecha', models.DateField()),
                 ('anio', models.IntegerField(verbose_name='A\xf1o')),
                 ('periodo', models.CharField(max_length=1)),
                 ('corriente', models.DecimalField(blank=True, decimal_places=2, max_digits=12, null=True)),
                 ('capital', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('departamento', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='lugar.Departamento')),
-                ('municipio', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio')),
+                ('departamento', models.ForeignKey(null=True,
+                                                   on_delete=django.db.models.deletion.CASCADE, to='lugar.Departamento')),
+                ('municipio', models.ForeignKey(blank=True, null=True,
+                                                on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio')),
             ],
             options={
                 'ordering': ['anio', 'periodo', 'municipio'],
