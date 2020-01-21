@@ -2,7 +2,7 @@ from django.contrib import admin
 from core.models import (Profile, Organizacion, Anio, Grafico, CatInversion, TipoGasto,
                          SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, TipoIngreso,
                          SubSubTipoIngreso, Sub3TipoIngreso, SubTipoIngreso, TipoFuenteFmto, FuenteFmto,
-                         InversionFuente, Inversion, Proyecto, Ingreso, Gasto, IngresoRenglon,
+                         InversionFuente, Transferencia, Inversion, Proyecto, Ingreso, Gasto, IngresoRenglon,
                          GastoRenglon, GastoDetalle, IngresoDetalle, InversionFuenteDetalle)
 
 # Register your models here.
@@ -91,6 +91,10 @@ class SubSubTipoGastoAdmin(admin.ModelAdmin):
     list_display = ['codigo', 'nombre']
     list_filter = ('origen','subtipogasto__codigo')
 
+class TransferenciaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
+    list_filter = ('anio', 'departamento', 'municipio')
+
 admin.site.register(Profile)
 admin.site.register(Organizacion)
 admin.site.register(Anio)
@@ -114,3 +118,4 @@ admin.site.register(Ingreso,IngresoAdmin)
 admin.site.register(Gasto,GastoAdmin)
 admin.site.register(IngresoRenglon)
 admin.site.register(GastoRenglon)
+admin.site.register(Transferencia,TransferenciaAdmin)
