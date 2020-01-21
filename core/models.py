@@ -543,3 +543,24 @@ class InversionFuenteDetalle(models.Model):
         verbose_name = u'Detalle de inversión por fuente'
         verbose_name_plural = u'Detalles de inversión por fuente'
         ordering = ['inversionfuente', 'tipofuente', 'fuente']
+
+
+class Transferencia(models.Model):
+    departamento = models.ForeignKey(Departamento, null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    fecha = models.DateField(null=False)
+    anio = models.IntegerField(null=False, verbose_name=u'Año')
+    periodo = models.CharField(max_length=1, null=False)
+    corriente = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True)
+    capital = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=False, null=False)
+
+    class Meta:
+        unique_together = [['anio', 'periodo', 'municipio']]
+        verbose_name_plural = u'Transferencias'
+        verbose_name = u'Transferencia'
+        ordering = ['anio', 'periodo', 'municipio']
+
+    def __unicode__(self):
+        return u"{}:{}:{}".format(self.anio, self.periodo, self.municipio)
