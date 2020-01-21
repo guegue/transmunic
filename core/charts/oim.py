@@ -70,6 +70,14 @@ def oim_chart(municipio=None, year=None, portada=False):
     if not year:
         year = year_list[-2]
 
+    # elige prefijo segun anho
+    prefix = 'subsubtipoingreso'
+    if int(year) >= 2018:
+        prefix = 'sub3tipoingreso'
+    subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
+    subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
+    print(subsubtipoingreso__origen__nombre)
+
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
@@ -163,12 +171,6 @@ def oim_chart(municipio=None, year=None, portada=False):
                                   rubrosp_actualizado, rubrosp_periodo), key='subtipoingreso__codigo')
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
-        prefix = 'subsubtipoingreso'
-        if int(year) >= 2018:
-            prefix = 'sub3tipoingreso'
-        subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
-        subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
-
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio,
                                                        ingreso__periodo=PERIODO_INICIAL, ). \
             exclude(tipoingreso_id=saldo_caja). \
@@ -811,7 +813,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         series=[{
             'options': {'source': rubros},
             'terms': [
-                'subsubtipoingreso__origen__nombre',
+                subsubtipoingreso__origen__nombre,
                 datacol,
             ]}
         ])
@@ -822,7 +824,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'type': 'pie'
             },
             'terms': {
-                'subsubtipoingreso__origen__nombre': [datacol]
+                subsubtipoingreso__origen__nombre: [datacol]
             }
         }],
         chart_options=chart_options)
@@ -836,7 +838,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'colorByPoint': True,
                 },
                 'terms': {
-                    'subsubtipoingreso__origen__nombre': [datacol]
+                    subsubtipoingreso__origen__nombre: [datacol]
                 }
             }],
         chart_options=chart_options)
