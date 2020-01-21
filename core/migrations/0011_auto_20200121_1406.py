@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('lugar', '0001_initial'),
-        #('core', '0010_merge_20200121_1106'),
+        ('core', '0009_auto_20200114_1422'),
     ]
 
     operations = [
