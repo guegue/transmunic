@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Periodo',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('desde', models.IntegerField(verbose_name='Desde')),
                 ('hasta', models.IntegerField(verbose_name='Hasta')),
             ],
@@ -27,9 +28,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PeriodoMunic',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('partido', models.CharField(max_length=30, null=True)),
-                ('municipio', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio')),
+                ('municipio', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='lugar.Municipio')),
                 ('periodo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lugar.Periodo')),
             ],
             options={

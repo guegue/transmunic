@@ -8,14 +8,15 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [ 
+    dependencies = [
         ('core', '0008_sub3tipoingreso_origen'),
-    ]   
+    ]
 
-    operations = [ 
+    operations = [
         migrations.AlterField(
             model_name='sub3tipoingreso',
             name='origen',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='origen_recurso', to='core.OrigenRecurso'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='origen_recurso', to='core.OrigenRecurso'),
         ),
-    ]  
+    ]
