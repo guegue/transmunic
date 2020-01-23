@@ -68,20 +68,25 @@ class ClasificacionMunicAno(models.Model):
     class Meta:
         unique_together = ('municipio', 'anio')
 
+
 class Comarca(models.Model):
     nombre = models.CharField(max_length=120)
     #municipio = models.ForeignKey(Municipio)
     slug = AutoSlugField(populate_from='nombre')
     departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(Municipio,chained_field='departamento',chained_model_field='depto', null=True, blank=True)
+    municipio = ChainedForeignKey(Municipio, chained_field='departamento',
+                                  chained_model_field='depto', null=True, blank=True)
     poblacion = models.IntegerField()
-    latitud  = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
-    longitud = models.DecimalField('Longitud', max_digits=10, decimal_places=6, blank=True, null=True)
+    latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
+    longitud = models.DecimalField('Longitud', max_digits=10,
+                                   decimal_places=6, blank=True, null=True)
 
     class Meta:
         ordering = ['nombre']
+
     def __unicode__(self):
         return self.nombre
+
 
 class Poblacion(models.Model):
     municipio = models.ForeignKey(Municipio)
@@ -90,3 +95,19 @@ class Poblacion(models.Model):
 
     class Meta:
         ordering = ['anio']
+
+
+class Periodo(models.Model):
+    desde = models.IntegerField(null=False, verbose_name=u'Desde')
+    hasta = models.IntegerField(null=False, verbose_name=u'Hasta')
+
+    class Meta:
+        ordering = ['desde']
+
+class PeriodoMunic(models.Model):
+    municipio = models.ForeignKey(Municipio)
+    periodo = models.ForeignKey(Periodo)
+    partido = models.CharField(max_length=30, null=True)
+
+    class Meta:
+        ordering = ['periodo']
