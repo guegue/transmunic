@@ -90,3 +90,24 @@ class Poblacion(models.Model):
 
     class Meta:
         ordering = ['anio']
+
+class Periodo(models.Model):
+    desde = models.IntegerField(null=False, verbose_name=u'Desde')
+    hasta = models.IntegerField(null=False, verbose_name=u'Hasta')
+
+    class Meta:
+        ordering = ['desde']
+
+    def __unicode__(self):
+        return self.desde
+
+class PeriodoMunic(models.Model):
+    municipio = models.ForeignKey(Municipio)
+    periodo = models.ForeignKey(Periodo)
+    partido = models.CharField(max_length=30, null=True)
+
+    class Meta:
+        ordering = ['periodo']
+
+    def __unicode__(self):
+        return self.periodo
