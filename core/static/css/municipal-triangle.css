@@ -103,8 +103,6 @@
 }
 
 
-
-
 .first-balloon-dialogue {
     left: calc(var(--left-first-square) + 8%);
     height: 100px;
@@ -181,3 +179,64 @@
     top: calc(var(--top-first-square) + 40%);
     width: calc(var(--width-first-square) - 50px);
 }
+
+.balloon-dialogue strong {
+    font-size: 10px;
+    position: absolute;
+    transform: rotate(-15deg);
+    transform-origin: top center;
+}
+
+.balloon-dialogue strong span {
+    position: absolute;
+    transform-origin: top center;
+    color: white;
+}
+
+.balloon-dialogue strong span:nth-of-type(1) {
+    left: -5px;
+    top: 25px;
+    transform: rotate(-58deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(2) {
+    left: 5px;
+    top: 17px;
+    transform: rotate(-36deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(3) {
+    left: 18px;
+    top: 12px;
+    transform: rotate(-22deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(4) {
+    left: 30px;
+    top: 10px;
+    transform: rotate(-11deg);
+}
+.balloon-dialogue strong span:nth-of-type(5) {
+    left: 38px;
+    top: 11px;
+    transform: rotate(9deg);
+}
+.balloon-dialogue strong span:nth-of-type(6) {
+    left: 48px;
+    top: 12px;
+    transform: rotate(10deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(7) {
+    left: 53px;
+    top: 16px;
+    transform: rotate(23deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(8) {
+    left: 62px;
+    top: 22px;
+    transform: rotate(35deg);
+}
+
+
