@@ -14,11 +14,31 @@
 .second-balloon-dialogue, .second-balloon-dialogue::after,
 .third-balloon-dialogue, .third-balloon-dialogue::after,
 .first-square, .second-square, .third-square,
-.position-balloon span, .square span {
+.position-balloon span, .square span, .header-municipal, .line-separate {
     position: absolute;
 }
 
-.first-balloon-dialogue::after, .second-balloon-dialogue::after, .third-balloon-dialogue::after {
+.header-municipal {
+    font-weight: 500;
+    width: 350px;
+    text-align: center;
+    left: calc(var(--top-first-square) + 40%);
+}
+
+.header-municipal span {
+    color: #5159AC;
+    font-weight: bolder;
+}
+
+.line-separate.pma-line-3 {
+    border-color: #5159AC;
+    left: calc(var(--top-first-square) + 50.5%);
+    top: 9%;
+    width: 110px;
+}
+
+.first-balloon-dialogue::after, .second-balloon-dialogue::after,
+.third-balloon-dialogue::after {
     border-bottom: 2px solid white;
     border-right: 2px solid white;
     content: '';
