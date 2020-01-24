@@ -1,0 +1,151 @@
+:root {
+    --color-balloon: #15a0c1;
+    --height-first-square: 400px;
+    --left-first-square: 25%;
+    --top-first-square: 8%;
+    --width-first-square: 250px;
+    --point-right-top: 40%;
+    --top-balloon: 40px;
+    --top-balloon-peak: 85px;
+    --left-balloon-peak: 58px;
+}
+
+.first-balloon-dialogue, .first-balloon-dialogue::after,
+.second-balloon-dialogue, .second-balloon-dialogue::after,
+.third-balloon-dialogue, .third-balloon-dialogue::after,
+.first-square, .second-square, .third-square,
+.position-balloon span, .square span {
+    position: absolute;
+}
+
+.first-balloon-dialogue::after, .second-balloon-dialogue::after, .third-balloon-dialogue::after {
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+    content: '';
+}
+
+.balloon-dialogue {
+    background-color: var(--color-balloon);
+    border: 2px solid white;
+    border-radius: 100%;
+    transform: rotate(15deg);
+    z-index: 100;
+}
+
+.position-balloon {
+    background-color: white;
+    border-radius: 100%;
+    height: 70px;
+    width: 70px;
+    position: inherit;
+    top: 15%;
+    left: 14%;
+    z-index: 101;
+    transform: rotate(-15deg);
+}
+
+.position-balloon span {
+    top: 20%;
+    left: 20%;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.square span {
+    color: white;
+    white-space: nowrap;
+}
+
+.first-square span.name {
+    left: 15%;
+    top: 60%;
+}
+
+.second-square span.name {
+    top: 60%;
+    left: 10%;
+    font-size: 13px;
+}
+
+.third-square span.name {
+    top: 77%;
+    left: 7%;
+    font-size: 12px;
+}
+
+.first-balloon-dialogue {
+    left: calc(var(--left-first-square) + 8%);
+    height: 100px;
+    transform: rotate(15deg);
+    top: var(--top-balloon);
+    width: 100px;
+}
+
+.first-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+}
+
+.first-square {
+    clip-path: polygon(0 0, 100% var(--point-right-top), 100% 100%, 0% 100%);
+    background-color: #5159AC;
+    height: var(--height-first-square);
+    left: var(--left-first-square);
+    top: var(--top-first-square);
+    width: var(--width-first-square);
+}
+
+.second-balloon-dialogue {
+    left: calc(var(--left-first-square) + 27%);
+    height: 100px;
+    top: calc(var(--top-balloon) + 125px);
+    width: 100px;
+}
+
+.second-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+}
+
+.second-square {
+    clip-path: polygon(0 10%, 100% calc(var(--point-right-top) + 16%), 100% 100%, 0% 100%);
+    background-color: #14a0c1;
+    height: calc(var(--height-first-square) - 133px);
+    left: calc(var(--left-first-square) + 21.9%);
+    top: calc(var(--top-first-square) + 29.5%);
+    width: calc(var(--width-first-square) - 50px);
+}
+
+.third-balloon-dialogue {
+    left: calc(var(--left-first-square) + 42%);
+    height: 100px;
+    top: calc(var(--top-balloon) + 228px);
+    transform: rotate(15deg);
+    width: 100px;
+}
+
+.third-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+}
+
+.third-square {
+    clip-path: polygon(0 46.8%, 0% 100%, 100% 100%);
+    background-color: #01cd9c;
+    height: calc(var(--height-first-square) - 180px);
+    left: calc(var(--left-first-square) + 39.5%);
+    top: calc(var(--top-first-square) + 40%);
+    width: calc(var(--width-first-square) - 50px);
+}
