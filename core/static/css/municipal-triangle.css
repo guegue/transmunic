@@ -80,6 +80,7 @@
 }
 
 .square span {
+    text-align: center;
     color: white;
     white-space: nowrap;
 }
@@ -100,6 +101,9 @@
     left: 7%;
     font-size: 12px;
 }
+
+
+
 
 .first-balloon-dialogue {
     left: calc(var(--left-first-square) + 8%);
