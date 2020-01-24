@@ -2,13 +2,13 @@
 <div class="col-12 position-relative" style="height: 450px">
 
     <h4 class="header-municipal">
-        <span>Municipal "C"</span> ranking de recaudaci&oacute;n por habitante categor&iacute;a
+        <span>Municipal "{{ mi_clase.clasificacion }}"</span> ranking de recaudaci&oacute;n por habitante categor&iacute;a
     </h4>
 
     <hr class="line-separate pma-line-3">
 
     <h5 class="description-municipal">
-        C&oacute;rdobas corrientes por habitante en base a ingreso ejecutado
+        C&oacute;rdobas corrientes por habitante en base a ingreso {% if periodo_list|keyvalue:year == 'I' %}asignados{% else %}ejecutados{% endif %}
     </h5>
 
     <div class="balloon-dialogue first-balloon-dialogue">
