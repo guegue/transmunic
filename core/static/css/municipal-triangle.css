@@ -14,15 +14,16 @@
 .second-balloon-dialogue, .second-balloon-dialogue::after,
 .third-balloon-dialogue, .third-balloon-dialogue::after,
 .first-square, .second-square, .third-square,
-.position-balloon span, .square span, .header-municipal, .line-separate {
+.position-balloon span, .square span, .header-municipal,
+.line-separate, .description-municipal {
     position: absolute;
 }
 
 .header-municipal {
     font-weight: 500;
-    width: 350px;
+    left: calc(var(--left-first-square) + 23%);
     text-align: center;
-    left: calc(var(--top-first-square) + 40%);
+    width: 350px;
 }
 
 .header-municipal span {
@@ -35,6 +36,13 @@
     left: calc(var(--top-first-square) + 50.5%);
     top: 9%;
     width: 110px;
+}
+
+.description-municipal {
+    left: calc(var(--left-first-square) + 27%);
+    text-align: center;
+    top: 11%;
+    width: 280px;
 }
 
 .first-balloon-dialogue::after, .second-balloon-dialogue::after,
