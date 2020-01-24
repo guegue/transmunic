@@ -22,7 +22,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                     </div>
                 </div>
                 <div class="square first-square">
@@ -43,7 +43,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                     </div>
                 </div>
                 <div class="square second-square">
@@ -83,7 +83,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                     </div>
                 </div>
                 <div class="square first-square">
@@ -104,7 +104,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter < 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}0</span>
                     </div>
                 </div>
                 <div class="square second-square">
