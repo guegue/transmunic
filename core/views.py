@@ -459,43 +459,43 @@ def descargar_detalle(request):
         form = DetallePresupuestoForm()
 
     return render_to_response('descargar_detalle.html',
-                              {"form":form,
-                               "error":error
+                              {"form": form,
+                               "error": error
                                },
                               context_instance=RequestContext(request)
                               )
 
 
 def transferencias(request):
-    data = Transferencia.objects.order_by(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            ).values(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            )
+    data = Transferencia.objects.order_by(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    ).values(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    )
 
     # botiene anios y sus periodos
     # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
     iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo='I')
     finales = list(Anio.objects.values_list('anio', flat=True).filter(periodo='F'))
 
-    data_inicial = Transferencia.objects.order_by(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            ).values(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            ).filter(anio__in=iniciales).annotate(corriente=Sum('corriente'),
-                                                  capital=Sum('capital'))
-    data_final = Transferencia.objects.order_by(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            ).values(\
-            'municipio__clase__clasificacion__clasificacion',\
-            'anio', \
-            ).filter(anio__in=(2014,)).annotate(corriente=Sum('corriente'),
-                                                capital=Sum('capital'))
+    data_inicial = Transferencia.objects.order_by(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    ).values(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    ).filter(anio__in=iniciales).annotate(corriente=Sum('corriente'),
+                                          capital=Sum('capital'))
+    data_final = Transferencia.objects.order_by(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    ).values(
+        'municipio__clase__clasificacion__clasificacion',
+        'anio',
+    ).filter(anio__in=(2014,)).annotate(corriente=Sum('corriente'),
+                                        capital=Sum('capital'))
     context = {}
     data = list(data_inicial) + list(data_final)
     data = sorted(data, key=lambda k: (k['municipio__clase__clasificacion__clasificacion'],
