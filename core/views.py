@@ -478,7 +478,7 @@ def transferencias(request):
     # botiene anios y sus periodos
     # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
     iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo='I')
-    finales = list(Anio.objects.values_list('anio', flat=True).filter(periodo='F'))
+    finales = Anio.objects.values_list('anio', flat=True).filter(periodo='F')
 
     data_inicial = Transferencia.objects.order_by(
         'municipio__clase__clasificacion__clasificacion',
@@ -494,7 +494,7 @@ def transferencias(request):
     ).values(
         'municipio__clase__clasificacion__clasificacion',
         'anio',
-    ).filter(anio__in=(2014,)).annotate(corriente=Sum('corriente'),
+    ).filter(anio__in=finales).annotate(corriente=Sum('corriente'),
                                         capital=Sum('capital'))
     context = {}
     data = list(data_inicial) + list(data_final)
