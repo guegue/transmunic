@@ -1,0 +1,19 @@
+{% load humanize %}
+<table border=1>
+    <tr>
+        <th>Clase</th>
+        <th>Año</th>
+        <th>Corriente</th>
+        <th>Capital</th>
+        <th>Total</th>
+    </tr>
+{% for row in data %}
+    <tr>
+        <td>{{ row.municipio__clase__clasificacion__clasificacion }}</td>
+        <td>{{ row.anio }}</td>
+        <td>{{ row.corriente|intcomma }}</td>
+        <td>{{ row.capital|intcomma }}</td>
+        <td>{{ row.capital|add:row.corriente|intcomma }}</td>
+    </tr>
+{% endfor %}
+</table>
