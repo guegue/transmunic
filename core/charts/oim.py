@@ -76,7 +76,6 @@ def oim_chart(municipio=None, year=None, portada=False):
         prefix = 'sub3tipoingreso'
     subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
     subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
-    print(subsubtipoingreso__origen__nombre)
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
@@ -213,13 +212,13 @@ def oim_chart(municipio=None, year=None, portada=False):
                                                            ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
                                                            subsubtipoingreso__origen=OrigenRecurso.RECAUDACION). \
             values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
-            'ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
+            'asignado').annotate(asignado=Sum('asignado'))
         municipios_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,
                                                                ingreso__municipio__clase__anio=year,
                                                                ingreso__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
                                                                subsubtipoingreso__origen=OrigenRecurso.RECAUDACION). \
             values('ingreso__municipio__nombre', 'ingreso__municipio__slug').order_by(
-            'ingreso__municipio__nombre').annotate(asignado=Sum('asignado'))
+            'asignado').annotate(asignado=Sum('asignado'))
         municipios_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo,
                                                          ingreso__municipio__clase__anio=year,
                                                          subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,
@@ -228,6 +227,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'ejecutado').annotate(ejecutado=Sum('ejecutado'))
         otros = glue(municipios_inicial, municipios_final,
                      'ingreso__municipio__nombre', actualizado=municipios_actualizado)
+
         # inserta porcentages de total de ingresos
         for row in otros:
             # total_poblacion = Poblacion.objects.filter(anio=year, municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
@@ -890,8 +890,10 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'title': {
                         'text': 'Recaudación por habitante en córdobas corrientes'
                     }
-                }
-            })
+                },
+            },
+            x_sortf_mapf_mts=(None, None, False, True),
+        )
     elif porclasep:
         data_bar_horizontal = RawDataPool(
             series=[
