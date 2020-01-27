@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.db.models import Sum
 
 from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
-    InversionFuente, Grafico, CatInversion
+    InversionFuente, Grafico, CatInversion, Transferencia
 from tools import getYears
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
@@ -464,3 +464,42 @@ def descargar_detalle(request):
                                },
                               context_instance=RequestContext(request)
                               )
+
+
+def transferencias(request):
+    data = Transferencia.objects.order_by(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            ).values(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            )
+
+    # botiene anios y sus periodos
+    # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
+    iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo='I')
+    finales = list(Anio.objects.values_list('anio', flat=True).filter(periodo='F'))
+
+    data_inicial = Transferencia.objects.order_by(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            ).values(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            ).filter(anio__in=iniciales).annotate(corriente=Sum('corriente'),
+                                                  capital=Sum('capital'))
+    data_final = Transferencia.objects.order_by(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            ).values(\
+            'municipio__clase__clasificacion__clasificacion',\
+            'anio', \
+            ).filter(anio__in=(2014,)).annotate(corriente=Sum('corriente'),
+                                                capital=Sum('capital'))
+    context = {}
+    data = list(data_inicial) + list(data_final)
+    data = sorted(data, key=lambda k: (k['municipio__clase__clasificacion__clasificacion'],
+                                       k['anio']))
+
+    context['data'] = data
+    return render(request, 'transferencias.html', context)
