@@ -122,7 +122,7 @@ class OrigenGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Origenes de los gastos'
         verbose_name = 'Origen de los gastos'
-        ordering = ['nombre']
+        ordering = ['orden','nombre']
 
     def __unicode__(self):
         return self.nombre
