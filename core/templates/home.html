@@ -244,22 +244,32 @@
     <div class="pma-gradient pma-summary pma-index-inversion-icons">
         <div class="container">
             <div class="row">
-                <h2>
-                    <strong>Areas</strong>
-                    de la Inversi&oacute;n
-                </h2>
-                <h4>
-                    Consolidado de Presupuesto
-                    {% if periodo == 'F' %}
-                        Cierre
-                    {% elif periodo == 'A' %}
-                        Ejecuci&oacute;n Intermedia
-                    {% else %}
-                        Inicial
-                    {% endif %}
-                    {{ year }}
-                </h4>
-                <h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
+                <div class="col-xs-10">
+                    <h2>
+                        <strong>Areas</strong>
+                        de la Inversi&oacute;n
+                    </h2>
+                    <h4>
+                        Consolidado de Presupuesto
+                        {% if periodo == 'F' %}
+                            Cierre
+                        {% elif periodo == 'A' %}
+                            Ejecuci&oacute;n Intermedia
+                        {% else %}
+                            Inicial
+                        {% endif %}
+                        {{ year }}
+                    </h4>
+                    <h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
+                </div>
+                <div class="col-xs-1 col-sm-1 col-md-1 mt-1">
+                    <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
+                       aria-expanded="false" aria-controls="collapseExample">
+                        <div class="text-center ver-mas">
+                            <strong>VER M&Aacute;S</strong>
+                        </div>
+                    </a>
+                </div>
                 <br/>
                 <div class="col-md-12">
                     <div class="row categorias_inversion">
@@ -307,14 +317,7 @@
                                     <div class="row list-icons-inversion">
                                 {% endif %}
                             {% endfor %}
-                            <div class="col-xs-12 col-sm-1 col-md-1">
-                                <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
-                                   aria-expanded="false" aria-controls="collapseExample">
-                                    <div class="text-center ver-mas">
-                                        <strong>VER M&Aacute;S</strong>
-                                    </div>
-                                </a>
-                            </div>
+
                             </div>
                         <div class="otras-categorias col-md-11">
                             <div class="collapse" id="collapseExample">
