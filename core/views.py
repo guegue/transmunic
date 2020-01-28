@@ -81,8 +81,8 @@ def home(request):
             .values(
                 'catinversion__slug', 'catinversion__minimo',
                 'catinversion__nombre', 'catinversion__id')\
-            .order_by()\
-            .annotate(ejecutado=Sum(quesumar))
+            .order_by('-{}'.format(quesumar))\
+            .annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
     context = {'banners': banners, 'desc_oim_chart': desc_oim_chart, 'desc_ogm_chart': desc_ogm_chart, 'desc_inversionminima': desc_inversionminima, 'desc_inversionsector': desc_inversionsector,
                'charts': (
                    data_oim['charts'][0],

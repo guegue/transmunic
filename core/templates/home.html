@@ -262,7 +262,7 @@
                     </h4>
                     <h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
                 </div>
-                <div class="col-xs-1 col-sm-1 col-md-1 mt-1">
+                <div class="col-xs-1 col-sm-1 col-md-1 mt-3">
                     <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
                        aria-expanded="false" aria-controls="collapseExample">
                         <div class="text-center ver-mas">
@@ -335,16 +335,30 @@
                                                     </a>
                                                     <br/>
                                                     <span class="font-color-yellow font-17px">Asignado: {{ i.asignado|million|intcomma }}</span>
-                                                    <br>
-                                                    {% if periodo == 'I' %}
-                                                        <span class="font-color-yellow font-17px">Ejecutado: 0</span>
-                                                    {% else %}
-                                                        <span class="font-color-yellow font-17px">Ejecutado: {{ i.ejecutado|million|intcomma }}</span>
-                                                        <br>
-                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}
-                                                        %
-                                                    {% endif %}
                                                 </h5>
+                                                <table class="table text-center info-box-number mb-1px tb-details"
+                                                       style="color: white;">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Inicial</th>
+                                                        <th>Ejecutado</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="font-17px">{{ i.asignado|million|intcomma }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {% if periodo == 'I' %}
+                                                                <span class="font-17px">0</span>
+                                                            {% else %}
+                                                                <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                                {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                             {% if foorloop.last or forloop.counter|divisibleby:6 %}
                                                 </div>
