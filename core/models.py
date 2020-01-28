@@ -117,6 +117,7 @@ class OrigenGasto(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
 
     class Meta:
         verbose_name_plural = 'Origenes de los gastos'
@@ -194,11 +195,12 @@ class OrigenRecurso(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True, unique=True)
+    orden = models.IntegerField()
 
     class Meta:
         verbose_name_plural = 'Origenes de los recursos'
         verbose_name = 'Origen de los recursos'
-        ordering = ['nombre']
+        ordering = ['orden','nombre']
 
     def __unicode__(self):
         return self.nombre
