@@ -57,8 +57,8 @@ def home(request):
 
     data_inversion_minima_sector = inversion_minima_sector_chart(portada=True)
     # siempre sumar 'asginado'
-    # quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-    quesumar = 'asignado'
+    quesumar = 'asignado' if periodo == 'I' else 'ejecutado'
+
     if year:
         data_oim = oim_chart(year=year, portada=True)
         data_ogm = ogm_chart(year=year, portada=True)
@@ -73,8 +73,8 @@ def home(request):
             .values(
                 'catinversion__slug', 'catinversion__minimo',
                 'catinversion__nombre', 'catinversion__id')\
-            .order_by()\
-            .annotate(ejecutado=Sum(quesumar))
+            .order_by('-{}'.format(quesumar))\
+            .annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
         inversion_categoria2 = Proyecto.objects.filter(
             inversion__anio=year, inversion__periodo=periodo,
             catinversion__destacar=False)\
