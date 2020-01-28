@@ -91,15 +91,15 @@
         <h3>
             Consolidado de Presupuesto
             {% if periodo == 'F' %}
-                de Cierre 
+                de Cierre
             {% elif periodo == 'A' %}
-                EJecuci&oacute;n Intermedia  
+                EJecuci&oacute;n Intermedia
             {% else %}
-                Inicial 
+                Inicial
             {% endif %}
-	    {{ year }}
+            {{ year }}
         </h3>
-	<h5>Millones de c&oacutelrdobas por rubro y peso porcentual del presupuesto total</h5>
+        <h5>Millones de c&oacutelrdobas por rubro y peso porcentual del presupuesto total</h5>
         <hr class="pma-line-3">
         <div class="row row-eq-height pma-spacing-bottom">
             <div class="col-md-6 col-eq-height">
@@ -109,11 +109,11 @@
                         <span class="info-box-number font-13px"> {{ data_oim.asignado|million|intcomma }} millones</span>
                         <br/>
                         <span class="font_small">Ejecutado:</span>
-			{% if periodo == 'I' %}
-			    <span class="info-box-number font-13px">0</span>
-			{% else %}
+                        {% if periodo == 'I' %}
+                            <span class="info-box-number font-13px">0</span>
+                        {% else %}
                             <span class="info-box-number font-13px"> {{ data_oim.ejecutado|million|intcomma }} millones</span>
-			{% endif %}
+                        {% endif %}
                     </div>
                     <h2>
                         <strong>Origen</strong>
@@ -142,11 +142,11 @@
                                                     {{ origen.asignado|million|intcomma|default:0 }}
                                                 </td>
                                                 <td class="info-box-number">
-						    {% if periodo == 'I' %}
-						    	0
-						    {% else %}
+                                                    {% if periodo == 'I' %}
+                                                        0
+                                                    {% else %}
                                                         {{ origen.ejecutado|million|intcomma|default:0 }}
-            					    {% endif %}
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -154,11 +154,11 @@
                                                     {{ origen.asignado_percent }}%
                                                 </td>
                                                 <td>
-						    {% if periodo == 'I' %}
-						    	0%
-						    {% else %}
+                                                    {% if periodo == 'I' %}
+                                                        0%
+                                                    {% else %}
                                                         {{ origen.ejecutado_percent }}%
-						    {% endif %}
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -179,7 +179,8 @@
                         <span class="info-box-number font-13px"> {{ data_ogm.asignado|million|intcomma }} millones</span>
                         <br/>
                         <span class="font_small">Ejecutado:</span>
-			<span class="info-box-number font-13px">{% if periodo == 'I' %}0 {% else %} {{ data_ogm.ejecutado|million|intcomma }} millones{% endif %}</span>
+                        <span class="info-box-number font-13px">{% if periodo == 'I' %}0 {% else %}
+                            {{ data_ogm.ejecutado|million|intcomma }} millones{% endif %}</span>
                     </div>
                     <h2>
                         <strong>Destino</strong>
@@ -208,11 +209,11 @@
                                                     {{ gasto.asignado|million|intcomma|default:0 }}
                                                 </td>
                                                 <td class="info-box-number">
-							{% if periodo == 'I' %}
-							    0
-							{% else %}
-							    {{ gasto.ejecutado|million|intcomma|default:0 }}
-							{% endif %}
+                                                    {% if periodo == 'I' %}
+                                                        0
+                                                    {% else %}
+                                                        {{ gasto.ejecutado|million|intcomma|default:0 }}
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -220,11 +221,11 @@
                                                     {{ gasto.asignado_percent }}%
                                                 </td>
                                                 <td>
-						    {% if periodo == 'I' %}
-						      0%
-						    {% else %}
+                                                    {% if periodo == 'I' %}
+                                                        0%
+                                                    {% else %}
                                                         {{ gasto.ejecutado_percent }}%
-						    {% endif %}
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -248,7 +249,7 @@
                     de la Inversi&oacute;n
                 </h2>
                 <h4>
-                    Consolidado de Presupuesto 
+                    Consolidado de Presupuesto
                     {% if periodo == 'F' %}
                         Cierre
                     {% elif periodo == 'A' %}
@@ -256,16 +257,16 @@
                     {% else %}
                         Inicial
                     {% endif %}
-		    {{ year }}
+                    {{ year }}
                 </h4>
-		<h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
+                <h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
                 <br/>
                 <div class="col-md-12">
                     <div class="row categorias_inversion">
                         <div class="col-xs-12 col-sm-11 col-md-11">
                             {% for i in inversion_categoria %}
                                 <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-				    <div>
+                                    <div>
                                         <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
                                             <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
                                         </a>
@@ -274,8 +275,9 @@
                                                class="blanco">
                                                 <strong>{{ i.catinversion__nombre }}</strong>
                                             </a>
-				        </h5>
-                                        <table class="table text-center info-box-number mb-1px tb-details">
+                                        </h5>
+                                        <table class="table text-center info-box-number mb-1px tb-details"
+                                               style="color: white;">
                                             <thead>
                                             <tr>
                                                 <th>Inicial</th>
@@ -284,20 +286,21 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="pma-blue">
-                                                    <span class="font-color-yellow font-17px">{{ i.asignado|million|intcomma }}</span>
-						</td>
-						<td>
-					            {% if periodo == 'I' %}
-					                <span class="font-color-yellow font-17px">0</span>
-					            {% else %}
-                                                        <span class="font-color-yellow font-17px">{{ i.ejecutado|million|intcomma }}</span>
-                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                                <td>
+                                                    <span class="font-17px">{{ i.asignado|million|intcomma }}</span>
+                                                </td>
+                                                <td>
+                                                    {% if periodo == 'I' %}
+                                                        <span class="font-17px">0</span>
+                                                    {% else %}
+                                                        <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}
+                                                        %
                                                     {% endif %}
-						</td>
-					    </tr>
-					</table>
-				    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
                                 {% if foorloop.last or forloop.counter|divisibleby:6 %}
                                     </div>
@@ -330,13 +333,14 @@
                                                     <br/>
                                                     <span class="font-color-yellow font-17px">Asignado: {{ i.asignado|million|intcomma }}</span>
                                                     <br>
-						    {% if periodo == 'I' %}
-						        <span class="font-color-yellow font-17px">Ejecutado: 0</span>
-						    {% else %}
+                                                    {% if periodo == 'I' %}
+                                                        <span class="font-color-yellow font-17px">Ejecutado: 0</span>
+                                                    {% else %}
                                                         <span class="font-color-yellow font-17px">Ejecutado: {{ i.ejecutado|million|intcomma }}</span>
                                                         <br>
-                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
-						    {% endif %}
+                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}
+                                                        %
+                                                    {% endif %}
                                                 </h5>
                                             </div>
                                             {% if foorloop.last or forloop.counter|divisibleby:6 %}
