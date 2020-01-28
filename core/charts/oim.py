@@ -926,16 +926,16 @@ def oim_chart(municipio=None, year=None, portada=False):
                 },
                 'colors': colors_array,
                 'title': {
-                    'text': 'Ranking de Municipio por Categoría'
+                    'text': 'Recaudación percápita'
                 },
                 'xAxis': {
                     'title': {
-                        'text': 'Categoria'
+                        'text': 'Grupos'
                     }
                 },
                 'yAxis': {
                     'title': {
-                        'text': 'Gasto por habitante'
+                        'text': 'Córdobas'
                     }
                 }
             })
