@@ -200,7 +200,7 @@ class OrigenRecurso(models.Model):
     class Meta:
         verbose_name_plural = 'Origenes de los recursos'
         verbose_name = 'Origen de los recursos'
-        ordering = ['orden','nombre']
+        ordering = ['orden', 'nombre']
 
     def __unicode__(self):
         return self.nombre
