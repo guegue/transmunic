@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='origenrecurso',
-            options={'ordering': ['orden', 'nombre'], 'verbose_name': 'Origen de los recursos', 'verbose_name_plural': 'Origenes de los recursos'},
+            options={'ordering': ['orden', 'nombre'], 'verbose_name': 'Origen de los recursos',
+                     'verbose_name_plural': 'Origenes de los recursos'},
         ),
         migrations.AddField(
             model_name='origengasto',
