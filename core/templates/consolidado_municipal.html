@@ -16,15 +16,15 @@
                 <div class="col-md-12">
                     {% block indicator_title %}
                         <h2 class="text-center"><strong>
-                            {{ municipio.nombre|default:"Resumen Municipal" }}
+                            {{ municipio.nombre|default:"Resumen 153 Municipios" }}
                             {% if periodo == 'F' %}
-                                Cierre
+                                Ejecuci&oacute;n Cierre Presupuesto
                             {% else %}
 
                                 {% if periodo == 'A' %}
-                                    Intermedio
+                                    Ejecuci&oacute;n Intermedia
                                 {% else %}
-                                    Inicial
+                                    Presupuesto Inicial
                                 {% endif %}
                             {% endif %}
                             {{ year }}
