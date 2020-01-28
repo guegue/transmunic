@@ -99,6 +99,7 @@
             {% endif %}
 	    {{ year }}
         </h3>
+	<h5>Millones de c&oacutelrdobas por rubro y peso porcentual del presupuesto total</h5>
         <hr class="pma-line-3">
         <div class="row row-eq-height pma-spacing-bottom">
             <div class="col-md-6 col-eq-height">
@@ -108,7 +109,11 @@
                         <span class="info-box-number font-13px"> {{ data_oim.asignado|million|intcomma }} millones</span>
                         <br/>
                         <span class="font_small">Ejecutado:</span>
-                        <span class="info-box-number font-13px"> {{ data_oim.ejecutado|million|intcomma }} millones</span>
+			{% if periodo == 'I' %}
+			    <span class="info-box-number font-13px">0</span>
+			{% else %}
+                            <span class="info-box-number font-13px"> {{ data_oim.ejecutado|million|intcomma }} millones</span>
+			{% endif %}
                     </div>
                     <h2>
                         <strong>Origen</strong>
@@ -137,7 +142,11 @@
                                                     {{ origen.asignado|million|intcomma|default:0 }}
                                                 </td>
                                                 <td class="info-box-number">
-                                                    {{ origen.ejecutado|million|intcomma|default:0 }}
+						    {% if periodo == 'I' %}
+						    	0
+						    {% else %}
+                                                        {{ origen.ejecutado|million|intcomma|default:0 }}
+            					    {% endif %}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -145,7 +154,11 @@
                                                     {{ origen.asignado_percent }}%
                                                 </td>
                                                 <td>
-                                                    {{ origen.ejecutado_percent }}%
+						    {% if periodo == 'I' %}
+						    	0%
+						    {% else %}
+                                                        {{ origen.ejecutado_percent }}%
+						    {% endif %}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -166,7 +179,7 @@
                         <span class="info-box-number font-13px"> {{ data_ogm.asignado|million|intcomma }} millones</span>
                         <br/>
                         <span class="font_small">Ejecutado:</span>
-                        <span class="info-box-number font-13px"> {{ data_ogm.ejecutado|million|intcomma }} millones</span>
+			<span class="info-box-number font-13px">{% if periodo == 'I' %}0 {% else %} {{ data_ogm.ejecutado|million|intcomma }} millones{% endif %}</span>
                     </div>
                     <h2>
                         <strong>Destino</strong>
@@ -195,7 +208,11 @@
                                                     {{ gasto.asignado|million|intcomma|default:0 }}
                                                 </td>
                                                 <td class="info-box-number">
-                                                    {{ gasto.ejecutado|million|intcomma|default:0 }}
+							{% if periodo == 'I' %}
+							    0
+							{% else %}
+							    {{ gasto.ejecutado|million|intcomma|default:0 }}
+							{% endif %}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -203,7 +220,11 @@
                                                     {{ gasto.asignado_percent }}%
                                                 </td>
                                                 <td>
-                                                    {{ gasto.ejecutado_percent }}%
+						    {% if periodo == 'I' %}
+						      0%
+						    {% else %}
+                                                        {{ gasto.ejecutado_percent }}%
+						    {% endif %}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -237,25 +258,46 @@
                     {% endif %}
 		    {{ year }}
                 </h4>
+		<h5>Millones de cólrdobas por &aacute;rea y peso porcentual del presupuesto total</h5>
                 <br/>
                 <div class="col-md-12">
                     <div class="row categorias_inversion">
                         <div class="col-xs-12 col-sm-11 col-md-11">
                             {% for i in inversion_categoria %}
                                 <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-                                    <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
-                                        <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
-                                    </a>
-                                    <h5 class="text-center">
-                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}"
-                                           class="blanco">
-                                            <strong>{{ i.catinversion__nombre }}</strong>
+				    <div>
+                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
+                                            <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
                                         </a>
-                                        <br/>
-                                        <span class="font-color-yellow font-17px">{{ i.ejecutado|million|intcomma }}</span>
-                                        <br>
-                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
-                                    </h5>
+                                        <h5 class="text-center">
+                                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}"
+                                               class="blanco">
+                                                <strong>{{ i.catinversion__nombre }}</strong>
+                                            </a>
+				        </h5>
+                                        <table class="table text-center info-box-number mb-1px tb-details">
+                                            <thead>
+                                            <tr>
+                                                <th>Inicial</th>
+                                                <th>Ejecutado</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="pma-blue">
+                                                    <span class="font-color-yellow font-17px">{{ i.asignado|million|intcomma }}</span>
+						</td>
+						<td>
+					            {% if periodo == 'I' %}
+					                <span class="font-color-yellow font-17px">0</span>
+					            {% else %}
+                                                        <span class="font-color-yellow font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+                                                    {% endif %}
+						</td>
+					    </tr>
+					</table>
+				    </div>
                                 </div>
                                 {% if foorloop.last or forloop.counter|divisibleby:6 %}
                                     </div>
@@ -266,7 +308,7 @@
                                 <a class="blanco" role="button" data-toggle="collapse" href="#collapseExample"
                                    aria-expanded="false" aria-controls="collapseExample">
                                     <div class="text-center ver-mas">
-                                        <strong>VER MAS</strong>
+                                        <strong>VER M&Aacute;S</strong>
                                     </div>
                                 </a>
                             </div>
@@ -286,9 +328,15 @@
                                                         <strong>{{ i.catinversion__nombre }}</strong>
                                                     </a>
                                                     <br/>
-                                                    <span class="font-color-yellow font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                    <span class="font-color-yellow font-17px">Asignado: {{ i.asignado|million|intcomma }}</span>
                                                     <br>
-                                                    {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+						    {% if periodo == 'I' %}
+						        <span class="font-color-yellow font-17px">Ejecutado: 0</span>
+						    {% else %}
+                                                        <span class="font-color-yellow font-17px">Ejecutado: {{ i.ejecutado|million|intcomma }}</span>
+                                                        <br>
+                                                        {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
+						    {% endif %}
                                                 </h5>
                                             </div>
                                             {% if foorloop.last or forloop.counter|divisibleby:6 %}
