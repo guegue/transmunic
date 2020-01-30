@@ -432,7 +432,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                      final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.\
             filter(gasto__anio=year,
-                   gasto__periodo=periodo ).\
+                   gasto__periodo=periodo).\
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
             values('subsubtipogasto__origen__nombre',
                    'subsubtipogasto__origen__shortname').\
@@ -801,15 +801,15 @@ def ogm_chart(municipio=None, year=None, portada=False):
         })
 
     data_gasto = RawDataPool(
-           series=[
-                {
-                    'options': {'source': rubros_pie},
-                    'terms': [
-                        'name',
-                        datacol
-                    ]
-                }
-            ])
+        series=[
+            {
+                'options': {'source': rubros_pie},
+                'terms': [
+                    'name',
+                    datacol
+                ]
+            }
+        ])
 
     pie = Chart(
         datasource=data_gasto,
