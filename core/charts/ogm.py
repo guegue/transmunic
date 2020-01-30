@@ -148,18 +148,40 @@ def ogm_chart(municipio=None, year=None, portada=False):
                                   rubrosp_actualizado, rubrosp_periodo), key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                ejecutado=Sum('ejecutado'))
+        rubros_inicial = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__municipio__slug=municipio,
+                   gasto__periodo=PERIODO_INICIAL).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__municipio__slug=municipio,
+                   gasto__periodo=PERIODO_ACTUALIZADO).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(actualizado_asignado=Sum('asignado'),
+                     actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__municipio__slug=municipio,
+                   gasto__periodo=PERIODO_FINAL).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(final_asignado=Sum('asignado'),
+                     final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__municipio__slug=municipio,
+                   gasto__periodo=periodo,).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(ejecutado=Sum('ejecutado'))
+
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='subsubtipogasto__origen__nombre')
 
@@ -382,22 +404,41 @@ def ogm_chart(municipio=None, year=None, portada=False):
                                   rubrosp_actualizado, rubrosp_periodo), key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros
-        rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, ).\
+        rubros_inicial = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=PERIODO_INICIAL).\
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, ).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=PERIODO_ACTUALIZADO).\
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, ).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(actualizado_asignado=Sum('asignado'),
+                     actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=PERIODO_FINAL).\
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, ).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(final_asignado=Sum('asignado'),
+                     final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=periodo).\
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            values('subsubtipogasto__origen__nombre').order_by().annotate(
-                ejecutado=Sum('ejecutado'))
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__shortname').\
+            order_by().\
+            annotate(ejecutado=Sum('ejecutado'))
+
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='subsubtipogasto__origen__nombre')
 
@@ -748,23 +789,34 @@ def ogm_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
               })
 
+    ''  # llenando rubros_pie que contendra la informacion para los graficos de barra
+    ''  # y pastel, resumiendo en un mismo campo el nombre o shortname de cada rubro
+    rubros_pie = []
+    field_name = 'subsubtipogasto__origen__shortname'
+    for row in rubros:
+        rubros_pie.append({
+            'name': row[field_name] if row[field_name] else row['subsubtipogasto__origen__nombre'],
+            'inicial_asignado': row.get('inicial_asignado', 0),
+            'ejecutado': row.get('ejecutado', 0),
+        })
+
     data_gasto = RawDataPool(
-           series=[
-                {
-                    'options': {'source': rubros},
-                    'terms': [
-                        'subsubtipogasto__origen__nombre',
-                        datacol
-                    ]
-                }
-            ])
+        series=[
+            {
+                'options': {'source': rubros_pie},
+                'terms': [
+                    'name',
+                    datacol
+                ]
+            }
+        ])
 
     pie = Chart(
         datasource=data_gasto,
         series_options=[
             {
                 'options': {'type': 'pie'},
-                'terms': {'subsubtipogasto__origen__nombre': [datacol]}
+                'terms': {'name': [datacol]}
             }],
         chart_options=chart_options)
 
@@ -776,7 +828,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     'type': 'column',
                     'colorByPoint': True,
                 },
-                'terms': {'subsubtipogasto__origen__nombre': [datacol]}
+                'terms': {'name': [datacol]}
             }],
         chart_options=chart_options)
 

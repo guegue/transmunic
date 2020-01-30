@@ -76,6 +76,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         prefix = 'sub3tipoingreso'
     subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
     subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
+    subsubtipoingreso__origen__shortname = '{}__origen__shortname'.format(prefix)
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
@@ -174,27 +175,49 @@ def oim_chart(municipio=None, year=None, portada=False):
                                   rubrosp_actualizado, rubrosp_periodo), key='subtipoingreso__codigo')
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio,
-                                                       ingreso__periodo=PERIODO_INICIAL, ). \
+        rubros_inicial = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__slug=municipio,
+                   ingreso__periodo=PERIODO_INICIAL). \
             exclude(tipoingreso_id=saldo_caja). \
-            values(subsubtipoingreso__origen__id, subsubtipoingreso__origen__nombre).order_by(
-            subsubtipoingreso__origen__id).annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio,
-                                                           ingreso__periodo=PERIODO_ACTUALIZADO, ). \
+            values(subsubtipoingreso__origen__id,
+                   subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__shortname). \
+            order_by(subsubtipoingreso__origen__id). \
+            annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__slug=municipio,
+                   ingreso__periodo=PERIODO_ACTUALIZADO). \
             exclude(tipoingreso_id=saldo_caja). \
-            values(subsubtipoingreso__origen__id, subsubtipoingreso__origen__nombre).order_by(
-            subsubtipoingreso__origen__id).annotate(actualizado_ejecutado=Sum('ejecutado'),
-                                                      actualizado_asignado=Sum('asignado'))
-        rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio,
-                                                     ingreso__periodo=PERIODO_FINAL, ). \
+            values(subsubtipoingreso__origen__id,
+                   subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__shortname). \
+            order_by(subsubtipoingreso__origen__id). \
+            annotate(actualizado_ejecutado=Sum('ejecutado'),
+                     actualizado_asignado=Sum('asignado'))
+        rubros_final = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__slug=municipio,
+                   ingreso__periodo=PERIODO_FINAL). \
             exclude(tipoingreso_id=saldo_caja). \
-            values(subsubtipoingreso__origen__id, subsubtipoingreso__origen__nombre).order_by(
-            subsubtipoingreso__origen__id).annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado'))
-        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio,
-                                                       ingreso__periodo=periodo, ). \
+            values(subsubtipoingreso__origen__id,
+                   subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__shortname). \
+            order_by(subsubtipoingreso__origen__id). \
+            annotate(final_ejecutado=Sum('ejecutado'),
+                     final_asignado=Sum('asignado'))
+        rubros_periodo = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__slug=municipio,
+                   ingreso__periodo=periodo). \
             exclude(tipoingreso_id=saldo_caja). \
-            values(subsubtipoingreso__origen__id, subsubtipoingreso__origen__nombre).order_by(
-            subsubtipoingreso__origen__id).annotate(ejecutado=Sum('ejecutado'))
+            values(subsubtipoingreso__origen__id,
+                   subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__shortname). \
+            order_by(subsubtipoingreso__origen__id). \
+            annotate(ejecutado=Sum('ejecutado'))
+
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key=subsubtipoingreso__origen__id)
 
@@ -449,22 +472,42 @@ def oim_chart(municipio=None, year=None, portada=False):
                                   rubrosp_actualizado, rubrosp_periodo), key='subtipoingreso__codigo')
 
         # obtiene datos de ingresos en ditintos rubros
-        rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL, ).\
-            exclude(tipoingreso_id=saldo_caja).\
-            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
-                'subsubtipoingreso__origen__id').annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO, ).\
-            exclude(tipoingreso_id=saldo_caja).\
-            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
-                'subsubtipoingreso__origen__id').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL, ).\
-            exclude(tipoingreso_id=saldo_caja).\
-            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
-                'subsubtipoingreso__origen__id').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo, ).\
-            exclude(tipoingreso_id=saldo_caja).\
-            values('subsubtipoingreso__origen__id', 'subsubtipoingreso__origen__nombre').order_by(
-            'subsubtipoingreso__origen__id').annotate(ejecutado=Sum('ejecutado'))
+        rubros_inicial = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__periodo=PERIODO_INICIAL). \
+            exclude(tipoingreso_id=saldo_caja). \
+            values('subsubtipoingreso__origen__id',
+                   'subsubtipoingreso__origen__nombre',
+                   'subsubtipoingreso__origen__shortname'). \
+            order_by('subsubtipoingreso__origen__id'). \
+            annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__periodo=PERIODO_ACTUALIZADO). \
+            exclude(tipoingreso_id=saldo_caja). \
+            values('subsubtipoingreso__origen__id',
+                   'subsubtipoingreso__origen__nombre',
+                   'subsubtipoingreso__origen__shortname'). \
+            order_by('subsubtipoingreso__origen__id'). \
+            annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__periodo=PERIODO_FINAL). \
+            exclude(tipoingreso_id=saldo_caja). \
+            values('subsubtipoingreso__origen__id',
+                   'subsubtipoingreso__origen__nombre',
+                   'subsubtipoingreso__origen__shortname'). \
+            order_by('subsubtipoingreso__origen__id'). \
+            annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__periodo=periodo). \
+            exclude(tipoingreso_id=saldo_caja). \
+            values('subsubtipoingreso__origen__id',
+                   'subsubtipoingreso__origen__nombre',
+                   'subsubtipoingreso__origen__shortname'). \
+            order_by('subsubtipoingreso__origen__id'). \
+            annotate(ejecutado=Sum('ejecutado'))
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='subsubtipoingreso__origen__id')
 
@@ -817,11 +860,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         }
     )
 
+    ''  # llenando rubros_pie que contendra la informacion para los graficos de barra
+    ''  # y pastel, resumiendo en un mismo campo el nombre o shortname de cada rubro
+    rubros_pie = []
+    field_name = 'subsubtipoingreso__origen__shortname'
+    for row in rubros:
+        rubros_pie.append({
+            'name': row.get(field_name) or row.get('subsubtipoingreso__origen__nombre'),
+            'inicial_asignado': row.get('inicial_asignado', 0),
+            'ejecutado': row.get('ejecutado', 0),
+        })
+
     data_ingreso = RawDataPool(
         series=[{
-            'options': {'source': rubros},
+            'options': {'source': rubros_pie},
             'terms': [
-                subsubtipoingreso__origen__nombre,
+                'name',
                 datacol,
             ]}
         ])
@@ -832,7 +886,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'type': 'pie'
             },
             'terms': {
-                subsubtipoingreso__origen__nombre: [datacol]
+                'name': [datacol]
             }
         }],
         chart_options=chart_options)
@@ -846,7 +900,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     'colorByPoint': True,
                 },
                 'terms': {
-                    subsubtipoingreso__origen__nombre: [datacol]
+                    'name': [datacol]
                 }
             }],
         chart_options=chart_options)
