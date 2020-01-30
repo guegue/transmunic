@@ -65,6 +65,11 @@
     font-family: Roboto, sans-serif;
 }
 
+.tb-details {
+    margin: auto;
+    width: 50%;
+}
+
 .tb-details thead tr th:nth-child(1),
 .tb-details thead tr td:nth-child(1),
 .tb-details tbody tr th:nth-child(1),
@@ -217,3 +222,4 @@
 #detail-1 .table > tbody > tr > td { padding: 5px; font-size: 12px; }
 .outline-none {outline: none;}
 .border-bottom-1px{border-bottom: 1px solid #ddd !important;}
+.icons-inversion{height: 170px}
