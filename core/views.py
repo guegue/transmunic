@@ -66,23 +66,16 @@ def home(request):
         data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
         total_inversion = Proyecto.objects.filter(
             inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
-        inversion_categoria = Proyecto.objects.filter(
-            inversion__anio=year,
-            inversion__periodo=periodo,
-            catinversion__destacar=True)\
-            .values(
-                'catinversion__slug', 'catinversion__minimo',
-                'catinversion__nombre', 'catinversion__id')\
-            .order_by('-{}'.format(quesumar))\
-            .annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
-        inversion_categoria2 = Proyecto.objects.filter(
-            inversion__anio=year, inversion__periodo=periodo,
-            catinversion__destacar=False)\
-            .values(
-                'catinversion__slug', 'catinversion__minimo',
-                'catinversion__nombre', 'catinversion__id')\
-            .order_by('-{}'.format(quesumar))\
-            .annotate(asignado=Sum('asignado'),ejecutado=Sum('ejecutado'))
+        inversiones_categoria = Proyecto.objects.\
+            filter(inversion__anio=year,
+                   inversion__periodo=periodo).\
+            values('catinversion__slug', 'catinversion__minimo',
+                   'catinversion__nombre', 'catinversion__id',
+                   'catinversion__destacar').\
+            order_by('-catinversion__destacar',
+                     '-{}'.format(quesumar)).\
+            annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+
     context = {'banners': banners, 'desc_oim_chart': desc_oim_chart, 'desc_ogm_chart': desc_ogm_chart, 'desc_inversionminima': desc_inversionminima, 'desc_inversionsector': desc_inversionsector,
                'charts': (
                    data_oim['charts'][0],
@@ -93,8 +86,7 @@ def home(request):
                    data_inversion_minima_porclase['charts'][0],
                    # data_fuentes['charts'][1],
                ),
-               'inversion_categoria': inversion_categoria,
-               'inversion_categoria2': inversion_categoria2,
+               'inversion_categoria': inversiones_categoria,
                'total_inversion': total_inversion,
                'departamentos': departamentos,
                 'categorias': categorias,
