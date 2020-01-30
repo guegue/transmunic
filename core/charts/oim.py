@@ -866,7 +866,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     field_name = 'subsubtipoingreso__origen__shortname'
     for row in rubros:
         rubros_pie.append({
-            'name': row[field_name] if row[field_name] else row['subsubtipoingreso__origen__nombre'],
+            'name': row.get(field_name) if row.get(field_name) else
+            row.get('subsubtipoingreso__origen__nombre'),
             'inicial_asignado': row.get('inicial_asignado', 0),
             'ejecutado': row.get('ejecutado', 0),
         })
