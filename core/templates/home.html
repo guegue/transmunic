@@ -277,13 +277,14 @@
                             {% for i in inversion_categoria %}
                                 <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
                                     <div>
-                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
+                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}"
+                                        class="outline-none">
                                             <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
                                         </a>
                                         <h5 class="text-center">
                                             <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}"
-                                               class="blanco">
-                                                <strong>{{ i.catinversion__nombre }}</strong>
+                                               class="blanco outline-none">
+                                                <span class="info-box-text">{{ i.catinversion__nombre }}</span>
                                             </a>
                                         </h5>
                                         <table class="table text-center info-box-number mb-1px tb-details"
