@@ -270,15 +270,16 @@
                         </div>
                     </a>
                 </div>
-                <br/>
+            </div>
+            <div class="row">
                 <div class="col-md-12">
-                    <div  class="row categorias_inversion">
+                    <div class="row categorias_inversion">
                         <div class="col-xs-12 col-sm-11 col-md-11">
-                            {% for i in inversion_categoria %}
-                                <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-                                    <div>
+                            {% for i in inversion_categoria|slice:'0:6' %}
+                                {% if i.catinversion__destacar %}
+                                    <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
                                         <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}"
-                                        class="outline-none">
+                                           class="outline-none">
                                             <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"></span>
                                         </a>
                                         <h5 class="text-center">
@@ -312,59 +313,53 @@
                                             </tr>
                                         </table>
                                     </div>
-                                </div>
-                                {% if foorloop.last or forloop.counter|divisibleby:6 %}
-                                    </div>
-                                    <div class="row list-icons-inversion">
                                 {% endif %}
                             {% endfor %}
-
-                            </div>
+                        </div>
                         <div class="otras-categorias col-md-11">
                             <div class="collapse" id="collapseExample">
                                 <div class="well">
                                     <div class="row">
-                                        {% for i in inversion_categoria2 %}
-                                            <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
-                                                <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
-                                                    <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"> </span>
-                                                </a>
-                                                <h5 class="text-center">
-                                                    <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.id }}"
-                                                       class="blanco">
-                                                        <strong>{{ i.catinversion__nombre }}</strong>
+                                        {% for i in inversion_categoria|slice:'5:' %}
+                                            {% if not i.catinversion__destacar %}
+                                                <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center">
+                                                    <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__id }}">
+                                                        <span class="info-box-icon pma-fg-light-green pma-icon {{ i.catinversion__slug }}"> </span>
                                                     </a>
-                                                </h5>
-                                                <table class="table text-center info-box-number mb-1px tb-details"
-                                                       style="color: white;">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Inicial</th>
-                                                        <th>Ejecutado</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="font-17px">{{ i.asignado|million|intcomma }}</span>
-                                                        </td>
-                                                        <td>
-                                                            {% if periodo == 'I' %}
-                                                                <span class="font-17px">0</span>
-                                                            {% else %}
-                                                                <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
-                                                                {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}%
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            {% if foorloop.last or forloop.counter|divisibleby:6 %}
+                                                    <h5 class="text-center">
+                                                        <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.id }}"
+                                                           class="blanco">
+                                                            <strong>{{ i.catinversion__nombre }}</strong>
+                                                        </a>
+                                                    </h5>
+                                                    <table class="table text-center info-box-number mb-1px tb-details"
+                                                           style="color: white;">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Inicial</th>
+                                                            <th>Ejecutado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <span class="font-17px">{{ i.asignado|million|intcomma }}</span>
+                                                            </td>
+                                                            <td>
+                                                                {% if periodo == 'I' %}
+                                                                    <span class="font-17px">0</span>
+                                                                {% else %}
+                                                                    <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                                    {{ i.ejecutado|div:total_inversion.ejecutado|mul:100|floatformat }}
+                                                                    %
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
-                                                <div class="row list-icons-inversion">
                                             {% endif %}
                                         {% endfor %}
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
