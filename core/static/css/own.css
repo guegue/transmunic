@@ -215,3 +215,4 @@
     position: relative;
 }
 #detail-1 .table > tbody > tr > td { padding: 5px; font-size: 12px; }
+.outline-none {outline: none;}
