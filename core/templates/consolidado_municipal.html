@@ -16,7 +16,9 @@
                 <div class="col-md-12">
                     {% block indicator_title %}
                         <h2 class="text-center"><strong>
-                            {{ municipio.nombre|default:"Resumen 153 Municipios" }}
+                             {% if not municipio %}
+                                Resumen 153 Municipios
+                            {% endif %}
                             {% if periodo == 'F' %}
                                 Ejecuci&oacute;n Cierre Presupuesto
                             {% else %}
