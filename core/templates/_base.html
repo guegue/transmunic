@@ -227,40 +227,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script type="text/javascript">
+    var lista_municipios = $('.listado-municipios');
+    var lista_indicadores = $('.listado-indicadores');
+    var municipio = $('.municipio');
         $(document).ready(function () {
-            $(".listado-municipios").select2({
-                placeholder: "Municipio",
+            lista_municipios.select2({
+                placeholder: 'Municipio',
                 allowClear: true
             });
-            $('.listado-municipios').on("select2:selecting", function (e) {
+            lista_municipios.on('select2:selecting', function (e) {
                 window.location = e.params.args.data.id;
             });
-            $(".municipio").select2({
-                placeholder: "Municipios",
+            municipio.select2({
+                placeholder: 'Municipios',
                 allowClear: true
             });
-            $('.listado-indicadores').select2({
+            lista_indicadores.select2({
                 placeholder: 'Resumen Municipal',
                 allowClear: true
-            })
+            });
+            lista_indicadores.on('select2:selecting', function (e) {
+                window.location = e.params.args.data.id;
+            });
         });
-        $(".listado-municipios").on("select2:open", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+        lista_municipios.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
         });
-        $(".listado-municipios").on("select2:close", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        lista_municipios.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
-        $(".municipio").on("select2:open", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+        municipio.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
         });
-        $(".municipio").on("select2:close", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        municipio.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
-        $(".listado-indicadores").on("select2:open", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el Indicador");
+        lista_indicadores.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el Indicador');
         });
-        $('.listado-indicadores').on("select2:close", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        lista_indicadores.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
     </script>
     <!-- Google Analytics -->
