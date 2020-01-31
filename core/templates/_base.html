@@ -127,7 +127,7 @@
                             {% for departamento in departamentos %}
                                 <optgroup label="{{ departamento.grouper }}">
                                     {% for m in departamento.list %}
-                                        <option value="/{{ m.slug }}">{{ m.nombre }}</option>
+                                        <option value="{% url 'municipio' m.slug %}">{{ m.nombre }}</option>
                                     {% endfor %}
                                 </optgroup>
                             {% endfor %}
@@ -227,9 +227,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script type="text/javascript">
-    var lista_municipios = $('.listado-municipios');
-    var lista_indicadores = $('.listado-indicadores');
-    var municipio = $('.municipio');
+        var lista_municipios = $('.listado-municipios');
+        var lista_indicadores = $('.listado-indicadores');
+        var municipio = $('.municipio');
         $(document).ready(function () {
             lista_municipios.select2({
                 placeholder: 'Municipio',
