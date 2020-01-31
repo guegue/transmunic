@@ -81,10 +81,44 @@
                                     Presupuestos Municipales</a></li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="{% url 'budget-summary' %}">Resumen Municipal</a>
-                        </li>
                     </ul>
+                    <form class="navbar-form navbar-left pma-navbar" role="search" id="indicatorfilter" method="GET">
+                        <select class="listado-indicadores pull-right" name="indicator">
+                            <option value=""></option>
+                            <option value="{% url 'origen_ingresos' %}"
+                                    {% if request.resolver_match.url_name == 'origen_ingresos' %}selected{% endif %}>
+                                Origen de los ingresos del municipio
+                            </option>
+                            <option value="{% url 'origen_gastos' %}"
+                                    {% if request.resolver_match.url_name == 'origen_gastos' %}selected{% endif %}>
+                                Destino del gasto municipal
+                            </option>
+                            <option value="{% url 'inversion_categoria' %}"
+                                    {% if request.resolver_match.url_name == 'inversion_categoria' %}selected{% endif %}>
+                                Inversiones
+                            </option>
+                            <option value="{% url 'gastos_funcion' %}"
+                                    {% if request.resolver_match.url_name == 'gastos_funcion' %}selected{% endif %}>
+                                Gastos de funcionamiento
+                            </option>
+                            <option value="{% url 'gastos_personal' %}"
+                                    {% if request.resolver_match.url_name == 'gastos_personal' %}selected{% endif %}>
+                                Gastos de personal
+                            </option>
+                            <option value="{% url 'autonomia_gastos' %}"
+                                    {% if request.resolver_match.url_name == 'autonomia_gastos' %}selected{% endif %}>
+                                Dependencia para asumir gastos corrientes
+                            </option>
+                            <option value="{% url 'ahorro_corriente' %}"
+                                    {% if request.resolver_match.url_name == 'ahorro_corriente' %}selected{% endif %}>
+                                Ahorro corriente para inversiones
+                            </option>
+                            <option value="{% url 'ejecucion_presupuesto' %}"
+                                    {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
+                                Ejecuci&oacute;n del presupuesto
+                            </option>
+                        </select>
+                    </form>
                     <form class="navbar-form navbar-left pma-navbar" role="search">
                         <select class="listado-municipios pull-right" name="municipio">
                             <option></option>
@@ -93,7 +127,7 @@
                             {% for departamento in departamentos %}
                                 <optgroup label="{{ departamento.grouper }}">
                                     {% for m in departamento.list %}
-                                        <option value="/{{ m.slug }}">{{ m.nombre }}</option>
+                                        <option value="{% url 'municipio' m.slug %}">{{ m.nombre }}</option>
                                     {% endfor %}
                                 </optgroup>
                             {% endfor %}
@@ -193,30 +227,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script type="text/javascript">
+        var lista_municipios = $('.listado-municipios');
+        var lista_indicadores = $('.listado-indicadores');
+        var municipio = $('.municipio');
         $(document).ready(function () {
-            $(".listado-municipios").select2({
-                placeholder: "Municipio",
+            lista_municipios.select2({
+                placeholder: 'Municipio',
                 allowClear: true
             });
-            $('.listado-municipios').on("select2:selecting", function (e) {
+            lista_municipios.on('select2:selecting', function (e) {
                 window.location = e.params.args.data.id;
             });
-            $(".municipio").select2({
-                placeholder: "Municipios",
+            municipio.select2({
+                placeholder: 'Municipios',
                 allowClear: true
             });
+            lista_indicadores.select2({
+                placeholder: 'Resumen Municipal',
+                allowClear: true
+            });
+            lista_indicadores.on('select2:selecting', function (e) {
+                window.location = e.params.args.data.id;
+            });
         });
-        $(".listado-municipios").on("select2:open", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+        lista_municipios.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
         });
-        $(".listado-municipios").on("select2:close", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        lista_municipios.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
-        $(".municipio").on("select2:open", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Escribir el municipio");
+        municipio.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
         });
-        $(".municipio").on("select2:close", function () {
-            $(".select2-search--dropdown .select2-search__field").attr("placeholder", null);
+        municipio.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
+        });
+        lista_indicadores.on('select2:open', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el Indicador');
+        });
+        lista_indicadores.on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
     </script>
     <!-- Google Analytics -->

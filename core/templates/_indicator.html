@@ -33,58 +33,67 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-xs-9 col-sm-5 col-md-3 indicadores">
-                            <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
-                            <select name="indicador" class="indicator" id="indicator">
-                                <option value="resumen-municipal">Resumen Municipal</option>
-                                <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>Origen de
-                                    los ingresos del municipio
-                                </option>
-                                <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>Destino
-                                    del gasto municipal
-                                </option>
-                                <option value="inversion-categoria"
-                                        {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>
-                                    Inversiones
-                                </option>
-                                <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos de
-                                    funcionamiento
-                                </option>
-                                <option value="gpersonal"
-                                        {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de
-                                    personal
-                                </option>
-                                <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>
-                                    Dependencia para asumir gastos corrientes
-                                </option>
-                                <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>Ahorro
-                                    corriente para inversiones
-                                </option>
-                                <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n
-                                    del presupuesto
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xs-8 col-sm-4 col-md-2">
-                            <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                            <select class="municipio pull-right" name="municipio">
-                                <optgroup>
-                                    <option value="">Todos</option>
-                                </optgroup>
-                                {% regroup municipios by depto as departamentos %}
-                                {% for departamento in departamentos %}
-                                    <optgroup label="{{ departamento.grouper }}">
-                                    {% for m in departamento.list %}
-                                        <option value="{{ m.slug }}"
-                                                {% ifequal request.GET.municipio m.slug %}
-                                                selected="selected"
-                                                {% endifequal %}>
-                                            {{ m.nombre }}
-                                        </option>
+                        {% if request.resolver_match.url_name == 'municipio' %}
+                            <div class="col-xs-9 col-sm-5 col-md-3 indicadores">
+                                <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
+                                <select name="indicador" class="indicator" id="indicator">
+                                    <option value="resumen-municipal">Resumen del Municipio</option>
+                                    <option value="oim" {% if 'oim' in request.GET.indicador %}selected{% endif %}>
+                                        Origen de
+                                        los ingresos del municipio
+                                    </option>
+                                    <option value="ogm" {% if 'ogm' in request.GET.indicador %}selected{% endif %}>
+                                        Destino
+                                        del gasto municipal
+                                    </option>
+                                    <option value="inversion-categoria"
+                                            {% if 'inversion-categoria' in request.GET.indicador %}selected{% endif %}>
+                                        Inversiones
+                                    </option>
+                                    <option value="gf" {% if 'gf' in request.GET.indicador %}selected{% endif %}>Gastos
+                                        de
+                                        funcionamiento
+                                    </option>
+                                    <option value="gpersonal"
+                                            {% if 'gpersonal' in request.GET.indicador %}selected{% endif %}>Gastos de
+                                        personal
+                                    </option>
+                                    <option value="ago" {% if 'ago' in request.GET.indicador %}selected{% endif %}>
+                                        Dependencia para asumir gastos corrientes
+                                    </option>
+                                    <option value="aci" {% if 'aci' in request.GET.indicador %}selected{% endif %}>
+                                        Ahorro
+                                        corriente para inversiones
+                                    </option>
+                                    <option value="ep" {% if 'ep' in request.GET.indicador %}selected{% endif %}>Ejecuci&oacute;n
+                                        del presupuesto
+                                    </option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="municipio" value="{{ municipio.slug }}">
+                        {% else %}
+                            <div class="col-xs-8 col-sm-4 col-md-2">
+                                <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
+                                <select class="municipio pull-right" name="municipio">
+                                    <optgroup>
+                                        <option value="">Todos</option>
+                                    </optgroup>
+                                    {% regroup municipios by depto as departamentos %}
+                                    {% for departamento in departamentos %}
+                                        <optgroup label="{{ departamento.grouper }}">
+                                            {% for m in departamento.list %}
+                                                <option value="{{ m.slug }}"
+                                                        {% ifequal request.GET.municipio m.slug %}
+                                                        selected="selected"
+                                                        {% endifequal %}>
+                                                    {{ m.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </optgroup>
                                     {% endfor %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                                </select>
+                            </div>
+                        {% endif %}
                         <div class="col-xs-2 col-sm-1 col-md-1">
                             <input type="submit" value="Buscar" class="btn buscar"/>
                         </div>
@@ -108,7 +117,8 @@
                             <strong>{% block indicator_title_text %}{{ indicator_name }}{% endblock %}
                                 {% if periodo_list|keyvalue:year == 'F' %}
                                     presupuesto cierre {% elif periodo_list|keyvalue:year == 'A' %}
-                                    ejecuci&oacute;n intermedia {% elif periodo_list|keyvalue:year == 'I' %}presupuesto inicial {% endif %}
+                                    ejecuci&oacute;n intermedia {% elif periodo_list|keyvalue:year == 'I' %}presupuesto
+                                    inicial {% endif %}
                                 {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
                         </h4>
                         <p class="text-center metric-description container"> {% block indicator_description %} Son los
@@ -128,9 +138,9 @@
                 <div>
                     <h3>
                         <strong>
-                            Ingresos 
+                            Ingresos
                             {% if periodo_list|keyvalue:year == 'F' %}
-                                Ejecutados 
+                                Ejecutados
                             {% elif periodo_list|keyvalue:year == 'A' %}
                                 Ejecutado Intermedio
                             {% elif periodo_list|keyvalue:year == 'I' %}
