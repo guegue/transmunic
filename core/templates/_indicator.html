@@ -36,7 +36,7 @@
                         {% if request.resolver_match.url_name == 'municipio' %}
                             <div class="col-xs-9 col-sm-5 col-md-4 indicadores">
                                 <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
-                                <select name="indicador" class="indicator" id="indicator">
+                                <select name="indicador" class="indicador" id="indicador">
                                     <option value="{% url 'budget-summary' %}"
                                             {% if request.resolver_match.url_name == 'budget-summary' %}selected{% endif %}>
                                         Resumen del Municipio
@@ -77,7 +77,8 @@
                             </div>
                             <input type="hidden" name="municipio" id="municipio" value="{{ municipio.slug }}">
                         {% else %}
-                            <div class="col-xs-8 col-sm-4 col-md-2">
+                            <input type="hidden" name="indicador" id="indicador" value="{{ request.path|lower }}">
+                            <div class="col-xs-8 col-sm-4 col-md-3">
                                 <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
                                 <select class="municipio pull-right" name="municipio" id="municipio">
                                     <optgroup>
