@@ -1,19 +1,32 @@
 {% load humanize %}
+{% load core_extras %}
 <table border=1>
     <tr>
         <th>Clase</th>
-        <th>Año</th>
-        <th>Corriente</th>
-        <th>Capital</th>
-        <th>Total</th>
+        <th>Asignación Anual</th>
+        {% for year in years %}
+            <th>{{ year }}</th>
+        {% endfor %}
     </tr>
 {% for row in data %}
-    <tr>
-        <td>{{ row.municipio__clase__clasificacion__clasificacion }}</td>
-        <td>{{ row.anio }}</td>
-        <td>{{ row.corriente|intcomma }}</td>
-        <td>{{ row.capital|intcomma }}</td>
-        <td>{{ row.capital|add:row.corriente|intcomma }}</td>
-    </tr>
+    {% ifchanged row.municipio__clase__clasificacion__clasificacion %}
+        <tr>
+        <td rowspan=3>{{ row.municipio__clase__clasificacion__clasificacion }}</td>
+        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        {% if forloop.first %}<td>Corriente</td>{% endif %}
+        <td>{{ row2.corriente|intcomma }}</td>
+        {% endfor %}
+        </tr>
+        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        {% if forloop.first %}<td>Capital</td>{% endif %}
+        <td>{{ row2.capital|intcomma }}</td>
+        {% endfor %}
+        </tr>
+        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        {% if forloop.first %}<td>Total</td>{% endif %}
+        <td>{{ row2.capital|add:row2.corriente|intcomma }}</td>
+        {% endfor %}
+        </tr>
+    {% endifchanged %}
 {% endfor %}
 </table>
