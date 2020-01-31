@@ -493,5 +493,13 @@ def transferencias(request):
     data = sorted(data, key=lambda k: (k['municipio__clase__clasificacion__clasificacion'],
                                        k['anio']))
 
+    data_clase = {}
+    for row in data:
+        clase = row['municipio__clase__clasificacion__clasificacion']
+        data_clase[clase] = filter(
+            lambda x: x['municipio__clase__clasificacion__clasificacion'] == clase, data)
+
     context['data'] = data
+    context['data_clase'] = data_clase
+    context['years'] = sorted(list(iniciales) + list(finales))
     return render(request, 'transferencias.html', context)
