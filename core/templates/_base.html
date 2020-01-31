@@ -85,36 +85,28 @@
                     <form class="navbar-form navbar-left pma-navbar" role="search" id="indicatorfilter" method="GET">
                         <select class="listado-indicadores pull-right" name="indicator">
                             <option value=""></option>
-                            <option value="{% url 'origen_ingresos' %}"
-                                    {% if request.resolver_match.url_name == 'origen_ingresos' %}selected{% endif %}>
+                            <option value="{% url 'origen_ingresos' %}">
                                 Origen de los ingresos del municipio
                             </option>
-                            <option value="{% url 'origen_gastos' %}"
-                                    {% if request.resolver_match.url_name == 'origen_gastos' %}selected{% endif %}>
+                            <option value="{% url 'origen_gastos' %}">
                                 Destino del gasto municipal
                             </option>
-                            <option value="{% url 'inversion_categoria' %}"
-                                    {% if request.resolver_match.url_name == 'inversion_categoria' %}selected{% endif %}>
+                            <option value="{% url 'inversion_categoria' %}">
                                 Inversiones
                             </option>
-                            <option value="{% url 'gastos_funcion' %}"
-                                    {% if request.resolver_match.url_name == 'gastos_funcion' %}selected{% endif %}>
+                            <option value="{% url 'gastos_funcion' %}">
                                 Gastos de funcionamiento
                             </option>
-                            <option value="{% url 'gastos_personal' %}"
-                                    {% if request.resolver_match.url_name == 'gastos_personal' %}selected{% endif %}>
+                            <option value="{% url 'gastos_personal' %}">
                                 Gastos de personal
                             </option>
-                            <option value="{% url 'autonomia_gastos' %}"
-                                    {% if request.resolver_match.url_name == 'autonomia_gastos' %}selected{% endif %}>
+                            <option value="{% url 'autonomia_gastos' %}">
                                 Dependencia para asumir gastos corrientes
                             </option>
-                            <option value="{% url 'ahorro_corriente' %}"
-                                    {% if request.resolver_match.url_name == 'ahorro_corriente' %}selected{% endif %}>
+                            <option value="{% url 'ahorro_corriente' %}">
                                 Ahorro corriente para inversiones
                             </option>
-                            <option value="{% url 'ejecucion_presupuesto' %}"
-                                    {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
+                            <option value="{% url 'ejecucion_presupuesto' %}">
                                 Ejecuci&oacute;n del presupuesto
                             </option>
                         </select>
