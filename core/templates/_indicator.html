@@ -24,63 +24,70 @@
             <div class="row">
                 <div class="col-md-12">
                     <form id="indicatorfilter" method="GET">
-                        <div class="col-xs-4 col-sm-2 col-md-1">
-                            <span class="pma-fg-light-green titsearch years"><strong>AÑO</strong></span>
-                            <select name="year" id="year">
-                                {% for ayear in year_list %}
-                                    <option {% if ayear == year|add:"0" %}selected{% endif %}
-                                            value="{{ ayear }}">{{ ayear }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        {% if request.resolver_match.url_name == 'municipio' %}
-                            <div class="col-xs-9 col-sm-5 col-md-4 indicadores">
-                                <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
-                                <select name="indicador" class="indicador" id="indicador">
-                                    <option value="{% url 'budget-summary' %}"
-                                            {% if request.resolver_match.url_name == 'budget-summary' %}selected{% endif %}>
-                                        Resumen del Municipio
-                                    </option>
-                                    <option value="{% url 'origen_ingresos' %}"
-                                            {% if request.resolver_match.url_name == 'origen_ingresos' %}selected{% endif %}>
-                                        Origen de los ingresos del municipio
-                                    </option>
-                                    <option value="{% url 'origen_gastos' %}"
-                                            {% if request.resolver_match.url_name == 'origen_gastos' %}selected{% endif %}>
-                                        Destino del gasto municipal
-                                    </option>
-                                    <option value="{% url 'inversion_categoria' %}"
-                                            {% if request.resolver_match.url_name == 'inversion_categoria' %}selected{% endif %}>
-                                        Inversiones
-                                    </option>
-                                    <option value="{% url 'gastos_funcion' %}"
-                                            {% if request.resolver_match.url_name == 'gastos_funcion' %}selected{% endif %}>
-                                        Gastos de funcionamiento
-                                    </option>
-                                    <option value="{% url 'gastos_personal' %}"
-                                            {% if request.resolver_match.url_name == 'gastos_personal' %}selected{% endif %}>
-                                        Gastos de personal
-                                    </option>
-                                    <option value="{% url 'autonomia_gastos' %}"
-                                            {% if request.resolver_match.url_name == 'autonomia_gastos' %}selected{% endif %}>
-                                        Dependencia para asumir gastos corrientes
-                                    </option>
-                                    <option value="{% url 'ahorro_corriente' %}"
-                                            {% if request.resolver_match.url_name == 'ahorro_corriente' %}selected{% endif %}>
-                                        Ahorro corriente para inversiones
-                                    </option>
-                                    <option value="{% url 'ejecucion_presupuesto' %}"
-                                            {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
-                                        Ejecuci&oacute;n del presupuesto
-                                    </option>
+                        <div class="row">
+                            {% if municipio %}
+                                <div class="{% if municipio.nombre|length <= 15 %}col-md-1 col-sm-2{% else %}col-md-2 col-sm-2{% endif %} text-center">
+                                    <strong>{{ municipio.nombre }}</strong>
+                                </div>
+                            {% endif %}
+                            <div class="col-xs-4 col-sm-2 col-md-1">
+                                <span class="pma-fg-light-green titsearch years"><strong>AÑO</strong></span>
+                                <select name="year" id="year">
+                                    {% for ayear in year_list %}
+                                        <option {% if ayear == year|add:"0" %}selected{% endif %}
+                                                value="{{ ayear }}">{{ ayear }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                            <input type="hidden" name="municipio" id="municipio" value="{{ municipio.slug }}">
-                        {% else %}
-                            <input type="hidden" name="indicador" id="indicador" value="{{ request.path|lower }}">
-                        {% endif %}
-                        <div class="col-xs-2 col-sm-1 col-md-1">
-                            <input type="submit" value="Buscar" class="btn buscar"/>
+                            {% if request.resolver_match.url_name == 'municipio' %}
+                                <div class="col-xs-9 col-sm-5 col-md-4 indicadores">
+                                    <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
+                                    <select name="indicador" class="indicador" id="indicador">
+                                        <option value="{% url 'budget-summary' %}"
+                                                {% if request.resolver_match.url_name == 'budget-summary' %}selected{% endif %}>
+                                            Resumen del Municipio
+                                        </option>
+                                        <option value="{% url 'origen_ingresos' %}"
+                                                {% if request.resolver_match.url_name == 'origen_ingresos' %}selected{% endif %}>
+                                            Origen de los ingresos del municipio
+                                        </option>
+                                        <option value="{% url 'origen_gastos' %}"
+                                                {% if request.resolver_match.url_name == 'origen_gastos' %}selected{% endif %}>
+                                            Destino del gasto municipal
+                                        </option>
+                                        <option value="{% url 'inversion_categoria' %}"
+                                                {% if request.resolver_match.url_name == 'inversion_categoria' %}selected{% endif %}>
+                                            Inversiones
+                                        </option>
+                                        <option value="{% url 'gastos_funcion' %}"
+                                                {% if request.resolver_match.url_name == 'gastos_funcion' %}selected{% endif %}>
+                                            Gastos de funcionamiento
+                                        </option>
+                                        <option value="{% url 'gastos_personal' %}"
+                                                {% if request.resolver_match.url_name == 'gastos_personal' %}selected{% endif %}>
+                                            Gastos de personal
+                                        </option>
+                                        <option value="{% url 'autonomia_gastos' %}"
+                                                {% if request.resolver_match.url_name == 'autonomia_gastos' %}selected{% endif %}>
+                                            Dependencia para asumir gastos corrientes
+                                        </option>
+                                        <option value="{% url 'ahorro_corriente' %}"
+                                                {% if request.resolver_match.url_name == 'ahorro_corriente' %}selected{% endif %}>
+                                            Ahorro corriente para inversiones
+                                        </option>
+                                        <option value="{% url 'ejecucion_presupuesto' %}"
+                                                {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
+                                            Ejecuci&oacute;n del presupuesto
+                                        </option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="municipio" id="municipio" value="{{ municipio.slug }}">
+                            {% else %}
+                                <input type="hidden" name="indicador" id="indicador" value="{{ request.path|lower }}">
+                            {% endif %}
+                            <div class="col-xs-2 col-sm-1 col-md-1">
+                                <input type="submit" value="Buscar" class="btn buscar"/>
+                            </div>
                         </div>
                     </form>
                 </div>
