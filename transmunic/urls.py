@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'^documento/(?P<slug>[-\w]+)/$',
         DocumentoTipoListView.as_view(), name='documento_by_tipo'),
     url(r'^explorer/', include('explorer.urls')),
-    url(r'^(?P<slug>[-\w]+)/$', municipio, name='municipio'),
+    url(r'^municipio/(?P<slug>[-\w]+)/$', municipio, name='municipio'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
