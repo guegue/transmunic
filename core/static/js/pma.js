@@ -39,27 +39,22 @@ $(function() {
     $("#show-detail-3").click(function() {
         $("#detail-3").toggle("slow");
     });
-    $('#indicatorfilter').submit(function() {
-        var indicator = $("#indicator option").filter(":selected").val();
-        var year = $("#year option").filter(":selected").val();
-        var municipio = $('.municipio').select2('data')[0].id;
-        var path = "/";
-        var qs = 'year=' + year;
-        if (indicator == "resumen-municipal" && municipio != ""){
-            path = "/" + municipio;
-        } else if (indicator == "resumen-municipal" && municipio == "") {
-            path = "/resumen-municipal/";
-        } else if (indicator != "resumen-municipal") {
-            path = '/core/' + indicator;
-            qs += '&indicador=' + indicator;
-            if(municipio !=""){
-                qs += '&municipio=' + municipio;
-            }
-        }
-        if(qs != ""){
-            qs = "?" + qs;
-        }
-        location.href = path + qs;
-        return false;
+     $('body').on('submit', '#indicatorfilter', function (e) {
+        e.preventDefault();
+        let inputs_datos = $(this).serializeArray();
+        let indicador = inputs_datos.find((obj) => {
+            return (obj.name.toLowerCase() === 'indicador');
+        });
+        //NOTE: eliminando indicador de arreglo
+        inputs_datos = inputs_datos.filter((obj) => {
+            return (obj.name !== indicador.name);
+        });
+        let url_indicador = indicador.value;
+        //NOTE: crear parametros url
+        let parameters = '?' + inputs_datos.map((parameter) => {
+            if (parameter.value)
+                return `${parameter.name}=${parameter.value}`;
+        }, []).join('&');
+        window.location.href = `${url_indicador}${parameters}`;
     });
 });
