@@ -78,27 +78,6 @@
                             <input type="hidden" name="municipio" id="municipio" value="{{ municipio.slug }}">
                         {% else %}
                             <input type="hidden" name="indicador" id="indicador" value="{{ request.path|lower }}">
-                            <div class="col-xs-8 col-sm-4 col-md-3">
-                                <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
-                                <select class="municipio pull-right" name="municipio" id="municipio">
-                                    <optgroup>
-                                        <option value="">Todos</option>
-                                    </optgroup>
-                                    {% regroup municipios by depto as departamentos %}
-                                    {% for departamento in departamentos %}
-                                        <optgroup label="{{ departamento.grouper }}">
-                                            {% for m in departamento.list %}
-                                                <option value="{{ m.slug }}"
-                                                        {% ifequal request.GET.municipio m.slug %}
-                                                        selected="selected"
-                                                        {% endifequal %}>
-                                                    {{ m.nombre }}
-                                                </option>
-                                            {% endfor %}
-                                        </optgroup>
-                                    {% endfor %}
-                                </select>
-                            </div>
                         {% endif %}
                         <div class="col-xs-2 col-sm-1 col-md-1">
                             <input type="submit" value="Buscar" class="btn buscar"/>
