@@ -495,7 +495,6 @@ def transferencias(request):
 
     data_clase = {}
     for row in data:
-        year = row['anio']
         clase = row['municipio__clase__clasificacion__clasificacion']
         data_clase[clase] = filter(
             lambda x: x['municipio__clase__clasificacion__clasificacion'] == clase, data)
