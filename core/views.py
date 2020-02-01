@@ -110,7 +110,11 @@ def municipio(request, slug=None, year=None):
         municipio = get_object_or_404(Municipio, slug=slug)
     else:
         obj = None
-    year = request.GET.get('year','2015')
+
+    year_list = getYears(Anio)
+    ''  # si el parametro year no existe se asigna el ultimo
+    ''  # año registrado en la base de datos
+    year = request.GET.get('year', year_list[-1])
     #banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
     #descripcion de graficos de portada
