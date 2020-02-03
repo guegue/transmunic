@@ -350,6 +350,7 @@ def ogm_view(request):
 
     context = {
             'indicator_name': indicator_name,
+            'periodo_list': data['periodo_list'],
             'year_data': data['year_data'],
             'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
             'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
