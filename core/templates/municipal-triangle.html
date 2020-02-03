@@ -55,7 +55,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                            {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
                                <b>MI MUNICIPIO</b>
@@ -114,7 +114,7 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                            {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
                                <strong></strong>
