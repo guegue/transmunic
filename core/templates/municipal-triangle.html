@@ -39,10 +39,12 @@
                     </strong>
                     <div class="position-balloon">
                         <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
+                        <span class="municipio-data">
                         <b>MI MUNICIPIO</b>
                         {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
                         <br>
                         {{ row.ejecutado_percent|intcomma }} M. de C&oacute;rdobas
+                        <span class="municipio-data">
                     </div>
                 </div>
             {% elif forloop.last %}
