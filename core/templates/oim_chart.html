@@ -34,7 +34,7 @@
                         Presupuesto inicial de ingresos
                     {% endif %}
                     {{ year }}
-		    Por su origen {% descargar_excel "oim1" %}</h5>
+		    por su origen {% descargar_excel "oim1" %}</h5>
                 </td>
             </tr>
             <tr class="bg-primary">
@@ -214,7 +214,7 @@
                 <div class="row">
 			<!--Modificaion al presupuesto de recaudacion -->
                     <h3>
-                        <strong>Recaudaci&oacute;n municipal consolidado 153 municipios</strong>
+			    <strong>Recaudaci&oacute;n municipal consolidado 153 municipios</strong><br />
 			Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro
                     </h3>
                     <h4>Millones de c&oacute;rdobas corrientes</h4>
@@ -360,28 +360,21 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <h2>
-                            <strong>Ranking de recaudaci&oacute;n </strong>
+				<strong>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}</strong>
                             <br>
-                            por habitante categor&iacute;a municipal
-                            "{{ mi_clase.clasificacion }}"
-                                para el municipio de
+                                Municipio de
                                 <strong>{{ municipio }}</strong>
-                                con
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    {{ otros.0.asignado_percent|intcomma }}
-                                {% else %}
-                                    {{ otros.0.ejecutado_percent|intcomma }}
-                                {% endif %}
-                                C&oacute;rdobas.
+                                grupo "{{ mi_clase.clasificacion }}"
 
                         </h2>
                         <h5>
                             C&oacute;rdobas corrientes por habitante en base a
-                            ingresos
                             {% if periodo_list|keyvalue:year == 'I' %}
-                                asignados
+                                presupuesto inicial
+                            {% elif periodo_list|keyvalue:year == 'A' %}
+                                presupuesto intermedio
                             {% else %}
-                                ejecutados
+                                presupuesto de cierre
                             {% endif %}
                         </h5>
                         <hr class="pma-line-3"/>
@@ -422,14 +415,13 @@
                             <table class="table table-bordered table-sm table-striped pma-bg-white">
 		    		<thead>
 				    <tr><td colspan="3">
-		    			<h4>Ranking de recaudación por habitante
-                                        categor&iacute;a municipal
-                                        "{{ mi_clase.clasificacion }}"
+					 <h4>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}
+						 Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
                         		</h4>
 		                        <h5>
                 			  Córdobas corrientes por habitante en base a
                                           {% if periodo_list|keyvalue:year == 'F' %}
-                                              Ejecuci&oacute;n de ingresos
+                                              Ejecuci&oacute;n de cierre de ingresos
                                           {% elif periodo_list|keyvalue:year == 'A' %}
                                               Ejecuci&oacute;n intermedia de ingresos
                                           {% elif periodo_list|keyvalue:year == 'I' %}
@@ -528,9 +520,15 @@
         <div class="container wide">
             <div class="row">
                 <div class="col-md-12">
+		   {% if municipio %}
                     <h3>
-                        <strong>Inngresos totales consolidado 153 municipios</strong>
+			    <strong>Ingresos totales {{ municipio }} {{ year }}</strong>
                     </h3>
+		   {% else %}
+                    <h3>
+			    <strong>Ingresos totales {{ year }} consolidado 153 municipios</strong>
+                    </h3>
+		    {% endif %}
 		    <h4>Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro</h4>
                     <h4>Millones de c&oacute;rdobas</h4>
                     <hr class="pma-line-2"/>
@@ -680,8 +678,9 @@
                 <h2>
                     <strong>Informaci&oacute;n Hist&oacute;rica</strong>
                     <br>
-                    Ejecuci&oacute;n Presupuestaria {% if not municipio %}Consolidado municipal {% endif %}
+                    Ejecuci&oacute;n presupuestaria del ingreso 
                 </h2>
+		{% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}<h4>{{ municipio }}</h4>{% endif %}
                 <hr class="pma-line-2"/>
             </div>
         </div>
@@ -745,7 +744,12 @@
                     <thead>
 		        <tr>
 			    <td colspan="10">
-		    	        <h4>Informaci&oacute;n hist&oacute;rica por rubros de ingresos
+                                <h2>
+                                   <strong>Informaci&oacute;n hist&oacute;rica por rubros de ingresos</strong>
+                                   <br>
+                                   Ejecuci&oacute;n presupuestaria 
+                                </h2>
+				{% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %} <h4>{{ municipio }}</h4>{% endif %}
 				{% descargar_excel "oim7" %}
 				</h4>
                             </td>
