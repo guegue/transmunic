@@ -9,7 +9,7 @@
 
 {% block indicator_title %}
     <h2 class="text-center">
-	<strong>Destino de los gastos {{ year }}
+	<strong>Destino de los gastos 
         {% if periodo_list|keyvalue:year == 'F' %}
             presupuesto cierre
 	{% elif periodo_list|keyvalue:year == 'A' %}
@@ -189,8 +189,28 @@
         {% if not municipio %}
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <h2>Gastos de personal por habitante en cada categor&iacute;a municipal</h2>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+			    <h2><strong>Gastos de personal perc&aacute;pita, presupuesto</strong>
+			    {% if periodo_list|keyvalue:year == 'F' %}
+                                de cierre
+                            {% elif periodo_list|keyvalue:year == 'A' %}
+                                intermedio
+                            {% elif periodo_list|keyvalue:year == 'I' %}
+                                inicial
+                            {% endif %}
+                            {{ year }}
+			    <br />
+                            {% if mi_clase.clasificacion %}
+                                grupo "{{ mi_clase.clasificacion }}"
+                            {% else %}
+                                por grupos de municipios
+                            {% endif %}
+
+			</h2>
+                        <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
+                            base a gastos asignados{% else %} en base a gastos ejecutados{% endif %}
+                        </h5>
+			<hr class="pma-line-3"/>
                         {% include 'ranking_categoria.html' %}
                     </div>
                     {# chart horizontal chart #}
@@ -275,9 +295,8 @@
                 <div class="row">
                     <div class="{% if municipio|lower == 'managua' %} col-lg-12 col-md-12 col-sm-12 {% else %} col-lg-6 col-md-6 col-sm-12 {% endif %}">
                         <h2>
-                            <strong>Ranking de municipio categor&iacute;a "{{ mi_clase.clasificacion }}"</strong>
-                            <br>
-                            Gasto por habitante
+			    <strong>Rankin de gastos de personal percápita {{ year }}</strong>
+			    Municipio de <strong>{{ municipio }}</strong> grupo <strong>"{{ mi_clase.clasificacion }}"</strong>
                             {% if municipio|lower == 'managua' %}
                                 categor&iacute;a municipal "{{ mi_clase.clasificacion }}" para el municipio de
                                 <strong>{{ municipio }}</strong>
@@ -290,18 +309,9 @@
                                 Cordobas.
                             {% endif %}
                         </h2>
-                        {% if municipio|lower != 'managua' %}
-                            <h5>C&oacute;rdobas corrientes por habitante en base a presupuesto
-                                {% if periodo_list|keyvalue:year == 'I' %}
-                                    inicial
-                                {% elif periodo_list|keyvalue:year == 'A' %}
-                                    ejecuci&oacute;n intermedia
-                                {% else %}
-                                    de cierre
-                                {% endif %}
-                                {{ year }}.
-                            </h5>
-                        {% endif %}
+                        <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
+                                base a gastos asignados{% else %} en base a gastos ejecutados{% endif %}
+                        </h5>
                         <hr class="pma-line-3"/>
                         {% if municipio|lower != 'managua' %}
                             {% include 'ranking_municipio.html' %}
@@ -416,94 +426,35 @@
 {% endblock %}
 
 {% block section4 %}
+{% if rubros|total_sum:'actualizado_asignado' > 0 %}
     <div class="container wide">
         <div class="row">
             <div class="col-md-12">
                 <h2>
-                    <strong>Modificaciones al presupuesto municipal de gastos</strong>
+			<strong>Gastos totales 
+				{% if municipio %}
+				    {{ municipio }} {{ year }}
+				{% else %}
+				    {{ year }} consolidado 153 municipios
+				{% endif %}
+			</strong>
                 </h2>
-                <h4>Millones de c&oacute;rdobas corrientes </h4>
+		<h3>Presupuesto inicial, intermedio, de cierre y su modificación por rubro</h3>
+                <h4>Millones de c&oacute;rdobas </h4>
                 <hr class="pma-line-3"/>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-offset-2 col-md-7">
-                <table class="table table-bordered  table-condensed table-striped">
-                    <thead>
-                    <tr class="bg-primary">
-                        <th colspan="1" rowspan="2">Rubros de gastos</th>
-                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Inicial</th>
-                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Actualizado</th>
-                        <th colspan="2" rowspan="1" class="text-center no-border-bottom">Ejecutado</th>
-                        </th>
-                    </tr>
-                    <tr class="bg-primary">
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right">M. de C&oacute;rdobas</th>
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left">%</th>
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right">M. de C&oacute;rdobas</th>
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left">%</th>
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right">M. de C&oacute;rdobas</th>
-                        <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left">%</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in rubros %}
-                        <tr>
-                            <td>{{ row.subsubtipogasto__origen__nombre }}</td>
-                            <td class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
-                            <td class="text-center">{{ row.ini_asig_porcentaje }}%</td>
-                            <td class="text-center">{{ row.actualizado_asignado|million|intcomma }}</td>
-                            <td class="text-center">{{ row.actualizado_porcentaje }}%</td>
-                            <td class="text-center">
-                                {% if row.final_ejecutado %}
-                                    {{ row.final_ejecutado|million|intcomma }}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </td>
-                            <td>{{ row.ejec_porcentaje }}%</td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>TOTAL</td>
-                        <td class="text-center">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        <td class="text-center">{{ rubros|total_sum:'ini_asig_porcentaje'|floatformat:0 }}</td>
-                        <td class="text-center">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                        <td class="text-center">{{ rubros|total_sum:'actualizado_porcentaje'|floatformat:0 }}</td>
-                        <td class="text-center">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                        <td class="text-center">{{ rubros|total_sum:'ejec_porcentaje'|floatformat:0 }}</td>
-                    </tr>
-                    </tbody>
-                    <tfoot class="font-12px font-color-azul">
-                    <tr class="pma-bg-white">
-                        <th colspan="12" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
-                            propia a partir
-                            de transmunic.gob.ni<strong>.</strong></th>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center big">
-                    <button id="show-detail-2" class="blanco btn pma-bg-blue more" type="submit">
-                        Ver detalles en tabla
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="detail-2" class="row">
             <div class="col-md-12">
+		<!-- tabla para modificacion del presupuestno -->
                 <table class="table table-bordered table-condensed table-bordered">
                     <thead>
-                    <tr class="bg-primary">
+                    <tr>
                         <td colspan="2"></td>
                         <td colspan="4" class="text-center">
                             <h4>Modificaci&oacute;n intermedia
                                 <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
+                                   data-original-title="Modificaci&oacute;n al {{ year.actualizado }}"
                                    class="link-info">*</a>
                             </h4>
                         </td>
@@ -631,22 +582,22 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="col-md-12 text-center">
-                <h3><strong>Modificaciones al presupuesto municipal de gastos</strong><br/>Gasto de personal permanente
-                </h3>
-                <h4>Millones de c&oacute;rdobas corrientes</h4>
-                <hr class="pma-line-4"/>
+            <div class="col-md-12">
+		    <h2>Gasto de personal permanente {{ municipio }} {{ year }}</h2>
+		<h3>Presupuesto inicial, intermedio, de cierre y su modificación por rubro</h3>
+                <h4>Millones de c&oacute;rdobas </h4>
+                <hr class="pma-line-3"/>
             </div>
             <div class="col-md-12">
                 <table class="table table-bordered">
                     <thead>
-                    <tr class="bg-primary">
-                        <td colspan="2"></td>
+                    <tr>
+                        <td></td>
                         <td colspan="4" class="text-center">
                             <h4>Modificaci&oacute;n{% if year_data.actualizado %} al
                                 {{ year_data.actualizado }}{% else %}
                                 Inicial{% endif %}</h4></td>
-                        <td colspan="4"><h4>Modificaci&oacute;n al {{ year_data.final }}</h4>
+                        <td colspan="4"><h4>Modificaci&oacute;n al cierre</h4>
                         </td>
                     </tr>
                     <tr class="bg-primary">
@@ -749,18 +700,22 @@
                             de transmunic.gob.ni<strong>.</strong></th>
                     </tfoot>
                 </table>
+		<!--- fin tabla de modificacion -->
+
             </div>
         </div>
     </div>
+{% endif %}
 {% endblock %}
 
 {% block section5 %}
     <div class="container">
         <div class="row">
             <div class="col-md-12 historico">
-                <h2>Informaci&oacute;n Hist&oacute;rica<br>
-                    <strong>Ejecuci&oacute;n presupuestaria del gasto {% if not municipio %}Consolidado
-                        municipal {% endif %}</strong></h2>
+		<h2><strong>Informaci&oacute;n Hist&oacute;rica</strong><br />
+		    Ejecuci&oacute;n presupuestaria del gasto 
+		</h2>
+		{% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}<h4>{{ municipio }}</h4>{% endif %}
                 <hr class="pma-line-3"/>
                 <section class="cd-horizontal-timeline loaded historico">
                     <div class="timeline">
