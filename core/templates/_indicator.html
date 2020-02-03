@@ -28,6 +28,7 @@
                             {% if municipio %}
                                 <div class="{% if municipio.nombre|length <= 15 %}col-md-1 col-sm-2{% else %}col-md-2 col-sm-2{% endif %} text-center">
                                     <strong>{{ municipio.nombre }}</strong>
+                                    <input type="hidden" name="municipio" class="form-control" value="{{ municipio.slug }}">
                                 </div>
                             {% endif %}
                             <div class="col-xs-4 col-sm-2 col-md-1">
@@ -81,7 +82,6 @@
                                         </option>
                                     </select>
                                 </div>
-                                <input type="hidden" name="municipio" id="municipio" value="{{ municipio.slug }}">
                             {% else %}
                                 <input type="hidden" name="indicador" id="indicador" value="{{ request.path|lower }}">
                             {% endif %}
