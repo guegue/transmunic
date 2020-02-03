@@ -528,9 +528,15 @@
         <div class="container wide">
             <div class="row">
                 <div class="col-md-12">
+		   {% if municipio %}
                     <h3>
-                        <strong>Inngresos totales consolidado 153 municipios</strong>
+			    <strong>Ingresos totales {{ year }}</strong>
                     </h3>
+		   {% else %}
+                    <h3>
+			    <strong>Ingresos totales {{ year }} consolidado 153 municipios</strong>
+                    </h3>
+		    {% endif %}
 		    <h4>Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro</h4>
                     <h4>Millones de c&oacute;rdobas</h4>
                     <hr class="pma-line-2"/>
