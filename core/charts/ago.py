@@ -45,7 +45,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -376,7 +376,7 @@ def aci_bubbletree_data_ingreso(
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if municipio:
@@ -475,7 +475,7 @@ def aci_bubbletree_data_gasto(
     year_list = getYears(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
     amount_column = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     if municipio:
         amount = GastoDetalle.objects.filter(

@@ -53,7 +53,7 @@ def gf_chart(request):
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
 
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'

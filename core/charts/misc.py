@@ -159,7 +159,7 @@ def fuentes_chart(municipio=None, year=None, portada=False):
         quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
     if municipio:
         source = InversionFuenteDetalle.objects.filter(inversionfuente__municipio__slug=municipio, inversionfuente__anio=year, inversionfuente__periodo=periodo).\
                 values('fuente').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by('fuente__nombre')
