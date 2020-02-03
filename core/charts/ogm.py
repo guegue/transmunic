@@ -15,7 +15,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 from core.models import (Anio, GastoDetalle, Gasto, Municipio,
                          TipoGasto, PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
-from core.tools import getYears, dictfetchall, glue, superglue, percentage, xnumber
+from core.tools import getYears, getPeriods, dictfetchall, glue, superglue, percentage, xnumber
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -61,6 +61,8 @@ chart_options = getattr(
 def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
+    periodo_list = getPeriods(Gasto)
+    print(periodo_list)
     if not year:
         year = year_list[-2]
 
@@ -999,6 +1001,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     ''  # ordenando destino de los recursos por campo orden
     sources = sorted(sources, key=lambda i: i['subsubtipogasto__origen__orden'])
 
+    print(periodo_list)
     return {
         'charts': charts,
         'year_data': year_data,
@@ -1016,4 +1019,5 @@ def ogm_chart(municipio=None, year=None, portada=False):
         'porclasep': porclasep,
         'rubros': rubros,
         'rubrosp': rubrosp,
+        'periodo_list': periodo_list,
         'otros': otros}
