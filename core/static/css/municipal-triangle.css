@@ -1,0 +1,207 @@
+:root {
+    --color-balloon: #15a0c1;
+    --height-first-square: 400px;
+    --left-first-square: 25%;
+    --top-first-square: 8%;
+    --width-first-square: 250px;
+    --point-right-top: 40%;
+    --top-balloon: 40px;
+    --top-balloon-peak: 83px;
+    --left-balloon-peak: 58px;
+}
+
+.triangle-div {
+    background-color: #5159AC;
+    clip-path: polygon(0 0, 0% 100%, 100% 100%);;
+    height: 390px;
+    left: var(--left-first-square);
+    top: 15%;
+    width: 50%;
+}
+
+.square span.name {
+    color: white;
+    font-size: 20px;
+    left: 15%;
+    top: 62%;
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+.first-balloon-dialogue, .first-balloon-dialogue::after,
+.second-balloon-dialogue, .second-balloon-dialogue::after,
+.third-balloon-dialogue, .third-balloon-dialogue::after,
+.position-balloon span, .square span, .header-municipal,
+.line-separate, .description-municipal, .triangle-div {
+    position: absolute;
+}
+
+.header-municipal {
+    font-weight: 500;
+    left: calc(var(--left-first-square) + 23%);
+    text-align: center;
+    width: 350px;
+}
+
+.first-balloon-dialogue::after, .second-balloon-dialogue::after,
+.third-balloon-dialogue::after {
+    border: 2px solid var(--color-balloon);
+    content: '';
+}
+
+.balloon-dialogue {
+    background-color: var(--color-balloon);
+    border: 2px solid white;
+    border-radius: 100%;
+    transform: rotate(15deg);
+    z-index: 100;
+}
+
+.position-balloon {
+    background-color: white;
+    border-radius: 100%;
+    height: 70px;
+    left: 14.3%;
+    position: inherit;
+    top: 15%;
+    transform: rotate(-15deg);
+    width: 70px;
+    z-index: 101;
+}
+
+.position-balloon span {
+    font-weight: bold;
+    font-size: 32px;
+    left: 22.3%;
+    top: 18%;
+}
+
+.position-balloon span.municipio-data {
+    font-weight: normal;
+    font-size: 15px;
+    left: 100px;
+    top: -8px;
+    width: 300px;
+}
+
+.square span {
+    color: white;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.first-balloon-dialogue {
+    height: 100px;
+    left: calc(var(--left-first-square) + 8%);
+    transform: rotate(15deg);
+    top: var(--top-balloon);
+    width: 100px;
+}
+
+.first-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+
+}
+
+.second-balloon-dialogue {
+    left: calc(var(--left-first-square) + 22.6%);
+    height: 100px;
+    top: calc(var(--top-balloon) + 115px);
+    width: 100px;
+}
+
+.second-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+}
+
+
+.third-balloon-dialogue {
+    left: calc(var(--left-first-square) + 37%);
+    height: 100px;
+    top: calc(var(--top-balloon) + 228px);
+    transform: rotate(15deg);
+    width: 100px;
+}
+
+.third-balloon-dialogue::after {
+    background-color: var(--color-balloon);
+    height: 15px;
+    left: var(--left-balloon-peak);
+    transform: rotate(25deg);
+    top: var(--top-balloon-peak);
+    width: 15px;
+}
+
+.balloon-dialogue strong {
+    font-size: 10px;
+    position: absolute;
+    transform: rotate(-15deg);
+    transform-origin: top center;
+}
+
+.balloon-dialogue strong span {
+    color: white;
+    position: absolute;
+    transform-origin: top center;
+}
+
+.balloon-dialogue strong span:nth-of-type(1) {
+    left: -5px;
+    top: 25px;
+    transform: rotate(-58deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(2) {
+    left: 5px;
+    top: 17px;
+    transform: rotate(-36deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(3) {
+    left: 18px;
+    top: 12px;
+    transform: rotate(-22deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(4) {
+    left: 30px;
+    top: 10px;
+    transform: rotate(-11deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(5) {
+    left: 38px;
+    top: 11px;
+    transform: rotate(9deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(6) {
+    left: 48px;
+    top: 12px;
+    transform: rotate(10deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(7) {
+    left: 53px;
+    top: 16px;
+    transform: rotate(23deg);
+}
+
+.balloon-dialogue strong span:nth-of-type(8) {
+    left: 62px;
+    top: 22px;
+    transform: rotate(35deg);
+}
+
+
