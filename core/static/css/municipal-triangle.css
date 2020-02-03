@@ -6,16 +6,34 @@
     --width-first-square: 250px;
     --point-right-top: 40%;
     --top-balloon: 40px;
-    --top-balloon-peak: 85px;
+    --top-balloon-peak: 83px;
     --left-balloon-peak: 58px;
 }
+
+.triangle-div {
+    background-color: #5159AC;
+    clip-path: polygon(0 0, 0% 100%, 100% 100%);;
+    height: 390px;
+    left: var(--left-first-square);
+    top: 15%;
+    width: 50%;
+}
+
+.square span.name {
+    color: white;
+    font-size: 20px;
+    left: 15%;
+    top: 62%;
+    text-align: center;
+    white-space: nowrap;
+}
+
 
 .first-balloon-dialogue, .first-balloon-dialogue::after,
 .second-balloon-dialogue, .second-balloon-dialogue::after,
 .third-balloon-dialogue, .third-balloon-dialogue::after,
-.first-square, .second-square, .third-square,
 .position-balloon span, .square span, .header-municipal,
-.line-separate, .description-municipal {
+.line-separate, .description-municipal, .triangle-div {
     position: absolute;
 }
 
@@ -26,29 +44,9 @@
     width: 350px;
 }
 
-.header-municipal span {
-    color: #5159AC;
-    font-weight: bolder;
-}
-
-.line-separate.pma-line-3 {
-    border-color: #5159AC;
-    left: calc(var(--top-first-square) + 50.5%);
-    top: 9%;
-    width: 110px;
-}
-
-.description-municipal {
-    left: calc(var(--left-first-square) + 27%);
-    text-align: center;
-    top: 11%;
-    width: 280px;
-}
-
 .first-balloon-dialogue::after, .second-balloon-dialogue::after,
 .third-balloon-dialogue::after {
-    border-bottom: 2px solid white;
-    border-right: 2px solid white;
+    border: 2px solid var(--color-balloon);
     content: '';
 }
 
@@ -64,48 +62,38 @@
     background-color: white;
     border-radius: 100%;
     height: 70px;
-    width: 70px;
+    left: 14.3%;
     position: inherit;
     top: 15%;
-    left: 14%;
-    z-index: 101;
     transform: rotate(-15deg);
+    width: 70px;
+    z-index: 101;
 }
 
 .position-balloon span {
-    top: 20%;
-    left: 20%;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 32px;
+    left: 22.3%;
+    top: 18%;
+}
+
+.position-balloon span.municipio-data {
+    font-weight: normal;
+    font-size: 15px;
+    left: 100px;
+    top: -8px;
+    width: 300px;
 }
 
 .square span {
-    text-align: center;
     color: white;
+    text-align: center;
     white-space: nowrap;
 }
 
-.first-square span.name {
-    left: 15%;
-    top: 60%;
-}
-
-.second-square span.name {
-    top: 60%;
-    left: 10%;
-    font-size: 13px;
-}
-
-.third-square span.name {
-    top: 77%;
-    left: 7%;
-    font-size: 12px;
-}
-
-
 .first-balloon-dialogue {
-    left: calc(var(--left-first-square) + 8%);
     height: 100px;
+    left: calc(var(--left-first-square) + 8%);
     transform: rotate(15deg);
     top: var(--top-balloon);
     width: 100px;
@@ -118,21 +106,13 @@
     transform: rotate(25deg);
     top: var(--top-balloon-peak);
     width: 15px;
-}
 
-.first-square {
-    clip-path: polygon(0 0, 100% var(--point-right-top), 100% 100%, 0% 100%);
-    background-color: #5159AC;
-    height: var(--height-first-square);
-    left: var(--left-first-square);
-    top: var(--top-first-square);
-    width: var(--width-first-square);
 }
 
 .second-balloon-dialogue {
-    left: calc(var(--left-first-square) + 27%);
+    left: calc(var(--left-first-square) + 22.6%);
     height: 100px;
-    top: calc(var(--top-balloon) + 125px);
+    top: calc(var(--top-balloon) + 115px);
     width: 100px;
 }
 
@@ -145,17 +125,9 @@
     width: 15px;
 }
 
-.second-square {
-    clip-path: polygon(0 10%, 100% calc(var(--point-right-top) + 16%), 100% 100%, 0% 100%);
-    background-color: #14a0c1;
-    height: calc(var(--height-first-square) - 133px);
-    left: calc(var(--left-first-square) + 21.9%);
-    top: calc(var(--top-first-square) + 29.5%);
-    width: calc(var(--width-first-square) - 50px);
-}
 
 .third-balloon-dialogue {
-    left: calc(var(--left-first-square) + 42%);
+    left: calc(var(--left-first-square) + 37%);
     height: 100px;
     top: calc(var(--top-balloon) + 228px);
     transform: rotate(15deg);
@@ -171,15 +143,6 @@
     width: 15px;
 }
 
-.third-square {
-    clip-path: polygon(0 46.8%, 0% 100%, 100% 100%);
-    background-color: #01cd9c;
-    height: calc(var(--height-first-square) - 180px);
-    left: calc(var(--left-first-square) + 39.5%);
-    top: calc(var(--top-first-square) + 40%);
-    width: calc(var(--width-first-square) - 50px);
-}
-
 .balloon-dialogue strong {
     font-size: 10px;
     position: absolute;
@@ -188,9 +151,9 @@
 }
 
 .balloon-dialogue strong span {
+    color: white;
     position: absolute;
     transform-origin: top center;
-    color: white;
 }
 
 .balloon-dialogue strong span:nth-of-type(1) {
@@ -216,11 +179,13 @@
     top: 10px;
     transform: rotate(-11deg);
 }
+
 .balloon-dialogue strong span:nth-of-type(5) {
     left: 38px;
     top: 11px;
     transform: rotate(9deg);
 }
+
 .balloon-dialogue strong span:nth-of-type(6) {
     left: 48px;
     top: 12px;
