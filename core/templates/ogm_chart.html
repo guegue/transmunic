@@ -8,12 +8,20 @@
 {% endblock %}
 
 {% block indicator_title %}
-    <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}Consolidado
-        Municipal{% endif %}</h2>
+    <h2 class="text-center">
+	<strong>Destino de los gastos {{ year }} | {{ periodo_list }} | {{ periodo_list|keyvalue:year }} |  {{ periodo_list|keyvalue:'2017' }} |
+        {% if periodo_list|keyvalue:year == 'F' %}
+            presupuesto cierre
+	{% elif periodo_list|keyvalue:year == 'A' %}
+            ejecuci&oacute;n intermedia
+	{% elif periodo_list|keyvalue:year == 'I' %}presupuesto
+            inicial
+	{% endif %}
+	{% if year %}{{ year }}{% endif %}</strong>
+    </h2>
     <hr class="pma-line-5"/>
-    <h4 class="text-center">
-        <strong>Destino de los gastos {% if year %}{{ year }} {% else %}2015 {% endif %}</strong>
-    </h4>
+    <h4 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}Consolidado
+        153 municipios {% endif %}</h4>
     <p class="text-center metric-description container"></p>
 {% endblock %}
 
@@ -21,10 +29,14 @@
     <div class="container">
         <div class="row">
             <h2>
-                <strong>Detalle de Gastos</strong>
-                <br/>
-                del per&iacute;odo
+                <strong>Gastos
+			{% if periodo_list|keyvalue:year == 'F' %}Ejecutados
+			{% elif periodo_list|keyvalue:year == 'A' %}Presupuesto Intermedio
+			{% else %}Presupuesto Inicial{% endif %}
+			{{ year }}
+		</strong>
             </h2>
+	     <h5>Millones de córdobas corrientes</h5>
             <hr class="pma-line-2">
 
             <div class="row pma-header-summary wide">
@@ -102,6 +114,25 @@
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-5 table-responsive">
+		    <h4>Rubros de gastos para el per&iacute;odo {{ year }}
+                    {% if periodo_list|keyvalue:year == 'F' %}
+                        cierre
+                    {% elif periodo_list|keyvalue:year == 'A' %}
+                        intermedio
+                    {% elif periodo_list|keyvalue:year == 'I' %}
+                        inicial
+                    {% endif %}
+		    </h4>
+		    <h5>
+                    {% if periodo_list|keyvalue:year == 'F' %}
+                        Ejecuci&oacute;n de gastos
+                    {% elif periodo_list|keyvalue:year == 'A' %}
+                        Ejecuci&oacute;n intermedia de gastos
+                    {% elif periodo_list|keyvalue:year == 'I' %}
+                        Presupuesto inicial de gastos
+                    {% endif %}
+                    {{ year }}
+		    por su destino {% descargar_excel "oim1" %}</h5>
                 <table class="table table-bordered table-condensed">
                     <thead>
                     <tr class="bg-primary">
