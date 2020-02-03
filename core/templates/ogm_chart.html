@@ -9,7 +9,7 @@
 
 {% block indicator_title %}
     <h2 class="text-center">
-	<strong>Destino de los gastos {{ year }} | {{ periodo_list }} | {{ periodo_list|keyvalue:year }} |  {{ periodo_list|keyvalue:'2017' }} |
+	<strong>Destino de los gastos {{ year }}
         {% if periodo_list|keyvalue:year == 'F' %}
             presupuesto cierre
 	{% elif periodo_list|keyvalue:year == 'A' %}

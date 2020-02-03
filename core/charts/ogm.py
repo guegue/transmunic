@@ -62,7 +62,6 @@ def ogm_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Gasto)
     periodo_list = getPeriods(Gasto)
-    print(periodo_list)
     if not year:
         year = year_list[-2]
 
@@ -1001,7 +1000,6 @@ def ogm_chart(municipio=None, year=None, portada=False):
     ''  # ordenando destino de los recursos por campo orden
     sources = sorted(sources, key=lambda i: i['subsubtipogasto__origen__orden'])
 
-    print(periodo_list)
     return {
         'charts': charts,
         'year_data': year_data,

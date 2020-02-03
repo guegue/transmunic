@@ -12,9 +12,6 @@ def million(number):
 
 @register.filter
 def keyvalue(dict, key):
-    print(dict)
-    print(key)
-    print(nada)
     key=str(key)
     if key in dict:
         return dict[key]
