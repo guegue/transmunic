@@ -40,7 +40,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            {% if request.resolver_match.url_name == 'municipio' %}
+                            {% if request.resolver_match.url_name == 'municipio' or request.GET.municipio %}
                                 <div class="col-xs-9 col-sm-5 col-md-4 indicadores">
                                     <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
                                     <select name="indicador" class="indicador" id="indicador">
