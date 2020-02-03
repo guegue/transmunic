@@ -102,17 +102,17 @@
             <div class="row">
                 <div class="col-md-12">
                     {% block indicator_title %}
-                        <h2 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}
-                            Consolidado{% endif %}</h2>
-                        <hr class="pma-line-5"/>
-                        <h4 class="text-center">
+                        <h2 class="text-center">
                             <strong>{% block indicator_title_text %}{{ indicator_name }}{% endblock %}
                                 {% if periodo_list|keyvalue:year == 'F' %}
                                     presupuesto cierre {% elif periodo_list|keyvalue:year == 'A' %}
                                     ejecuci&oacute;n intermedia {% elif periodo_list|keyvalue:year == 'I' %}presupuesto
                                     inicial {% endif %}
                                 {% if year %}{{ year }}{% else %}2015 {% endif %}</strong>
-                        </h4>
+                        </h2>
+                        <hr class="pma-line-5"/>
+                        <h3 class="text-center">{% if municipio %}<strong>{{ municipio }}</strong><br/>{% else %}
+                            Consolidado 153 municipios{% endif %}</h3>
                         <p class="text-center metric-description container"> {% block indicator_description %} Son los
                             ingresos que capta el sector público para realizar sus actividades, es decir, es el dinero
                             percibido por el gobierno para financiar sus gastos públicos
