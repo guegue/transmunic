@@ -10,7 +10,7 @@ from lugar.models import Municipio
 def oim_bubble_chart_data(municipio=None, year=None, portada=False):
     year_list = getYears(Ingreso)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
     if periodo == PERIODO_INICIAL:

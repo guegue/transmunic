@@ -68,7 +68,7 @@ def oim_chart(municipio=None, year=None, portada=False):
     year_list = getYears(Ingreso)
     periodo_list = getPeriods(Ingreso)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
 
     # elige prefijo segun anho
     prefix = 'subsubtipoingreso'

@@ -17,7 +17,7 @@ from lugar.models import Municipio
 def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)

@@ -125,7 +125,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
     if not year:
-        year = year_list[-2]
+        year = year_list[-1]
 
     periodo = Anio.objects.get(anio=year).periodo
     datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
