@@ -16,25 +16,25 @@
             <thead>
             <tr>
                 <td colspan="3" rowspan="1" class="text-justify">
-		    <h4>Rubros de ingresos para el per&iacute;odo {{ year }}
-                    {% if periodo_list|keyvalue:year == 'F' %}
-                        cierre
-                    {% elif periodo_list|keyvalue:year == 'A' %}
-                        intermedio
-                    {% elif periodo_list|keyvalue:year == 'I' %}
-                        inicial
-                    {% endif %}
-		    </h4>
-		    <h5>
-                    {% if periodo_list|keyvalue:year == 'F' %}
-                        Ejecuci&oacute;n de ingresos
-                    {% elif periodo_list|keyvalue:year == 'A' %}
-                        Ejecuci&oacute;n intermedia de ingresos
-                    {% elif periodo_list|keyvalue:year == 'I' %}
-                        Presupuesto inicial de ingresos
-                    {% endif %}
-                    {{ year }}
-		    por su origen {% descargar_excel "oim1" %}</h5>
+                    <h4>Rubros de ingresos para el per&iacute;odo {{ year }}
+                        {% if periodo_list|keyvalue:year == 'F' %}
+                            cierre
+                        {% elif periodo_list|keyvalue:year == 'A' %}
+                            intermedio
+                        {% elif periodo_list|keyvalue:year == 'I' %}
+                            inicial
+                        {% endif %}
+                    </h4>
+                    <h5>
+                        {% if periodo_list|keyvalue:year == 'F' %}
+                            Ejecuci&oacute;n de ingresos
+                        {% elif periodo_list|keyvalue:year == 'A' %}
+                            Ejecuci&oacute;n intermedia de ingresos
+                        {% elif periodo_list|keyvalue:year == 'I' %}
+                            Presupuesto inicial de ingresos
+                        {% endif %}
+                        {{ year }}
+                        por su origen {% descargar_excel "oim1" %}</h5>
                 </td>
             </tr>
             <tr class="bg-primary">
@@ -47,12 +47,14 @@
             {% for row in rubros %}
                 <tr>
                     {% if periodo_list|keyvalue:year == 'I' and row.inicial_asignado > 0 %}
-                        <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}{{ row.sub3tipoingreso__origen__nombre }}</td>
+                        <td colspan="1">
+                            {{ row.subsubtipoingreso__origen__nombre }}{{ row.sub3tipoingreso__origen__nombre }}</td>
                         <td colspan="1" class="text-center">{{ row.inicial_asignado|million|intcomma }}</td>
                         <td colspan="1" class="text-center">{{ row.inicial_asignado_percent }}</td>
                     {% else %}
                         {% if row.ejecutado > 0 %}
-                            <td colspan="1">{{ row.subsubtipoingreso__origen__nombre }}{{ row.sub3tipoingreso__origen__nombre }}</td>
+                            <td colspan="1">
+                                {{ row.subsubtipoingreso__origen__nombre }}{{ row.sub3tipoingreso__origen__nombre }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado|million|intcomma|default:"0" }}</td>
                             <td colspan="1" class="text-center">{{ row.ejecutado_percent }}</td>
                         {% endif %}
@@ -87,82 +89,83 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12">
-                            <h2>
-                                <strong>
-                                    Recaudaci&oacute;n perc&aacute;pita, presupuesto 
-                                    {% if periodo_list|keyvalue:year == 'F' %}
-                                        de cierre
-                                    {% elif periodo_list|keyvalue:year == 'A' %}
-                                        intermedio
-                                    {% elif periodo_list|keyvalue:year == 'I' %}
-                                        inicial
-                                    {% endif %}
-				    {{ year }}
-                                </strong>
-                                <br>
-                                {% if mi_clase.clasificacion %}
-                                    grupo "{{ mi_clase.clasificacion }}"
-                                {% else %}
-                                    por grupos de municipios
+                        <h2>
+                            <strong>
+                                Recaudaci&oacute;n perc&aacute;pita, presupuesto
+                                {% if periodo_list|keyvalue:year == 'F' %}
+                                    de cierre
+                                {% elif periodo_list|keyvalue:year == 'A' %}
+                                    intermedio
+                                {% elif periodo_list|keyvalue:year == 'I' %}
+                                    inicial
                                 {% endif %}
-                            </h2>
-                            <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
-                                base a
-                                ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
-			    </h5>
+                                {{ year }}
+                            </strong>
+                            <br>
+                            {% if mi_clase.clasificacion %}
+                                grupo "{{ mi_clase.clasificacion }}"
+                            {% else %}
+                                por grupos de municipios
+                            {% endif %}
+                        </h2>
+                        <h5>C&oacute;rdobas corrientes por habitante {% if periodo_list|keyvalue:year == 'I' %}en
+                            base a
+                            ingresos asignados{% else %} en base a ingresos ejecutados{% endif %}
+                        </h5>
                         <hr class="pma-line-3"/>
 
                     </div>
                     <div class="col-md-4 table-responsive">
                         <table class="table">
                             <thead>
-                                <tr class="blanco pma-bg-blue">
-                                    <th rowspan="2" style="vertical-align: middle">Grupo de
-                                        municipio
-                                    </th>
-                                    <th rowspan="1" style="border-bottom: none;" class="text-center">
-                                           P. Inicial
-                                    </th>
-                                    <th rowspan="1" style="border-bottom: none;" class="text-center">
-					    {% if periodo_list|keyvalue:year == 'A' %}P. Intermedio{% else %}P. Cierre{% endif %}
-                                    </th>
-                                    <th class="no-border-top text-right">%</th>
-                                </tr>
+                            <tr class="blanco pma-bg-blue">
+                                <th rowspan="2" style="vertical-align: middle">Grupo de
+                                    municipio
+                                </th>
+                                <th rowspan="1" style="border-bottom: none;" class="text-center">
+                                    P. Inicial
+                                </th>
+                                <th rowspan="1" style="border-bottom: none;" class="text-center">
+                                    {% if periodo_list|keyvalue:year == 'A' %}P. Intermedio{% else %}P.
+                                        Cierre{% endif %}
+                                </th>
+                                <th class="no-border-top text-right">%</th>
+                            </tr>
                             </thead>
                             <tbody>
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
                                     <td colspan="1" class="text-center">{{ row.clasificacion }}</td>
-                                        <td class="text-right">
-                                            {% if row.asignado %}
-                                                {{ row.asignado|floatformat:2|intcomma }}
-                                            {% else %}
-                                                0
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-right">
-					    {% if periodo_list|keyvalue:year == 'I' %}
-					        0
-                                            {% else %}
-                                                {{ row.ejecutado|floatformat:2|intcomma|default:0 }}
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-right">
-					    {% if periodo_list|keyvalue:year == 'I' %}
-					        0
-					    {% elif periodo_list|keyvalue:year == 'A' %}
-                                                    {{ row.asignado_percent|floatformat:1|intcomma|default:0 }}
-				     	    {% else %}
-					        {{ row.ejecutado_percent|floatformat:1|intcomma|default:0 }}
-					    {% endif %}
-                                        </td>
+                                    <td class="text-right">
+                                        {% if row.asignado %}
+                                            {{ row.asignado|floatformat:2|intcomma }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        {% if periodo_list|keyvalue:year == 'I' %}
+                                            0
+                                        {% else %}
+                                            {{ row.ejecutado|floatformat:2|intcomma|default:0 }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        {% if periodo_list|keyvalue:year == 'I' %}
+                                            0
+                                        {% elif periodo_list|keyvalue:year == 'A' %}
+                                            {{ row.asignado_percent|floatformat:1|intcomma|default:0 }}
+                                        {% else %}
+                                            {{ row.ejecutado_percent|floatformat:1|intcomma|default:0 }}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                             <tr class="pma-bg-white">
                                 <th colspan="1">Media Nacional</th>
-                                    <td class="text-right">
-                                        {{ total_asignado_ranking|floatformat:2|intcomma }}
-                                    </td>
+                                <td class="text-right">
+                                    {{ total_asignado_ranking|floatformat:2|intcomma }}
+                                </td>
                                 {% if periodo_list|keyvalue:year == 'A' %}
                                     <td class="text-right">{{ total_asignado_ranking_porcentaje|floatformat:0 }}</td>
                                 {% elif periodo_list|keyvalue:year == 'F' %}
@@ -212,10 +215,10 @@
             </div>
             <div class="container" id="detail-1">
                 <div class="row">
-			<!--Modificaion al presupuesto de recaudacion -->
+                    <!--Modificaion al presupuesto de recaudacion -->
                     <h3>
-			    <strong>Recaudaci&oacute;n municipal consolidado 153 municipios</strong><br />
-			Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro
+                        <strong>Recaudaci&oacute;n municipal consolidado 153 municipios</strong><br/>
+                        Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro
                     </h3>
                     <h4>Millones de c&oacute;rdobas corrientes</h4>
                     <table class="table table-bordered">
@@ -323,7 +326,7 @@
                                 de transmunic.gob.ni<strong>.</strong></th>
                         </tfoot>
                     </table>
-			    <!-- fin de modificacion al presupuesto de recaudacion -->
+                    <!-- fin de modificacion al presupuesto de recaudacion -->
                 </div>
             </div>
         </div>
@@ -333,148 +336,149 @@
 {% block section3 %}
     {% if municipio %}
         <div class="loaded inverted">
-            {% if municipio|lower == 'managua' %}
-                <div class="container-fluid pma-bg-blue pma-fg-white text-center">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <h2>
-                            <strong>La recaudaci&oacute;n por habitante</strong>
-                            para el municipio de <strong>{{ municipio }}</strong> <br/>
-                            para el a&ntilde;o {{ year }} es de:
-                            <span class="amarillo pma-number">
+        {% if municipio|lower == 'managua' %}
+            <div class="container-fluid pma-bg-blue pma-fg-white text-center">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h2>
+                        <strong>La recaudaci&oacute;n por habitante</strong>
+                        para el municipio de <strong>{{ municipio }}</strong> <br/>
+                        para el a&ntilde;o {{ year }} es de:
+                        <span class="amarillo pma-number">
                            {% if periodo_list|keyvalue:year == 'I' %}
                                {{ otros.0.asignado_percent|intcomma }}
                            {% else %}
                                {{ otros.0.ejecutado_percent|intcomma }}
                            {% endif %}
-                                C&oacute;rdobas
+                            C&oacute;rdobas
 			  </span>
-                        </h2>
-                        <h5> Córdobas corrientes por habitante en base a ingresos ejecutados </h5>
-                        <hr class="pma-line-5"/>
-                    </div>
+                    </h2>
+                    <h5> Córdobas corrientes por habitante en base a ingresos ejecutados </h5>
+                    <hr class="pma-line-5"/>
                 </div>
-            {% else %}
-
-                <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <h2>
-				<strong>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}</strong>
-                            <br>
-                                Municipio de
-                                <strong>{{ municipio }}</strong>
-                                grupo "{{ mi_clase.clasificacion }}"
-
-                        </h2>
-                        <h5>
-                            C&oacute;rdobas corrientes por habitante en base a
-                            {% if periodo_list|keyvalue:year == 'I' %}
-                                presupuesto inicial
-                            {% elif periodo_list|keyvalue:year == 'A' %}
-                                presupuesto intermedio
-                            {% else %}
-                                presupuesto de cierre
-                            {% endif %}
-                        </h5>
-                        <hr class="pma-line-3"/>
-                    </div>
-                </div>
-                {% include 'municipal-triangle.html' %}
-            {% endif %}
             </div>
+        {% else %}
+
+            <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <h2>
+                        <strong>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}</strong>
+                        <br>
+                        Municipio de
+                        <strong>{{ municipio }}</strong>
+                        grupo "{{ mi_clase.clasificacion }}"
+
+                    </h2>
+                    <h5>
+                        C&oacute;rdobas corrientes por habitante en base a
+                        {% if periodo_list|keyvalue:year == 'I' %}
+                            presupuesto inicial
+                        {% elif periodo_list|keyvalue:year == 'A' %}
+                            presupuesto intermedio
+                        {% else %}
+                            presupuesto de cierre
+                        {% endif %}
+                    </h5>
+                    <hr class="pma-line-3"/>
+                </div>
+            </div>
+            {% include 'municipal-triangle.html' %}
+        {% endif %}
+    </div>
 
 
-            <div class="events-content container text-center">
-                <ol>
-                    {% for row in otros|dictsortreversed:"asignado_percent" %}
-                        <li{% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
-                                                                                   data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-                            <!-- <h4>{{ row.ingreso__municipio__nombre }}</h4>
+    <div class="events-content container text-center">
+        <ol>
+            {% for row in otros|dictsortreversed:"asignado_percent" %}
+                <li{% if municipio.slug == row.ingreso__municipio__slug %} class="selected"{% endif %}
+                                                                           data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+                    <!-- <h4>{{ row.ingreso__municipio__nombre }}</h4>
         <span> Asignado: {{ row.asignado_percent|intcomma }}
         </span><br/>
         <span> Ejecutado: {{ row.asignado_percent|intcomma }}</span> -->
-                        </li>
-                    {% endfor %}
-                </ol>
-            </div> <!-- .events-content -->
+                </li>
+            {% endfor %}
+        </ol>
+    </div> <!-- .events-content -->
 
-            {% if municipio|lower != 'managua' %}
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 text-center medium">
-                            <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                                Ver detalles en tabla
-                            </button>
-                        </div>
-                    </div>
+    {% if municipio|lower != 'managua' %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center medium">
+                    <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
+                        Ver detalles en tabla
+                    </button>
                 </div>
-                <div id="detail-1" class="container">
-                    <div class="row">
-                        <div class="col-md-4 col-md-offset-1 table-responsive">
-                            <table class="table table-bordered table-sm table-striped pma-bg-white">
-		    		<thead>
-				    <tr><td colspan="3">
-					 <h4>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}
-						 Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
-                        		</h4>
-		                        <h5>
-                			  Córdobas corrientes por habitante en base a
-                                          {% if periodo_list|keyvalue:year == 'F' %}
-                                              Ejecuci&oacute;n de cierre de ingresos
-                                          {% elif periodo_list|keyvalue:year == 'A' %}
-                                              Ejecuci&oacute;n intermedia de ingresos
-                                          {% elif periodo_list|keyvalue:year == 'I' %}
-                                              Presupuesto inicial de ingresos
-                                          {% endif %}
-                                          {{ year }}
-					  {% descargar_excel "oim8" %}
-		                          </h5>
-                                      </td>
-                                    </tr>
-                                    <tr class="bg-primary">
-                                        <th class="text-center"><strong>Posici&oacute;n</strong></th>
-                                        <th class="text-center"><strong>Municipios</strong></th>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <th class="text-center"><strong>P. Inicial</strong></th>
+            </div>
+        </div>
+        <div id="detail-1" class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-1 table-responsive">
+                    <table class="table table-bordered table-sm table-striped pma-bg-white">
+                        <thead>
+                        <tr>
+                            <td colspan="3">
+                                <h4>Rankin de recaudaci&oacute;n perc&aacute;pita {{ year }}
+                                    Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
+                                </h4>
+                                <h5>
+                                    Córdobas corrientes por habitante en base a
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        Ejecuci&oacute;n de cierre de ingresos
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        Ejecuci&oacute;n intermedia de ingresos
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        Presupuesto inicial de ingresos
+                                    {% endif %}
+                                    {{ year }}
+                                    {% descargar_excel "oim8" %}
+                                </h5>
+                            </td>
+                        </tr>
+                        <tr class="bg-primary">
+                            <th class="text-center"><strong>Posici&oacute;n</strong></th>
+                            <th class="text-center"><strong>Municipios</strong></th>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <th class="text-center"><strong>P. Inicial</strong></th>
+                            {% else %}
+                                <th class="text-center"><strong>Ejecuci&oacute;n</strong></th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        {% if ejecutado <= 0 %}
+                            {% for row in otros|dictsortreversed:"asignado_percent" %}
+                                {% if municipio.slug == row.ingreso__municipio__slug %}
+                                    <tr class="info">
                                         {% else %}
-                                            <th class="text-center"><strong>Ejecuci&oacute;n</strong></th>
-                                        {% endif %}
-                                    </tr>
-				</thead>
-                                {% if ejecutado <= 0 %}
-                                    {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                        {% if municipio.slug == row.ingreso__municipio__slug %}
-                                            <tr class="info">
-                                                {% else %}
-                                            <tr>
-                                        {% endif %}
-                                    <td class="text-center"> {{ forloop.counter }} </td>
-                                    <td>{{ row.ingreso__municipio__nombre }}</td>
-                                    {% if periodo_list|keyvalue:year == 'I' %}
-                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                    {% else %}
-                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                    {% endif %}
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    {% for row in otros %}
-                                        {% if municipio.slug == row.ingreso__municipio__slug %}
-                                            <tr class="info">
-                                                {% else %}
-                                            <tr>
-                                        {% endif %}
-                                    <td class="text-center"> {{ forloop.counter }} </td>
-                                    <td>{{ row.ingreso__municipio__nombre }}</td>
-                                    {% if periodo_list|keyvalue:year == 'I' %}
-                                        <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
-                                    {% else %}
-                                        <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
-                                    {% endif %}
-                                    </tr>
-                                    {% endfor %} {% endif %}
-                                <!--
+                                    <tr>
+                                {% endif %}
+                            <td class="text-center"> {{ forloop.counter }} </td>
+                            <td>{{ row.ingreso__municipio__nombre }}</td>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% else %}
+                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for row in otros %}
+                                {% if municipio.slug == row.ingreso__municipio__slug %}
+                                    <tr class="info">
+                                        {% else %}
+                                    <tr>
+                                {% endif %}
+                            <td class="text-center"> {{ forloop.counter }} </td>
+                            <td>{{ row.ingreso__municipio__nombre }}</td>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <td class="text-right">{{ row.asignado_percent|intcomma }}</td>
+                            {% else %}
+                                <td class="text-right">{{ row.ejecutado_percent|intcomma }}</td>
+                            {% endif %}
+                            </tr>
+                            {% endfor %} {% endif %}
+                        <!--
                             <tr class="">
                                 <td colspan="2">TOTAL</td>
                                 <td class="text-right">
@@ -495,23 +499,24 @@
                                 {% endif %}
                             </tr>
                         -->
-		            	<tfoot class="font-12px font-color-azul">
-            			    <tr>
-                			<th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n propia a partir de transmunic.gob.ni<strong>.</strong></th>
-           			    </tr>
-            		    	</tfoot>
-                            </table>
+                        <tfoot class="font-12px font-color-azul">
+                        <tr>
+                            <th colspan="3" rowspan="1" class="text-justify"><strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir de transmunic.gob.ni<strong>.</strong></th>
+                        </tr>
+                        </tfoot>
+                    </table>
 
-                        </div>
-                        {# chart horizontal chart #}
-                        <div class="col-lg-7 col-md-7 col-sm-12 mt-1 horizontal-bar">
-                            <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
-                            </div>
-                        </div>
+                </div>
+                {# chart horizontal chart #}
+                <div class="col-lg-7 col-md-7 col-sm-12 mt-1 horizontal-bar">
+                    <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
+    {% endif %}
+    </div>
     {% endif %}
 {% endblock %}
 
@@ -520,16 +525,16 @@
         <div class="container wide">
             <div class="row">
                 <div class="col-md-12">
-		   {% if municipio %}
-                    <h3>
-			    <strong>Ingresos totales {{ municipio }} {{ year }}</strong>
-                    </h3>
-		   {% else %}
-                    <h3>
-			    <strong>Ingresos totales {{ year }} consolidado 153 municipios</strong>
-                    </h3>
-		    {% endif %}
-		    <h4>Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro</h4>
+                    {% if municipio %}
+                        <h3>
+                            <strong>Ingresos totales {{ municipio }} {{ year }}</strong>
+                        </h3>
+                    {% else %}
+                        <h3>
+                            <strong>Ingresos totales {{ year }} consolidado 153 municipios</strong>
+                        </h3>
+                    {% endif %}
+                    <h4>Presupuesto inicial, intermedio, de cierre y su modificaci&oacute;n por rubro</h4>
                     <h4>Millones de c&oacute;rdobas</h4>
                     <hr class="pma-line-2"/>
                 </div>
@@ -678,9 +683,9 @@
                 <h2>
                     <strong>Informaci&oacute;n Hist&oacute;rica</strong>
                     <br>
-                    Ejecuci&oacute;n presupuestaria del ingreso 
+                    Ejecuci&oacute;n presupuestaria del ingreso
                 </h2>
-		{% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}<h4>{{ municipio }}</h4>{% endif %}
+                {% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}<h4>{{ municipio }}</h4>{% endif %}
                 <hr class="pma-line-2"/>
             </div>
         </div>
@@ -742,39 +747,40 @@
             <div class="col-xs-12 col-md-12 table-responsive" style="height: 560px">
                 <table class="table">
                     <thead>
-		        <tr>
-			    <td colspan="10">
-                                <h2>
-                                   <strong>Informaci&oacute;n hist&oacute;rica por rubros de ingresos</strong>
-                                   <br>
-                                   Ejecuci&oacute;n presupuestaria 
-                                </h2>
-				{% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %} <h4>{{ municipio }}</h4>{% endif %}
-				{% descargar_excel "oim7" %}
-				</h4>
-                            </td>
-		        </tr>
-                        <tr>
-                            <th rowspan="2" colspan="1" class="text-center">Rubros</th>
-                            {% for year in year_list %}
-                                <th rowspan="1" colspan="2"
+                    <tr>
+                        <td colspan="10">
+                            <h2>
+                                <strong>Informaci&oacute;n hist&oacute;rica por rubros de ingresos</strong>
+                                <br>
+                                Ejecuci&oacute;n presupuestaria
+                            </h2>
+                            {% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}
+                                <h4>{{ municipio }}</h4>{% endif %}
+                            {% descargar_excel "oim7" %}
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2" colspan="1" class="text-center">Rubros</th>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="2"
                                 class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
                                 <strong>{{ year }}</strong>
-                                </th>
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for year in year_list %}
-                                <th rowspan="1" colspan="1"
-                                    class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                    M. de C&oacute;rdobas
-                                </th>
-                                <th rowspan="1" colspan="1"
-                                    class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                    %
-                                </th>
-                            {% endfor %}
-                        </tr>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                M. de C&oacute;rdobas
+                            </th>
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                %
+                            </th>
+                        {% endfor %}
+                    </tr>
                     </thead>
                     <tbody>
                     {% for key, data in porano.items %}
