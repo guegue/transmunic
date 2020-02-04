@@ -6,7 +6,7 @@ from django.db.models import Sum
 
 from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
     InversionFuente, Grafico, CatInversion, Transferencia
-from tools import getYears
+from tools import getYears, getPeriods
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -263,6 +263,7 @@ def inversion_categoria_view(request):
     indicator_name = "Inversión municipal"
 
     # InversionFuente tiene su propio último año
+    periodo_list = getPeriods(Inversion)
     year_list = getYears(InversionFuente)
     year = year_list[-1]
     data_fuentes = fuentes_chart(year=year)
@@ -324,6 +325,7 @@ def inversion_categoria_view(request):
         'charts': data['charts'],
         'year_list': data['year_list'],
         'periodo': data['periodo'],
+        'periodo_list': periodo_list,
         'municipio_list': data['municipio_list'],
         'asignado': data['asignado'],
         'asignado_porcentaje': data['asignado_porcentaje'],
@@ -418,7 +420,7 @@ def inversion_view(request):
     data = inversion_chart(municipio=municipio, year=year)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],
                                               'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
-                                              'porclasep': data['porclasep']},
+                                              'porclasep': data['porclasep'], 'periodo_list':data['periodo_list']},
                               context_instance=RequestContext(request))
 
 

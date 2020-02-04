@@ -11,7 +11,7 @@ from core.models import (Anio, Proyecto, Inversion, Municipio,
                          InversionFuenteDetalle, PERIODO_INICIAL,
                          PERIODO_ACTUALIZADO, PERIODO_FINAL,
                          AREAGEOGRAFICA_VERBOSE)
-from core.tools import (getYears, dictfetchall, glue, superglue, percentage,
+from core.tools import (getYears, getPeriods, dictfetchall, glue, superglue, percentage,
                         xnumber)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
@@ -56,6 +56,7 @@ chart_options = getattr(
 
 def inversion_chart(municipio=None):
     municipio_list = Municipio.objects.all()
+    periodo_list = getPeriods(Inversion)
     year_list = getYears(Inversion)
 
     if municipio:
@@ -124,6 +125,7 @@ def inversion_chart(municipio=None):
 def inversion_categoria_chart(municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
+    periodo_list = getPeriods(Inversion)
     if not year:
         year = year_list[-1]
 
@@ -952,4 +954,5 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'otros': otros,
         'year_list': year_list,
         'municipio_list': municipio_list,
+        'periodo_list': periodo_list,
         'municipio': municipio_row}
