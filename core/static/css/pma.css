@@ -494,7 +494,7 @@ footer .copyright {
 }
 .select2-container { width: 100% !important;}
 .select2-container--default .select2-selection--single .select2-selection__arrow b { border-color: #fff transparent transparent transparent !important;}
-.select2-dropdown { width: 300px !important; }
+.select2-dropdown-width { width: 300px !important; }
 .nav .open > a, .nav .open > a:focus, .nav .open > a:hover {background-color: #107ca7; border-color: #337ab7;border-radius: 0px !important;}
 .select2-container--default .select2-selection--single .select2-selection__rendered { color: inherit; text-transform: uppercase;}
 
@@ -525,45 +525,4 @@ footer .copyright {
     height:100% !important;
 }
 */
-#indicator, #year {
-    float: left;
-    width: 100%;
-    background: url('/static/img/new_arrow_trans.png') no-repeat right transparent;
-    font-size: 14px;
-    line-height: 1.5em;
-    padding: 0 0.5%;
-    margin: 0;
-    color: #FFF;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    height: 27px !important;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-#indicator option, #year option {
-    background: #fff;
-    color: #333;
-    text-transform: none;
-    font-weight: normal;
-    padding: 5px;
-    font-size: 16px;
-}
-.indicadores:after, .years:after {
-    content: "";
-    pointer-events: none;
-    box-sizing: border-box;
-    border-color: #fff transparent transparent transparent;
-    border-style: solid;
-    border-width: 5px 4px 0 4px;
-    height: 0;
-    right: 0;
-    margin-left: -4px;
-    margin-top: 10px;
-    position: absolute;
-    top: 50%;
-    width: 0;
-}
 table h4 { color: #48a1b1;}
