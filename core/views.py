@@ -420,7 +420,7 @@ def inversion_view(request):
     data = inversion_chart(municipio=municipio, year=year)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],
                                               'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
-                                              'porclasep': data['porclasep'], 'periodo_list':data['periodo_list']},
+                                              'porclasep': data['porclasep'], 'periodo_list': data['periodo_list']},
                               context_instance=RequestContext(request))
 
 
