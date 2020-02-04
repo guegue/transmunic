@@ -40,10 +40,10 @@
 
 {% block section2 %}
     {% if municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+        <div class="cd-horizontal-timeline loaded">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-12 col-md-12">
                         {% if municipio %}
                             <h2><strong>Ranquin de municipio </strong>de misma categoría municipal </h2>
                             <h4> Porcentaje del gasto total destinado a gastos de funcionamiento
@@ -54,64 +54,9 @@
                         {% endif %}
                         <hr class="pma-line-3"/>
                     </div>
+                    {% include 'municipal-triangle.html' %}
                 </div>
             </div>
-            <div class="timeline container">
-                <div class="events-wrapper rankin">
-                    {% if municipio %}
-                        <div class="events" style="width: {{ otros|length|add:1|mul:270 }}px;">
-                            <ol>
-                                {% for row in otros|dictsortreversed:"asignado_percent" %}
-                                    <li>
-                                        <a href=""
-                                           data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                                {% if municipio.slug == row.gasto__municipio__slug %}
-                                           class="selected"{% endif %}
-                                           style="left: {{ forloop.counter0|mul:270 }}px;"><span
-                                                class="posicion">{{ row.gasto__municipio__nombre }}</span>
-                                            <br/>
-                                            {% if row.gasto__periodo == 'I' %}
-                                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
-                                            {% else %}
-                                                <span class="line-cifra">{{ row.asignado_percent|intcomma }}</span>
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ol>
-                            <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                        </div> <!-- .events -->
-                    {% else %}
-                        <div class="events" style="width: {{ porclasep|length|add:1|mul:120 }}px;">
-                            <ol>
-                                {% for row in porclasep|dictsort:"clasificacion" %}
-                                    <li>
-                                        <a href=""
-                                           data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                                {% if municipio.slug == row.gasto__municipio__slug %}
-                                           class="selected"{% endif %}
-                                           style="left: {{ forloop.counter0|mul:120 }}px;"><span
-                                                class="posicion">{{ row.clasificacion }}</span>
-                                            <br/>
-                                            {% if row.gasto__periodo == 'I' %}
-                                                <span>{{ row.inicial_asignado|floatformat:2|intcomma }}</span>
-                                            {% else %}
-                                                <span>{{ row.ejecutado|floatformat:2|intcomma }}</span>
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ol>
-                            <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                        </div> <!-- .events -->
-                    {% endif %}
-                </div> <!-- .events-wrapper -->
-
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
             <div class="events-content container text-center">
                 <ol>
                     {% if municipio %}
