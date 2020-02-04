@@ -151,13 +151,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-right">
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            0
-                                        {% elif periodo_list|keyvalue:year == 'A' %}
-                                            {{ row.asignado_percent|floatformat:1|intcomma|default:0 }}
-                                        {% else %}
-                                            {{ row.ejecutado_percent|floatformat:1|intcomma|default:0 }}
-                                        {% endif %}
+                                       {% widthratio row.ejecutado row.asignado 100 %}
                                     </td>
                                 </tr>
                             {% endfor %}
