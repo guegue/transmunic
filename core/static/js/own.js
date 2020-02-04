@@ -3,7 +3,7 @@ $(function () {
     let select_indicador = $('#indicador');
     let select_year = $('#year');
 
-    if (select_indicador.length > 0) {
+    if (select_indicador.length > 0 && select_indicador.attr('type') === undefined) {
         select_indicador.select2();
     }
     if (select_year.length > 0) {
