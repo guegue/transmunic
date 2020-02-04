@@ -5,6 +5,10 @@
         <div class="square">
             <span class="name">
                 Ranking Municipal
+                <br>
+                {% if mi_clase.clasificacion %}
+                    Grupo "{{ mi_clase.clasificacion }}"
+                {% endif %}
             </span>
         </div>
     </div>
