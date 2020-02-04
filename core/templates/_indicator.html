@@ -130,7 +130,9 @@
                 <div>
                     <h3>
                         <strong>
-                            Ingresos
+		            {% block indicator_subtitle %}
+                                Ingresos
+		            {% endblock %}
                             {% if periodo_list|keyvalue:year == 'F' %}
                                 Ejecutados
                             {% elif periodo_list|keyvalue:year == 'A' %}
@@ -176,7 +178,7 @@
                                     </span>
                                     <div class="info-box-content">
                                         <span class="info-box-number font-17px">
-                                            <strong>Categor&iacute;a de municipio {{ mi_clase.clasificacion }}</strong>
+                                            <strong>Grupo de municipio {{ mi_clase.clasificacion }}</strong>
                                         </span>
                                     </div>
                                 </div>
