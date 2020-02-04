@@ -203,23 +203,13 @@
     height: 110px;
     margin-top: 1em;
 }
-
-.first-child {
-    background-color: #2b7ab3;
-}
-
-.middle-child {
-    background-color: #00a7b2;
-}
-
-.last-child {
-    background-color: #d65162;
-}
-
-.position-relative{
-    position: relative;
-}
+.first-child {background-color: #2b7ab3;}
+.middle-child {background-color: #00a7b2;}
+.last-child {background-color: #d65162;}
+.position-relative{position: relative;}
 #detail-1 .table > tbody > tr > td { padding: 5px; font-size: 12px; }
 .outline-none {outline: none;}
 .border-bottom-1px{border-bottom: 1px solid #ddd !important;}
 .icons-inversion{height: 170px}
+.title-municipio-name {margin-top: 10px;font-size: 25px;}
+.navbar-collapse{padding-right: 0;}

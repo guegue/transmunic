@@ -26,8 +26,8 @@
                     <form id="indicatorfilter" method="GET">
                         <div class="row">
                             {% if municipio %}
-                                <div class="{% if municipio.nombre|length <= 15 %}col-md-1 col-sm-2{% else %}col-md-2 col-sm-2{% endif %} text-center">
-                                    <strong>{{ municipio.nombre }}</strong>
+                                <div class="col-lg-6 col-md-6 text-center">
+                                    <h2 class="title-municipio-name">{{ municipio.nombre }}</h2>
                                     <input type="hidden" name="municipio" class="form-control" value="{{ municipio.slug }}">
                                 </div>
                             {% endif %}
