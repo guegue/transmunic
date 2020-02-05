@@ -836,53 +836,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     bar_horizontal = None
 
     # bar horizontal
-    if otros:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': otros},
-                    'terms': [
-                        'gasto__municipio__nombre',
-                        '{}_percent'.format(quesumar)
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'bar',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'gasto__municipio__nombre': [
-                            '{}_percent'.format(quesumar)
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'colors': colors_array,
-                'title': {
-                    'text': "Ranking de Municipio Categoría '{}'".
-                    format(mi_clase.clasificacion)
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Categoria '
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Gasto por habitante'
-                    }
-                }
-            })
-    elif porclasep:
+    if porclasep:
         data_bar_horizontal = RawDataPool(
             series=[
                 {
