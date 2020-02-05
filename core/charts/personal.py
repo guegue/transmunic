@@ -347,23 +347,28 @@ def gpersonal_chart(request):
                 JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
                 WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.codigo='{tipogasto}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
                 FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
-        sql = sql_tpl.format(asignado="inicial_asignado", ejecutado='inicial_ejecutado', year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="inicial_asignado", ejecutado='inicial_ejecutado',
+                             year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="final_asignado", ejecutado="final_ejecutado", year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="final_asignado", ejecutado="final_ejecutado",
+                             year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="asignado", ejecutado="ejecutado", year=year, periodo=periodo, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="asignado", ejecutado="ejecutado",
+                             year=year, periodo=periodo, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         porclase_periodo = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="actualizado_asignado", ejecutado="actualizado_ejecutado", year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL, )
+        sql = sql_tpl.format(asignado="actualizado_asignado", ejecutado="actualizado_ejecutado",
+                             year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL, )
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclase = superglue(data=(inicial, final, actualizado, porclase_periodo), key='clasificacion')
+        porclase = superglue(data=(inicial, final, actualizado,
+                                   porclase_periodo), key='clasificacion')
         for d in porclase:
             if d['asignado'] and d['ejecutado']:
                 d['nivel'] = d['ejecutado'] / d['asignado'] * 100
@@ -379,15 +384,18 @@ def gpersonal_chart(request):
                 JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
                 WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id HAVING SUM({quesumar})>0) * 100 \
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
+        sql = sql_tpl.format(quesumar="asignado", year=year,
+                             periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo, tipogasto=TipoGasto.PERSONAL)
+        sql = sql_tpl.format(quesumar="ejecutado", year=year,
+                             periodo=periodo, tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL)
+        sql = sql_tpl.format(quesumar="asignado", year=year,
+                             periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
