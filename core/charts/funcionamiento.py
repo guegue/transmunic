@@ -270,24 +270,29 @@ def gf_chart(request):
                 JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
                 WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.clasificacion={tipogasto} AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) \
                 FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
-        sql = sql_tpl.format(asignado="inicial_asignado", ejecutado="inicial_ejecutado", year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.CORRIENTE, )
+        sql = sql_tpl.format(asignado="inicial_asignado", ejecutado="inicial_ejecutado",
+                             year=year, periodo=PERIODO_INICIAL, tipogasto=TipoGasto.CORRIENTE, )
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="final_asignado", ejecutado="final_ejecutado", year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.CORRIENTE, )
+        sql = sql_tpl.format(asignado="final_asignado", ejecutado="final_ejecutado",
+                             year=year, periodo=PERIODO_FINAL, tipogasto=TipoGasto.CORRIENTE, )
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="actualizado_asignado", ejecutado="actualizado_ejecutado", year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.CORRIENTE, )
+        sql = sql_tpl.format(asignado="actualizado_asignado", ejecutado="actualizado_ejecutado",
+                             year=year, periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.CORRIENTE, )
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        sql = sql_tpl.format(asignado="asignado", ejecutado="ejecutado", year=year, periodo=periodo, tipogasto=TipoGasto.CORRIENTE, )
+        sql = sql_tpl.format(asignado="asignado", ejecutado="ejecutado",
+                             year=year, periodo=periodo, tipogasto=TipoGasto.CORRIENTE, )
         cursor = connection.cursor()
         cursor.execute(sql)
         porclase_periodo = dictfetchall(cursor)
         #porclase = glue(inicial, final, 'clasificacion', actualizado=actualizado)
-        porclase = superglue(data=(inicial, final, actualizado, porclase_periodo), key='clasificacion')
+        porclase = superglue(data=(inicial, final, actualizado,
+                                   porclase_periodo), key='clasificacion')
         for d in porclase:
             if d['asignado'] and d['ejecutado']:
                 d['nivel'] = d['ejecutado'] / d['asignado'] * 100
@@ -295,7 +300,7 @@ def gf_chart(request):
                 d['nivel'] = 0
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl="SELECT clasificacion,\
+        sql_tpl = "SELECT clasificacion,\
                 (SELECT SUM(asignado) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
                 JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
                 WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.clasificacion={tipogasto} AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
