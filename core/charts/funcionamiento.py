@@ -411,171 +411,154 @@ def gf_chart(request):
     #
     if municipio:
         gf_comparativo_anios = RawDataPool(
-            series=
-                [{'options': {'source': comparativo_anios },
-                'names':  [u'Años',u'gasto__periodo',u'P. Inicial',u'Ejecutado',u'Categoría Inicial %s' % (mi_clase.clasificacion,), u'Categoría Final %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__anio','gasto__periodo','asignado','ejecutado','clase_inicial','clase_final'],
-                }],
-            )
+            series=[{'options': {'source': comparativo_anios},
+                     'names':  [u'Años', u'gasto__periodo', u'P. Inicial', u'Ejecutado', u'Categoría Inicial %s' % (mi_clase.clasificacion,), u'Categoría Final %s' % (mi_clase.clasificacion,)],
+                     'terms':  ['gasto__anio', 'gasto__periodo', 'asignado', 'ejecutado', 'clase_inicial', 'clase_final'],
+                     }],
+        )
         gf_comparativo_anios_column = Chart(
-                datasource = gf_comparativo_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__anio': ['asignado', 'ejecutado', 'clase_inicial', 'clase_final'],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
+            datasource=gf_comparativo_anios,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__anio': ['asignado', 'ejecutado', 'clase_inicial', 'clase_final'],
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
         gf_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'names':  [u'Gastos',u'Municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__periodo','municipio','clase'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
+            series=[{'options': {'source': comparativo3},
+                     'names':  [u'Gastos', u'Municipio', u'Categoría %s' % (mi_clase.clasificacion,)],
+                     'terms':  ['gasto__periodo', 'municipio', 'clase'],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
         gf_comparativo3_column = Chart(
-                datasource = gf_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio', 'clase']
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': ' '},
-                    #'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
-                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                    },
-                )
+            datasource=gf_comparativo3,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', 'clase']
+            },
+            }],
+            chart_options={
+                'title': {'text': ' '},
+                # 'subtitle': { 'text': u'Municipio de %s y Categoría del Municipio %s' % (municipio_row.nombre, year)},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+            },
+        )
         gf_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'names': [u'Gastos',u'Municipio',u'Categoría %s' % (mi_clase.clasificacion,), ],
-                'terms':  ['gasto__periodo','municipiop','clasep'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
+            series=[{'options': {'source': comparativo2},
+                     'names': [u'Gastos', u'Municipio', u'Categoría %s' % (mi_clase.clasificacion,), ],
+                     'terms':  ['gasto__periodo', 'municipiop', 'clasep'],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
         gf_comparativo2_column = Chart(
-                datasource = gf_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipiop', 'clasep']
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': ' '},
-                    'subtitle': { 'text': u' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-                    'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                    'xAxis': { 'title': {'text': u'Gastos de funcionamiento'} },
-                    },
-                )
-    else: # chartit no municipio
+            datasource=gf_comparativo2,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipiop', 'clasep']
+            },
+            }],
+            chart_options={
+                'title': {'text': ' '},
+                'subtitle': {'text': u' '},
+                'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+                'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                    'xAxis': {'title': {'text': u'Gastos de funcionamiento'}},
+            },
+        )
+    else:  # chartit no municipio
         gf_nivelejecucion = RawDataPool(
-            series=
-                [{'options': {'source': porclase },
-                'terms':  ['clasificacion','ejecutado','asignado','nivel'],
-                }],
-            )
+            series=[{'options': {'source': porclase},
+                     'terms':  ['clasificacion', 'ejecutado', 'asignado', 'nivel'],
+                     }],
+        )
         gf_nivelejecucion_bar = Chart(
-                datasource = gf_nivelejecucion,
-                series_options =
-                [{'options':{
-                    'type': 'bar',
-                    'stacking': False},
-                    'terms':{
-                    'clasificacion': ['nivel' ],
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': u'Nivel de ejecución %s' % (year,)},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-                    }
-                )
+            datasource=gf_nivelejecucion,
+            series_options=[{'options': {
+                'type': 'bar',
+                'stacking': False},
+                'terms': {
+                'clasificacion': ['nivel'],
+            },
+            }],
+            chart_options={
+                'title': {'text': u'Nivel de ejecución %s' % (year,)},
+                'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+            }
+        )
         gf_comparativo_anios = RawDataPool(
-            series=
-                [{'options': {'source': comparativo_anios },
-                'names': [u'Año',u'Periodo',u'Ejecutado','P. Inicial'],
-                'terms':  ['gasto__anio','gasto__periodo','ejecutado','asignado'],
-                }],
-            )
+            series=[{'options': {'source': comparativo_anios},
+                     'names': [u'Año', u'Periodo', u'Ejecutado', 'P. Inicial'],
+                     'terms':  ['gasto__anio', 'gasto__periodo', 'ejecutado', 'asignado'],
+                     }],
+        )
         gf_comparativo_anios_column = Chart(
-                datasource = gf_comparativo_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__anio': ['ejecutado', 'asignado' ],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
+            datasource=gf_comparativo_anios,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__anio': ['ejecutado', 'asignado'],
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
         gf_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'terms':  ['gasto__periodo','municipio',],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
+            series=[{'options': {'source': comparativo3},
+                     'terms':  ['gasto__periodo', 'municipio', ],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
         gf_comparativo3_column = Chart(
-                datasource = gf_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio',]
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
+            datasource=gf_comparativo3,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', ]
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
         gf_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'terms':  ['gasto__periodo','municipio',],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
+            series=[{'options': {'source': comparativo2},
+                     'terms':  ['gasto__periodo', 'municipio', ],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
         gf_comparativo2_column = Chart(
-                datasource = gf_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio', ]
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': ' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-                }
-                )
+            datasource=gf_comparativo2,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', ]
+            },
+            }],
+            chart_options={
+                'title': {'text': ' '},
+                'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+            }
+        )
 
     data_pgf = RawDataPool(
-           series = [{
-              'options': {'source': source_pgf },
-              'terms': [ 'nombre', 'asignado', ]
-            }]
+        series=[{
+            'options': {'source': source_pgf},
+            'terms': ['nombre', 'asignado', ]
+        }]
     )
     data_rubros = RawDataPool(
-           series=[{
-              'options': {'source': rubros},
-              'terms': ['tipogasto__nombre', datacol]
-            }]
+        series=[{
+            'options': {'source': rubros},
+            'terms': ['tipogasto__nombre', datacol]
+        }]
     )
     pie = Chart(
         datasource=data_rubros,
