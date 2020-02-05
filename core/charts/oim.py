@@ -1028,15 +1028,14 @@ def oim_chart(municipio=None, year=None, portada=False):
         for ayear in year_list:
             # elige prefijo segun anho
             prefix = 'subsubtipoingreso'
-            if int(ayear) >= 2018:
+            if ayear >= 2018:
                 prefix = 'sub3tipoingreso'
-            subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
-            subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
-            subsubtipoingreso__origen__shortname = '{}__origen__shortname'.format(prefix)
+            my_subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
+
             periodo = Anio.objects.get(anio=ayear).periodo
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             filter_array = {'ingreso__anio': ayear, 'ingreso__periodo': periodo,
-                            subsubtipoingreso__origen__nombre: name}
+                            my_subsubtipoingreso__origen__nombre: name}
             value = source_cuadro.filter(**filter_array).\
                 exclude(tipoingreso_id=saldo_caja). \
                 aggregate(total=Sum(quesumar))['total']
