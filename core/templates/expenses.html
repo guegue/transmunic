@@ -40,7 +40,7 @@
 
 {% block section2 %}
     {% if municipio %}
-        <div class="cd-horizontal-timeline loaded">
+        <div class="loaded">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
@@ -131,7 +131,7 @@
         </div>
     {% endif %}
     {% if not municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+        <div class="loaded">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -141,39 +141,6 @@
                     </div>
                 </div>
             </div>
-            <div class="timeline container">
-                <div class="events-wrapper rankin">
-                    <div class="events" style="width: {{ porclasep|length|mul:200 }}px;">
-                        <ol>
-                            {% for row in porclasep %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                            {% if forloop.last %} class="selected"{% endif %}
-                                       style="left: {{ forloop.counter0|mul:200 }}px;"><span
-                                            class="posicion">{{ row.clasificacion }}</span>
-                                        <br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado %}
-                                                {{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}
-                              </span>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
-
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
             <div class="events-content container text-center">
                 <ol>
                     {% for row in porclasep %}
