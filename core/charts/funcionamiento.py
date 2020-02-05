@@ -143,7 +143,8 @@ def gf_chart(request):
                 if row2['gasto__anio'] == row['gasto__anio']:
                     found = True
                     try:
-                        row['clase_inicial'] = row2['clase'] / mi_clase_anios_count[row['gasto__anio']]
+                        row['clase_inicial'] = row2['clase'] / \
+                            mi_clase_anios_count[row['gasto__anio']]
                     except KeyError:
                         row['clase_inicial'] = 0
             if not found:
@@ -154,7 +155,8 @@ def gf_chart(request):
                 if row2['gasto__anio'] == row['gasto__anio']:
                     found = True
                     try:
-                        row['clase_final'] = row2['clase'] / mi_clase_anios_count[row['gasto__anio']]
+                        row['clase_final'] = row2['clase'] / \
+                            mi_clase_anios_count[row['gasto__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
