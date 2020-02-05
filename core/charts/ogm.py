@@ -201,16 +201,13 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos de municipios de la misma clase
         municipios_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__clase__anio=year,
                                                          gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by(
-                'gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(asignado=Sum('asignado')).order_by()
         municipios_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year,
                                                              gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by(
-                'gasto__municipio__nombre').annotate(asignado=Sum('asignado'))
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(asignado=Sum('asignado')).order_by()
         municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year,
                                                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').order_by(
-                'gasto__municipio__nombre').annotate(ejecutado=Sum('ejecutado'))
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(ejecutado=Sum('ejecutado')).order_by()
         otros = glue(municipios_inicial, municipios_final,
                      'gasto__municipio__nombre', actualizado=municipios_actualizado)
 
@@ -228,7 +225,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
                 row['ejecutado'] / total_poblacion, 1) if total_poblacion > 0 else 0
             row['asignado_percent'] = round(
                 row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
-        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=False)
+        sort_key = "{}_percent".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=False)
 
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values(
@@ -881,7 +879,9 @@ def ogm_chart(municipio=None, year=None, portada=False):
                         'text': 'Gasto por habitante'
                     }
                 }
-            })
+            },
+            x_sortf_mapf_mts=(None, None, False, True),
+        )
     elif porclasep:
         data_bar_horizontal = RawDataPool(
             series=[
