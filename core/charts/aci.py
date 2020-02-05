@@ -547,7 +547,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
                 'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipios Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -612,10 +612,10 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
     template_name = 'variance_analysis.html'
     context = {
-            'charts': (pie, bar, pie2, bar2, bar_horizontal,),
-            'source': source,
-            'indicator_name': "Ahorro Corriente",
-            'indicator_description': """ El indicador de Ahorro corriente o
+        'charts': (pie, bar, pie2, bar2, bar_horizontal,),
+        'source': source,
+        'indicator_name': "Ahorro Corriente",
+        'indicator_description': """ El indicador de Ahorro corriente o
             capacidad de ahorro es el balance entre los ingresos
             corrientes y los gastos corrientes y es igual al ahorro
             corriente como porcentaje de los ingresos corrientes.
