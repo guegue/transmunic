@@ -308,8 +308,14 @@ def gpersonal_chart(request):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        PERSONALES = [amap['gpersonal']  for amap in Anio.objects.all().\
+                values_list('mapping', flat=True).distinct()]
+        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+                       tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').\
+                               annotate(asignado=Sum('asignado')).order_by())
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+                     tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').\
+                             annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
 
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
