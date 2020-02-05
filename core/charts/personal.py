@@ -236,29 +236,29 @@ def gpersonal_chart(request):
         comparativo_anios = final
 
         # comparativo con promedio de clasificacion para un año específico
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
-            gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('asignado')))
-        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO, \
-            gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
-            gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+                                                   gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).
+                       values('gasto__periodo').annotate(municipio=Sum('asignado')))
+        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO,
+                                                       gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).
+                           values('gasto__periodo').annotate(municipio=Sum('asignado')))
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+                                                 gasto__anio=year, tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).
+                     values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
-        inicial_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,\
-                tipogasto=TipoGasto.PERSONAL, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
-        actualizado_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,\
-                tipogasto=TipoGasto.PERSONAL, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
-        final_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,\
-                tipogasto=TipoGasto.PERSONAL, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
+        inicial_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,
+                                                    tipogasto=TipoGasto.PERSONAL,
+                                                    gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
+        actualizado_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,
+                                                        tipogasto=TipoGasto.PERSONAL,
+                                                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
+        final_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,
+                                                  tipogasto=TipoGasto.PERSONAL,
+                                                  gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
 
         # inserta datos para municipio de la misma clase
         if inicial:
