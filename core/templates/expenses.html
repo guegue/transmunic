@@ -134,10 +134,54 @@
         <div class="loaded">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-12 col-md-12">
                         <h2><strong>{{ indicator_name }} </strong> <br>
                             por categoría de Municipios</h2>
                         <hr class="pma-line-3"/>
+                    </div>
+                    <div class="col-lg-5 col-md-5 table-responsive">
+
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="3" rowspan="1">
+                                    <h4 class="">Porcentaje del gasto total destinado
+                                        a {{ indicator_name }}</h4>
+                                </th>
+                            </tr>
+                            <tr class="bg-primary">
+                                <th class="text-center">Categoría</th>
+                                <th class="text-center">P. Inicial</th>
+                                <th class="text-center">Ejecutado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in porclasep %}
+                                <tr>
+                                    <td class="text-center">{{ row.clasificacion }}</td>
+                                    <td class="text-right">
+                                        {% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %}
+                                            0% {% endif %}</td>
+                                    <td class="text-right">
+                                        {% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %}
+                                            0% {% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>PROMEDIO</td>
+                                <td class="text-right">
+                                    <strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
+                                <td class="text-right">
+                                    <strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
+                            </tr>
+                            </tbody>
+                            <tfoot class="font-12px font-color-azul">
+                            <th colspan="3" rowspan="1" class="text-justify">
+                                <strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -150,49 +194,6 @@
                     {% endfor %}
                 </ol>
             </div> <!-- .events-content -->
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center medium">
-                        <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                            Ver detalles en tabla
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div id="detail-1" class="container">
-                <div class="row">
-                    <div class="col-md-5 table-responsive col-md-offset-3">
-                        <h4 class="text-info text-info-ranking">Porcentaje del gasto total destinado
-                            a {{ indicator_name }}</h4>
-                        <table class="table pma-bg-white">
-                            <tr class="bg-primary">
-                                <th>Categoría</th>
-                                <th>P. Inicial</th>
-                                <th>Ejecutado</th>
-                            </tr>
-                            {% for row in porclasep %}
-                                <tr>
-                                    <td class="text-center">{{ row.clasificacion }}</td>
-                                    <td class="text-right">
-                                        {% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %}
-                                            0% {% endif %}</td>
-                                    <td class="text-right">
-                                        {% if row.ejecutado %}{{ row.ejecutado|floatformat:2 }}% {% else %}
-                                            0% {% endif %}</td>
-                                </tr>
-                            {% endfor %}
-                            <tr class="bg-primary">
-                                <td><strong>PROMEDIO</strong></td>
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     {% endif %}
 
