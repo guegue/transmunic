@@ -40,7 +40,7 @@
 
 {% block section2 %}
     {% if municipio %}
-        <div class="cd-horizontal-timeline loaded">
+        <div class="loaded">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
@@ -131,79 +131,30 @@
         </div>
     {% endif %}
     {% if not municipio %}
-        <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+        <div class="loaded">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-12 col-md-12">
                         <h2><strong>{{ indicator_name }} </strong> <br>
                             por categoría de Municipios</h2>
                         <hr class="pma-line-3"/>
                     </div>
-                </div>
-            </div>
-            <div class="timeline container">
-                <div class="events-wrapper rankin">
-                    <div class="events" style="width: {{ porclasep|length|mul:200 }}px;">
-                        <ol>
-                            {% for row in porclasep %}
-                                <li>
-                                    <a href=""
-                                       data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                            {% if forloop.last %} class="selected"{% endif %}
-                                       style="left: {{ forloop.counter0|mul:200 }}px;"><span
-                                            class="posicion">{{ row.clasificacion }}</span>
-                                        <br/>
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            <span class="line-cifra">{% if row.asignado %}
-                                                {{ row.asignado|floatformat:2 }}%{% else %} 0% {% endif %}
-                              </span>
-                                        {% else %}
-                                            <span class="line-cifra">{% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2 }}% {% else %} 0% {% endif %}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                        <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                    </div> <!-- .events -->
-                </div> <!-- .events-wrapper -->
-
-                <ul class="cd-timeline-navigation">
-                    <li><a href="#0" class="prev inactive">Prev</a></li>
-                    <li><a href="#0" class="next">Next</a></li>
-                </ul> <!-- .cd-timeline-navigation -->
-            </div> <!-- .timeline -->
-            <div class="events-content container text-center">
-                <ol>
-                    {% for row in porclasep %}
-                        <li{% if forloop.last %} class="selected"{% endif %}
-                                                 data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
-                        </li>
-                    {% endfor %}
-                </ol>
-            </div> <!-- .events-content -->
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center medium">
-                        <button id="show-detail-1" class="blanco btn pma-bg-blue more" type="submit">
-                            Ver detalles en tabla
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div id="detail-1" class="container">
-                <div class="row">
-                    <div class="col-md-5 table-responsive col-md-offset-3">
-                        <h4 class="text-info text-info-ranking">Porcentaje del gasto total destinado
-                            a {{ indicator_name }}</h4>
-                        <table class="table pma-bg-white">
-                            <tr class="bg-primary">
-                                <th>Categoría</th>
-                                <th>P. Inicial</th>
-                                <th>Ejecutado</th>
+                    <div class="col-lg-5 col-md-5 table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="3" rowspan="1">
+                                    <h5 class="">Porcentaje del gasto total destinado
+                                        a {{ indicator_name }}</h5>
+                                </th>
                             </tr>
+                            <tr class="bg-primary">
+                                <th class="text-center">Categoría</th>
+                                <th class="text-center">P. Inicial</th>
+                                <th class="text-center">Ejecutado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             {% for row in porclasep %}
                                 <tr>
                                     <td class="text-center">{{ row.clasificacion }}</td>
@@ -215,17 +166,37 @@
                                             0% {% endif %}</td>
                                 </tr>
                             {% endfor %}
-                            <tr class="bg-primary">
-                                <td><strong>PROMEDIO</strong></td>
+                            <tr>
+                                <td>PROMEDIO</td>
                                 <td class="text-right">
                                     <strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
                                 <td class="text-right">
                                     <strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong></td>
                             </tr>
+                            </tbody>
+                            <tfoot class="font-12px font-color-azul">
+                            <th colspan="3" rowspan="1" class="text-justify">
+                                <strong>Fuente: </strong>Elaboraci&oacute;n
+                                propia a partir
+                                de transmunic.gob.ni<strong>.</strong></th>
+                            </tfoot>
                         </table>
+                    </div>
+                    <div class="col-lg-7 col-md-7">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="events-content container text-center">
+                <ol>
+                    {% for row in porclasep %}
+                        <li{% if forloop.last %} class="selected"{% endif %}
+                                                 data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}">
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div> <!-- .events-content -->
         </div>
     {% endif %}
 
@@ -488,7 +459,6 @@
 
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bubbletree.min.js' %}"></script>
@@ -515,5 +485,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {{ charts|load_charts:"pie,bar" }}
+    {% if charts|length == 3 %}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% else %}
+        {{ charts|load_charts:"pie,bar" }}
+    {% endif %}
 {% endblock %}
