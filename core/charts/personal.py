@@ -78,6 +78,8 @@ def gpersonal_chart(request):
 
     # obtiene codigo de tipo gasto de 'mapping' fallback a valor por defecto definido en models
     TipoGasto.PERSONAL = year_data.mapping.get('gpersonal', TipoGasto.PERSONAL)
+    PERSONALES = [amap['gpersonal'] for amap in Anio.objects.all().
+                  values_list('mapping', flat=True).distinct()]
 
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -141,7 +143,8 @@ def gpersonal_chart(request):
                 gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
             row['ejecutado_percent'] = round(row['ejecutado'] / total['ejecutado'] * 100, 2) if total['ejecutado'] > 0 else 0
             row['asignado_percent'] = round(row['asignado'] / total['asignado'] * 100, 2) if total['asignado'] > 0 else 0
-        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
+        sort_key = "{}_percent".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=False)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, \
@@ -160,8 +163,8 @@ def gpersonal_chart(request):
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subtipogasto__codigo')
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
         final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
@@ -316,8 +319,6 @@ def gpersonal_chart(request):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        PERSONALES = [amap['gpersonal'] for amap in Anio.objects.all().
-                      values_list('mapping', flat=True).distinct()]
         inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
                                                    tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').
                        annotate(asignado=Sum('asignado')).order_by())
@@ -737,7 +738,7 @@ def gpersonal_chart(request):
                     }
                 },
             },
-            # x_sortf_mapf_mts=(None, None, False, True),
+            x_sortf_mapf_mts=(None, None, False, True),
         )
     elif porclasep:
         data_bar_horizontal = RawDataPool(
