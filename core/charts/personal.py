@@ -395,237 +395,224 @@ def gpersonal_chart(request):
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+            values('subtipogasto__codigo', 'subtipogasto__nombre', 'subtipogasto__shortname').order_by(
+                'subtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+            values('subtipogasto__codigo', 'subtipogasto__nombre', 'subtipogasto__shortname').order_by(
+                'subtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+            values('subtipogasto__codigo', 'subtipogasto__nombre', 'subtipogasto__shortname').order_by(
+                'subtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto=TipoGasto.PERSONAL,).\
-                values('subtipogasto__codigo','subtipogasto__nombre','subtipogasto__shortname').order_by('subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
+            values('subtipogasto__codigo', 'subtipogasto__nombre', 'subtipogasto__shortname').order_by(
+                'subtipogasto__codigo').annotate(ejecutado=Sum('ejecutado'))
         #rubros = glue(rubros_inicial, rubros_final, 'subtipogasto__codigo', actualizado=rubros_actualizado)
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='subtipogasto__codigo')
+        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
+                                 rubros_periodo), key='subtipogasto__codigo')
 
         # obtiene datos para grafico comparativo de tipo de gastos
-        tipo_inicial= list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subtipogasto__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL).values('subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo_inicial = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values(
+            'subtipogasto__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL).values(
+            'subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, 'subtipogasto__nombre')
 
         # FIXME. en el grafico de periodos...  de donde tomar los datos?
-        source_barra_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
-            tipogasto=TipoGasto.PERSONAL).\
+        source_barra_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+                                                           tipogasto=TipoGasto.PERSONAL).\
             values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_barra_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
-            tipogasto=TipoGasto.PERSONAL).\
+        source_barra_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+                                                         tipogasto=TipoGasto.PERSONAL).\
             values('gasto__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # chart: porcentage gastos de personal
-        source_pgf_asignado =  GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        source_pgf_asignado = GastoDetalle.objects.filter(
+            gasto__anio=year, gasto__periodo=periodo, tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
         source_pgf_asignado['nombre'] = 'Personal'
-        otros_asignado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).exclude(tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
+        otros_asignado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).exclude(
+            tipogasto=TipoGasto.PERSONAL).aggregate(asignado=Sum('asignado'))
         otros_asignado['nombre'] = 'Otros'
         source_pgf = [source_pgf_asignado, otros_asignado]
 
         # comparativo con promedio de clasificacion para un año específico
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('asignado')))
-        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+                                                   gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).
+                       values('gasto__periodo').annotate(municipio=Sum('asignado')))
+        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO,
+                                                       gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).
+                           values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+                                                 gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, ).
+                     values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
         comparativo3 = list(chain(inicial, actualizado, final))
         comparativo2 = list(chain(inicial, final, ))
         for d in comparativo3:
             d.update((k, PERIODO_VERBOSE[v]) for k, v in d.iteritems() if k == "gasto__periodo")
 
         # obtiene datos comparativo de todos los años
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')))
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+            'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')))
         comparativo_anios = final
-
 
     #
     # chartit!
     #
     if municipio:
         gf_comparativo_anios = RawDataPool(
-            series=
-                [{'options': {'source': comparativo_anios },
-                'names':  ['Anios',u'Periodo',u'Mi Municipio',u'Categoria %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__anio','gasto__periodo','municipio_final','clase_final'],
-                }],
-            )
-        gf_comparativo_anios_column = Chart(
-                datasource = gf_comparativo_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__anio': ['municipio_final', 'clase_final'],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        gf_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'names':  [u'Gastos',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__periodo','municipio','clase'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        gf_comparativo3_column = Chart(
-                datasource = gf_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio', 'clase']
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        gf_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'names':  [u'Gastos',u'Mi municipio',u'Categoría %s' % (mi_clase.clasificacion,)],
-                'terms':  ['gasto__periodo','municipio','clase'],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        gf_comparativo2_column = Chart(
-                datasource = gf_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio', 'clase']
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '},
-                 'yAxis': { 'title': {'text': u'Millones de córdobas'} },
-                 'xAxis': { 'title': {'text': u'Gastos de personal'} }
-                },
-                )
-    else: # chartit no municipio
-        gf_nivelejecucion = RawDataPool(
-            series=
-                [{'options': {'source': porclase },
-                'terms':  ['clasificacion','final_ejecutado','final_asignado','nivel'],
-                }],
-            )
-        gf_nivelejecucion_bar = Chart(
-                datasource = gf_nivelejecucion,
-                series_options =
-                [{'options':{
-                    'type': 'bar',
-                    'stacking': False},
-                    'terms':{
-                    'clasificacion': ['nivel' ],
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': u' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-                    }
-                )
-        gf_comparativo_anios = RawDataPool(
-            series=
-                [{'options': {'source': comparativo_anios },
-                'names': [u'Año',u'Periodo',u'Ejecutado','P. Inicial'],
-                'terms':  ['gasto__anio','gasto__periodo','ejecutado','asignado'],
-                }],
-            )
-        gf_comparativo_anios_column = Chart(
-                datasource = gf_comparativo_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__anio': ['ejecutado', 'asignado' ],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        gf_comparativo3 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo3 },
-                'terms':  ['gasto__periodo','municipio',],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        gf_comparativo3_column = Chart(
-                datasource = gf_comparativo3,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio',]
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': ' '}},
-                )
-        gf_comparativo2 = RawDataPool(
-            series=
-                [{'options': {'source': comparativo2 },
-                'terms':  ['gasto__periodo','municipio',],
-                }],
-                #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
-                )
-        gf_comparativo2_column = Chart(
-                datasource = gf_comparativo2,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'gasto__periodo': ['municipio', ]
-                    },
-                    }],
-                chart_options = {
-                    'title': { 'text': ' '},
-                    'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-                }
-                )
-
-    personal_tipo = RawDataPool(
-        series=
-            [{'options': {'source': tipo },
-            'terms':  ['subtipogasto__nombre','ejecutado','asignado'],
-            }],
+            series=[{'options': {'source': comparativo_anios},
+                     'names':  ['Anios', u'Periodo', u'Mi Municipio', u'Categoria %s' % (mi_clase.clasificacion,)],
+                     'terms':  ['gasto__anio', 'gasto__periodo', 'municipio_final', 'clase_final'],
+                     }],
         )
-    personal_tipo_column = Chart(
-            datasource = personal_tipo,
-            series_options =
-            [{'options':{
+        gf_comparativo_anios_column = Chart(
+            datasource=gf_comparativo_anios,
+            series_options=[{'options': {
                 'type': 'column',
                 'stacking': False},
-                'terms':{
-                'subtipogasto__nombre': ['ejecutado', 'asignado'],
-                },
-                }],
-            chart_options =
-            {
-                'title': { 'text': ' '},
-                'data': { 'table': 'datatable'},
+                'terms': {
+                'gasto__anio': ['municipio_final', 'clase_final'],
             },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
+        gf_comparativo3 = RawDataPool(
+            series=[{'options': {'source': comparativo3},
+                     'names':  [u'Gastos', u'Mi municipio', u'Categoría %s' % (mi_clase.clasificacion,)],
+                     'terms':  ['gasto__periodo', 'municipio', 'clase'],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
+        gf_comparativo3_column = Chart(
+            datasource=gf_comparativo3,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', 'clase']
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
+        gf_comparativo2 = RawDataPool(
+            series=[{'options': {'source': comparativo2},
+                     'names':  [u'Gastos', u'Mi municipio', u'Categoría %s' % (mi_clase.clasificacion,)],
+                     'terms':  ['gasto__periodo', 'municipio', 'clase'],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
+        gf_comparativo2_column = Chart(
+            datasource=gf_comparativo2,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', 'clase']
+            },
+            }],
+            chart_options={'title': {'text': ' '},
+                           'yAxis': {'title': {'text': u'Millones de córdobas'}},
+                           'xAxis': {'title': {'text': u'Gastos de personal'}}
+                           },
+        )
+    else:  # chartit no municipio
+        gf_nivelejecucion = RawDataPool(
+            series=[{'options': {'source': porclase},
+                     'terms':  ['clasificacion', 'final_ejecutado', 'final_asignado', 'nivel'],
+                     }],
+        )
+        gf_nivelejecucion_bar = Chart(
+            datasource=gf_nivelejecucion,
+            series_options=[{'options': {
+                'type': 'bar',
+                'stacking': False},
+                'terms': {
+                'clasificacion': ['nivel'],
+            },
+            }],
+            chart_options={
+                'title': {'text': u' '},
+                'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+            }
+        )
+        gf_comparativo_anios = RawDataPool(
+            series=[{'options': {'source': comparativo_anios},
+                     'names': [u'Año', u'Periodo', u'Ejecutado', 'P. Inicial'],
+                     'terms':  ['gasto__anio', 'gasto__periodo', 'ejecutado', 'asignado'],
+                     }],
+        )
+        gf_comparativo_anios_column = Chart(
+            datasource=gf_comparativo_anios,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__anio': ['ejecutado', 'asignado'],
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
+        gf_comparativo3 = RawDataPool(
+            series=[{'options': {'source': comparativo3},
+                     'terms':  ['gasto__periodo', 'municipio', ],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
+        gf_comparativo3_column = Chart(
+            datasource=gf_comparativo3,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', ]
+            },
+            }],
+            chart_options={'title': {'text': ' '}},
+        )
+        gf_comparativo2 = RawDataPool(
+            series=[{'options': {'source': comparativo2},
+                     'terms':  ['gasto__periodo', 'municipio', ],
+                     }],
+            #sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
+        )
+        gf_comparativo2_column = Chart(
+            datasource=gf_comparativo2,
+            series_options=[{'options': {
+                'type': 'column',
+                'stacking': False},
+                'terms': {
+                'gasto__periodo': ['municipio', ]
+            },
+            }],
+            chart_options={
+                'title': {'text': ' '},
+                'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+            }
+        )
+
+    personal_tipo = RawDataPool(
+        series=[{'options': {'source': tipo},
+                 'terms':  ['subtipogasto__nombre', 'ejecutado', 'asignado'],
+                 }],
+    )
+    personal_tipo_column = Chart(
+        datasource=personal_tipo,
+        series_options=[{'options': {
+            'type': 'column',
+            'stacking': False},
+            'terms': {
+            'subtipogasto__nombre': ['ejecutado', 'asignado'],
+        },
+        }],
+        chart_options={
+            'title': {'text': ' '},
+            'data': {'table': 'datatable'},
+        },
     )
     data_pgf = RawDataPool(
-           series = [{
-              'options': {'source': source_pgf },
-              'terms': [ 'nombre', 'asignado' ]
-            }]
+        series=[{
+            'options': {'source': source_pgf},
+            'terms': ['nombre', 'asignado']
+        }]
     )
     data_rubros = RawDataPool(
         series=[{
