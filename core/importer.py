@@ -39,6 +39,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     book = load_workbook(filename=excel_file)
     sheet = book.active
     today = date.today()
+    year = int(year)
     main_object, created = t['main'].objects.\
         get_or_create(municipio=municipio,
                       anio=year,
@@ -48,33 +49,50 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     # proceso para 'inversion' es diferente
     if table == 'inversion':
         for row in sheet[start_row:end_row]:
-            catinversion_id = xnumber(row[2].value)
-            try:
-                if catinversion_id:
-                    catinversion = t['tipo'].objects.get(id=catinversion_id)
-                else:
-                    catinversion_id = unicode(row[2].value)
-                    catinversion = t['tipo'].objects.get(nombre=catinversion_id)
-            except ObjectDoesNotExist:
-                raise ObjectDoesNotExist(
-                    u'Categoría de Inversión %s no existe' % (catinversion_id,))
+            if year >= 2018:
+                catinversion_str = unicode(row[2].value)
+                try:
+                    catinversion_str = unicode(row[2].value)
+                    catinversion = t['tipo'].objects.get(nombre=catinversion_str)
+                except ObjectDoesNotExist:
+                    raise ObjectDoesNotExist(
+                        u'Categoría de Inversión %s no existe' % (catinversion_str,))
 
-            areageografica = str(row[3].value)[0]
-            nombre = unicode(row[1].value)
-            asignado = xnumber(row[4].value)
-            ejecutado = xnumber(row[5].value)
-            defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
-                             'catinversion': catinversion, 'areageografica': areageografica, }
-            proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
-                                                                      inversion=main_object,
-                                                                      defaults=defaults_dict)
+                nombre = unicode(row[1].value)
+                asignado = xnumber(row[3].value)
+                ejecutado = xnumber(row[4].value)
+                defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
+                                 'catinversion': catinversion }
+                proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
+                                                                          inversion=main_object,
+                                                                          defaults=defaults_dict)
+            else:
+                catinversion_id = xnumber(row[2].value)
+                try:
+                    if catinversion_id:
+                        catinversion = t['tipo'].objects.get(id=catinversion_id)
+                    else:
+                        catinversion_id = unicode(row[2].value)
+                        catinversion = t['tipo'].objects.get(nombre=catinversion_id)
+                except ObjectDoesNotExist:
+                    raise ObjectDoesNotExist(
+                        u'Categoría de Inversión %s no existe' % (catinversion_id,))
+
+                areageografica = str(row[3].value)[0]
+                nombre = unicode(row[1].value)
+                asignado = xnumber(row[4].value)
+                ejecutado = xnumber(row[5].value)
+                defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
+                                 'catinversion': catinversion, 'areageografica': areageografica, }
+                proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
+                                                                          inversion=main_object,
+                                                                          defaults=defaults_dict)
         return main_object
 
     # define structure
     sub3 = False
     active_zero = False
     tipo_start = 0
-    year = int(year)
     if table == 'gasto':
         if year >= 2018:
             active_zero = True
