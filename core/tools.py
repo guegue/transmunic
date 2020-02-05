@@ -108,7 +108,7 @@ def superglue(data=(), key='id', default=0):
     merged = {}
     for item in alldata:
 
-        if not item[key]:
+        if not item[key] and item[key] != 0:
             item[key] = 'Sin Clasificar'
             item['subsubtipoingreso__origen__nombre'] = 'Sin Clasificar'
 
