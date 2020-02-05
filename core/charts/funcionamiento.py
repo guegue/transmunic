@@ -762,23 +762,23 @@ def gf_chart(request):
     # Bubble tree data
     bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
 
-        data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
-            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+        data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
+                'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
+                'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
 
         return obtener_excel_response(reporte=reporte, data=data)
 
     template_name = 'expenses.html'
     context = {
-            'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list, \
-            'indicator_name': "Gastos de funcionamiento", \
-            'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ", \
-            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'bubble_data': bubble_source, \
-            'periodo_list': periodo_list, \
+        'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
+        'indicator_name': "Gastos de funcionamiento",
+        'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ",
+        'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
+        'bubble_data': bubble_source,
+        'periodo_list': periodo_list,
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
     return render(request, template_name, context)
