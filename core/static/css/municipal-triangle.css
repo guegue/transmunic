@@ -86,10 +86,10 @@
 }
 
 .municipio-data .font-roboto {
-     font-weight: normal;
     display: contents;
     font-family: 'Roboto', sans-serif;
     font-size: 15px;
+    font-weight: normal;
 }
 
 .square span {
