@@ -166,7 +166,13 @@
                                 </span>
                                 <div class="info-box-content">
                                     <span class="info-box-number font-17px">
-                                        <strong>Cierre {{ ejecutado|million|intcomma }}</strong>
+                                        <strong>Cierre 
+						{% if periodo_list|keyvalue:year == 'I' %}
+						    0
+						{% else %}
+						    {{ ejecutado|million|intcomma }}
+						{% endif %}
+					</strong>
                                     </span>
                                 </div>
                             </div>
