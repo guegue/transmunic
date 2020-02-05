@@ -796,7 +796,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
     field_name = 'subsubtipogasto__origen__shortname'
     for row in rubros:
         rubros_pie.append({
-            'name': row[field_name] if row[field_name] else row['subsubtipogasto__origen__nombre'],
+            'name': row.get(field_name) or row.get('subsubtipogasto__origen__nombre'),
             'inicial_asignado': row.get('inicial_asignado', 0),
             'ejecutado': row.get('ejecutado', 0),
         })
@@ -836,7 +836,53 @@ def ogm_chart(municipio=None, year=None, portada=False):
     bar_horizontal = None
 
     # bar horizontal
-    if porclasep:
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'gasto__municipio__nombre',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'gasto__municipio__nombre': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': "Ranking de Municipio Categoría '{}'".
+                    format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Categoria '
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Gasto por habitante'
+                    }
+                }
+            })
+    elif porclasep:
         data_bar_horizontal = RawDataPool(
             series=[
                 {
