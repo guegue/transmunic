@@ -420,12 +420,12 @@ def ago_chart(request, municipio=None, year=None, portada=False):
 
     template_name = 'variance_analysis.html'
     context = {
-            'charts': (pie, bar, pie2, bar2, bar_horizontal, ),
-            'source': source,
-            'indicator_name': "Dependencia para asumir gastos corrientes",
-            'indicator_subtitle': "Ingresos corrientes propios por rubro",
-            'indicator_subtitle2': "Gastos corrientes totales por rubro",
-            'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
+        'charts': (pie, bar, pie2, bar2, bar_horizontal, ),
+        'source': source,
+        'indicator_name': "Dependencia para asumir gastos corrientes",
+        'indicator_subtitle': "Ingresos corrientes propios por rubro",
+        'indicator_subtitle2': "Gastos corrientes totales por rubro",
+        'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
             'indicator_description': """El ‘indicador de dependencia’ mide la
                 participación relativa de los ingresos por transferencias
                 (corrientes y de capital) sobre el total de los ingresos del
