@@ -85,6 +85,13 @@
     width: 300px;
 }
 
+.municipio-data .font-roboto {
+     font-weight: normal;
+    display: contents;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+}
+
 .square span {
     color: white;
     text-align: center;

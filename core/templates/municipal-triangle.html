@@ -30,7 +30,7 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-                                {{ row.asignado_percent|intcomma }}M. de C&oacute;rdobas
+                            <span class="font-roboto">{{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -47,7 +47,8 @@
                             <span class="municipio-data">
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                            <br>{{ row.asignado_percent|intcomma }}M. de C&oacute;rdobas
+                            <br>
+                                <span class="font-roboto">{{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -65,7 +66,8 @@
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                                <br>{{ row.asignado_percent|intcomma }}M. de C&oacute;rdobas
+                                <br>
+                            <span class="font-roboto">{{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -87,7 +89,8 @@
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                                <br>{{ row.asignado|intcomma }}M. de C&oacute;rdobas
+                                <br>
+                            <span class="font-roboto">{{ row.asignado|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -104,7 +107,8 @@
                             <span class="municipio-data">
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                            <br>{{ row.asignado|intcomma }}M. de C&oacute;rdobas
+                            <br>
+                                <span class="font-roboto">{{ row.asignado|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -122,7 +126,8 @@
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                                <br>{{ row.asignado|intcomma }}M. de C&oacute;rdobas
+                                <br>
+                            <span class="font-roboto">{{ row.asignado|intcomma }} M. de C&oacute;rdobas</span>
                             </span>
                         </div>
                     </div>
@@ -146,11 +151,13 @@
                            {% endif %}
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            {% if row.ejecutado_percent %}
-                                {{ row.ejecutado_percent|intcomma }}
-                            {% else %}
-                                {{ row.ejecutado|intcomma }}
-                            {% endif %}M. de C&oacute;rdobas
+                            <span class="font-roboto">
+                                {% if row.ejecutado_percent %}
+                                    {{ row.ejecutado_percent|intcomma }}
+                                {% else %}
+                                    {{ row.ejecutado|intcomma }}
+                                {% endif %}M. de C&oacute;rdobas
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -167,11 +174,13 @@
                             <b>MI MUNICIPIO</b>
                         {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                         <br>
-                            {% if row.ejecutado_percent %}
-                                {{ row.ejecutado_percent|intcomma }}
-                            {% else %}
-                                {{ row.ejecutado|intcomma }}
-                            {% endif %}M. de C&oacute;rdobas
+                          <span class="font-roboto">
+                                {% if row.ejecutado_percent %}
+                                    {{ row.ejecutado_percent|intcomma }}
+                                {% else %}
+                                    {{ row.ejecutado|intcomma }}
+                                {% endif %}M. de C&oacute;rdobas
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -190,11 +199,13 @@
                            {% endif %}
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            {% if row.ejecutado_percent %}
-                                {{ row.ejecutado_percent|intcomma }}
-                            {% else %}
-                                {{ row.ejecutado|intcomma }}
-                            {% endif %}M. de C&oacute;rdobas
+                            <span class="font-roboto">
+                                {% if row.ejecutado_percent %}
+                                    {{ row.ejecutado_percent|intcomma }}
+                                {% else %}
+                                    {{ row.ejecutado|intcomma }}
+                                {% endif %}M. de C&oacute;rdobas
+                            </span>
                         </span>
                     </div>
                 </div>
