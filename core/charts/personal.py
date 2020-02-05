@@ -217,12 +217,13 @@ def gpersonal_chart(request):
                 if row2['gasto__anio'] == row['gasto__anio']:
                     found = True
                     try:
-                        row['clase_final'] = row2['clase_final'] / mi_clase_anios_count[row['gasto__anio']]
+                        row['clase_final'] = row2['clase_final'] / \
+                            mi_clase_anios_count[row['gasto__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
                 row['clase_final'] = 0
-        #for row in inicial:
+        # for row in inicial:
         #    found = False
         #    for row2 in final:
         #        if row2['gasto__anio'] == row['gasto__anio']:
