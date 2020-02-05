@@ -11,8 +11,7 @@ from django.template import RequestContext
 from chartit import Chart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, GastoDetalle, Gasto, Municipio
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL,\
-    CLASIFICACION_VERBOSE
+from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, CLASIFICACION_VERBOSE
 from core.tools import getYears, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from core.charts.bubble_oim import oim_bubble_chart_data
