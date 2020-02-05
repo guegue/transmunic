@@ -899,7 +899,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {
-                        'type': 'bar',
+                        'type': 'column',
                         'colorByPoint': True,
                     },
                     'terms': {
