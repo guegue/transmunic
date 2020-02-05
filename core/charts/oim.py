@@ -1050,9 +1050,9 @@ def oim_chart(municipio=None, year=None, portada=False):
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
             filter_array = {'ingreso__anio': year, 'ingreso__periodo': periodo,
-                            subsubtipoingreso__origen__nombre: label,
-                            'ingreso__municipio__clasificaciones__clasificacion': mi_clase.clasificacion,
-                            'ingreso__municipio__clase__anio': year}
+                    subsubtipoingreso__origen__nombre: label,
+                    'ingreso__municipio__clasificaciones__clasificacion': mi_clase.clasificacion,
+                    'ingreso__municipio__clase__anio': year}
             value = IngresoDetalle.objects. \
                 filter(**filter_array). \
                 exclude(tipoingreso_id=saldo_caja). \
