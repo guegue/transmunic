@@ -704,7 +704,7 @@ def gpersonal_chart(request):
                 'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipios Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
