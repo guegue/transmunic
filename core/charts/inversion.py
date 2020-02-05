@@ -833,7 +833,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             series_options=[
                 {
                     'options': {
-                        'type': 'bar',
+                        'type': 'column',
                         'colorByPoint': True,
                     },
                     'terms': {
@@ -847,16 +847,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                     'enabled': False
                 },
                 'title': {
-                    'text': 'Ranking de Municipio por Categoría'
+                    'text': 'Inversión percápita'
                 },
                 'xAxis': {
                     'title': {
-                        'text': 'Categoria'
+                        'text': 'Grupos'
                     }
                 },
                 'yAxis': {
                     'title': {
-                        'text': 'Gasto por habitante'
+                        'text': 'Córdobas'
                     }
                 }
             })
