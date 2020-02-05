@@ -14,7 +14,7 @@
     </div>
 
     {% if periodo_list|keyvalue:year == 'I' %}
-        {% for row in otros|dictsortreversed:'asignado_percent' %}
+        {% for row in otros|dictsortreversed:'asignado_percent'|default:otros|dictsortreversed:'asignado' %}
             {% if forloop.first %}
                 <div class="balloon-dialogue first-balloon-dialogue">
                     <strong>
@@ -25,16 +25,20 @@
                     <div class="position-balloon">
                         <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre %}
                                <b>MI MUNICIPIO</b>
                            {% endif %}
-                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            {{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas
+                             {% if row.asignado_percent %}
+                                {{ row.asignado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.asignado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
                         </span>
                     </div>
                 </div>
-            {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+            {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre %}
                 <div class="balloon-dialogue second-balloon-dialogue">
                     <strong>
                         {% for letter in 'POSICIÓN'|make_list %}
@@ -45,10 +49,14 @@
                         <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                         <b>MI MUNICIPIO</b>
-                        {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                        {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                         <br>
-                        {{ row.ejecutado_percent|intcomma }} M. de C&oacute;rdobas
-                        <span class="municipio-data">
+                            {% if row.asignado_percent %}
+                                {{ row.asignado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.asignado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
+                        </span>
                     </div>
                 </div>
             {% elif forloop.last %}
@@ -61,19 +69,23 @@
                     <div class="position-balloon">
                         <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre %}
                                <b>MI MUNICIPIO</b>
                            {% endif %}
-                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                             {{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas
+                            {% if row.asignado_percent %}
+                                {{ row.asignado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.asignado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
                         </span>
                     </div>
                 </div>
             {% endif %}
         {% endfor %}
     {% else %}
-        {% for row in otros|dictsortreversed:'ejecutado_percent' %}
+        {% for row in otros|dictsortreversed:'ejecutado_percent'|default:otros|dictsortreversed:'ejecutado' %}
             {% if forloop.first %}
                 <div class="balloon-dialogue first-balloon-dialogue">
                     <strong>
@@ -84,16 +96,20 @@
                     <div class="position-balloon">
                         <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre %}
                                <b>MI MUNICIPIO</b>
                            {% endif %}
-                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            {{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas
+                            {% if row.ejecutado_percent %}
+                                {{ row.ejecutado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.ejecutado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
                         </span>
                     </div>
                 </div>
-            {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+            {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
                 <div class="balloon-dialogue second-balloon-dialogue">
                     <strong>
                         {% for letter in 'POSICIÓN'|make_list %}
@@ -104,9 +120,13 @@
                         <span {% if forloop.counter < 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                             <b>MI MUNICIPIO</b>
-                        {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                        {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                         <br>
-                        {{ row.ejecutado_percent|intcomma }} M. de C&oacute;rdobas
+                            {% if row.ejecutado_percent %}
+                                {{ row.ejecutado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.ejecutado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
                         </span>
                     </div>
                 </div>
@@ -120,12 +140,16 @@
                     <div class="position-balloon">
                         <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower %}
+                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre %}
                                <strong></strong>
                            {% endif %}
-                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre %}
+                            {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                             {{ row.asignado_percent|intcomma }} M. de C&oacute;rdobas
+                            {% if row.ejecutado_percent %}
+                                {{ row.ejecutado_percent|million|intcomma }}
+                            {% else %}
+                                {{ row.ejecutado|million|intcomma }}
+                            {% endif %}M. de C&oacute;rdobas
                         </span>
                     </div>
                 </div>
