@@ -356,7 +356,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                 'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipios Categoría '{}'".
-                        format(mi_clase.clasificacion)
+                    format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -419,10 +419,10 @@ def ago_chart(request, municipio=None, year=None, portada=False):
 
     template_name = 'variance_analysis.html'
     context = {
-            'charts': (pie, bar, pie2, bar2, bar_horizontal, ),
-            'source': source,
-            'indicator_name': "Dependencia para asumir gastos corrientes",
-            'indicator_description': """El ‘indicador de dependencia’ mide la
+        'charts': (pie, bar, pie2, bar2, bar_horizontal, ),
+        'source': source,
+        'indicator_name': "Dependencia para asumir gastos corrientes",
+        'indicator_description': """El ‘indicador de dependencia’ mide la
                 participación relativa de los ingresos por transferencias
                 (corrientes y de capital) sobre el total de los ingresos del
                 Municipio. Al hacerlo, aquel indicador permite saber hasta
