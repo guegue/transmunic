@@ -620,7 +620,55 @@ def gf_chart(request):
             )
 
     bar_horizontal = None
-    if porclasep:
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'gasto__municipio__nombre',
+                        '{}_percent'.format(quesumar)
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'gasto__municipio__nombre': [
+                            '{}_percent'.format(quesumar)
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': "Ranking de Municipios Categoría '{}'".
+                        format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Recaudación por habitante en córdobas corrientes'
+                    }
+                },
+            },
+            x_sortf_mapf_mts=(None, None, False, True),
+        )
+    elif porclasep:
         data_bar_horizontal = RawDataPool(
             series=[
                 {
@@ -672,7 +720,7 @@ def gf_chart(request):
     elif bar_horizontal:
         charts = (pie, bar, bar_horizontal)
     else:
-        charts = (pie, bar, bar_horizontal)
+        charts = (pie, bar)
 
     # Bubble tree data
     bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)

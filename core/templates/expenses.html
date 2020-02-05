@@ -94,11 +94,14 @@
             </div>
             <div id="detail-1" class="container">
                 <div class="row">
-                    <div class="col-md-12 table-responsive">
-                        <h4 class="text-info text-info-ranking">Porcentaje del gasto
-                            total destinado a {{ indicator_name }}</h4>
-                        <table class="table table-condensed table-striped pma-bg-white">
+                    <div class="col-lg-6 col-md-6 table-responsive">
+
+                        <table class="table table-bordered table-striped pma-bg-white">
                             <thead class="thead-inverse">
+                            <tr>
+                                <th colspan="4" rowspan="1"><h5>Porcentaje del gasto
+                                    total destinado a {{ indicator_name }}</h5></th>
+                            </tr>
                             <tr class="bg-primary">
                                 <th>Posición</th>
                                 <th>Municipios</th>
@@ -125,6 +128,10 @@
                                 <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
                             </tr>
                         </table>
+                    </div>
+                    <div class="col-lg-6 col-md-6 height-horizontal-bar">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
