@@ -186,15 +186,18 @@ def gpersonal_chart(request):
         comparativo_anios = anual2
 
         # obtiene datos para grafico comparativo de tipo de gastos
-        tipo_inicial= list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo_inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL,
+                                                        tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_FINAL,
+                                                      tipogasto=TipoGasto.PERSONAL).values('subtipogasto__nombre').annotate(ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, 'subtipogasto__nombre')
 
         # obtiene datos comparativo de todos los años
         #inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(municipio_inicial=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(municipio_final=Sum('ejecutado')))
+        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,
+                                                 tipogasto=TipoGasto.PERSONAL,).values('gasto__anio', 'gasto__periodo').annotate(municipio_final=Sum('ejecutado')))
         # obtiene datos para municipio de la misma clase
-        #inicial_clase = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, \
+        # inicial_clase = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto=TipoGasto.PERSONAL, \
         #        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
         #        values('gasto__anio','gasto__periodo').order_by('gasto__periodo').annotate(clase_inicial=Sum('asignado'))
         final_clase_sql = "SELECT core_gasto.anio AS gasto__anio,'F' AS gasto__periodo,SUM(ejecutado) AS clase_final FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
