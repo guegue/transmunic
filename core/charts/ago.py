@@ -426,7 +426,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         'indicator_subtitle': "Ingresos corrientes propios por rubro",
         'indicator_subtitle2': "Gastos corrientes totales por rubro",
         'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
-            'indicator_description': """El ‘indicador de dependencia’ mide la
+        'indicator_description': """El ‘indicador de dependencia’ mide la
                 participación relativa de los ingresos por transferencias
                 (corrientes y de capital) sobre el total de los ingresos del
                 Municipio. Al hacerlo, aquel indicador permite saber hasta
