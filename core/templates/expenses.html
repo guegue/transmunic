@@ -339,6 +339,7 @@
 
 
 {% block section4 %}
+{% if periodo_list|keyvalue:year != 'I' %}
     <div class="container wide">
         <div class="row">
             <div class="col-md-12">
@@ -349,45 +350,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 col-md-offset-2 table-responsive">
-                <table class="table table-condensed">
-                    <tr class="bg-primary">
-                        <th>Rubros de gastos</th>
-                        <th>Inicial</th>
-                        <th>Actualizado</th>
-                        <th>Ejecutado</th>
-                    </tr>
-                    {% for row in rubros %}
-                        <tr>
-                            <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}
-                                {{ row.subtipogasto__nombre }}{% endif %}</td>
-                            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                            <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                            <td class="text-right montos">
-                                {% if row.final_asignado and row.final_ejecutado %}
-                                    {{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr class="bold">
-                        <td>TOTAL</td>
-                        <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ rubros|total_sum:'actualizado_asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ rubros|total_sum:'final_ejecutado'|million|intcomma }}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="container">
-                <div class="col-md-12 text-center medium">
-                    <button id="show-detail-2" class="blanco btn pma-bg-blue more" type="submit">
-                        Ver detalles
-                    </button>
-                </div>
-            </div>
-
-            <div id="detail-2" class="row">
-                <div class="col-md-12 table-responsive">
+            <div class="col-md-12 table-responsive">
                     <table class="table table-bordered">
                         <tr class="bg-primary">
                             <td></td>
@@ -498,6 +461,7 @@
             </div>
         </div>
     </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_footer_scripts %}
