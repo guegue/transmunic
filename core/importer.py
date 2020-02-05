@@ -62,7 +62,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                 asignado = xnumber(row[3].value)
                 ejecutado = xnumber(row[4].value)
                 defaults_dict = {'asignado': asignado, 'ejecutado': ejecutado,
-                                 'catinversion': catinversion }
+                                 'catinversion': catinversion}
                 proyecto, created = t['detalle'].objects.update_or_create(nombre=nombre,
                                                                           inversion=main_object,
                                                                           defaults=defaults_dict)
