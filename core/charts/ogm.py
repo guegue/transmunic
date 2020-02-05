@@ -201,13 +201,16 @@ def ogm_chart(municipio=None, year=None, portada=False):
         # obtiene datos de municipios de la misma clase
         municipios_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__clase__anio=year,
                                                          gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(asignado=Sum('asignado')).order_by()
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(
+                asignado=Sum('asignado')).order_by()
         municipios_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year,
                                                              gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(asignado=Sum('asignado')).order_by()
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(
+                asignado=Sum('asignado')).order_by()
         municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year,
                                                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(ejecutado=Sum('ejecutado')).order_by()
+            values('gasto__municipio__nombre', 'gasto__municipio__slug').annotate(
+                ejecutado=Sum('ejecutado')).order_by()
         otros = glue(municipios_inicial, municipios_final,
                      'gasto__municipio__nombre', actualizado=municipios_actualizado)
 
