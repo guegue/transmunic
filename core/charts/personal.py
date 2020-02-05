@@ -39,6 +39,22 @@ colorscheme = getattr(
         '#FFE070',
         '#25AAE1'])
 
+colors_array = [
+    '#37a2da',
+    '#314454',
+    '#ce8266',
+    '#9ee6b7',
+    '#ffdb5c',
+    '#ff9f7e',
+    '#fb7292',
+    '#e062ae',
+    '#e690d2',
+    '#e7bcf3',
+    '#9d95f5',
+    '#67a0a8',
+    '#96bfff',
+]
+
 chart_options = getattr(
     pma_settings,
     'CHART_OPTIONS',
@@ -655,11 +671,58 @@ def gpersonal_chart(request):
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
+    bar_horizontal = None
+    if porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': 'Porcentaje del Gasto Total'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Grupos'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Porcentaje'
+                    }
+                }
+            })
+
     portada = False #FIXME: convert to view
     if portada:
-        charts =  (pie, )
+        charts = (pie, )
     else:
-        charts =  (pie,bar)
+        charts = (pie, bar, bar_horizontal)
 
     # Bubble tree data
     bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)

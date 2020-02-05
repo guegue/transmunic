@@ -140,13 +140,12 @@
                         <hr class="pma-line-3"/>
                     </div>
                     <div class="col-lg-5 col-md-5 table-responsive">
-
                         <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th colspan="3" rowspan="1">
-                                    <h4 class="">Porcentaje del gasto total destinado
-                                        a {{ indicator_name }}</h4>
+                                    <h5 class="">Porcentaje del gasto total destinado
+                                        a {{ indicator_name }}</h5>
                                 </th>
                             </tr>
                             <tr class="bg-primary">
@@ -182,6 +181,10 @@
                                 de transmunic.gob.ni<strong>.</strong></th>
                             </tfoot>
                         </table>
+                    </div>
+                    <div class="col-lg-7 col-md-7">
+                        <div id="bar_horizontal" class="view-alternative"> Barra Horizontal
+                        </div>
                     </div>
                 </div>
             </div>
@@ -456,7 +459,6 @@
 
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/Tween.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bubbletree.min.js' %}"></script>
@@ -483,5 +485,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {{ charts|load_charts:"pie,bar" }}
+    {% if charts|length == 3 %}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% else %}
+        {{ charts|load_charts:"pie,bar" }}
+    {% endif %}
 {% endblock %}
