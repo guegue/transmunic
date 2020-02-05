@@ -129,7 +129,7 @@
 {% endblock %}
 
 {% block section2 %}
-    <div class="cd-horizontal-timeline loaded pma-gradient inverted">
+    <div class="cd-horizontal-timeline loaded">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -145,71 +145,6 @@
                 </div>
             </div>
         </div>
-        <div class="timeline container">
-            <div class="events-wrapper rankin">
-                <div class="events"
-                     style="width: {{ otros|length|add:1|mul:170 }}{{ porclasep|length|add:1|mul:170 }}px;">
-                    <ol>
-                        {% for row in porclasep %}
-                            <li>
-                                <a href=""
-                                   data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                        {% if forloop.first %} class="selected"{% endif %}
-                                   style="left: {{ forloop.counter0|mul:170 }}px;"><span
-                                        class="posicion">{% firstof row.nombre row.clasificacion %}</span>
-                                    <br/>
-                                    <span class="line-cifra">
-                            {% if row.asignado %}
-                                Asignado: {{ row.asignado|floatformat:2 }}
-                            {% elif row.ingreso %}
-                                Ingreso: {{ row.ingreso|floatformat:2|intcomma }}
-                            {% else %}{% endif %}
-                            </span><br/>
-                                    <span class="line-cifra">
-                            {% if row.ejecutado %}
-                                Ejecutado: {{ row.ejecutado|floatformat:2 }}
-                            {% elif row.gasto %}
-                                Gasto: {{ row.gasto|floatformat:2|intcomma }}
-                            {% else %}{% endif %}
-                            </span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                        {% for row in otros %}
-                            <li>
-                                <a href=""
-                                   data-date="{% now "SHORT_DATETIME_FORMAT" %} 00:{{ forloop.counter }}"
-                                        {% if forloop.first %} class="selected"{% endif %}
-                                   style="left: {{ forloop.counter0|mul:170 }}px;"><span
-                                        class="posicion2">{% firstof row.nombre row.clasificacion %}</span>
-                                    <br/>
-                                    <span class="line-cifra">
-                            {% if row.asignado %}
-                                Asignado: {{ row.asignado|floatformat:2 }}
-                            {% elif row.ingreso %}
-                                Ingreso: {{ row.ingreso|floatformat:2|intcomma }}
-                            {% else %} 0 {% endif %}
-                            </span><br/>
-                                    <span class="line-cifra">
-                            {% if row.ejecutado %}
-                                Ejecutado: {{ row.ejecutado|floatformat:2 }}
-                            {% elif row.gasto %}
-                                Gasto: {{ row.gasto|floatformat:2|intcomma }}
-                            {% else %} 0 {% endif %}
-                            </span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ol>
-                    <span class="filling-line" aria-hidden="true" style="transform: scaleX(0.0772222);"></span>
-                </div> <!-- .events -->
-            </div> <!-- .events-wrapper -->
-
-            <ul class="cd-timeline-navigation">
-                <li><a href="#0" class="prev inactive">Prev</a></li>
-                <li><a href="#0" class="next">Next</a></li>
-            </ul> <!-- .cd-timeline-navigation -->
-        </div> <!-- .timeline -->
         <div class="events-content container text-center">
             <ol>
                 {% for row in otros|dictsortreversed:"asignado" %}
