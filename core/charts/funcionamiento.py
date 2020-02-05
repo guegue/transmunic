@@ -162,41 +162,41 @@ def gf_chart(request):
         comparativo_anios = anual2
 
         # comparativo con promedio de clasificacion para un año específico
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('asignado')))
-        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, \
-            gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+                                                   gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).
+                       values('gasto__periodo').annotate(municipio=Sum('asignado')))
+        actualizado = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_ACTUALIZADO,
+                                                       gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).
+                           values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+                                                 gasto__anio=year, tipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).
+                     values('gasto__periodo').annotate(municipio=Sum('ejecutado')))
 
         # obtiene datos para municipios de la misma clase
-        inicial_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,\
-                tipogasto__clasificacion=TipoGasto.CORRIENTE, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
-        actualizado_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,\
-                tipogasto__clasificacion=TipoGasto.CORRIENTE, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
-        final_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,\
-                tipogasto__clasificacion=TipoGasto.CORRIENTE, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
+        inicial_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,
+                                                    tipogasto__clasificacion=TipoGasto.CORRIENTE,
+                                                    gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('asignado'))
+        actualizado_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,
+                                                        tipogasto__clasificacion=TipoGasto.CORRIENTE,
+                                                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
+        final_clase = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,
+                                                  tipogasto__clasificacion=TipoGasto.CORRIENTE,
+                                                  gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            values('gasto__periodo').order_by('gasto__periodo').annotate(clase=Sum('ejecutado'))
 
         # obtiene totales
         total_municipio_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__slug=municipio).\
-                aggregate(total=Sum('asignado'))['total']
+            aggregate(total=Sum('asignado'))['total']
         total_municipio_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__slug=municipio).\
-                aggregate(total=Sum('ejecutado'))['total']
-        total_clase_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                aggregate(total=Sum('asignado'))['total']
-        total_clase_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, \
-                gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
-                aggregate(total=Sum('ejecutado'))['total']
+            aggregate(total=Sum('ejecutado'))['total']
+        total_clase_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,
+                                                          gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            aggregate(total=Sum('asignado'))['total']
+        total_clase_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,
+                                                        gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, gasto__municipio__clase__anio=year).\
+            aggregate(total=Sum('ejecutado'))['total']
 
         # inserta datos para municipio de la misma clase
         if inicial:
