@@ -69,13 +69,13 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             ejecutado = 0
 
         # obtiene datos comparativo de ingresos de todos los años
-        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')))
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')).order_by())
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de gastos de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         # obtiene datos de gastos en ditintos rubros
