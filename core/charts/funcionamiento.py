@@ -10,6 +10,7 @@ from itertools import chain
 from datetime import datetime, time
 from operator import itemgetter
 
+from django.conf import settings
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
 from django.shortcuts import render_to_response, render
@@ -26,25 +27,9 @@ from lugar.models import ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(
-    pma_settings,
-    'CHARTS_COLORSCHEME',
-    [
-        '#2b7ab3',
-        '#00a7b2 ',
-        '#5A4A42',
-        '#D65162',
-        '#8B5E3B',
-        '#84B73F',
-        '#AF907F',
-        '#FFE070',
-        '#25AAE1'])
-
-chart_options = getattr(
-    pma_settings,
-    'CHART_OPTIONS',
-    {}
-)
+colorscheme = settings.CHARTS_COLORSCHEME
+colors_array = settings.COLORS_ARRAY
+chart_options = settings.CHART_OPTIONS
 
 def gf_chart(request):
     # XXX: why this is not a view?
@@ -634,11 +619,61 @@ def gf_chart(request):
             #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
             )
 
+    bar_horizontal = None
+    if porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': 'Porcentaje del Gasto Total'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Grupos'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Porcentaje'
+                    }
+                }
+            })
+
     portada = False #FIXME: convert to view
     if portada:
-        charts =  (pie, )
+        charts = (pie,)
+    elif bar_horizontal:
+        charts = (pie, bar, bar_horizontal)
     else:
-        charts =  (pie, bar)
+        charts = (pie, bar, bar_horizontal)
+
     # Bubble tree data
     bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
