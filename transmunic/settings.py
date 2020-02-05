@@ -218,6 +218,22 @@ CHART_OPTIONS_BAR = {
     'legend': {'enabled': False},
 }
 
+COLORS_ARRAY = [
+    '#37a2da',
+    '#314454',
+    '#ce8266',
+    '#9ee6b7',
+    '#ffdb5c',
+    '#ff9f7e',
+    '#fb7292',
+    '#e062ae',
+    '#e690d2',
+    '#e7bcf3',
+    '#9d95f5',
+    '#67a0a8',
+    '#96bfff',
+]
+
 try:
     LOCAL_SETTINGS
 except NameError:

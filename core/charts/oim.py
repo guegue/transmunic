@@ -8,6 +8,7 @@
 from itertools import chain
 from operator import itemgetter
 
+from django.conf import settings
 from django.db import connection
 from django.db.models import Sum
 
@@ -22,43 +23,10 @@ from core.tools import (getYears, dictfetchall, glue,
                         percentage)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
-from transmunic import settings as pma_settings
 
-colorscheme = getattr(
-    pma_settings,
-    'CHARTS_COLORSCHEME',
-    [
-        '#2b7ab3',
-        '#00a7b2',
-        '#5A4A42',
-        '#D65162',
-        '#8B5E3B',
-        '#84B73F',
-        '#AF907F',
-        '#FFE070',
-        '#25AAE1'])
-
-colors_array = [
-    '#37a2da',
-    '#314454',
-    '#ce8266',
-    '#9ee6b7',
-    '#ffdb5c',
-    '#ff9f7e',
-    '#fb7292',
-    '#e062ae',
-    '#e690d2',
-    '#e7bcf3',
-    '#9d95f5',
-    '#67a0a8',
-    '#96bfff',
-]
-
-chart_options = getattr(
-    pma_settings,
-    'CHART_OPTIONS',
-    {}
-)
+colorscheme = settings.CHARTS_COLORSCHEME
+colors_array = settings.COLORS_ARRAY
+chart_options = settings.CHART_OPTIONS
 
 
 def oim_chart(municipio=None, year=None, portada=False):
