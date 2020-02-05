@@ -2,6 +2,7 @@
 
 import json
 
+from django.conf import settings
 from django.db import connection
 from django.db.models import Q, Sum, Max, Min, Avg, Count
 from django.shortcuts import render_to_response, render
@@ -17,25 +18,9 @@ from lugar.models import ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
 
-colorscheme = getattr(
-    pma_settings,
-    'CHART_OPTIONS_COLORS',
-    [
-        '#2b7ab3',
-        '#00a7b2 ',
-        '#5A4A42',
-        '#D65162',
-        '#8B5E3B',
-        '#84B73F',
-        '#AF907F',
-        '#FFE070',
-        '#25AAE1'])
-
-chart_options = getattr(
-    pma_settings,
-    'CHART_OPTIONS',
-    {}
-)
+colorscheme = settings.CHARTS_COLORSCHEME
+colors_array = settings.COLORS_ARRAY
+chart_options = settings.CHART_OPTIONS
 
 
 def ago_chart(request, municipio=None, year=None, portada=False):
@@ -336,9 +321,105 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
     bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)
 
+    bar_horizontal = None
+    # bar horizontal
+    if otros:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': otros},
+                    'terms': [
+                        'nombre',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'bar',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'nombre': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': "Ranking de Municipios Categoría '{}'".
+                        format(mi_clase.clasificacion)
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Municipio'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Recaudación por habitante en córdobas corrientes'
+                    }
+                },
+            },
+            x_sortf_mapf_mts=(None, None, False, True),
+        )
+    elif porclasep:
+        data_bar_horizontal = RawDataPool(
+            series=[
+                {
+                    'options': {'source': porclasep},
+                    'terms': [
+                        'clasificacion',
+                        quesumar
+                    ]
+                }
+            ]
+        )
+        bar_horizontal = Chart(
+            datasource=data_bar_horizontal,
+            series_options=[
+                {
+                    'options': {
+                        'type': 'column',
+                        'colorByPoint': True,
+                    },
+                    'terms': {
+                        'clasificacion': [
+                            quesumar
+                        ]
+                    },
+                }],
+            chart_options={
+                'legend': {
+                    'enabled': False
+                },
+                'colors': colors_array,
+                'title': {
+                    'text': 'Recaudación percápita'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Grupos'
+                    }
+                },
+                'yAxis': {
+                    'title': {
+                        'text': 'Córdobas'
+                    }
+                }
+            })
+
     template_name = 'variance_analysis.html'
     context = {
-            'charts': (pie, bar, pie2, bar2),
+            'charts': (pie, bar, pie2, bar2, bar_horizontal, ),
             'source': source,
             'indicator_name': "Dependencia para asumir gastos corrientes",
             'indicator_description': """El ‘indicador de dependencia’ mide la
