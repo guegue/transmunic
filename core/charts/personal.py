@@ -653,23 +653,23 @@ def gpersonal_chart(request):
 
     if municipio:
         dataterms = ['gasto__anio', 'asignado', 'ejecutado', 'promedio']
-        terms = ['asignado', 'ejecutado', 'promedio',]
+        terms = ['asignado', 'ejecutado', 'promedio', ]
     else:
         municipio = ''
         municipio_row = ''
         dataterms = ['gasto__anio', 'asignado', 'ejecutado']
         terms = ['asignado', 'ejecutado']
 
-    data = RawDataPool(series = [{'options': {'source': source }, 'terms': dataterms}])
+    data = RawDataPool(series=[{'options': {'source': source}, 'terms': dataterms}])
     gfbar = Chart(
-            datasource = data,
-            series_options = [{'options': {'type': 'column'}, 'terms': {'gasto__anio': terms }}],
-            chart_options = {
-                'title': {'text': u' '},
-                'options3d': { 'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50 },
-                },
-            #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
-            )
+        datasource=data,
+        series_options=[{'options': {'type': 'column'}, 'terms': {'gasto__anio': terms}}],
+        chart_options={
+            'title': {'text': u' '},
+            'options3d': {'enabled': 'true',  'alpha': 0, 'beta': 0, 'depth': 50},
+        },
+        #x_sortf_mapf_mts = (None, lambda i:  i.strftime('%Y'), False)
+    )
 
     bar_horizontal = None
     if porclasep:
