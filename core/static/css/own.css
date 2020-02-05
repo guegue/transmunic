@@ -213,3 +213,6 @@
 .icons-inversion{height: 170px}
 .title-municipio-name {margin-top: 10px;font-size: 25px;}
 .navbar-collapse{padding-right: 0;}
+.sticky-header{height: 120px; transition: height 1s ; position: sticky; top: 0; width:100%; z-index: 1000000000; }
+.sticky-header nav.navbar { height: 30px; margin-bottom:10px; transition: height 1s,margin-bottom 1s; }
+.sticky-header div.pma-search-bar { padding: 3px; }

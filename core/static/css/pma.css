@@ -492,7 +492,7 @@ footer .copyright {
 .select2-selection--single {
     border: 0px !important;
 }
-.select2-container { width: 100% !important;}
+.select2-container { width: 100% !important; z-index: 1000000000000000000;}
 .select2-container--default .select2-selection--single .select2-selection__arrow b { border-color: #fff transparent transparent transparent !important;}
 .select2-dropdown-width { width: 300px !important; }
 .select2-dropdown-middle_width { width: 210px !important; }
