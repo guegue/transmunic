@@ -19,7 +19,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 
@@ -67,6 +67,7 @@ def gpersonal_chart(request):
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
+    periodo_list = getPeriods(Gasto)
     year = getVar('year', request)
     if not year:
         year = year_list[-1]
@@ -739,6 +740,7 @@ def gpersonal_chart(request):
             'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal", \
             'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
             'bubble_data': bubble_source, \
+            'periodo_list': periodo_list, \
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year
             }
     return render(request, template_name, context)
@@ -746,6 +748,7 @@ def gpersonal_chart(request):
 
 def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):
     year_list = getYears(Gasto)
+    periodo_list = getPeriods(Gasto)
     periodo = Anio.objects.get(anio=year).periodo
     if not year:
         year = year_list[-1]
