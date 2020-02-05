@@ -237,7 +237,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 row['ejecutado'] / total_poblacion, 1) if total_poblacion > 0 else 0
             row['asignado_percent'] = round(
                 row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
-        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
+        sort_key = "{}_percent".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
