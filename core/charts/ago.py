@@ -11,7 +11,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 
@@ -43,6 +43,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
     year_list = getYears(Gasto)
+    periodo_list = getPeriods(Gasto)
     year = getVar('year', request)
     if not year:
         year = year_list[-1]
@@ -341,6 +342,9 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'charts': (pie, bar, pie2, bar2),
             'source': source,
             'indicator_name': "Dependencia para asumir gastos corrientes",
+            'indicator_subtitle': "Ingresos corrientes propios por rubro",
+            'indicator_subtitle2': "Gastos corrientes totales por rubro",
+            'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
             'indicator_description': """El ‘indicador de dependencia’ mide la
                 participación relativa de los ingresos por transferencias
                 (corrientes y de capital) sobre el total de los ingresos del
@@ -365,6 +369,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'porclase': porclase,
             'porclasep': porclasep,
             'rubros': rubros,
+            'periodo_list': periodo_list,
             'rubrosg': rubrosg,
             'otros': otros
         }
