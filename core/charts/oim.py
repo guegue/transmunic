@@ -240,22 +240,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de ingresos
-        tipo_inicial = list(IngresoDetalle.objects. \
-            filter(ingreso__municipio__slug=municipio,
-                   ingreso__anio=year,
-                   ingreso__periodo=PERIODO_INICIAL). \
-            values('subsubtipoingreso__origen__nombre'). \
-            exclude(tipoingreso_id=saldo_caja). \
-            order_by(). \
-            annotate(asignado=Sum('asignado')))
-        tipo_final = list(IngresoDetalle.objects. \
-            filter(ingreso__municipio__slug=municipio,
-                   ingreso__anio=year,
-                   ingreso__periodo=PERIODO_FINAL). \
-            values('subsubtipoingreso__origen__nombre'). \
-            exclude(tipoingreso_id=saldo_caja). \
-            order_by(). \
-            annotate(ejecutado=Sum('ejecutado')))
+        tipo_inicial = list(IngresoDetalle.objects.
+                            filter(ingreso__municipio__slug=municipio,
+                                   ingreso__anio=year,
+                                   ingreso__periodo=PERIODO_INICIAL).
+                            values('subsubtipoingreso__origen__nombre').
+                            exclude(tipoingreso_id=saldo_caja).
+                            order_by().
+                            annotate(asignado=Sum('asignado')))
+        tipo_final = list(IngresoDetalle.objects.
+                          filter(ingreso__municipio__slug=municipio,
+                                 ingreso__anio=year,
+                                 ingreso__periodo=PERIODO_FINAL).
+                          values('subsubtipoingreso__origen__nombre').
+                          exclude(tipoingreso_id=saldo_caja).
+                          order_by().
+                          annotate(ejecutado=Sum('ejecutado')))
 
         tipo = glue(tipo_inicial, tipo_final, 'subsubtipoingreso__origen__nombre')
 
@@ -344,26 +344,26 @@ def oim_chart(municipio=None, year=None, portada=False):
         # FIXME: no longer? comparativo_anios = list(chain(inicial, final, ))
 
         # obtiene datos para OIM comparativo de un año específico
-        inicial = list(IngresoDetalle.objects. \
+        inicial = list(IngresoDetalle.objects.
                        filter(ingreso__municipio__slug=municipio,
                               ingreso__anio=year,
-                              ingreso__periodo=PERIODO_INICIAL). \
-                       values('ingreso__periodo'). \
-                       order_by(). \
+                              ingreso__periodo=PERIODO_INICIAL).
+                       values('ingreso__periodo').
+                       order_by().
                        annotate(municipio=Sum('asignado')))
-        actualizado = list(IngresoDetalle.objects. \
+        actualizado = list(IngresoDetalle.objects.
                            filter(ingreso__municipio__slug=municipio,
                                   ingreso__anio=year,
-                                  ingreso__periodo=PERIODO_ACTUALIZADO). \
-                           values('ingreso__periodo'). \
-                           order_by(). \
+                                  ingreso__periodo=PERIODO_ACTUALIZADO).
+                           values('ingreso__periodo').
+                           order_by().
                            annotate(municipio=Sum('asignado')))
-        final = list(IngresoDetalle.objects. \
+        final = list(IngresoDetalle.objects.
                      filter(ingreso__municipio__slug=municipio,
                             ingreso__anio=year,
-                            ingreso__periodo=PERIODO_FINAL). \
-                     values('ingreso__periodo'). \
-                     order_by(). \
+                            ingreso__periodo=PERIODO_FINAL).
+                     values('ingreso__periodo').
+                     order_by().
                      annotate(municipio=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
@@ -407,16 +407,16 @@ def oim_chart(municipio=None, year=None, portada=False):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(IngresoDetalle.objects. \
-            filter(ingreso__periodo=PERIODO_INICIAL). \
-            values('ingreso__anio', 'ingreso__periodo'). \
-            order_by(). \
-            annotate(asignado=Sum('asignado')))
-        final = list(IngresoDetalle.objects. \
-            filter(ingreso__periodo=PERIODO_FINAL). \
-            values('ingreso__anio', 'ingreso__periodo'). \
-            order_by(). \
-            annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(IngresoDetalle.objects.
+                       filter(ingreso__periodo=PERIODO_INICIAL).
+                       values('ingreso__anio', 'ingreso__periodo').
+                       order_by().
+                       annotate(asignado=Sum('asignado')))
+        final = list(IngresoDetalle.objects.
+                     filter(ingreso__periodo=PERIODO_FINAL).
+                     values('ingreso__anio', 'ingreso__periodo').
+                     order_by().
+                     annotate(ejecutado=Sum('ejecutado')))
 
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
