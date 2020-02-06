@@ -174,12 +174,23 @@ class SubTipoGasto(models.Model):
 
 
 class SubSubTipoGasto(models.Model):
+    CORRIENTE = '0'
+    CAPITAL = '1'
+    OTRA = '2'
+    CLASIFICACION_CHOICES = (
+        (CORRIENTE, 'Gasto Corriente'),
+        (CAPITAL, 'Gasto de Capital'),
+        (OTRA, 'Otra'),
+    )
     codigo = models.CharField(max_length=25,  primary_key=True)
     subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
+    clasificacion = models.IntegerField(
+        choices=CLASIFICACION_CHOICES,
+        default=0, null=True)
 
     class Meta:
         verbose_name_plural = 'Sub sub tipos de gastos'

@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block main_table %}
+{% if indicator != 'gf' %}
 <div class="col-md-5">
 	<h4>Rubros de {{ indicator_name }} para el per&iacute;odo {{ year }}
     {% if periodo_list|keyvalue:year == 'F' %}
@@ -47,7 +48,11 @@
         <tbody>
         {% for row in rubros %}
             <tr>
-                <td>{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</td>
+                {% if indicator == 'gf' %}
+		    <td>{{ row.subsubtipogasto__nombre }}</td>
+		{% else %}
+                    <td>{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</td>
+		{% endif %}
 		{% if periodo_list|keyvalue:year == 'I' %}
                     <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                     <td class="text-right">{{ row.inicial_asignado|div:asignado|mul:100|floatformat:1 }}%</td>
@@ -69,6 +74,7 @@
         </tr>
     </table>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block section2 %}
@@ -78,7 +84,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         {% if municipio %}
-			<h2><strong>Rankin de {{ indicator_name }} percápita {{ year }} </strong>
+			<h2><strong>Rankin de {{ indicator_name }} {{ year }} </strong><br />
 				Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}" </h2>
                         {% endif %}
                         <hr class="pma-line-3"/>
@@ -128,14 +134,27 @@
                         <table class="table table-bordered table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr>
-                                <th colspan="4" rowspan="1"><h5>Porcentaje del gasto
-                                    total destinado a {{ indicator_name }}</h5></th>
+                                <th colspan="4"><h4>Porcentaje del gasto
+                                    total destinado a {{ indicator_name }}, presupuesto
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        de cierre
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        intermedio
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        inicial
+                                    {% endif %}
+				    {{ year }} 
+				    </h4>
+				</th>
                             </tr>
                             <tr class="bg-primary">
                                 <th>Posición</th>
                                 <th>Municipios</th>
-                                <th>Inicial</th>
-                                <th>Ejecutado</th>
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    <th>Inicial</th>
+				{% else %}
+                                    <th>Ejecutado</th>
+				{% endif %}
                             </tr>
                             </thead>
                             {% for row in otros %}
@@ -146,15 +165,21 @@
                                 {% endif %}
                             <td> {{ forloop.counter }} </td>
                             <td>{{ row.gasto__municipio__nombre }}</td>
-                            <td class="text-right">{{ row.asignado_percent }}%</td>
-                            <td class="info text-right">{{ row.ejecutado_percent }}%</td>
+                            {% if periodo_list|keyvalue:year == 'I' %}
+                                <td class="text-right">{{ row.asignado_percent }}%</td>
+                            {% else %} 
+                                <td class="text-right">{{ row.ejecutado_percent }}%</td>
+			    {% endif %}
                             </tr>
                             {% endfor %}
                             <tr class="success">
                                 <td></td>
                                 <td>PROMEDIO</td>
-                                <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
-                                <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+                                {% if periodo_list|keyvalue:year == 'I' %}
+                                    <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
+				{% else %}
+                                    <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+				{% endif %}
                             </tr>
                         </table>
                     </div>
@@ -386,8 +411,12 @@
                         </tr>
                         {% for row in rubros %}
                             <tr>
-                                <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}
+                                {% if indicator == 'gf' %}
+		                    <td>{{ row.subsubtipogasto__nombre }}</td>
+		                {% else %}
+                                    <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}
                                     {{ row.subtipogasto__nombre }}{% endif %}</td>
+				{% endif %}
                                 <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                                 <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
                                 <td class="text-right">{% if row.actualizado_asignado %}
@@ -473,10 +502,12 @@
             src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
     <script type="text/javascript" src="{% static 'js/cofog.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/expense.js' %}"></script>
+    {% if indicator != 'gf' %}
     <script type="text/javascript">
         var data = {{ bubble_data|safe }};
     </script>
     <script type="text/javascript" src="{% static 'js/pma-bubbletree.js' %}"></script>
+    {% endif %}
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip({
@@ -492,9 +523,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    {% if charts|length == 3 %}
-        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
+    {% if indicator == 'gf' %}
+        {{ charts|load_charts:"bar_horizontal" }}
     {% else %}
-        {{ charts|load_charts:"pie,bar" }}
+        {{ charts|load_charts:"pie,bar,bar_horizontal" }}
     {% endif %}
 {% endblock %}
