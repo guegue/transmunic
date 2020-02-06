@@ -712,9 +712,6 @@ def gpersonal_chart(request):
 
     bar_horizontal = None
     if otros:
-        for row in otros:
-            print(row)
-            break
         data_bar_horizontal = RawDataPool(
             series=[
                 {
