@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='origengasto',
-            options={'ordering': ['orden', 'nombre'], 'verbose_name': 'Origen de los gastos', 'verbose_name_plural': 'Origenes de los gastos'},
+            options={'ordering': ['orden', 'nombre'], 'verbose_name': 'Origen de los gastos',
+                     'verbose_name_plural': 'Origenes de los gastos'},
         ),
         migrations.AddField(
             model_name='subsubtipogasto',
             name='clasificacion',
-            field=models.IntegerField(choices=[(b'0', b'Gasto Corriente'), (b'1', b'Gasto de Capital')], default=0, null=True),
+            field=models.IntegerField(
+                choices=[(b'0', b'Gasto Corriente'), (b'1', b'Gasto de Capital')], default=0, null=True),
         ),
     ]
