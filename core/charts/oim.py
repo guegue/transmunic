@@ -23,7 +23,6 @@ from core.tools import (getYears, dictfetchall, glue,
                         percentage)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
-
 colorscheme = settings.CHARTS_COLORSCHEME
 colors_array = settings.COLORS_ARRAY
 chart_options = settings.CHART_OPTIONS
@@ -243,19 +242,23 @@ def oim_chart(municipio=None, year=None, portada=False):
         # obtiene datos para grafico comparativo de tipo de ingresos
         tipo_inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
                                                           ingreso__periodo=PERIODO_INICIAL).values(
-            'subsubtipoingreso__origen__nombre').exclude(tipoingreso_id=saldo_caja).order_by().annotate(asignado=Sum('asignado')))
+            'subsubtipoingreso__origen__nombre').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
+            asignado=Sum('asignado')))
         tipo_final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
                                                         ingreso__periodo=PERIODO_FINAL).values(
-            'subsubtipoingreso__origen__nombre').exclude(tipoingreso_id=saldo_caja).order_by().annotate(ejecutado=Sum('ejecutado')))
+            'subsubtipoingreso__origen__nombre').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
+            ejecutado=Sum('ejecutado')))
         tipo = glue(tipo_inicial, tipo_final, 'subsubtipoingreso__origen__nombre')
 
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
         inicial = list(
             IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values(
-                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(asignado=Sum('asignado')))
+                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
+                asignado=Sum('asignado')))
         final = list(
             IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values(
-                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(ejecutado=Sum('ejecutado')))
+                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
+                ejecutado=Sum('ejecutado')))
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
         final_clase_sql = "SELECT core_ingreso.anio AS ingreso__anio,'F' AS ingreso__periodo,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
@@ -273,7 +276,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                     found = True
                     try:
                         row['clase_final'] = row2['clase_final'] / \
-                            mi_clase_anios_count[row['ingreso__anio']]
+                                             mi_clase_anios_count[row['ingreso__anio']]
                     except KeyError:
                         row['clase_final'] = 0
             if not found:
@@ -316,7 +319,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             for row2 in final_clase:
                 if row2['ingreso__anio'] == row['ingreso__anio']:
                     row['clase_final'] = row2['clase_final'] / \
-                        mi_clase_anios_count[row['ingreso__anio']]
+                                         mi_clase_anios_count[row['ingreso__anio']]
         for row in inicial:
             found = False
             for row2 in final:
@@ -340,7 +343,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'ingreso__periodo').order_by().annotate(municipio=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
                                                    ingreso__periodo=PERIODO_FINAL).values('ingreso__periodo').
-                                                   order_by().annotate(municipio=Sum('ejecutado')))
+                     order_by().annotate(municipio=Sum('ejecutado')))
 
         # obtiene datos para municipio de la misma clase
         inicial_clase = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,
@@ -364,7 +367,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             inicial[0]['clase'] = inicial_clase[0]['clase'] / mi_clase_count
         if actualizado:
             actualizado[0]['clase'] = actualizado_clase[0]['clase'] / \
-                mi_clase_count
+                                      mi_clase_count
         if final:
             final[0]['clase'] = final_clase[0]['clase'] / mi_clase_count
         comparativo3 = list(chain(inicial, actualizado, final))
@@ -384,19 +387,20 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,
-                                                      ).values(
+                                                     ).values(
             'ingreso__anio', 'ingreso__periodo').order_by().annotate(
             asignado=Sum('asignado')))
         final = list(IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,
-                                                    ).values(
+                                                   ).values(
             'ingreso__anio', 'ingreso__periodo').order_by().annotate(
             ejecutado=Sum('ejecutado')))
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
-        source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo).\
-            exclude(tipoingreso_id=saldo_caja).\
+        source = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo). \
+            exclude(tipoingreso_id=saldo_caja). \
             values(
-            'subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(**{quesumar: Sum(quesumar)})
+            'subsubtipoingreso__origen__nombre').order_by('subsubtipoingreso__origen__nombre').annotate(
+            **{quesumar: Sum(quesumar)})
         tipos_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL). \
             exclude(tipoingreso_id=saldo_caja). \
             values('subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__slug',
@@ -418,23 +422,23 @@ def oim_chart(municipio=None, year=None, portada=False):
 
         # obtiene datos de ingresos en ditintos rubros
         rubrosp_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,
-                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-            exclude(tipoingreso_id=saldo_caja).\
+                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
             'subtipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosp_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_ACTUALIZADO,
-                                                            subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-            exclude(tipoingreso_id=saldo_caja).\
+                                                            subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by('subtipoingreso__codigo').annotate(
             actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosp_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_FINAL,
-                                                      subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-            exclude(tipoingreso_id=saldo_caja).\
+                                                      subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
             'subtipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubrosp_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=periodo,
-                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION,).\
-            exclude(tipoingreso_id=saldo_caja).\
+                                                        subsubtipoingreso__origen=OrigenRecurso.RECAUDACION, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('subtipoingreso__codigo', 'subtipoingreso__nombre').order_by(
             'subtipoingreso__codigo').annotate(ejecutado=Sum('ejecutado'))
         rubrosp = superglue(data=(rubrosp_inicial, rubrosp_final,
@@ -480,16 +484,16 @@ def oim_chart(municipio=None, year=None, portada=False):
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key=subsubtipoingreso__origen__id)
 
-        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL,).\
-            exclude(tipoingreso_id=saldo_caja).\
+        source_inicial = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_INICIAL, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('ingreso__anio').order_by('ingreso__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL,).\
-            exclude(tipoingreso_id=saldo_caja).\
+            ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_final = IngresoDetalle.objects.filter(ingreso__periodo=PERIODO_FINAL, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('ingreso__anio').order_by('ingreso__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_periodo = IngresoDetalle.objects.filter(ingreso__periodo=periodo,).\
-            exclude(tipoingreso_id=saldo_caja).\
+            ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_periodo = IngresoDetalle.objects.filter(ingreso__periodo=periodo, ). \
+            exclude(tipoingreso_id=saldo_caja). \
             values('ingreso__anio').order_by('ingreso__anio').annotate(
             ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -662,7 +666,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                           u'Categoria %s' % (mi_clase.clasificacion,)],
                 'terms': {
                     'ingreso__anio': ['municipio_inicial', 'clase_inicial', 'municipio_final', 'clase_final'],
-            },
+                },
             }],
             chart_options={
                 'title': {'text': ' ', },
@@ -684,7 +688,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'stacking': False},
                 'terms': {
                     'ingreso__anio': ['ejecutado', 'asignado'],
-            },
+                },
             }],
             chart_options={'title': {'text': ' '}},
         )
@@ -701,7 +705,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'stacking': False},
             'terms': {
                 'subsubtipoingreso__origen__nombre': ['ejecutado', 'asignado'],
-        },
+            },
         }],
         chart_options={
             'title': {'text': ' '},
@@ -715,8 +719,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': {
                      'ejecutado': Sum('ejecutado'),
                      'asignado': Sum('asignado'),
-        }
-        }],
+                 }
+                 }],
         # sortf_mapf_mts = (None, lambda i:  (datetime.strptime(i[0], '%Y-%m-%d').strftime('%Y'),), False)
     )
     asignado_barra = PivotChart(
@@ -736,8 +740,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': {
                      'ejecutado': Sum('ejecutado'),
                      'asignado': Sum('asignado'),
-        }
-        }],
+                 }
+                 }],
     )
     barra = PivotChart(
         datasource=oimdata_barra2,
@@ -755,8 +759,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                  'terms': [
                      'subsubtipoingreso__origen__nombre',
                      quesumar,
-        ]}
-        ])
+                 ]}
+                ])
 
     asignado_pie = Chart(
         datasource=oimdata,
@@ -766,7 +770,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-        }}],
+            }}],
         chart_options={
             'title': {'text': 'Ingresos %s %s %s' % (quesumar, municipio, year,)},
             'plotOptions': {
@@ -786,7 +790,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-        }}],
+            }}],
         chart_options={
             'options3d': {'enabled': 'true', 'alpha': '45', 'beta': '0'},
             'title': {'text': ' '},
@@ -808,7 +812,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             'terms': {
                 'subsubtipoingreso__origen__nombre': [
                     quesumar]
-        }}],
+            }}],
         chart_options={
             'options3d': {
                 'enabled': 'true',
@@ -832,10 +836,10 @@ def oim_chart(municipio=None, year=None, portada=False):
     ''  # llenando rubros_pie que contendra la informacion para los graficos de barra
     ''  # y pastel, resumiendo en un mismo campo el nombre o shortname de cada rubro
     rubros_pie = []
-    field_name = 'subsubtipoingreso__origen__shortname'
     for row in rubros:
         rubros_pie.append({
-            'name': row.get(field_name) or row.get('subsubtipoingreso__origen__nombre'),
+            'name': row.get(subsubtipoingreso__origen__shortname) or
+                    row.get(subsubtipoingreso__origen__nombre),
             'inicial_asignado': row.get('inicial_asignado', 0),
             'ejecutado': row.get('ejecutado', 0),
         })
@@ -910,7 +914,7 @@ def oim_chart(municipio=None, year=None, portada=False):
                 'colors': colors_array,
                 'title': {
                     'text': "Ranking de Municipios Categoría '{}'".
-                    format(mi_clase.clasificacion)
+                        format(mi_clase.clasificacion)
                 },
                 'xAxis': {
                     'title': {
@@ -1037,7 +1041,7 @@ def oim_chart(municipio=None, year=None, portada=False):
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             filter_array = {'ingreso__anio': ayear, 'ingreso__periodo': periodo,
                             my_subsubtipoingreso__origen__nombre: name}
-            value = source_cuadro.filter(**filter_array).\
+            value = source_cuadro.filter(**filter_array). \
                 exclude(tipoingreso_id=saldo_caja). \
                 aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
