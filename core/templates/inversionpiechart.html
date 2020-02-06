@@ -229,9 +229,29 @@
     {% endif %}
     {% if municipio %}
         <div class="loaded">
-            <div class="container">
+            <div class="{% if municipio|lower == 'managua' %}container-fluid pma-bg-blue pma-fg-white text-center{% else %}container{% endif %}">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12">
+		    {% if municipio|lower == 'managua' %}
+		        <h2><strong>La inversi&oacute;n perc&aacute;pita</strong> para el municipio de
+			    <strong>{{ municipio }} </strong>grupo "{{ mi_clase.clasificacion }}"<br />
+			    para el periodo
+                            {% if periodo_list|keyvalue:year == 'F' %}
+                                de cierre
+                            {% elif periodo_list|keyvalue:year == 'A' %}
+                                intermedio
+                            {% elif periodo_list|keyvalue:year == 'I' %}
+                                inicial
+                            {% endif %}
+			    {{ year }}
+			    es de 
+                            {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+			      <span class="amarillo pma-number">{{ numerator|div:denominator|floatformat:2|intcomma }}</span>
+			    {% endwith %}
+                       </h2>
+		       <h5> Córdobas corrientes por habitante</h5>
+		       <hr class="pma-line-5">
+                    {% else %}
                        <h2><strong>Rankin de inversi&oacute;n perc&aacute;pita {{ year }}</strong><br />
                             Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
                        </h2>
@@ -248,9 +268,8 @@
                             {% descargar_excel "icat2" %}
                        </h5>
                         <hr class="pma-line-3"/>
-                        {% if municipio|lower != 'managua' %}
                             {% include 'municipal-triangle.html' %}
-                        {% endif %}
+		    {% endif %}
                     </div>
                 </div>
             </div>
