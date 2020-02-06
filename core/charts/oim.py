@@ -260,20 +260,20 @@ def oim_chart(municipio=None, year=None, portada=False):
         tipo = glue(tipo_inicial, tipo_final, 'subsubtipoingreso__origen__nombre')
 
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
-        inicial = list(IngresoDetalle.objects. \
+        inicial = list(IngresoDetalle.objects.
                        filter(ingreso__municipio__slug=municipio,
-                              ingreso__periodo=PERIODO_INICIAL). \
-                       values('ingreso__anio', 'ingreso__periodo'). \
-                       exclude(tipoingreso_id=saldo_caja). \
-                       order_by(). \
+                              ingreso__periodo=PERIODO_INICIAL).
+                       values('ingreso__anio', 'ingreso__periodo').
+                       exclude(tipoingreso_id=saldo_caja).
+                       order_by().
                        annotate(asignado=Sum('asignado')))
-        final = list(IngresoDetalle.objects. \
+        final = list(IngresoDetalle.objects.
                      filter(ingreso__municipio__slug=municipio,
-                            ingreso__periodo=PERIODO_FINAL). \
+                            ingreso__periodo=PERIODO_FINAL).
                      values('ingreso__anio',
-                            'ingreso__periodo'). \
-                     exclude(tipoingreso_id=saldo_caja). \
-                     order_by(). \
+                            'ingreso__periodo').
+                     exclude(tipoingreso_id=saldo_caja).
+                     order_by().
                      annotate(ejecutado=Sum('ejecutado')))
 
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
