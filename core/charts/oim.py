@@ -260,14 +260,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         tipo = glue(tipo_inicial, tipo_final, 'subsubtipoingreso__origen__nombre')
 
         # obtiene datos comparativo de todos los años FIXME: replaces data below?
-        inicial = list(
-            IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL).values(
-                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
-                asignado=Sum('asignado')))
-        final = list(
-            IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL).values(
-                'ingreso__anio', 'ingreso__periodo').exclude(tipoingreso_id=saldo_caja).order_by().annotate(
-                ejecutado=Sum('ejecutado')))
+        inicial = list(IngresoDetalle.objects. \
+                       filter(ingreso__municipio__slug=municipio,
+                              ingreso__periodo=PERIODO_INICIAL). \
+                       values('ingreso__anio', 'ingreso__periodo'). \
+                       exclude(tipoingreso_id=saldo_caja). \
+                       order_by(). \
+                       annotate(asignado=Sum('asignado')))
+        final = list(IngresoDetalle.objects. \
+                     filter(ingreso__municipio__slug=municipio,
+                            ingreso__periodo=PERIODO_FINAL). \
+                     values('ingreso__anio',
+                            'ingreso__periodo'). \
+                     exclude(tipoingreso_id=saldo_caja). \
+                     order_by(). \
+                     annotate(ejecutado=Sum('ejecutado')))
+
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
         final_clase_sql = "SELECT core_ingreso.anio AS ingreso__anio,'F' AS ingreso__periodo,SUM(ejecutado) AS clase_final FROM core_ingresodetalle JOIN core_ingreso ON core_ingresodetalle.ingreso_id=core_ingreso.id \
         JOIN lugar_clasificacionmunicano ON core_ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
