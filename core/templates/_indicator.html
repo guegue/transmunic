@@ -157,9 +157,11 @@
                                 <div class="info-box-content">
                                     <span class="info-box-number font-17px">
                                         <strong>
-                                            Inicial {{ asignado|million|intcomma }}
+                                            Inicial {{ asignado|million|intcomma }} M. de C&oacute;rdobas
                                             {% if asignado_percent %}
                                                 ({{ asignado_percent }}%)
+                                            {% else %}
+                                                (0%)
                                             {% endif %}
                                         </strong>
                                     </span>
@@ -175,9 +177,9 @@
                                         <strong>
                                             Cierre
                                             {% if periodo_list|keyvalue:year == 'I' %}
-                                                0 (0%)
+                                                0 M. de C&oacute;rdobas (0%)
                                             {% else %}
-                                                {{ ejecutado|million|intcomma }}
+                                                {{ ejecutado|million|intcomma }} M. de C&oacute;rdobas
                                                 {% if ejecutado_percent %}
                                                     ({{ ejecutado_percent }}%)
                                                 {% endif %}
