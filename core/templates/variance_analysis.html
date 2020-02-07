@@ -358,45 +358,51 @@
             <div id="detail-1" class="container">
                 <div class="row">
                     <div class="col-xs-5 col-sm-5 col-md-5 table-responsive">
-                        <h3>{{ indicator_name }} <br> por Municipios de Categoría "{{ mi_clase.clasificacion }}"</h3>
+                        <h3>{{ indicator_name }} <br> por Municipios Grupo "{{ mi_clase.clasificacion }}"</h3>
                         <table class="table table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-left">Municipios</th>
-                                <th class="text-right">
-                                    {% if ep %}
-                                        Ingreso
-                                    {% else %}
-                                        P. Inicial
-                                    {% endif %}
-                                </th>
-                                <th class="text-right">
-                                    {% if ep %}
-                                        Gasto
-                                    {% else %}
-                                        Ejecución
-                                    {% endif %}
-                                </th>
+				{% if periodo_list|keyvalue:year == 'I' %}
+                                    <th class="text-right">
+                                        {% if ep %}
+                                            Ingreso
+                                        {% else %}
+                                            P. Inicial
+                                        {% endif %}
+                                    </th>
+				{% else %}
+                                    <th class="text-right">
+                                        {% if ep %}
+                                            Gasto
+                                        {% else %}
+                                            Ejecución
+                                        {% endif %}
+                                    </th>
+				{% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for row in otros %}
                                 <tr>
                                     <td class="text-left">{{ row.nombre }}</td>
-                                    <td class="text-right">
-                                        {% if row.asignado %}
-                                            {{ row.asignado|floatformat:2 }}
-                                        {% elif row.ingreso %}
-                                            {{ row.ingreso|floatformat:2|intcomma }}
-                                        {% else %} 0 {% endif %}%
-                                    </td>
-                                    <td class="text-right">
-                                        {% if row.ejecutado %}
-                                            {{ row.ejecutado|floatformat:2 }}
-                                        {% elif row.gasto %}
-                                            {{ row.gasto|floatformat:2|intcomma }}
-                                        {% else %} 0 {% endif %}%
-                                    </td>
+				    {% if periodo_list|keyvalue:year == 'I' %}
+                                        <td class="text-right">
+                                            {% if row.asignado %}
+                                                {{ row.asignado|floatformat:2 }}
+                                            {% elif row.ingreso %}
+                                                {{ row.ingreso|floatformat:2|intcomma }}
+                                            {% else %} 0 {% endif %}%
+                                        </td>
+                                    {% else %}
+                                        <td class="text-right">
+                                            {% if row.ejecutado %}
+                                                {{ row.ejecutado|floatformat:2 }}
+                                            {% elif row.gasto %}
+                                                {{ row.gasto|floatformat:2|intcomma }}
+                                            {% else %} 0 {% endif %}%
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
