@@ -825,21 +825,34 @@ def gf_chart(request):
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
 
-        data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
-                'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
-                'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year, 'asignado_percent': asignado_percent,
+        data = {'charts': charts, 'municipio': municipio_row,
+                'municipio_list': municipio_list,
+                'year_list': year_list,
+                'otros': otros, 'rubros': rubros,
+                'anuales': anual2,
+                'ejecutado': ejecutado, 'asignado': asignado,
+                'porclase': porclase, 'porclasep': porclasep,
+                'mi_clase': mi_clase, 'year': year,
+                'asignado_percent': asignado_percent,
                 'ejecutado_percent': ejecutado_percent}
 
         return obtener_excel_response(reporte=reporte, data=data)
 
     template_name = 'expenses.html'
     context = {
-        'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
+        'charts': charts, 'municipio': municipio_row,
+        'municipio_list': municipio_list,
+        'year_list': year_list,
         'indicator_name': "Gastos de funcionamiento",
         'indicator': "gf",
         'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ",
-        'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
-        'bubble_data': bubble_source, 'asignado_percent': asignado_percent, 'ejecutado_percent': ejecutado_percent,
+        'otros': otros, 'rubros': rubros,
+        'anuales': anual2, 'ejecutado': ejecutado,
+        'asignado': asignado, 'porclase': porclase,
+        'bubble_data': bubble_source,
+        'asignado_percent': asignado_percent,
+        'ejecutado_percent': ejecutado_percent,
         'periodo_list': periodo_list,
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+        'porclasep': porclasep, 'mi_clase': mi_clase,
+        'year': year}
     return render(request, template_name, context)
