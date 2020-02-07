@@ -33,7 +33,7 @@ AREAGEOGRAFICA_VERBOSE = {
     '': 'Vacio',
     None: 'None'}
 CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None',
-                         'Sin Clasificar': 'Sin Clasfificar'}
+                         'Sin Clasificar': 'Sin Clasfificar', 2: 'Otros'}
 
 
 class Profile(models.Model):
