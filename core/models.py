@@ -231,6 +231,7 @@ class TipoIngreso(models.Model):
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
     shortname = models.CharField(max_length=25, blank=True, null=True)
+    ingreso_propio = models.BooleanField(default=True)
     # si no es ingreso corriente, entonces es de Capital
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES, default=0, null=True)
