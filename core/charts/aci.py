@@ -278,8 +278,10 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+            'gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
+        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+            'gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         # obtiene datos de gastos en ditintos rubros
