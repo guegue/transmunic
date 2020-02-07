@@ -87,21 +87,21 @@ def ep_chart(request):
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
-            values('tipogasto__clasificacion',).order_by(
-                'tipogasto__clasificacion').annotate(inicial_asignado=Sum('asignado'))
+            values('subsubtipogasto__clasificacion',).order_by(
+                'subsubtipogasto__clasificacion').annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
-            values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion',).order_by('subsubtipogasto__clasificacion').annotate(
                 actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
-            values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
                 final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
-            values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
                 asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final,
-                                  rubrosg_actualizado, rubrosg_periodo), key='tipogasto__clasificacion')
+                                  rubrosg_actualizado, rubrosg_periodo), key='subsubtipogasto__clasificacion')
         for r in rubrosg:
-            r['tipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['tipogasto__clasificacion']]
+            r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
@@ -162,21 +162,21 @@ def ep_chart(request):
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,).\
-            values('tipogasto__clasificacion',).order_by(
-                'tipogasto__clasificacion').annotate(inicial_asignado=Sum('asignado'))
+            values('subsubtipogasto__clasificacion',).order_by(
+                'subsubtipogasto__clasificacion').annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO,).\
-            values('tipogasto__clasificacion',).order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion',).order_by('subsubtipogasto__clasificacion').annotate(
                 actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL,).\
-            values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
                 final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo,).\
-            values('tipogasto__clasificacion').order_by('tipogasto__clasificacion').annotate(
+            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
                 asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final,
-                                  rubrosg_actualizado, rubrosg_periodo), key='tipogasto__clasificacion')
+                                  rubrosg_actualizado, rubrosg_periodo), key='subsubtipogasto__clasificacion')
         for r in rubrosg:
-            r['tipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['tipogasto__clasificacion']]
+            r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,).\
@@ -291,7 +291,7 @@ def ep_chart(request):
                 {
                     'options': {'source': rubrosg},
                     'terms': [
-                        'tipogasto__clasificacion',
+                        'subsubtipogasto__clasificacion',
                         datacol,
                     ]
                 }
@@ -302,7 +302,7 @@ def ep_chart(request):
         series_options=[
             {
                 'options': {'type': 'pie'},
-                'terms': {'tipogasto__clasificacion': [datacol]}
+                'terms': {'subsubtipogasto__clasificacion': [datacol]}
             }],
         chart_options=chart_options)
 
@@ -314,7 +314,7 @@ def ep_chart(request):
                     'type': 'column',
                     'colorByPoint': True,
                 },
-                'terms': {'tipogasto__clasificacion': [datacol]}
+                'terms': {'subsubtipogasto__clasificacion': [datacol]}
             }],
         chart_options=chart_options)
 
