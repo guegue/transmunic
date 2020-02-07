@@ -120,8 +120,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
-        mi_clase_count = ClasificacionMunicAno.objects.filter(
-            clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
+        #mi_clase_count = ClasificacionMunicAno.objects.filter(
+        #    clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
         # obtiene clase y contador (otros en misma clase) para todos los años
         mi_clase_anios = list(ClasificacionMunicAno.objects.filter(
             municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
