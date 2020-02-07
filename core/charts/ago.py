@@ -34,9 +34,17 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     if not year:
         year = year_list[-1]
 
-    periodo = Anio.objects.get(anio=year).periodo
+    # obtiene último periodo del año que se quiere ver
+    year_data = Anio.objects.get(anio=year)
+    periodo = year_data.periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+    # obtiene codigo de tipo gasto de 'mapping' fallback a valor por defecto definido en models
+    TipoIngreso.TRANSFERENCIAS_CORRIENTES = year_data.mapping.get(
+        'transferencias_corrientes', TipoIngreso.TRANSFERENCIAS_CORRIENTES)
+    TRANSFERENCIAS = [amap['transferencias_corrientes'] for amap in Anio.objects.all().
+                      values_list('mapping', flat=True).distinct()]
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
