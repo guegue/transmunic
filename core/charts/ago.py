@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+from operator import itemgetter
 
 from django.conf import settings
 from django.db import connection
@@ -127,6 +128,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
         otros = glue(inicial, final, 'nombre', actualizado=actualizado)
+        sort_key = "{}".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         with open ("core/charts/ago_municipio.sql", "r") as query_file:
             sql_tpl=query_file.read()

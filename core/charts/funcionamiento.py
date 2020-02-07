@@ -117,7 +117,8 @@ def gf_chart(request):
                 row['ejecutado'] / total['ejecutado'] * 100, 2) if total['ejecutado'] > 0 else 0
             row['asignado_percent'] = round(
                 row['asignado'] / total['asignado'] * 100, 2) if total['asignado'] > 0 else 0
-        otros = sorted(otros, key=itemgetter('{}_percent'.format(quesumar)), reverse=True)
+        sort_key = "{}_percent".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,
@@ -141,10 +142,14 @@ def gf_chart(request):
                                  rubros_periodo), key='subsubtipogasto__codigo')
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,
-                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,
-                                                 subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
+            gasto__periodo=PERIODO_INICIAL,
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).
+            values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+        final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
+            gasto__periodo=PERIODO_FINAL,
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio',
+                'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
         clase_sql = "SELECT core_gasto.anio AS gasto__anio,'{periodo}' AS gasto__periodo,SUM({quesumar}) AS clase FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
@@ -287,10 +292,12 @@ def gf_chart(request):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+            'gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+            'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
