@@ -785,6 +785,7 @@ def gf_chart(request):
         'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
         'indicator_name': "Gastos de funcionamiento",
         'indicator': "gf",
+        'mostraren': "porcentaje",
         'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ",
         'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
         'bubble_data': bubble_source,

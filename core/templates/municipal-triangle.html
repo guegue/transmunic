@@ -30,7 +30,7 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
                             </span>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
                             </span>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if indicator == 'gf' %} % del gato total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+				<span class="font-roboto">{{ row.asignado_percent|intcomma }}{% if mostraren == 'porcentaje' %} % del gato total{% else %}M. de C&oacute;rdobas{% endif %}</span>
                             </span>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-				<span class="font-roboto">{{ row.asignado|intcomma }}{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+				<span class="font-roboto">{{ row.asignado|intcomma }}{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
                             </span>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-				<span class="font-roboto">{{ row.asignado|intcomma }}{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+				<span class="font-roboto">{{ row.asignado|intcomma }}{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
                             </span>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
 				<span class="font-roboto">{{ row.asignado|intcomma }}
-					{% if indicator == 'gf' %}% del gasto total
+					{% if mostraren == 'porcentaje' %}% del gasto total
 					{% else %}M. de C&oacute;rdobas
 					{% endif %}
 				</span>
@@ -161,7 +161,7 @@
                                 {% else %}
                                     {{ row.ejecutado|intcomma }}
                                 {% endif %}
-				{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
+				{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
                             </span>
                         </span>
                     </div>
@@ -185,7 +185,7 @@
                                 {% else %}
                                     {{ row.ejecutado|intcomma }}
                                 {% endif %}
-				{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
+				{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
                             </span>
                         </span>
                     </div>
@@ -211,7 +211,7 @@
                                 {% else %}
                                     {{ row.ejecutado|intcomma }}
                                 {% endif %}
-				{% if indicator == 'gf' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
+				{% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;rdobas{% endif %}
                             </span>
                         </span>
                     </div>

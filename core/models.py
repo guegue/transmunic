@@ -182,6 +182,7 @@ class SubSubTipoGasto(models.Model):
         (CAPITAL, 'Gasto de Capital'),
         (OTRA, 'Otra'),
     )
+    TRANSFERENCIAS_CAPITAL = '6000000'
     codigo = models.CharField(max_length=25,  primary_key=True)
     subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
     nombre = models.CharField(max_length=200)
