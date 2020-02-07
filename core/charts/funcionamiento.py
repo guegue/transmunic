@@ -143,13 +143,13 @@ def gf_chart(request):
 
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
-            gasto__periodo=PERIODO_INICIAL,
-            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).
-            values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+                                                   gasto__periodo=PERIODO_INICIAL,
+                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).
+                       values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
         final = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
-            gasto__periodo=PERIODO_FINAL,
-            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio',
-                'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
+                                                 gasto__periodo=PERIODO_FINAL,
+                                                 subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio',
+                                                                                                             'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
         clase_sql = "SELECT core_gasto.anio AS gasto__anio,'{periodo}' AS gasto__periodo,SUM({quesumar}) AS clase FROM core_gastodetalle JOIN core_gasto ON core_gastodetalle.gasto_id=core_gasto.id \
         JOIN lugar_clasificacionmunicano ON core_gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND \
@@ -293,10 +293,10 @@ def gf_chart(request):
 
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
             'gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
         final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
-            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
+                                                 subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
             'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
 

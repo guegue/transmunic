@@ -62,68 +62,90 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         # obtiene valores para este año de las listas
         try:
-            asignado = (item for item in source_inicial if item["ingreso__anio"] == int(year)).next()['asignado']
+            asignado = (item for item in source_inicial if item["ingreso__anio"] == int(
+                year)).next()['asignado']
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["ingreso__anio"] == int(year)).next()['ejecutado']
+            ejecutado = (item for item in source_final if item["ingreso__anio"] == int(year)).next()[
+                'ejecutado']
         except StopIteration:
             ejecutado = 0
 
         # obtiene datos comparativo de ingresos de todos los años
-        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')).order_by())
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
+        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(
+            tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(asignado=Sum('asignado')).order_by())
+        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE).exclude(
+            tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).values('ingreso__anio', 'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de gastos de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
-        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
+        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,
+                                                    tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
+        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,
+                                                  tipogasto__clasificacion=TipoGasto.CORRIENTE).values('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
+            values('tipogasto', 'tipogasto__nombre').order_by(
+                'tipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+            values('tipogasto', 'tipogasto__nombre').order_by('tipogasto__codigo').annotate(
+                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado'))
+            values('tipogasto', 'tipogasto__nombre').order_by('tipogasto__codigo').annotate(
+                final_ejecutado=Sum('ejecutado'), final_asignado=Sum('asignado'))
         rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo, tipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-                values('tipogasto','tipogasto__nombre').order_by('tipogasto__codigo').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final, rubrosg_actualizado, rubrosg_periodo), key='tipogasto')
+            values('tipogasto', 'tipogasto__nombre').order_by('tipogasto__codigo').annotate(
+                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final,
+                                  rubrosg_actualizado, rubrosg_periodo), key='tipogasto')
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
+            values('tipoingreso', 'tipoingreso__nombre').order_by(
+                'tipoingreso__codigo').annotate(inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
+            values('tipoingreso', 'tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(
+                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+            values('tipoingreso', 'tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(
+                final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo, tipoingreso__clasificacion=TipoIngreso.CORRIENTE,).exclude(tipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES).\
-                values('tipoingreso','tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado, rubros_periodo), key='tipoingreso')
+            values('tipoingreso', 'tipoingreso__nombre').order_by('tipoingreso__codigo').annotate(
+                asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
+        rubros = superglue(data=(rubros_inicial, rubros_final,
+                                 rubros_actualizado, rubros_periodo), key='tipoingreso')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
-        mi_clase_count = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
+        mi_clase_count = ClasificacionMunicAno.objects.filter(
+            clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
         # obtiene clase y contador (otros en misma clase) para todos los años
-        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
+        mi_clase_anios = list(ClasificacionMunicAno.objects.filter(
+            municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
         mi_clase_anios_count = {}
         for aclase in mi_clase_anios:
-            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
+            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(
+                clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        with open ("core/charts/ago_otros.sql", "r") as query_file:
-            sql_tpl=query_file.read()
+        with open("core/charts/ago_otros.sql", "r") as query_file:
+            sql_tpl = query_file.read()
 
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
+        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
+        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo, tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
+        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, mi_clase=mi_clase.clasificacion_id)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
