@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static thumbnail chartit %}
-{% load humanize %} 
+{% load humanize %}
 {% load mathfilters %}
-{% load core_extras %} 
+{% load core_extras %}
 {% block titulo %}
-Dependencia para asumir gastos corrientes {{ municipio }} 
+Dependencia para asumir gastos corrientes {{ municipio }}
 {% endblock %}
 {% block main_content %}
 	{% descargar_excel "ago-all" %}
@@ -111,20 +111,20 @@ Dependencia para asumir gastos corrientes {{ municipio }}
         	{% descargar_excel "ago3" %}
             <h3>Resultado presupuestario ingresos corrientes propios</h3>
             <h4>Millones de córdobas corrientes</h4>
-            <table class="table table-condensed">                                       
+            <table class="table table-condensed">
                 <tr class="info"> <th>Rubros ingresos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
-                {% for row in rubros %}                                                     
-                <tr>                                                                        
-                    <td>{{ row.tipoingreso__nombre}}</td>                                    
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                    {% if row.inicial_asignado %}                                                   
+                {% for row in rubros %}
+                <tr>
+                    <td>{{ row.tipoingreso__nombre}}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% if row.inicial_asignado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                    {% endif %}                                                             
-                </tr>                                                                       
-                {% endfor %}                                                                
-                <tr class="success bold">                                                   
-                    <td>TOTAL</td>                                                          
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
                     <td class="text-right">{{ rubros|total_sum:'inicial_asignado'|million|intcomma }}</td>
                     <td class="text-right">{{ rubros|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubros|total_sum:'inicial_asignado' %}
@@ -134,30 +134,30 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                             {% endif %}
                         </td>
                     {% endwith %}
-                </tr>       
-            </table>                                                                    
+                </tr>
+            </table>
         </div>
-        <!-- /fin aci-tabla2 -->                                                      
+        <!-- /fin aci-tabla2 -->
         <br clear="all" />
         <!-- maribel 30/07- aci-tabla3 -->
         <div class="col-md-6">
         	{% descargar_excel "ago4" %}
             <h3>Resultado presupuestario gastos corrientes totales</h3>
             <h4>Millones de córdobas corrientes</h4>
-            <table class="table table-condensed">                                       
+            <table class="table table-condensed">
                 <tr class="info"> <th>Rubros de gastos</th> <th>Inicial</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a></th></tr>
-                {% for row in rubrosg %}                                                     
-                <tr>                                                                        
-                    <td>{{ row.tipogasto__nombre}}</td>                                    
-                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>                                    
-                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>                                   
-                    {% if row.inicial_asignado %}                                                   
+                {% for row in rubrosg %}
+                <tr>
+                    <td>{{ row.tipogasto__nombre}}</td>
+                    <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                    <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                    {% if row.inicial_asignado %}
                         <td class="montos text-right">{{ row.ejecutado|div:row.inicial_asignado|mul:100|floatformat:1 }}%</td>
-                    {% endif %}                                                             
-                </tr>                                                                       
-                {% endfor %}                                                                
-                <tr class="success bold">                                                   
-                    <td>TOTAL</td>                                                          
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <tr class="success bold">
+                    <td>TOTAL</td>
                     <td class="text-right">{{ rubrosg|total_sum:'inicial_asignado'|million|intcomma }}</td>
                     <td class="text-right">{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
                     {% with sum_asignado=rubrosg|total_sum:'inicial_asignado' %}
@@ -167,11 +167,11 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                             {% endif %}
                         </td>
                     {% endwith %}
-                </tr>       
-            </table>                                                                    
+                </tr>
+            </table>
         </div>
       </div>
-        <!-- /fin aci-tabla2 -->                                                      
+        <!-- /fin aci-tabla2 -->
       <div role="tabpanel" class="tab-pane fade" id="acimodificacion" aria-labelledby="acimodificacion-tab">
         <div class="col-md-9">
 
@@ -184,7 +184,7 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                 <td></td>
                 <td></td>
                 <td colspan="4" class="success text-center">
-                    <h4>Modificación intermedia 
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
                     </h4>
                 </td>
@@ -194,7 +194,7 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                     </h4>
                 </td>
             </tr>
-            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
             </tr>
@@ -275,7 +275,7 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                 <td></td>
                 <td></td>
                 <td colspan="4" class="success text-center">
-                    <h4>Modificación intermedia 
+                    <h4>Modificación intermedia
                         <a href="#" data-toggle="tooltip" data-original-title="Modificación al {{ year_data.actualizado }}" class="link-info">*</a>
                     </h4>
                 </td>
@@ -285,7 +285,7 @@ Dependencia para asumir gastos corrientes {{ municipio }}
                     </h4>
                 </td>
             </tr>
-            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th> 
+            <tr class="info"> <th>Rubros de ingresos</th> <th>Inicial</th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
                 <th>Actualizado</th> <th>Modificación</th> <th>Ejecutado</th> <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado" class="link-info">%</a></th>
             </tr>
