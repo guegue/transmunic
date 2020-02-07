@@ -9,8 +9,8 @@ SELECT muni.nombre, (
         ( SELECT SUM(core_gastodetalle.{quesumar}) AS sum
            FROM core_gastodetalle
              JOIN core_gasto ON core_gastodetalle.gasto_id = core_gasto.id
-             JOIN core_tipogasto ON core_gastodetalle.tipogasto_id = core_tipogasto.codigo
-          WHERE core_gasto.anio = {year} AND core_Gasto.periodo='{periodo}' AND core_tipogasto.clasificacion = {tipoingreso} AND core_Gasto.municipio_id=muni.id)
+             JOIN core_subsubtipogasto ON core_gastodetalle.subsubtipogasto_id = core_subsubtipogasto.codigo
+          WHERE core_gasto.anio = {year} AND core_Gasto.periodo='{periodo}' AND core_subsubtipogasto.clasificacion = {tipoingreso} AND core_Gasto.municipio_id=muni.id)
         )
         / 
         NULLIF( (SELECT SUM(core_ingresodetalle.{quesumar}) AS sum
