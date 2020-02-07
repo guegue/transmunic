@@ -17,9 +17,10 @@ from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, \
     InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     PERIODO_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
+from operator import itemgetter
 
 from transmunic import settings as pma_settings
 
@@ -31,6 +32,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
+    periodo_list = getPeriods(Gasto)
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
@@ -91,14 +93,14 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         inicial_asignado_g = GastoDetalle.objects.filter(
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_INICIAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('gasto__anio', 'gasto__periodo')\
             .annotate(asignado=Sum('asignado'))
         inicialg = list(inicial_asignado_g)
         ejecutado_final_g = GastoDetalle.objects.filter(
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_FINAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('gasto__anio', 'gasto__periodo')\
             .annotate(ejecutado=Sum('ejecutado'))
         finalg = list(ejecutado_final_g)
@@ -109,7 +111,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_INICIAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(inicial_asignado=Sum('asignado'))
@@ -117,7 +119,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_ACTUALIZADO,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE,)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo').\
             annotate(
@@ -127,7 +129,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_FINAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(
@@ -137,7 +139,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
@@ -276,22 +278,22 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
+        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values('gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         # obtiene datos de gastos en ditintos rubros
         rubrosg_inicial = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=PERIODO_INICIAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=PERIODO_ACTUALIZADO,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(
@@ -300,7 +302,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         rubrosg_final = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=PERIODO_FINAL,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(
@@ -309,7 +311,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         rubrosg_periodo = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre')\
             .order_by('tipogasto__codigo')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
@@ -615,6 +617,9 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         'charts': (pie, bar, pie2, bar2, bar_horizontal,),
         'source': source,
         'indicator_name': "Ahorro Corriente",
+        'indicator_subtitle': "Ingresos corrientes propios por rubro",
+        'indicator_subtitle2': "Gastos corrientes totales por rubro",
+        'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
         'indicator_description': """ El indicador de Ahorro corriente o
             capacidad de ahorro es el balance entre los ingresos
             corrientes y los gastos corrientes y es igual al ahorro
@@ -641,6 +646,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'porclasep': porclasep,
             'rubros': rubros,
             'rubrosg': rubrosg,
+            'periodo_list': periodo_list,
+            'mostraren': "porcentaje",
             'otros': otros
         }
     return render(request, template_name, context)
@@ -744,7 +751,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre', 'tipogasto__shortname')\
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
@@ -752,20 +759,20 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False):
             gasto__anio=year,
             gasto__municipio__slug=municipio,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .aggregate(total=Sum(amount_column))
     else:
         tipos = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('tipogasto', 'tipogasto__nombre', 'tipogasto__shortname')\
             .order_by('tipogasto__codigo')\
             .annotate(amount=Sum(amount_column))
         amount = GastoDetalle.objects.filter(
             gasto__anio=year,
             gasto__periodo=periodo,
-            tipogasto__clasificacion=TipoGasto.CORRIENTE)\
+            subsubtipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .aggregate(total=Sum(amount_column))
     data = {
         'label': "Gasto Corriente",
