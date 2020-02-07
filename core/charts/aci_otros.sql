@@ -22,4 +22,4 @@ SELECT muni.nombre, (
              JOIN lugar_clasificacionmunicano ON muni.id=lugar_clasificacionmunicano.municipio_id AND
          lugar_clasificacionmunicano.anio = {year}
 WHERE lugar_clasificacionmunicano.clasificacion_id={mi_clase}
-ORDER BY muni.nombre;
+ORDER BY {quesumar};

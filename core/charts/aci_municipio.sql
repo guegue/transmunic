@@ -12,10 +12,10 @@ SELECT ROW_NUMBER() OVER(ORDER BY anio) AS id, periodo.anio,
         ( SELECT sum(core_gastodetalle.ejecutado) AS sum
            FROM core_gastodetalle
              JOIN core_gasto ON core_gastodetalle.gasto_id = core_gasto.id
-             JOIN core_tipogasto ON core_gastodetalle.tipogasto_id = core_tipogasto.codigo
+             JOIN core_subsubtipogasto ON core_gastodetalle.subsubtipogasto_id = core_subsubtipogasto.codigo
              JOIN lugar_municipio ON core_gasto.municipio_id = lugar_municipio.id
              JOIN core_anio ON core_anio.anio = core_gasto.anio
-          WHERE core_gasto.anio = periodo.anio AND core_gasto.periodo = core_anio.periodo AND core_tipogasto.clasificacion = 0 AND lugar_municipio.slug = '{municipio}')
+          WHERE core_gasto.anio = periodo.anio AND core_gasto.periodo = core_anio.periodo AND core_subsubtipogasto.clasificacion = 0 AND lugar_municipio.slug = '{municipio}')
         )
         / 
         NULLIF( (SELECT sum(core_ingresodetalle.ejecutado) AS sum
@@ -39,10 +39,10 @@ SELECT ROW_NUMBER() OVER(ORDER BY anio) AS id, periodo.anio,
         ( SELECT sum(core_gastodetalle.asignado) AS sum
            FROM core_gastodetalle
              JOIN core_gasto ON core_gastodetalle.gasto_id = core_gasto.id
-             JOIN core_tipogasto ON core_gastodetalle.tipogasto_id = core_tipogasto.codigo
+             JOIN core_subsubtipogasto ON core_gastodetalle.subsubtipogasto_id = core_subsubtipogasto.codigo
              JOIN lugar_municipio ON core_gasto.municipio_id = lugar_municipio.id
              JOIN core_anio ON core_anio.anio = core_gasto.anio
-          WHERE core_gasto.anio = periodo.anio AND core_gasto.periodo = 'I' AND core_tipogasto.clasificacion = 0 AND lugar_municipio.slug = '{municipio}')
+          WHERE core_gasto.anio = periodo.anio AND core_gasto.periodo = 'I' AND core_subsubtipogasto.clasificacion = 0 AND lugar_municipio.slug = '{municipio}')
         )
         / 
         NULLIF( (SELECT sum(core_ingresodetalle.asignado) AS sum
