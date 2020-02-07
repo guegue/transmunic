@@ -76,14 +76,14 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             ingreso__periodo=PERIODO_INICIAL,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
             .values('ingreso__anio', 'ingreso__periodo')\
-            .annotate(asignado=Sum('asignado'))
+            .annotate(asignado=Sum('asignado')).order_by()
         inicial = list(asignado_inicial)
         ejecutado_final = IngresoDetalle.objects.filter(
             ingreso__municipio__slug=municipio,
             ingreso__periodo=PERIODO_FINAL,
             tipoingreso__clasificacion=TipoIngreso.CORRIENTE)\
             .values('ingreso__anio', 'ingreso__periodo')\
-            .annotate(ejecutado=Sum('ejecutado'))
+            .annotate(ejecutado=Sum('ejecutado')).order_by()
         final = list(ejecutado_final)
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
@@ -93,14 +93,14 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             gasto__periodo=PERIODO_INICIAL,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('gasto__anio', 'gasto__periodo')\
-            .annotate(asignado=Sum('asignado'))
+            .annotate(asignado=Sum('asignado')).order_by()
         inicialg = list(inicial_asignado_g)
         ejecutado_final_g = GastoDetalle.objects.filter(
             gasto__municipio__slug=municipio,
             gasto__periodo=PERIODO_FINAL,
             tipogasto__clasificacion=TipoGasto.CORRIENTE)\
             .values('gasto__anio', 'gasto__periodo')\
-            .annotate(ejecutado=Sum('ejecutado'))
+            .annotate(ejecutado=Sum('ejecutado')).order_by()
         finalg = list(ejecutado_final_g)
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
