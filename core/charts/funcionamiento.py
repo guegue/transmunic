@@ -20,7 +20,7 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
+from core.tools import getYears, getPeriods, dictfetchall, glue, superglue, percentage
 from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
 from lugar.models import ClasificacionMunicAno
@@ -44,6 +44,8 @@ def gf_chart(request):
     periodo = Anio.objects.get(anio=year).periodo
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    asignado_percent = 0
+    ejecutado_percent = 0
 
     from collections import OrderedDict  # FIXME move up
     if municipio:
@@ -52,24 +54,50 @@ def gf_chart(request):
         municipio_row = Municipio.objects.get(slug=municipio)
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
-        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-                                                     subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            order_by('gasto__anio').values('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__periodo=periodo,
-                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__slug=municipio).\
-            order_by('gasto__anio').values('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,
+                   gasto__municipio__slug=municipio). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        total_asignado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   gasto__municipio__slug=municipio,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,
+                   gasto__municipio__slug=municipio). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        total_ejecutado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   gasto__municipio__slug=municipio,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'))
 
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["gasto__anio"] == int(
                 year)).next()['asignado']
+            total_asignado = total_asignado_anio[0]['asignado']
+            asignado_percent = percentage(asignado, total_asignado)
         except StopIteration:
             asignado = 0
         try:
             ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()[
                 'ejecutado']
+            total_ejecutado = total_ejecutado_anio[0]['ejecutado']
+            ejecutado_percent = percentage(ejecutado, total_ejecutado)
         except StopIteration:
             ejecutado = 0
 
@@ -409,24 +437,47 @@ def gf_chart(request):
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='subsubtipogasto__codigo')
 
-        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-                                                     subsubtipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            order_by('gasto__anio').values('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__periodo=periodo,
-                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE).\
-            order_by('gasto__anio').values('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        total_asignado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        total_ejecutado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'))
 
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["gasto__anio"] == int(
                 year)).next()['asignado']
+            total_asignado = total_asignado_anio[0]['asignado']
+            asignado_percent = percentage(asignado, total_asignado)
         except StopIteration:
             asignado = 0
         try:
             ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()[
                 'ejecutado']
+            total_ejecutado = total_ejecutado_anio[0]['ejecutado']
+            print(ejecutado, total_ejecutado)
+            ejecutado_percent = percentage(ejecutado, total_ejecutado)
         except StopIteration:
             ejecutado = 0
         source = glue(source_inicial, source_final, 'gasto__anio')
@@ -776,7 +827,8 @@ def gf_chart(request):
 
         data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,
                 'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
-                'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+                'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year, 'asignado_percent': asignado_percent,
+                'ejecutado_percent': ejecutado_percent}
 
         return obtener_excel_response(reporte=reporte, data=data)
 
@@ -787,7 +839,7 @@ def gf_chart(request):
         'indicator': "gf",
         'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ",
         'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase,
-        'bubble_data': bubble_source,
+        'bubble_data': bubble_source, 'asignado_percent': asignado_percent, 'ejecutado_percent': ejecutado_percent,
         'periodo_list': periodo_list,
             'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
     return render(request, template_name, context)
