@@ -173,7 +173,8 @@
                             {% endfor %}
                         </strong>
                         <div class="position-balloon">
-                            <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
+                            <span {% if forloop.counter <= 10 %}style="left: 38%"
+                                  {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                             <span class="municipio-data">
                                {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
                                    <b>MI MUNICIPIO</b>
@@ -208,7 +209,8 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"
+                                  {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                            {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
                                <b>MI MUNICIPIO</b>
@@ -216,7 +218,7 @@
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
                             <span class="font-roboto">
-                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                {% if row.ejecutado_percent %}
                                     {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
                                         {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
                                     {% else %}
@@ -246,13 +248,14 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span {% if forloop.counter < 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"
+                                  {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                             <b>MI MUNICIPIO</b>
                         {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                         <br>
                           <span class="font-roboto">
-                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                {% if row.ejecutado_percent:-2 %}
                                     {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
                                         {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
                                     {% else %}
@@ -282,7 +285,8 @@
                         {% endfor %}
                     </strong>
                     <div class="position-balloon">
-                        <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
+                        <span {% if forloop.counter <= 10 %}style="left: 38%"
+                                  {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
                            {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
                                <strong></strong>
@@ -290,7 +294,7 @@
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
                             <span class="font-roboto">
-                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                {% if row.ejecutado_percent %}
                                     {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
                                         {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
                                     {% else %}
