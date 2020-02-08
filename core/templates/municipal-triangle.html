@@ -30,9 +30,18 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-                                <span class="font-roboto">{{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
-                                    {% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;
-                                        rdobas{% endif %}</span>
+                                <span class="font-roboto">
+                                    {% if row.asignado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma }}
+                                    {% endif %}
+                                    {% if mostraren == 'porcentaje' %}
+                                        % del gasto total
+                                    {% else %}
+                                        M. de C&oacute;rdobas
+                                    {% endif %}
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -50,10 +59,18 @@
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            <span class="font-roboto">{{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
-                                    {% if mostraren == 'porcentaje' %}% del
-                                        gasto total{% else %}M. de C&oacute;rdobas{% endif %}</span>
-                            </span>
+                                <span class="font-roboto">
+                                    {% if row.asignado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma }}
+                                    {% endif %}
+                                    {% if mostraren == 'porcentaje' %}
+                                        % del gasto total
+                                    {% else %}
+                                        M. de C&oacute;rdobas
+                                    {% endif %}
+                                </span>
                         </div>
                     </div>
                 {% elif forloop.last %}
@@ -71,9 +88,18 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-                                <span class="font-roboto">{{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
-                                        {% if mostraren == 'porcentaje' %} % del
-                                            gato total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+                                <span class="font-roboto">
+                                    {% if row.asignado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado_percen|default_if_none:0t|intcomma }}
+                                    {% endif %}
+                                    {% if mostraren == 'porcentaje' %}
+                                        % del gasto total
+                                    {% else %}
+                                        M. de C&oacute;rdobas
+                                    {% endif %}
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -95,10 +121,19 @@
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
-                                <br>
-                                <span class="font-roboto">{{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
-                                        {% if mostraren == 'porcentaje' %}% del gasto
-                                            total{% else %}M. de C&oacute;rdobas{% endif %}</span>
+                               <br>
+                               <span class="font-roboto">
+                                    {% if row.asignado|intcomma|floatformat:-2 %}
+                                        {{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado|default_if_none:0|intcomma }}
+                                    {% endif %}
+                                   {% if mostraren == 'porcentaje' %}
+                                       % del gasto total
+                                   {% else %}
+                                       M. de C&oacute;rdobas
+                                   {% endif %}
+                               </span>
                             </span>
                         </div>
                     </div>
@@ -116,10 +151,18 @@
                             <b>MI MUNICIPIO</b>
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
-                            <span class="font-roboto">{{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
-                                    {% if mostraren == 'porcentaje' %}% del gasto
-                                        total{% else %}M. de C&oacute;rdobas{% endif %}</span>
-                            </span>
+                             <span class="font-roboto">
+                                    {% if row.asignado|intcomma|floatformat:-2 %}
+                                        {{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado|default_if_none:0|intcomma }}
+                                    {% endif %}
+                                 {% if mostraren == 'porcentaje' %}
+                                     % del gasto total
+                                 {% else %}
+                                     M. de C&oacute;rdobas
+                                 {% endif %}
+                               </span>
                         </div>
                     </div>
                 {% elif forloop.last %}
@@ -137,11 +180,18 @@
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                                 <br>
-                                <span class="font-roboto">{{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
-                                    {% if mostraren == 'porcentaje' %}% del gasto total
-                                    {% else %}M. de C&oacute;rdobas
+                                 <span class="font-roboto">
+                                    {% if row.asignado|intcomma|floatformat:-2 %}
+                                        {{ row.asignado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.asignado|default_if_none:0|intcomma }}
                                     {% endif %}
-                                </span>
+                                     {% if mostraren == 'porcentaje' %}
+                                         % del gasto total
+                                     {% else %}
+                                         M. de C&oacute;rdobas
+                                     {% endif %}
+                                 </span>
                             </span>
                         </div>
                     </div>
@@ -166,13 +216,24 @@
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
                             <span class="font-roboto">
-                                {% if row.ejecutado_percent %}
-                                    {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                    {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% else %}
-                                    {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% if row.ejecutado|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% endif %}
-                                {% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;
-                                    rdobas{% endif %}
+                                {% if mostraren == 'porcentaje' %}
+                                    % del gasto total
+                                {% else %}
+                                    M. de C&oacute;rdobas
+                                {% endif %}
                             </span>
                         </span>
                     </div>
@@ -191,13 +252,24 @@
                         {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                         <br>
                           <span class="font-roboto">
-                                {% if row.ejecutado_percent %}
-                                    {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                    {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% else %}
-                                    {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% if row.ejecutado|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% endif %}
-                              {% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;
-                                  rdobas{% endif %}
+                              {% if mostraren == 'porcentaje' %}
+                                  % del gasto total
+                              {% else %}
+                                  M. de C&oacute;rdobas
+                              {% endif %}
                             </span>
                         </span>
                     </div>
@@ -218,13 +290,24 @@
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
                             <span class="font-roboto">
-                                {% if row.ejecutado_percent %}
-                                    {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                    {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado_percent|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% else %}
-                                    {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% if row.ejecutado|intcomma|floatformat:-2 %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma|floatformat:-2 }}
+                                    {% else %}
+                                        {{ row.ejecutado|default_if_none:0|intcomma }}
+                                    {% endif %}
                                 {% endif %}
-                                {% if mostraren == 'porcentaje' %}% del gasto total{% else %}M. de C&oacute;
-                                    rdobas{% endif %}
+                                {% if mostraren == 'porcentaje' %}
+                                    % del gasto total
+                                {% else %}
+                                    M. de C&oacute;rdobas
+                                {% endif %}
                             </span>
                         </span>
                     </div>
