@@ -35,14 +35,16 @@ def total_avg(dict, key):
     except TypeError:
         return 0
 
+
 @register.filter
 def get_name_municipio(item):
     nombre = ''
     for key in item:
         if 'nombre' in key:
-           nombre = item.get(key, '')
-           break
+            nombre = item.get(key, '')
+            break
     return nombre
+
 
 @register.inclusion_tag('descargar_excel.html')
 def descargar_excel(reporte):
