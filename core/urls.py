@@ -10,7 +10,7 @@ from core.models import Organizacion
 report.autodiscover()
 
 urlpatterns = [
-    url(r'^importar/$', UploadExcelView.as_view()),
+    url(r'^importar/$', UploadExcelView.as_view(), name='importar'),
     url(r'^renglon/ingresos/$', ReglonIngresosView.as_view(), name='rengloningreso'),
     url(r'^resultado/(?P<table>ingreso|gasto|inversion)/(?P<pk>\d+)/$',
         ResultadoDetailView.as_view(), name='importar-resultado'),
