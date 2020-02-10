@@ -1,15 +1,25 @@
-{% extends "_base.html" %}
+{% extends "_indicator.html" %}
+{% block extra_header_links %}
+{% endblock %}
 {% block main_content %}
 
-Id: {{ object.id }}
-<br/>
-Municipio: {{ object.municipio }}
-<br/>
-Año: {{ object.anio }}
-<br/>
-Detalles: {{ object.ingresodetalle_set.count }} {{ object.gastodetalle_set.count }} {{ object.inversion.count }}
-<br/>
-Fecha de importación: {{ object.fecha }}
-<br/>
+    <div class="container" style="margin-top:10px;margin-bottom: 20px">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                Id: {{ object.id }}
+                <br/>
+                Municipio: {{ object.municipio }}
+                <br/>
+                Año: {{ object.anio }}
+                <br/>
+                Detalles: {{ object.ingresodetalle_set.count }} {{ object.gastodetalle_set.count }} {{ object.inversion.count }}
+                <br/>
+                Fecha de importación: {{ object.fecha }}
+                <br/>
+            </div>
+        </div>
+    </div>
 
+{% endblock %}
+{% block extra_footer_scripts %}
 {% endblock %}

@@ -1,11 +1,12 @@
-{% extends "base.html" %}
+{% extends "_indicator.html" %}
+
+{% block extra_header_links %}
+{% endblock %}
+
 {% block main_content %}
-    <br>
-    <br>
-    <br>
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin:10px 0 20px 21em">
         <div class="row">
-            <div class="col-md-11 col-lg-11" style="margin-left: 19%">
+            <div class="col-md-11 col-lg-11">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <h4>
@@ -78,8 +79,7 @@
             </div>
         </div>
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
 {% endblock %}
+
+{% block extra_footer_scripts %}
+{% endblock  %}
