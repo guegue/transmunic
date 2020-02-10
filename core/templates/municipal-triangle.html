@@ -25,7 +25,7 @@
                         <div class="position-balloon">
                             <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                             <span class="municipio-data">
-                               {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                               {% if municipio|lower == row|get_name_municipio|lower %}
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
@@ -45,7 +45,7 @@
                             </span>
                         </div>
                     </div>
-                {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                {% elif forloop.counter < forloop.last and municipio|lower == row|get_name_municipio|lower %}
                     <div class="balloon-dialogue second-balloon-dialogue">
                         <strong>
                             {% for letter in 'POSICIÓN'|make_list %}
@@ -83,7 +83,7 @@
                         <div class="position-balloon">
                             <span {% if forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                             <span class="municipio-data">
-                               {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                               {% if municipio|lower == row|get_name_municipio|lower %}
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
@@ -117,7 +117,7 @@
                         <div class="position-balloon">
                             <span {% if forloop.counter <= 10 %}style="left: 38%"{% endif %}>{{ forloop.counter }}</span>
                             <span class="municipio-data">
-                               {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                               {% if municipio|lower == row|get_name_municipio|lower %}
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
@@ -137,7 +137,7 @@
                             </span>
                         </div>
                     </div>
-                {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                {% elif forloop.counter < forloop.last and municipio|lower == row|get_name_municipio|lower %} %}
                     <div class="balloon-dialogue second-balloon-dialogue">
                         <strong>
                             {% for letter in 'POSICIÓN'|make_list %}
@@ -176,7 +176,7 @@
                             <span {% if forloop.counter <= 10 %}style="left: 38%"
                                   {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                             <span class="municipio-data">
-                               {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                               {% if municipio|lower == row|get_name_municipio|lower %}
                                    <b>MI MUNICIPIO</b>
                                {% endif %}
                                 {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
@@ -212,13 +212,13 @@
                         <span {% if forloop.counter <= 10 %}style="left: 38%"
                               {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                           {% if municipio|lower == row|get_name_municipio|lower %}
                                <b>MI MUNICIPIO</b>
                            {% endif %}
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
                             <br>
                             <span class="font-roboto">
-                                {% if row.ejecutado_percent or row.ejecutado_percent == 0%}
+                                {% if row.ejecutado_percent or row.ejecutado_percent == 0 %}
                                     {% if row.ejecutado_percent|intcomma|floatformat:-2 %}
                                         {{ row.ejecutado_percent|default_if_none:0|intcomma|floatformat:-2 }}
                                     {% else %}
@@ -240,7 +240,7 @@
                         </span>
                     </div>
                 </div>
-            {% elif  municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+            {% elif forloop.counter < forloop.last and municipio|lower == row|get_name_municipio|lower %}
                 <div class="balloon-dialogue second-balloon-dialogue">
                     <strong>
                         {% for letter in 'POSICIÓN'|make_list %}
@@ -288,7 +288,7 @@
                         <span {% if forloop.counter <= 10 %}style="left: 38%"
                               {% elif forloop.counter >= 100 %}style="left: 16.3%"{% endif %}>{{ forloop.counter }}</span>
                         <span class="municipio-data">
-                           {% if municipio|lower == row.gasto__municipio__nombre|lower or municipio|lower == row.ingreso__municipio__nombre|lower or municipio|lower == row.inversion__municipio__nombre|lower or municipio|lower == row.nombre|lower %}
+                           {% if municipio|lower == row|get_name_municipio|lower %}
                                <strong></strong>
                            {% endif %}
                             {% firstof row.gasto__municipio__nombre row.ingreso__municipio__nombre row.inversion__municipio__nombre row.nombre %}
