@@ -306,18 +306,20 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         return reverse('rengloningreso')
 
     def get_context_data(self, **kwargs):
-        tipos_ingresos = IngresoRenglon.objects. \
-            order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
-            values(tipo_ing_codigo=F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
-                   tipo_ing_nombre=F('subsubtipoingreso__subtipoingreso__tipoingreso__nombre')). \
-            distinct()
+        label = 'sub3tipoingreso__subsubtipoingreso__subtipoingreso__tipoingreso__{}'
+        tipoingreso_codigo_not_null = label.format('codigo__isnull')
+        filter_dict = {tipoingreso_codigo_not_null:False}
+        tipoingreso_codigo = label.format('codigo')
+        tipoingreso_nombre = label.format('nombre')
 
-        for row in tipos_ingresos:
-            ingreso_renglon = IngresoRenglon.objects. \
-                filter(
-                    subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
-                values('codigo', 'nombre').all()
-            row['ingreso_renglon'] = ingreso_renglon
+        ''  # Consulta ORM para obtener los tipos de ingresos y sus renglones
+        tipos_ingresos = IngresoRenglon.objects. \
+            filter(**filter_dict). \
+            order_by(tipoingreso_codigo). \
+            values(tipoingreso_codigo=F(tipoingreso_codigo),
+                   tipoingreso_nombre=F(tipoingreso_nombre),
+                   rengloningreso_codigo=F('codigo'),
+                   rengloningreso_nombre=F('nombre'))
 
         context = super(ReglonIngresosView, self).get_context_data(**kwargs)
         context['tipos_ingresos'] = tipos_ingresos
