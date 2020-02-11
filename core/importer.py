@@ -280,12 +280,13 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
             # obteniendo el asignado y ejecutado de un renglon
             renglon_asignado = self.request.POST.get('renglon_{}_asignado'.format(codigo))
             renglon_ejecutado = self.request.POST.get('renglon_{}_ejecutado'.format(codigo))
+            print(codigo, renglon_asignado, renglon_ejecutado)
             if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) > 0:
-                subsubtipo = SubSubTipoIngreso.objects. \
+                subsubtipo = Sub3TipoIngreso.objects. \
                     filter(ingresorenglon__codigo=codigo). \
-                    values(id_subsubtipo=F('codigo'),
-                           id_subtipo=F('subtipoingreso__codigo'),
-                           id_tipo=F('subtipoingreso__tipoingreso_id')). \
+                    values(id_subsubtipo=F('subsubtipoingreso_id'),
+                           id_subtipo=F('subsubtipoingreso__subtipoingreso_id'),
+                           id_tipo=F('subsubtipoingreso__subtipoingreso__tipoingreso_id')). \
                     first()
 
                 # guardando el detalle de cada renglon
