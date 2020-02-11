@@ -308,9 +308,13 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         label = 'sub3tipoingreso__subsubtipoingreso__subtipoingreso__tipoingreso__{}'
         tipoingreso_codigo_not_null = label.format('codigo__isnull')
-        filter_dict = {tipoingreso_codigo_not_null:False}
         tipoingreso_codigo = label.format('codigo')
         tipoingreso_nombre = label.format('nombre')
+        tipoingreso_nuevo_catalogo = label.format('nuevo_catalogo')
+        filter_dict = {
+            tipoingreso_codigo_not_null: False,
+            tipoingreso_nuevo_catalogo: True
+        }
 
         ''  # Consulta ORM para obtener los tipos de ingresos y sus renglones
         tipos_ingresos = IngresoRenglon.objects. \
