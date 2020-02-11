@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+
+{% block head_extra %}
+    <style>
+        .panel-heading {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
 {% block main_content %}
     <div class="container-fluid">
         <div class="row">
@@ -36,12 +45,12 @@
                                 {% for row in renglones %}
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab"
+                                             data-toggle="collapse" data-parent="#accordion"
+                                             href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
+                                             aria-controls="collapse{{ forloop.counter0 }}"
                                              id="heading{{ forloop.counter0 }}">
                                             <h4 class="panel-title font-color-darkblue position-relative">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                                   href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
-                                                   aria-controls="collapse{{ forloop.counter0 }}"
-                                                   class="position-relative change-icon">
+                                                <a role="button" class="position-relative change-icon">
                                                     {{ row.grouper|upper }}
                                                 </a>
                                                 <span class="position-relative pull-right"
