@@ -92,7 +92,8 @@ class RenglonIngresoForm(forms.Form):
                                            attrs={'class': "form-control required"})
                                        )
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
-        attrs={'class': "form-control required"}),
+        attrs={'class': "form-control required", 'min': 2018,
+               'max': lambda: datetime.date.today().year}),
         initial=lambda: datetime.date.today().year, required=True)
     periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
         attrs={'class': "form-control required"}), required=True)
