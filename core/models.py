@@ -147,6 +147,7 @@ class TipoGasto(models.Model):
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES,
         default=0, null=True)
+    nuevo_catalogo = models.BooleanField(default=False,)
 
     class Meta:
         verbose_name_plural = 'Tipos de gastos'
@@ -235,6 +236,7 @@ class TipoIngreso(models.Model):
     # si no es ingreso corriente, entonces es de Capital
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES, default=0, null=True)
+    nuevo_catalogo = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'Tipos de ingreso'
