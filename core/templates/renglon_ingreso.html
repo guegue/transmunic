@@ -32,8 +32,8 @@
 
                         <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-                                {% for tipo_ingreso in tipos_ingresos %}
+                                {% regroup tipos_ingresos by tipoingreso_nombre as renglones %}
+                                {% for row in renglones %}
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab"
                                              id="heading{{ forloop.counter0 }}">
@@ -42,21 +42,21 @@
                                                    href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
                                                    aria-controls="collapse{{ forloop.counter0 }}"
                                                    class="position-relative change-icon">
-                                                    {{ tipo_ingreso.tipo_ing_nombre|upper }}
+                                                    {{ row.grouper|upper }}
                                                 </a>
                                                 <span class="position-relative pull-right"
                                                       style="right: 340px">
                                                     Total Asignado:
-                                                    <strong id="asignado_{{ tipo_ingreso.tipo_ing_codigo }}">
-                                                        0
+                                                    <strong id="asignado_{{ row.tipoingreso_codigo }}">
+                                                    0
                                                     </strong>
                                                 </span>
                                                 <span class="position-relative pull-right"
                                                       style="right: -15px">
                                                     Total Ejecutado:
-                                                    <strong id="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}">
-                                                        0
-                                                    </strong>
+                                                   <strong id="ejecutado_{{ row.tipoingreso_codigo }}">
+                                                   0
+                                                   </strong>
                                                 </span>
                                                 <i class="icon position-relative pull-right fa fa-angle-up"
                                                    style="right: -240px"></i>
@@ -78,26 +78,26 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {% for renglon in tipo_ingreso.ingreso_renglon %}
+                                                    {% for renglon in row.list %}
                                                         <tr>
                                                             <td class="text-center">{{ forloop.counter }}</td>
                                                             <td>
                                                                 <input type="hidden"
                                                                        name="renglon[codigo]"
-                                                                       value="{{ renglon.codigo }}">
-                                                                {{ renglon.codigo }}
+                                                                       value="{{ renglon.rengloningreso_codigo }}">
+                                                                {{ renglon.rengloningreso_codigo }}
                                                             </td>
-                                                            <td>{{ renglon.nombre }}</td>
+                                                            <td>{{ renglon.rengloningreso_nombre }}</td>
                                                             <td>
                                                                 <input type="number" class="form-control input-asignado"
-                                                                       data-nombre_total="asignado_{{ tipo_ingreso.tipo_ing_codigo }}"
+                                                                       data-nombre_total="asignado_{{ renglon.tipoingreso_codigo }}"
                                                                        name="renglon_{{ renglon.codigo }}_asignado"
                                                                        value="0" min="0">
                                                             </td>
                                                             <td>
                                                                 <input type="number"
                                                                        class="form-control input-ejecutado"
-                                                                       data-nombre_total="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}"
+                                                                       data-nombre_total="ejecutado_{{ renglon.tipoingreso_codigo }}"
                                                                        name="renglon_{{ renglon.codigo }}_ejecutado"
                                                                        value="0" min="0">
                                                             </td>
