@@ -67,7 +67,7 @@
                                                    0
                                                    </strong>
                                                 </span>
-                                                <i class="icon position-relative pull-right fa fa-angle-up"
+                                                <i class="icon position-relative pull-right fa {% if forloop.first %}fa-angle-up{% else %}fa-angle-down{% endif %}"
                                                    style="right: -240px"></i>
                                             </h4>
                                         </div>
@@ -148,16 +148,15 @@
 
                 $(`#${data}`).html(total_ejecutado);
             });
-            $('.panel').on('show.bs.collapse', function () {
-                let icon = $(this).children('.panel-heading')
-                    .find('i');
-                icon.removeClass('fa-angle-up');
-                icon.addClass('fa-angle-down');
-            }).on('hide.bs.collapse', function () {
-                let icon = $(this).children('.panel-heading')
-                    .find('i');
-                icon.removeClass('fa-angle-down');
-                icon.addClass('fa-angle-up');
+            $('.panel-heading').on('click', function () {
+                let icon = $(this).find('i');
+                if (icon.hasClass('fa-angle-up')) {
+                    icon.removeClass('fa-angle-up');
+                    icon.addClass('fa-angle-down');
+                } else {
+                    icon.removeClass('fa-angle-down');
+                    icon.addClass('fa-angle-up');
+                }
             });
 
 
