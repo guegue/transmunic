@@ -39,6 +39,16 @@
                             <input type="submit" value="Submit" class="btn btn-primary">
                         </div>
 
+                        {% if messages %}
+                            <div class="col-lg-12 col-md-12 col-sm-12" id="message">
+                                <div class="alert alert-info">
+                                    {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 {% regroup tipos_ingresos by tipoingreso_nombre as renglones %}
@@ -130,6 +140,7 @@
 {% block extras_js %}
     <script>
         $(function () {
+            let message_box = $('#message');
             $('.input-asignado').on('change', function () {
                 let body_table = $(this).parents('tbody');
                 let rows = body_table.find('tr');
@@ -159,6 +170,12 @@
                 }
             });
 
+            //mandar a ocultar mensaje despues de 5segundos
+            if (message_box.length > 0) {
+                setTimeout(function () {
+                    message_box.fadeOut('slow');
+                }, 5000);
+            }
 
             /**
              * @return {number}
