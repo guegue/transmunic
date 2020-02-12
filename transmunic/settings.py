@@ -234,6 +234,9 @@ COLORS_ARRAY = [
     '#96bfff',
 ]
 
+'' # Definiendo url login
+LOGIN_URL = '/admin/login/'
+
 try:
     LOCAL_SETTINGS
 except NameError:
