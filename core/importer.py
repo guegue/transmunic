@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.urls import reverse
 from django.views.generic import FormView, DetailView
 from django.db.models import F
+from django.contrib import messages
 from openpyxl import load_workbook
 
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
@@ -304,6 +305,7 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         return super(ReglonIngresosView, self).form_valid(form)
 
     def get_success_url(self):
+        messages.add_message(self.request, messages.INFO, 'Guardado Exitosamente')
         return reverse('rengloningreso')
 
     def get_context_data(self, **kwargs):
