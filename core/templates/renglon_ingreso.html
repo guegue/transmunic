@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+
+{% block head_extra %}
+    <style>
+        .panel-heading {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
 {% block main_content %}
     <div class="container-fluid">
         <div class="row">
@@ -30,35 +39,45 @@
                             <input type="submit" value="Submit" class="btn btn-primary">
                         </div>
 
+                        {% if messages %}
+                            <div class="col-lg-12 col-md-12 col-sm-12" id="message">
+                                <div class="alert alert-info">
+                                    {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-                                {% for tipo_ingreso in tipos_ingresos %}
+                                {% regroup tipos_ingresos by tipoingreso_nombre as renglones %}
+                                {% for row in renglones %}
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab"
+                                             data-toggle="collapse" data-parent="#accordion"
+                                             href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
+                                             aria-controls="collapse{{ forloop.counter0 }}"
                                              id="heading{{ forloop.counter0 }}">
                                             <h4 class="panel-title font-color-darkblue position-relative">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                                   href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
-                                                   aria-controls="collapse{{ forloop.counter0 }}"
-                                                   class="position-relative change-icon">
-                                                    {{ tipo_ingreso.tipo_ing_nombre|upper }}
+                                                <a role="button" class="position-relative change-icon">
+                                                    {{ row.grouper|upper }}
                                                 </a>
                                                 <span class="position-relative pull-right"
                                                       style="right: 340px">
                                                     Total Asignado:
-                                                    <strong id="asignado_{{ tipo_ingreso.tipo_ing_codigo }}">
-                                                        0
+                                                    <strong id="asignado_{{ row.list.0.tipoingreso_codigo }}">
+                                                    0
                                                     </strong>
                                                 </span>
                                                 <span class="position-relative pull-right"
                                                       style="right: -15px">
                                                     Total Ejecutado:
-                                                    <strong id="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}">
-                                                        0
-                                                    </strong>
+                                                   <strong id="ejecutado_{{ row.list.0.tipoingreso_codigo }}">
+                                                   0
+                                                   </strong>
                                                 </span>
-                                                <i class="icon position-relative pull-right fa fa-angle-up"
+                                                <i class="icon position-relative pull-right fa {% if forloop.first %}fa-angle-up{% else %}fa-angle-down{% endif %}"
                                                    style="right: -240px"></i>
                                             </h4>
                                         </div>
@@ -78,27 +97,27 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {% for renglon in tipo_ingreso.ingreso_renglon %}
+                                                    {% for renglon in row.list %}
                                                         <tr>
                                                             <td class="text-center">{{ forloop.counter }}</td>
                                                             <td>
                                                                 <input type="hidden"
                                                                        name="renglon[codigo]"
-                                                                       value="{{ renglon.codigo }}">
-                                                                {{ renglon.codigo }}
+                                                                       value="{{ renglon.rengloningreso_codigo }}">
+                                                                {{ renglon.rengloningreso_codigo }}
                                                             </td>
-                                                            <td>{{ renglon.nombre }}</td>
+                                                            <td>{{ renglon.rengloningreso_nombre }}</td>
                                                             <td>
                                                                 <input type="number" class="form-control input-asignado"
-                                                                       data-nombre_total="asignado_{{ tipo_ingreso.tipo_ing_codigo }}"
-                                                                       name="renglon_{{ renglon.codigo }}_asignado"
+                                                                       data-nombre_total="asignado_{{ renglon.tipoingreso_codigo }}"
+                                                                       name="renglon_{{ renglon.rengloningreso_codigo }}_asignado"
                                                                        value="0" min="0">
                                                             </td>
                                                             <td>
                                                                 <input type="number"
                                                                        class="form-control input-ejecutado"
-                                                                       data-nombre_total="ejecutado_{{ tipo_ingreso.tipo_ing_codigo }}"
-                                                                       name="renglon_{{ renglon.codigo }}_ejecutado"
+                                                                       data-nombre_total="ejecutado_{{ renglon.tipoingreso_codigo }}"
+                                                                       name="renglon_{{ renglon.rengloningreso_codigo }}_ejecutado"
                                                                        value="0" min="0">
                                                             </td>
                                                         </tr>
@@ -121,6 +140,7 @@
 {% block extras_js %}
     <script>
         $(function () {
+            let message_box = $('#message');
             $('.input-asignado').on('change', function () {
                 let body_table = $(this).parents('tbody');
                 let rows = body_table.find('tr');
@@ -139,18 +159,23 @@
 
                 $(`#${data}`).html(total_ejecutado);
             });
-            $('.panel').on('show.bs.collapse', function () {
-                let icon = $(this).children('.panel-heading')
-                    .find('i');
-                icon.removeClass('fa-angle-up');
-                icon.addClass('fa-angle-down');
-            }).on('hide.bs.collapse', function () {
-                let icon = $(this).children('.panel-heading')
-                    .find('i');
-                icon.removeClass('fa-angle-down');
-                icon.addClass('fa-angle-up');
+            $('.panel-heading').on('click', function () {
+                let icon = $(this).find('i');
+                if (icon.hasClass('fa-angle-up')) {
+                    icon.removeClass('fa-angle-up');
+                    icon.addClass('fa-angle-down');
+                } else {
+                    icon.removeClass('fa-angle-down');
+                    icon.addClass('fa-angle-up');
+                }
             });
 
+            //mandar a ocultar mensaje despues de 5segundos
+            if (message_box.length > 0) {
+                setTimeout(function () {
+                    message_box.fadeOut('slow');
+                }, 5000);
+            }
 
             /**
              * @return {number}

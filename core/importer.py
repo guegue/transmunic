@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.urls import reverse
 from django.views.generic import FormView, DetailView
 from django.db.models import F
+from django.contrib import messages
 from openpyxl import load_workbook
 
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
@@ -280,12 +281,13 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
             # obteniendo el asignado y ejecutado de un renglon
             renglon_asignado = self.request.POST.get('renglon_{}_asignado'.format(codigo))
             renglon_ejecutado = self.request.POST.get('renglon_{}_ejecutado'.format(codigo))
+            print(codigo, renglon_asignado, renglon_ejecutado)
             if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) > 0:
-                subsubtipo = SubSubTipoIngreso.objects. \
+                subsubtipo = Sub3TipoIngreso.objects. \
                     filter(ingresorenglon__codigo=codigo). \
-                    values(id_subsubtipo=F('codigo'),
-                           id_subtipo=F('subtipoingreso__codigo'),
-                           id_tipo=F('subtipoingreso__tipoingreso_id')). \
+                    values(id_subsubtipo=F('subsubtipoingreso_id'),
+                           id_subtipo=F('subsubtipoingreso__subtipoingreso_id'),
+                           id_tipo=F('subsubtipoingreso__subtipoingreso__tipoingreso_id')). \
                     first()
 
                 # guardando el detalle de cada renglon
@@ -303,21 +305,28 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         return super(ReglonIngresosView, self).form_valid(form)
 
     def get_success_url(self):
+        messages.add_message(self.request, messages.INFO, 'Guardado Exitosamente')
         return reverse('rengloningreso')
 
     def get_context_data(self, **kwargs):
-        tipos_ingresos = IngresoRenglon.objects. \
-            order_by('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'). \
-            values(tipo_ing_codigo=F('subsubtipoingreso__subtipoingreso__tipoingreso__codigo'),
-                   tipo_ing_nombre=F('subsubtipoingreso__subtipoingreso__tipoingreso__nombre')). \
-            distinct()
+        label = 'sub3tipoingreso__subsubtipoingreso__subtipoingreso__tipoingreso__{}'
+        tipoingreso_codigo_not_null = label.format('codigo__isnull')
+        tipoingreso_codigo = label.format('codigo')
+        tipoingreso_nombre = label.format('nombre')
+        tipoingreso_nuevo_catalogo = label.format('nuevo_catalogo')
+        filter_dict = {
+            tipoingreso_codigo_not_null: False,
+            tipoingreso_nuevo_catalogo: True
+        }
 
-        for row in tipos_ingresos:
-            ingreso_renglon = IngresoRenglon.objects. \
-                filter(
-                    subsubtipoingreso__subtipoingreso__tipoingreso__codigo=row['tipo_ing_codigo']). \
-                values('codigo', 'nombre').all()
-            row['ingreso_renglon'] = ingreso_renglon
+        ''  # Consulta ORM para obtener los tipos de ingresos y sus renglones
+        tipos_ingresos = IngresoRenglon.objects. \
+            filter(**filter_dict). \
+            order_by(tipoingreso_codigo). \
+            values(tipoingreso_codigo=F(tipoingreso_codigo),
+                   tipoingreso_nombre=F(tipoingreso_nombre),
+                   rengloningreso_codigo=F('codigo'),
+                   rengloningreso_nombre=F('nombre'))
 
         context = super(ReglonIngresosView, self).get_context_data(**kwargs)
         context['tipos_ingresos'] = tipos_ingresos
