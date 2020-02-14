@@ -205,7 +205,6 @@ def ep_chart(request):
         else:
             ep = round(ep_gastos / ep_ingresos * 100, 1)
 
-
         with open("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl = query_file.read()
 
@@ -345,12 +344,12 @@ def ep_chart(request):
 
     template_name = 'ep.html'
     context = {
-            'charts': (pie, bar, pie2, bar2),
-            'indicator_name': "Ejecución del presupuesto",
-            'indicator_subtitle': "Ingresos totales",
-            'indicator_subtitle2': "Gastos totales",
-            'indicator': "ep",
-            'indicator_description': """Mide la eficiencia del municipio en
+        'charts': (pie, bar, pie2, bar2),
+        'indicator_name': "Ejecución del presupuesto",
+        'indicator_subtitle': "Ingresos totales",
+        'indicator_subtitle2': "Gastos totales",
+        'indicator': "ep",
+        'indicator_description': """Mide la eficiencia del municipio en
                 la ejecución del ingreso y el gasto presupuestado inicialmente.
                 Es decir, evaluamos que tanto cambio el presupuesto con
                 respecto la ejecución versus lo presupuestado y aprobado en los
