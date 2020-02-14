@@ -9,20 +9,20 @@
         {% endfor %}
     </tr>
 {% for row in data %}
-    {% ifchanged row.municipio__clase__clasificacion__clasificacion %}
+    {% ifchanged row.clasificacion %}
         <tr>
-        <td rowspan=3>{{ row.municipio__clase__clasificacion__clasificacion }}</td>
-        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        <td rowspan=3>{{ row.clasificacion }}</td>
+        {% for row2 in data_clase|keyvalue:row.clasificacion %}
         {% if forloop.first %}<td>Corriente</td>{% endif %}
         <td>{{ row2.corriente|intcomma }}</td>
         {% endfor %}
         </tr>
-        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        {% for row2 in data_clase|keyvalue:row.clasificacion %}
         {% if forloop.first %}<td>Capital</td>{% endif %}
         <td>{{ row2.capital|intcomma }}</td>
         {% endfor %}
         </tr>
-        {% for row2 in data_clase|keyvalue:row.municipio__clase__clasificacion__clasificacion %}
+        {% for row2 in data_clase|keyvalue:row.clasificacion %}
         {% if forloop.first %}<td>Total</td>{% endif %}
         <td>{{ row2.capital|add:row2.corriente|intcomma }}</td>
         {% endfor %}

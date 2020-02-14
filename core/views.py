@@ -5,7 +5,9 @@ from django.template import RequestContext
 from django.db.models import Sum
 
 from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
-    InversionFuente, Grafico, CatInversion, Transferencia
+    InversionFuente, Grafico, CatInversion, Transferencia, \
+    PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
+from lugar.models import ClasificacionMunicAno
 from tools import getYears, getPeriods
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
@@ -480,32 +482,55 @@ def transferencias(request):
     finales = Anio.objects.values_list('anio', flat=True).filter(periodo='F')
 
     data_inicial = Transferencia.objects.order_by(
-        'municipio__clase__clasificacion__clasificacion',
+        'municipio',
         'anio',
     ).values(
-        'municipio__clase__clasificacion__clasificacion',
+        'municipio',
         'anio',
-    ).filter(anio__in=iniciales).annotate(corriente=Sum('corriente'),
+    ).filter(anio__in=iniciales, periodo=PERIODO_INICIAL).annotate(corriente=Sum('corriente'),
                                           capital=Sum('capital'))
     data_final = Transferencia.objects.order_by(
-        'municipio__clase__clasificacion__clasificacion',
+        'municipio',
         'anio',
     ).values(
-        'municipio__clase__clasificacion__clasificacion',
+        'municipio',
         'anio',
-    ).filter(anio__in=finales).annotate(corriente=Sum('corriente'),
+    ).filter(anio__in=finales, periodo=PERIODO_FINAL).annotate(corriente=Sum('corriente'),
                                         capital=Sum('capital'))
-    context = {}
-    data = list(data_inicial) + list(data_final)
-    data = sorted(data, key=lambda k: (k['municipio__clase__clasificacion__clasificacion'],
-                                       k['anio']))
 
+    # adds 'clasificacion' for each row
+    for row in data_inicial:
+        row['clasificacion'] = ClasificacionMunicAno.objects.\
+                values_list('clasificacion__clasificacion', flat=True).\
+                filter(anio=row['anio'], municipio=row['municipio']).first()
+    for row in data_final:
+        row['clasificacion'] = ClasificacionMunicAno.objects.\
+                values_list('clasificacion__clasificacion', flat=True).\
+                filter(anio=row['anio'], municipio=row['municipio']).first()
+
+    data = list(data_inicial) + list(data_final)
+
+    # group by clasificacion
+    data_sum = {}
+    for row in data:
+        a_key = "{}_{}".format(row['clasificacion'], row['anio'])
+        if not data_sum.get(a_key):
+            data_sum[a_key] = { 'corriente': 0, 'capital': 0 }
+        data_sum_row = data_sum[a_key]
+        data_sum[a_key] = { 'corriente': data_sum_row['corriente'] + row['corriente'],
+                'capital': data_sum_row['capital'] + row['capital'], 'anio': row['anio'],
+                'clasificacion': row['clasificacion'] }
+    data = data_sum.values()
+    data = sorted(data, key=lambda k: (k['clasificacion'],
+                                       k['anio']))
+    # re-arrange data
     data_clase = {}
     for row in data:
-        clase = row['municipio__clase__clasificacion__clasificacion']
+        clase = row['clasificacion']
         data_clase[clase] = filter(
-            lambda x: x['municipio__clase__clasificacion__clasificacion'] == clase, data)
+            lambda x: x['clasificacion'] == clase, data)
 
+    context = {}
     context['data'] = data
     context['data_clase'] = data_clase
     context['years'] = sorted(list(iniciales) + list(finales))
