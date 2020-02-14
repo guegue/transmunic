@@ -210,7 +210,7 @@ def ep_chart(request):
 
         # the new way... re-haciendo "porclasep"
         sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado",
-                             year=yaear, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
+                             year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
         print sql
         cursor = connection.cursor()
         cursor.execute(sql)
