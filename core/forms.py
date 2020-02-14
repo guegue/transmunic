@@ -86,6 +86,7 @@ class RenglonIngresoForm(forms.Form):
         if user:
             self.fields['municipio'].queryset = Municipio.objects.for_user(user)
 
+    Periodos = (('', '(Periodo)'),) + PERIODO_CHOICES
     municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
                                        empty_label="(Municipio)",
                                        widget=forms.ChoiceField.widget(
@@ -95,5 +96,5 @@ class RenglonIngresoForm(forms.Form):
         attrs={'class': "form-control required", 'min': 2018,
                'max': lambda: datetime.date.today().year}),
         initial=lambda: datetime.date.today().year, required=True)
-    periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
+    periodo = forms.ChoiceField(choices=Periodos, widget=forms.ChoiceField.widget(
         attrs={'class': "form-control required"}), required=True)
