@@ -496,17 +496,17 @@ def transferencias(request):
         'municipio',
         'anio',
     ).filter(anio__in=finales, periodo=PERIODO_FINAL).annotate(corriente=Sum('corriente'),
-                                        capital=Sum('capital'))
+                                                               capital=Sum('capital'))
 
     # adds 'clasificacion' for each row
     for row in data_inicial:
         row['clasificacion'] = ClasificacionMunicAno.objects.\
-                values_list('clasificacion__clasificacion', flat=True).\
-                filter(anio=row['anio'], municipio=row['municipio']).first()
+            values_list('clasificacion__clasificacion', flat=True).\
+            filter(anio=row['anio'], municipio=row['municipio']).first()
     for row in data_final:
         row['clasificacion'] = ClasificacionMunicAno.objects.\
-                values_list('clasificacion__clasificacion', flat=True).\
-                filter(anio=row['anio'], municipio=row['municipio']).first()
+            values_list('clasificacion__clasificacion', flat=True).\
+            filter(anio=row['anio'], municipio=row['municipio']).first()
 
     data = list(data_inicial) + list(data_final)
 
@@ -515,11 +515,11 @@ def transferencias(request):
     for row in data:
         a_key = "{}_{}".format(row['clasificacion'], row['anio'])
         if not data_sum.get(a_key):
-            data_sum[a_key] = { 'corriente': 0, 'capital': 0 }
+            data_sum[a_key] = {'corriente': 0, 'capital': 0}
         data_sum_row = data_sum[a_key]
-        data_sum[a_key] = { 'corriente': data_sum_row['corriente'] + row['corriente'],
-                'capital': data_sum_row['capital'] + row['capital'], 'anio': row['anio'],
-                'clasificacion': row['clasificacion'] }
+        data_sum[a_key] = {'corriente': data_sum_row['corriente'] + row['corriente'],
+                           'capital': data_sum_row['capital'] + row['capital'], 'anio': row['anio'],
+                           'clasificacion': row['clasificacion']}
     data = data_sum.values()
     data = sorted(data, key=lambda k: (k['clasificacion'],
                                        k['anio']))
