@@ -284,7 +284,8 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
             if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) >= 0:
                 subsubtipo = Sub3TipoIngreso.objects. \
                     filter(ingresorenglon__codigo=codigo). \
-                    values(id_subsubtipo=F('subsubtipoingreso_id'),
+                    values(id=F('codigo'),
+                           id_subsubtipo=F('subsubtipoingreso_id'),
                            id_subtipo=F('subsubtipoingreso__subtipoingreso_id'),
                            id_tipo=F('subsubtipoingreso__subtipoingreso__tipoingreso_id')). \
                     first()
@@ -295,6 +296,7 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
                 ingreso_detalle.asignado = xnumber(renglon_asignado)
                 ingreso_detalle.ejecutado = xnumber(renglon_ejecutado)
                 ingreso_detalle.ingreso_id = ingreso.id
+                ingreso_detalle.sub3tipoingreso_id = subsubtipo.get('id')
                 ingreso_detalle.subsubtipoingreso_id = subsubtipo.get('id_subsubtipo')
                 ingreso_detalle.subtipoingreso_id = subsubtipo.get('id_subtipo')
                 ingreso_detalle.tipoingreso_id = subsubtipo.get('id_tipo')
