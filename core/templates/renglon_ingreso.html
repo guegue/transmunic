@@ -141,6 +141,8 @@
     <script>
         $(function () {
             let message_box = $('#message');
+            let col_ejecutado = $('.col-ejecutado');
+
             $('.input-asignado').on('change', function () {
                 let body_table = $(this).parents('tbody');
                 let rows = body_table.find('tr');
@@ -168,6 +170,14 @@
                     icon.removeClass('fa-angle-down');
                     icon.addClass('fa-angle-up');
                 }
+            });
+            $('#id_periodo').on('change', function () {
+                if ($(this).val().toUpperCase() === 'I') {
+                    col_ejecutado.fadeOut('fast');
+                } else {
+                    col_ejecutado.fadeIn('fast');
+                }
+                $('.input-ejecutado').val(0).trigger('change');
             });
 
             //mandar a ocultar mensaje despues de 5segundos
