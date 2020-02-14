@@ -1,0 +1,203 @@
+{% extends '_indicator.html' %}
+
+{% block extra_header_links %}
+    <style>
+        .panel-heading {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block main_content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <form action="{% url 'rengloningreso' %}" method="POST">
+                    <div class="row">
+                        {% csrf_token %}
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h3>Gastos</h3>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for=""> {{ form.municipio.label }}</label>
+                            {{ form.municipio }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for="">{{ form.year.label }}</label>
+                            {{ form.year }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <label for="">{{ form.periodo.label }}</label>
+                            {{ form.periodo }}
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3" style="margin-top: 1.7em">
+                            <input type="submit" value="Submit" class="btn btn-primary">
+                        </div>
+
+                        {% if messages %}
+                            <div class="col-lg-12 col-md-12 col-sm-12" id="message">
+                                <div class="alert alert-info">
+                                    {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                {% regroup tipos_gastos by tipogasto_nombre as renglones %}
+                                {% for row in renglones %}
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab"
+                                             data-toggle="collapse" data-parent="#accordion"
+                                             href="#collapse{{ forloop.counter0 }}" aria-expanded="true"
+                                             aria-controls="collapse{{ forloop.counter0 }}"
+                                             id="heading{{ forloop.counter0 }}">
+                                            <h4 class="panel-title font-color-darkblue position-relative">
+                                                <a role="button" class="position-relative change-icon">
+                                                    {{ row.grouper|upper }}
+                                                </a>
+                                                <span class="position-relative pull-right"
+                                                      style="right: 340px">
+                                                    Total Asignado:
+                                                    <strong id="asignado_{{ row.list.0.tipogasto_codigo }}">
+                                                    0
+                                                    </strong>
+                                                </span>
+                                                <span class="position-relative pull-right"
+                                                      style="right: -15px">
+                                                    Total Ejecutado:
+                                                   <strong id="ejecutado_{{ row.list.0.tipogasto_codigo }}">
+                                                   0
+                                                   </strong>
+                                                </span>
+                                                <i class="icon position-relative pull-right fa {% if forloop.first %}fa-angle-up{% else %}fa-angle-down{% endif %}"
+                                                   style="right: -240px"></i>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse{{ forloop.counter0 }}"
+                                             class="panel-collapse collapse {% if forloop.first %} in {% endif %}"
+                                             role="tabpanel"
+                                             aria-labelledby="heading{{ forloop.counter0 }}">
+                                            <div class="panel-body">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Rengl&oacute;n C&oacute;digo</th>
+                                                        <th class="text-center">Rengl&oacute;n Nombre</th>
+                                                        <th class="text-center">Asignado</th>
+                                                        <th class="text-center col-ejecutado">Ejecutado</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for renglon in row.list %}
+                                                        <tr>
+                                                            <td class="text-center">{{ forloop.counter }}</td>
+                                                            <td>
+                                                                <input type="hidden"
+                                                                       name="renglon[codigo]"
+                                                                       value="{{ renglon.renglongasto_codigo }}">
+                                                                {{ renglon.renglongasto_codigo }}
+                                                            </td>
+                                                            <td>{{ renglon.renglongasto_nombre }}</td>
+                                                            <td>
+                                                                <input type="number" class="form-control input-asignado"
+                                                                       data-nombre_total="asignado_{{ renglon.tipogasto_codigo }}"
+                                                                       name="renglon_asignado[{{ renglon.renglongasto_codigo }}]"
+                                                                       value="0" min="0">
+                                                            </td>
+                                                            <td class="col-ejecutado">
+                                                                <input type="number"
+                                                                       class="form-control input-ejecutado"
+                                                                       data-nombre_total="ejecutado_{{ renglon.tipogasto_codigo }}"
+                                                                       name="renglon_ejecutado[{{ renglon.renglongasto_codigo }}]"
+                                                                       value="0" min="0">
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_footer_scripts %}
+    <script>
+        $(function () {
+            let message_box = $('#message');
+            let col_ejecutado = $('.col-ejecutado');
+
+            $('.input-asignado').on('change', function () {
+                let body_table = $(this).parents('tbody');
+                let rows = body_table.find('tr');
+                let data = $(this).data('nombre_total');
+
+                let total_asignado = Sum(rows, '.input-asignado');
+
+                $(`#${data}`).html(total_asignado);
+            });
+            $('.input-ejecutado').on('change', function () {
+                let body_table = $(this).parents('tbody');
+                let rows = body_table.find('tr');
+                let data = $(this).data('nombre_total');
+
+                let total_ejecutado = Sum(rows, '.input-ejecutado');
+
+                $(`#${data}`).html(total_ejecutado);
+            });
+            $('.panel-heading').on('click', function () {
+                let icon = $(this).find('i');
+                if (icon.hasClass('fa-angle-up')) {
+                    icon.removeClass('fa-angle-up');
+                    icon.addClass('fa-angle-down');
+                } else {
+                    icon.removeClass('fa-angle-down');
+                    icon.addClass('fa-angle-up');
+                }
+            });
+            $('#id_periodo').on('change', function () {
+                if ($(this).val().toUpperCase() === 'I') {
+                    col_ejecutado.fadeOut('fast');
+                } else {
+                    col_ejecutado.fadeIn('fast');
+                }
+                $('.input-ejecutado').val(0).trigger('change');
+            });
+
+            //mandar a ocultar mensaje despues de 5segundos
+            if (message_box.length > 0) {
+                setTimeout(function () {
+                    message_box.fadeOut('slow');
+                }, 5000);
+            }
+
+            /**
+             * @return {number}
+             */
+            function Sum(array_elements, class_element) {
+                let total = 0;
+                array_elements.each(function () {
+                    let value = $(this).find(class_element).val();
+                    total += parseFloat(value);
+                });
+                return total;
+            }
+        });
+    </script>
+{% endblock %}
