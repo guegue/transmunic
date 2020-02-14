@@ -279,8 +279,8 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         # insertando en core_ingresodetalle
         for codigo in renglon_codigo:
             # obteniendo el asignado y ejecutado de un renglon
-            renglon_asignado = self.request.POST.get('renglon_{}_asignado'.format(codigo))
-            renglon_ejecutado = self.request.POST.get('renglon_{}_ejecutado'.format(codigo))
+            renglon_asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
+            renglon_ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
             print(codigo, renglon_asignado, renglon_ejecutado)
             if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) > 0:
                 subsubtipo = Sub3TipoIngreso.objects. \
