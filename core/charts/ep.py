@@ -12,7 +12,7 @@ from chartit import Chart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, GastoDetalle, Gasto, Municipio
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, CLASIFICACION_VERBOSE
-from core.tools import getYears, dictfetchall, glue, superglue
+from core.tools import getYears, dictfetchall, glue, superglue, getPeriods
 from core.charts.misc import getVar
 from core.charts.bubble_oim import oim_bubble_chart_data
 from core.charts.bubble_ogm import ogm_bubble_chart_data
@@ -45,6 +45,7 @@ def ep_chart(request):
 
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
+    periodo_list = getPeriods(Gasto)
     year_list = getYears(Gasto)
     year = getVar('year', request)
     if not year:
@@ -209,7 +210,8 @@ def ep_chart(request):
 
         # the new way... re-haciendo "porclasep"
         sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado",
-                             year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
+                             year=yaear, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
+        print sql
         cursor = connection.cursor()
         cursor.execute(sql)
         ingresos = dictfetchall(cursor)
@@ -340,11 +342,14 @@ def ep_chart(request):
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
-    template_name = 'variance_analysis.html'
+    template_name = 'ep.html'
     context = {
-            'charts': (pie, bar, pie2, bar2),
-            'indicator_name': "Ejecución del presupuesto",
-            'indicator_description': """Mide la eficiencia del municipio en
+        'charts': (pie, bar, pie2, bar2),
+        'indicator_name': "Ejecución del presupuesto",
+        'indicator_subtitle': "Ingresos totales",
+        'indicator_subtitle2': "Gastos totales",
+        'indicator': "ep",
+        'indicator_description': """Mide la eficiencia del municipio en
                 la ejecución del ingreso y el gasto presupuestado inicialmente.
                 Es decir, evaluamos que tanto cambio el presupuesto con
                 respecto la ejecución versus lo presupuestado y aprobado en los
@@ -366,5 +371,6 @@ def ep_chart(request):
             'porclasep': porclasep,
             'rubros': rubros,
             'rubrosg': rubrosg,
+            'periodo_list': periodo_list,
             'otros': otros}
     return render(request, template_name, context)

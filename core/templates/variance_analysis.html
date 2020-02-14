@@ -239,18 +239,10 @@
                             <tr class="bg-primary">
                                 <th class="text-left">Categoría de municipio</th>
                                 <th class="text-right">
-                                    {% if ep %}
-                                        Ingreso
-                                    {% else %}
-                                        P. Inicial
-                                    {% endif %}
+                                     P. Inicial
                                 </th>
                                 <th class="text-right">
-                                    {% if ep %}
-                                        Gasto
-                                    {% else %}
-                                        Ejecución
-                                    {% endif %}
+                                     Ejecución
                                 </th>
                             </tr>
                             </thead>
@@ -289,18 +281,10 @@
                             <tr class="bg-primary">
                                 <th class="text-left">Categoría de municipio</th>
                                 <th class="text-right">
-                                    {% if ep %}
-                                        Ingreso
-                                    {% else %}
-                                        P. Inicial
-                                    {% endif %}
+                                     P. Inicial
                                 </th>
                                 <th class="text-right">
-                                    {% if ep %}
-                                        Gasto
-                                    {% else %}
-                                        Ejecución
-                                    {% endif %}
+                                     Ejecución
                                 </th>
                             </tr>
                             </thead>
@@ -365,19 +349,11 @@
                                 <th class="text-left">Municipios</th>
 				{% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-right">
-                                        {% if ep %}
-                                            Ingreso
-                                        {% else %}
-                                            P. Inicial
-                                        {% endif %}
+                                        P. Inicial
                                     </th>
 				{% else %}
                                     <th class="text-right">
-                                        {% if ep %}
-                                            Gasto
-                                        {% else %}
-                                            Ejecución
-                                        {% endif %}
+                                        Ejecución
                                     </th>
 				{% endif %}
                             </tr>
