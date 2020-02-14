@@ -105,7 +105,7 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     on id.subsubtipogasto_id=ssti.codigo
                     left join (
                         select stg.nombre, stg.shortname,
-                        to_number(stg.codigo, '9999999') as codigo
+                        stg.codigo
                         from core_subtipogasto stg) as sti
                     on sti.codigo= ssti.subtipogasto_id
                     where i.anio = %s
@@ -203,7 +203,7 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     on id.subsubtipogasto_id::text=ssti.codigo::text
                     left join (
                         select stg.nombre, stg.shortname,
-                        to_number(stg.codigo, '9999999') as codigo
+                        stg.codigo
                         from core_subtipogasto stg) as sti
                         on sti.codigo= ssti.subtipogasto_id
                         where i.anio = %s
