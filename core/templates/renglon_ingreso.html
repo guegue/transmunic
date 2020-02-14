@@ -93,7 +93,7 @@
                                                         <th class="text-center">Rengl&oacute;n C&oacute;digo</th>
                                                         <th class="text-center">Rengl&oacute;n Nombre</th>
                                                         <th class="text-center">Asignado</th>
-                                                        <th class="text-center">Ejecutado</th>
+                                                        <th class="text-center col-ejecutado">Ejecutado</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -113,7 +113,7 @@
                                                                        name="renglon_asignado[{{ renglon.rengloningreso_codigo }}]"
                                                                        value="0" min="0">
                                                             </td>
-                                                            <td>
+                                                            <td class="col-ejecutado">
                                                                 <input type="number"
                                                                        class="form-control input-ejecutado"
                                                                        data-nombre_total="ejecutado_{{ renglon.tipoingreso_codigo }}"
@@ -141,6 +141,8 @@
     <script>
         $(function () {
             let message_box = $('#message');
+            let col_ejecutado = $('.col-ejecutado');
+
             $('.input-asignado').on('change', function () {
                 let body_table = $(this).parents('tbody');
                 let rows = body_table.find('tr');
@@ -169,17 +171,21 @@
                     icon.addClass('fa-angle-up');
                 }
             });
-
-
-            $('#randon').on('click', function () {
-                $('.input-asignado').each(function () {
-                    $(this).val(Math.floor(Math.random() * 10021) + 14);
-                });
-                $('.input-ejecutado').each(function () {
-                    $(this).val(Math.floor(Math.random() * 10002));
-                })
+            $('#id_periodo').on('change', function () {
+                if ($(this).val().toUpperCase() === 'I') {
+                    col_ejecutado.fadeOut('fast');
+                } else {
+                    col_ejecutado.fadeIn('fast');
+                }
+                $('.input-ejecutado').val(0).trigger('change');
             });
 
+            //mandar a ocultar mensaje despues de 5segundos
+            if (message_box.length > 0) {
+                setTimeout(function () {
+                    message_box.fadeOut('slow');
+                }, 5000);
+            }
 
             /**
              * @return {number}
