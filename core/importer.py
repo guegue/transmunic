@@ -16,7 +16,7 @@ from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, S
                          SubTipoGasto, SubSubTipoGasto, GastoRenglon,
                          Inversion, Proyecto, CatInversion)
 from lugar.models import (Municipio)
-from core.forms import UploadExcelForm, RenglonIngresoForm
+from core.forms import UploadExcelForm, RenglonForm
 from core.tools import xnumber
 
 
@@ -244,8 +244,8 @@ class IngresoDetailView(LoginRequiredMixin, DetailView):
 
 class ReglonIngresosView(LoginRequiredMixin, FormView):
     template_name = 'renglon_ingreso.html'
-    form_class = RenglonIngresoForm
-    form = RenglonIngresoForm
+    form_class = RenglonForm
+    form = RenglonForm
 
     def get_form_kwargs(self):
         kwargs = super(ReglonIngresosView, self).get_form_kwargs()
@@ -331,6 +331,99 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
 
         context = super(ReglonIngresosView, self).get_context_data(**kwargs)
         context['tipos_ingresos'] = tipos_ingresos
+        return context
+
+
+class RenglonGastosView(LoginRequiredMixin, FormView):
+    template_name = 'renglon_gasto.html'
+    form_class = RenglonForm
+    form = RenglonForm
+
+    def get_form_kwargs(self):
+        kwargs = super(RenglonGastosView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        if hasattr(self.request.user, 'profile') and \
+                self.request.user.profile.municipio != data['municipio']:
+            raise PermissionDenied("Limite de municipio excedido {} <> {}.".
+                                   format(self.request.user.profile.municipio, data['municipio']))
+        # get the data from the form
+        renglon_codigo = self.request.POST.getlist('renglon[codigo]')
+        municipio = self.request.POST.get('municipio')
+        anio = self.request.POST.get('year')
+        periodo = self.request.POST.get('periodo')
+
+        # obteniendo detalles del municipio seleccionado
+        municipio = Municipio.objects.filter(id=municipio).first()
+
+        # insertando en core_gasto
+        gasto = Gasto()
+        gasto.fecha = date.today()
+        gasto.departamento_id = municipio.depto_id
+        gasto.municipio_id = municipio.id
+        gasto.anio = anio
+        gasto.periodo = periodo
+        gasto.save()
+
+        # insertando en core_ingresodetalle
+        for codigo in renglon_codigo:
+            # obteniendo el asignado y ejecutado de un renglon
+            asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
+            ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
+            asignado = xnumber(asignado)
+            ejecutado = xnumber(ejecutado)
+
+            if asignado > 0 and ejecutado >= 0:
+                subsubtipo = SubSubTipoGasto.objects. \
+                    filter(gastorenglon__codigo='11100'). \
+                    values(id=F('codigo'),
+                           id_subtipo=F('subtipogasto_id'),
+                           id_tipo=F('subtipogasto__tipogasto_id')). \
+                    first()
+
+                # guardando el detalle de cada renglon
+                gasto_detalle = GastoDetalle()
+                gasto_detalle.codigo_id = codigo
+                gasto_detalle.asignado = asignado
+                gasto_detalle.ejecutado = ejecutado
+                gasto_detalle.gasto_id = gasto.id
+                gasto_detalle.subsubtipogasto_id = subsubtipo.get('id')
+                gasto_detalle.subtipogasto_id = subsubtipo.get('id_subtipo')
+                gasto_detalle.tipogasto_id = subsubtipo.get('id_tipo')
+                gasto_detalle.cuenta = 'SA'
+                gasto_detalle.save()
+
+        return super(RenglonGastosView, self).form_valid(form)
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.INFO, 'Guardado Exitosamente')
+        return reverse('renglon-gasto')
+
+    def get_context_data(self, **kwargs):
+        label = 'subsubtipogasto__subtipogasto__tipogasto__{}'
+        tipogasto_codigo_not_null = label.format('codigo__isnull')
+        tipogasto_codigo = label.format('codigo')
+        tipogasto_nombre = label.format('nombre')
+        tipogasto_nuevo_catalogo = label.format('nuevo_catalogo')
+        filter_dict = {
+            tipogasto_codigo_not_null: False,
+            tipogasto_nuevo_catalogo: True
+        }
+
+        ''  # Consulta ORM para obtener los tipos de gastos y sus renglones
+        tipo_gastos = GastoRenglon.objects. \
+            filter(**filter_dict). \
+            order_by(tipogasto_codigo). \
+            values(tipogasto_codigo=F(tipogasto_codigo),
+                   tipogasto_nombre=F(tipogasto_nombre),
+                   renglongasto_codigo=F('codigo'),
+                   renglongasto_nombre=F('nombre'))
+
+        context = super(RenglonGastosView, self).get_context_data(**kwargs)
+        context['tipos_gastos'] = tipo_gastos
         return context
 
 
