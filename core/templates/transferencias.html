@@ -1,5 +1,25 @@
 {% load humanize %}
 {% load core_extras %}
+
+{% if request.GET.municipio %}
+{{ municipio }}
+<table border=1>
+    <tr>
+        <th>Asignación Anual</th>
+        {% for year in years %}
+            <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+        {% endfor %}
+    </tr>
+    {% for asignacion in asignaciones %}
+        <tr>
+        <td>{{ asignacion }}</td>
+        {% for row in data_asignacion|keyvalue:asignacion %}
+        <td>{{ row }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
 <table border=1>
     <tr>
         <th>Clase</th>
@@ -8,7 +28,7 @@
             <th>{{ year }}</th>
         {% endfor %}
     </tr>
-{% for row in data %}
+    {% for row in data %}
     {% ifchanged row.clasificacion %}
         <tr>
         <td rowspan=3>{{ row.clasificacion }}</td>
@@ -28,5 +48,6 @@
         {% endfor %}
         </tr>
     {% endifchanged %}
-{% endfor %}
+    {% endfor %}
 </table>
+{% endif %}

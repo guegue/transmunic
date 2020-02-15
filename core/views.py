@@ -481,22 +481,20 @@ def transferencias(request):
     iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo='I')
     finales = Anio.objects.values_list('anio', flat=True).filter(periodo='F')
 
-    data_inicial = Transferencia.objects.order_by(
-        'municipio',
-        'anio',
-    ).values(
-        'municipio',
-        'anio',
-    ).filter(anio__in=iniciales, periodo=PERIODO_INICIAL).annotate(corriente=Sum('corriente'),
-                                          capital=Sum('capital'))
-    data_final = Transferencia.objects.order_by(
-        'municipio',
-        'anio',
-    ).values(
-        'municipio',
-        'anio',
-    ).filter(anio__in=finales, periodo=PERIODO_FINAL).annotate(corriente=Sum('corriente'),
-                                                               capital=Sum('capital'))
+    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
+    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+    municipio = request.GET.get('municipio')
+    if municipio:
+        inicial_filter['municipio__slug'] = municipio
+        final_filter['municipio__slug'] = municipio
+
+    data_inicial = Transferencia.objects.order_by('municipio', 'anio',
+        ).values('municipio', 'anio',
+        ).filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+
+    data_final = Transferencia.objects.order_by('municipio', 'anio',
+        ).values('municipio', 'anio',
+        ).filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     # adds 'clasificacion' for each row
     for row in data_inicial:
@@ -509,6 +507,34 @@ def transferencias(request):
             filter(anio=row['anio'], municipio=row['municipio']).first()
 
     data = list(data_inicial) + list(data_final)
+
+    if municipio:
+        data = sorted(data, key=lambda k: (k['anio']))
+        years = []
+        for year in list(iniciales) + list(finales):
+            clasificacion = ClasificacionMunicAno.objects.\
+                values_list('clasificacion__clasificacion', flat=True).\
+                filter(anio=year, municipio__slug=municipio).first()
+            years.append({'year': year, 'clasificacion': clasificacion})
+        for row in data:
+            row['total'] = row['corriente'] + row['capital']
+
+        # re-arrange data
+        data_asignacion = {}
+        asignaciones = ('corriente', 'capital', 'total')
+        for asignacion in asignaciones:
+            data_asignacion[asignacion] = []
+        for row in data:
+            for asignacion in asignaciones:
+                data_asignacion[asignacion].append(row[asignacion])
+
+        context = {}
+        context['municipio'] = Municipio.objects.get(slug=municipio)
+        context['data'] = data
+        context['data_asignacion'] = data_asignacion
+        context['asignaciones'] = asignaciones
+        context['years'] = sorted(years)
+        return render(request, 'transferencias.html', context)
 
     # group by clasificacion
     data_sum = {}
