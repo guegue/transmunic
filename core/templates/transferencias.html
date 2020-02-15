@@ -5,8 +5,8 @@
     <div class="container wide">
         <div class="row">
             {% if request.GET.municipio %}
-                {{ municipio }}
-                <div class="col-lg-6 col-md-6 col-sm-6">
+                <h3>{{ municipio }}</h3>
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
@@ -28,27 +28,33 @@
                         </tbody>
                     </table>
                 </div>
-            {% if request.GET.municipio2 %}
-            {{ municipio2 }}
-            <table border=1>
-                <tr>
-                    <th>Asignación Anual</th>
-                    {% for year in years2 %}
-                        <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
-                    {% endfor %}
-                </tr>
-                {% for asignacion in asignaciones %}
-                    <tr>
-                    <td>{{ asignacion }}</td>
-                    {% for row in data_asignacion2|keyvalue:asignacion %}
-                    <td>{{ row }}</td>
-                    {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
+                {% if request.GET.municipio2 %}
+                    <h3>{{ municipio2 }}</h3>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th>Asignación Anual</th>
+                                {% for year in years2 %}
+                                    <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for asignacion in asignaciones %}
+                                <tr>
+                                    <td>{{ asignacion }}</td>
+                                    {% for row in data_asignacion2|keyvalue:asignacion %}
+                                        <td>{{ row }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
             {% else %}
-                <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
