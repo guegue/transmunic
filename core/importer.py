@@ -359,6 +359,43 @@ class RenglonGastosView(LoginRequiredMixin, FormView):
         # obteniendo detalles del municipio seleccionado
         municipio = Municipio.objects.filter(id=municipio).first()
 
+        # insertando en core_gasto
+        gasto = Gasto()
+        gasto.fecha = date.today()
+        gasto.departamento_id = municipio.depto_id
+        gasto.municipio_id = municipio.id
+        gasto.anio = anio
+        gasto.periodo = periodo
+        gasto.save()
+
+        # insertando en core_ingresodetalle
+        for codigo in renglon_codigo:
+            # obteniendo el asignado y ejecutado de un renglon
+            asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
+            ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
+            asignado = xnumber(asignado)
+            ejecutado = xnumber(ejecutado)
+
+            if asignado > 0 and ejecutado >= 0:
+                subsubtipo = SubSubTipoGasto.objects. \
+                    filter(gastorenglon__codigo='11100'). \
+                    values(id=F('codigo'),
+                           id_subtipo=F('subtipogasto_id'),
+                           id_tipo=F('subtipogasto__tipogasto_id')). \
+                    first()
+
+                # guardando el detalle de cada renglon
+                gasto_detalle = GastoDetalle()
+                gasto_detalle.codigo_id = codigo
+                gasto_detalle.asignado = asignado
+                gasto_detalle.ejecutado = ejecutado
+                gasto_detalle.gasto_id = gasto.id
+                gasto_detalle.subsubtipogasto_id = subsubtipo.get('id')
+                gasto_detalle.subtipogasto_id = subsubtipo.get('id_subtipo')
+                gasto_detalle.tipogasto_id = subsubtipo.get('id_tipo')
+                gasto_detalle.cuenta = 'SA'
+                gasto_detalle.save()
+
         return super(RenglonGastosView, self).form_valid(form)
 
     def get_success_url(self):
