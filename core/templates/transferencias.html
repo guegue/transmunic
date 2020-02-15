@@ -19,6 +19,26 @@
         </tr>
     {% endfor %}
 </table>
+{% if request.GET.municipio2 %}
+{{ municipio2 }}
+<table border=1>
+    <tr>
+        <th>Asignación Anual</th>
+        {% for year in years2 %}
+            <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+        {% endfor %}
+    </tr>
+    {% for asignacion in asignaciones %}
+        <tr>
+        <td>{{ asignacion }}</td>
+        {% for row in data_asignacion2|keyvalue:asignacion %}
+        <td>{{ row }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
 {% else %}
 <table border=1>
     <tr>
