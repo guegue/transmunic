@@ -467,23 +467,14 @@ def descargar_detalle(request):
                               )
 
 
-def transferencias(request):
-    data = Transferencia.objects.order_by(
-        'municipio__clase__clasificacion__clasificacion',
-        'anio',
-    ).values(
-        'municipio__clase__clasificacion__clasificacion',
-        'anio',
-    )
-
+def getTransferencias(municipio=None):
     # botiene anios y sus periodos
     # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
-    iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo='I')
-    finales = Anio.objects.values_list('anio', flat=True).filter(periodo='F')
-
+    iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo=PERIODO_INICIAL)
+    finales = Anio.objects.values_list('anio', flat=True).filter(periodo=PERIODO_FINAL)
     inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
-    municipio = request.GET.get('municipio')
+
     if municipio:
         inicial_filter['municipio__slug'] = municipio
         final_filter['municipio__slug'] = municipio
@@ -506,6 +497,10 @@ def transferencias(request):
 
     data = list(data_inicial) + list(data_final)
 
+    context = {}
+    asignaciones = ('corriente', 'capital', 'total')
+    context['asignaciones'] = asignaciones
+
     if municipio:
         data = sorted(data, key=lambda k: (k['anio']))
         years = []
@@ -519,43 +514,64 @@ def transferencias(request):
 
         # re-arrange data
         data_asignacion = {}
-        asignaciones = ('corriente', 'capital', 'total')
         for asignacion in asignaciones:
             data_asignacion[asignacion] = []
         for row in data:
             for asignacion in asignaciones:
                 data_asignacion[asignacion].append(row[asignacion])
 
-        context = {}
         context['municipio'] = Municipio.objects.get(slug=municipio)
-        context['data'] = data
         context['data_asignacion'] = data_asignacion
-        context['asignaciones'] = asignaciones
         context['years'] = sorted(years)
-        return render(request, 'transferencias.html', context)
 
-    # group by clasificacion
-    data_sum = {}
-    for row in data:
-        a_key = "{}_{}".format(row['clasificacion'], row['anio'])
-        if not data_sum.get(a_key):
-            data_sum[a_key] = {'corriente': 0, 'capital': 0}
-        data_sum_row = data_sum[a_key]
-        data_sum[a_key] = {'corriente': data_sum_row['corriente'] + row['corriente'],
-                           'capital': data_sum_row['capital'] + row['capital'], 'anio': row['anio'],
-                           'clasificacion': row['clasificacion']}
-    data = data_sum.values()
-    data = sorted(data, key=lambda k: (k['clasificacion'],
-                                       k['anio']))
-    # re-arrange data
-    data_clase = {}
-    for row in data:
-        clase = row['clasificacion']
-        data_clase[clase] = filter(
-            lambda x: x['clasificacion'] == clase, data)
+    if not municipio:
+        # group by clasificacion
+        data_sum = {}
+        for row in data:
+            a_key = "{}_{}".format(row['clasificacion'], row['anio'])
+            if not data_sum.get(a_key):
+                data_sum[a_key] = {'corriente': 0, 'capital': 0}
+            data_sum_row = data_sum[a_key]
+            data_sum[a_key] = {'corriente': data_sum_row['corriente'] + row['corriente'],
+                               'capital': data_sum_row['capital'] + row['capital'],
+                               'anio': row['anio'], 'clasificacion': row['clasificacion']}
+        data = data_sum.values()
+        data = sorted(data, key=lambda k: (k['clasificacion'],
+                                           k['anio']))
+        # re-arrange data
+        data_clase = {}
+        for row in data:
+            clase = row['clasificacion']
+            data_clase[clase] = filter(
+                lambda x: x['clasificacion'] == clase, data)
+
+        context['data_clase'] = data_clase
+        context['years'] = sorted(list(iniciales) + list(finales))
+
+    context['data'] = data
+
+    return context
+
+
+def transferencias(request):
 
     context = {}
-    context['data'] = data
-    context['data_clase'] = data_clase
-    context['years'] = sorted(list(iniciales) + list(finales))
+
+    data = getTransferencias(request.GET.get('municipio'))
+
+    context['municipio'] = data.get('municipio')
+    context['data'] = data.get('data')
+    context['data_clase'] = data.get('data_clase')
+    context['data_asignacion'] = data.get('data_asignacion')
+    context['asignaciones'] = data.get('asignaciones')
+    context['years'] = data.get('years')
+
+    if request.GET.get('municipio2'):
+        data = getTransferencias(request.GET.get('municipio2'))
+
+        context['municipio2'] = data.get('municipio')
+        context['data2'] = data.get('data')
+        context['data_asignacion2'] = data.get('data_asignacion')
+        context['years2'] = data.get('years')
+
     return render(request, 'transferencias.html', context)
