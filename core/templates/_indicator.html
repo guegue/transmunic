@@ -19,16 +19,36 @@
 {% endblock %}
 
 {% block header %}
-    <div class="pma-search-bar pma-bg-blue ">
+    <div class="pma-search-bar pma-bg-blue">
         <div class="container">
             <div class="row">
                 {% if request.resolver_match.url_name == 'importar' or request.resolver_match.url_name == 'importar-resultado' %}
 
                     <a href="{% url 'rengloningreso' %}" class="btn btn-primary pull-right">Ir a registrar manualmente
                         los ingresos</a>
+                    <a href="{% url 'renglon-gasto' %}" class="btn btn-primary pull-right mr-5px">Ir a registrar
+                        manualmente
+                        los gastos</a>
                     {% if request.resolver_match.url_name == 'importar-resultado' %}
-                        <a href="{% url 'importar' %}" class="btn btn-primary pull-right" style="margin-right: 5px">Ir a Importador</a>
+                        <a href="{% url 'importar' %}" class="btn btn-primary pull-right mr-5px">Ir a
+                            Importador</a>
                     {% endif %}
+
+                {% elif request.resolver_match.url_name == 'rengloningreso' or request.resolver_match.url_name == 'renglon-gasto' %}
+
+                    {% if request.resolver_match.url_name == 'rengloningreso' %}
+                        <a href="{% url 'renglon-gasto' %}" class="btn btn-primary pull-right">Ir a registrar
+                            manualmente
+                            los gastos</a>
+                    {% endif %}
+
+                    {% if request.resolver_match.url_name == 'renglon-gasto' %}
+                        <a href="{% url 'rengloningreso' %}" class="btn btn-primary pull-right">Ir a registrar
+                            manualmente
+                            los ingresos</a>
+                    {% endif %}
+                    <a href="{% url 'importar' %}" class="btn btn-primary pull-right mr-5px">Ir a
+                        Importador</a>
 
                 {% else %}
                     <div class="col-md-12">
