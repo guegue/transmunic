@@ -42,7 +42,7 @@ chart_options = getattr(
 
 
 def ep_chart(request):
-
+    saldo_caja = '39000000'
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
     periodo_list = getPeriods(Gasto)
@@ -104,32 +104,49 @@ def ep_chart(request):
         for r in rubrosg:
             r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
+        #ejecucion del presupuesto de gastos
+        gastos_asignados = sum(item['inicial_asignado'] for item in rubrosg_inicial)
+        gastos_ejecutados = sum(item['ejecutado'] for item in rubrosg_periodo)
+        if gastos_asignados:
+            ep_gastos = round(((gastos_ejecutados / gastos_asignados)-1) * 100, 1)
+        else:
+            ep_gastos = 0
+
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
-            values('tipoingreso__clasificacion').order_by().annotate(
+                exclude(tipoingreso_id=saldo_caja).\
+                values('tipoingreso__clasificacion').order_by().annotate(
                 inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,).\
             values('tipoingreso__clasificacion').order_by().annotate(
                 actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
-            values('tipoingreso__clasificacion').order_by().annotate(
+                exclude(tipoingreso_id=saldo_caja).\
+                values('tipoingreso__clasificacion').order_by().annotate(
                 final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,).\
             values('tipoingreso__clasificacion').order_by().annotate(
                 asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='tipoingreso__clasificacion')
+            rubros_periodo), key='tipoingreso__clasificacion')
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
         # calculo de La Ejecución presupuestaria alcanzó el:
         # FIXME incial_asignado? o asignado (periodo) ? misma pregunta sobre final_ejecutado.
-        ep_ingresos = sum(item['inicial_asignado'] for item in rubros_inicial)
-        ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
-        if ep_ingresos:
-            ep = round(ep_gastos / ep_ingresos * 100, 1)
+        ingresos_asignados = sum(item['inicial_asignado'] for item in rubros_inicial)
+        if rubros_final:
+            ingresos_ejecutados = sum(item['final_ejecutado'] for item in rubros_final)
+        elif rubros_actualizado:
+            ingresos_ejecutados = sum(item['actualizado_ejecutado'] for item in rubros_actualizado)
         else:
-            ep = 0
+            ingresos_ejecutados = 0
+
+        if ingresos_asignados:
+            ep_ingresos = round(((ingresos_ejecutados / ingresos_asignados)-1) * 100, 1)
+        else:
+            ep_ingresos = 0
+
 
         # obtiene datos comparativo de todos los años
         inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio,
@@ -179,6 +196,14 @@ def ep_chart(request):
         for r in rubrosg:
             r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
+        #ejecucion presupuestaria del gasto 
+        gastos_asignados = sum(item['inicial_asignado'] for item in rubrosg_inicial)
+        gastos_ejecutados = sum(item['ejecutado'] for item in rubrosg_periodo)
+        if gastos_asignados:
+            ep_gastos = round((gastos_ejecutados / gastos_asignados)-1 * 100, 1)
+        else:
+            ep_gastos = 0
+
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__periodo=PERIODO_INICIAL,).\
             values('tipoingreso__clasificacion').order_by().annotate(
@@ -197,13 +222,20 @@ def ep_chart(request):
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
-        # calculo de La Ejecución presupuestaria alcanzó el:
-        ep_ingresos = sum(item['asignado'] for item in rubros_inicial)
-        ep_gastos = sum(item['ejecutado'] for item in rubrosg_periodo)
-        if ep_ingresos == 0:  # FIXME: only way to avoid ZeroDivisionError ?
-            ep = 0
+        # calculo de La Ejecución presupuestaria de ingresos:
+        ingresos_asignados = sum(item['inicial_asignado'] for item in rubros_inicial)
+        if rubros_final:
+            ingresos_ejecutados = sum(item['final_ejecutado'] for item in rubros_final)
+        elif rubros_actualizado:
+            ingresos_ejecutados = sum(item['actualizado_ejecutado'] for item in rubros_actualizado)
         else:
-            ep = round(ep_gastos / ep_ingresos * 100, 1)
+            ingresos_ejecutados = 0
+
+        if ingresos_asignados:
+            ep_ingresos = round((ingresos_ejecutados / ingresos_asignados)-1 * 100, 1)
+        else:
+            ep_ingresos = 0
+
 
         with open("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl = query_file.read()
@@ -322,8 +354,11 @@ def ep_chart(request):
 
     # FIXME BS
     # asignado = ejecutado = porclase = None
-    asignado = ep_ingresos
-    ejecutado = ep_gastos
+    #asignado y ejecutado de ingresos
+    asignado = ingresos_asignados
+    ejecutado = ingresos_ejecutados
+    gastos_asignados = gastos_asignados
+    gastos_ejecutados = gastos_ejecutados
     porclase = None
 
     bubble_data_ingreso = oim_bubble_chart_data(municipio=municipio, year=year)
@@ -334,7 +369,13 @@ def ep_chart(request):
         from core.utils import obtener_excel_response
         data = {
             'charts': (bar, ),
-            'ep': ep, 'mi_clase': mi_clase, 'municipio': municipio_row,
+            'ep_ingresos': ep_ingresos, 
+            'ep_gastos':ep_gastos,
+            'asignado': asignado,
+            'ejecutado':ejecutado,
+            'gejecutado': gastos_ejecutados,
+            'gasignado': gastos_asignados,
+            'mi_clase': mi_clase, 'municipio': municipio_row,
             'year': year, 'ejecutado': ejecutado, 'asignado': asignado,
             'year_list': year_list, 'municipio_list': municipio_list,
             'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase,
@@ -356,12 +397,15 @@ def ep_chart(request):
                 procesos de consulta.""",
             'bubble_data_1': bubble_data_ingreso,
             'bubble_data_2': bubble_data_gasto,
-            'ep': ep,
+            'ep_ingresos': ep_ingresos,
+            'ep_gastos': ep_gastos,
             'mi_clase': mi_clase,
             'municipio': municipio_row,
             'year': year,
             'ejecutado': ejecutado,
             'asignado': asignado,
+            'gejecutado': gastos_ejecutados,
+            'gasignado': gastos_asignados,
             'year_list': year_list,
             'municipio_list': municipio_list,
             'anuales': anual2,
