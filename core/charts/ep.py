@@ -104,7 +104,7 @@ def ep_chart(request):
         for r in rubrosg:
             r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
-        #ejecucion del presupuesto de gastos
+        # ejecucion del presupuesto de gastos
         gastos_asignados = sum(item['inicial_asignado'] for item in rubrosg_inicial)
         gastos_ejecutados = sum(item['ejecutado'] for item in rubrosg_periodo)
         if gastos_asignados:
@@ -114,21 +114,21 @@ def ep_chart(request):
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
-                exclude(tipoingreso_id=saldo_caja).\
-                values('tipoingreso__clasificacion').order_by().annotate(
-                inicial_asignado=Sum('asignado'))
+            exclude(tipoingreso_id=saldo_caja).\
+            values('tipoingreso__clasificacion').order_by().annotate(
+            inicial_asignado=Sum('asignado'))
         rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,).\
             values('tipoingreso__clasificacion').order_by().annotate(
                 actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
-                exclude(tipoingreso_id=saldo_caja).\
-                values('tipoingreso__clasificacion').order_by().annotate(
-                final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
+            exclude(tipoingreso_id=saldo_caja).\
+            values('tipoingreso__clasificacion').order_by().annotate(
+            final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
         rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,).\
             values('tipoingreso__clasificacion').order_by().annotate(
                 asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-            rubros_periodo), key='tipoingreso__clasificacion')
+                                 rubros_periodo), key='tipoingreso__clasificacion')
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
@@ -196,7 +196,7 @@ def ep_chart(request):
         for r in rubrosg:
             r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
-        #ejecucion presupuestaria del gasto 
+        # ejecucion presupuestaria del gasto
         gastos_asignados = sum(item['inicial_asignado'] for item in rubrosg_inicial)
         gastos_ejecutados = sum(item['ejecutado'] for item in rubrosg_periodo)
         if gastos_asignados:
@@ -354,7 +354,7 @@ def ep_chart(request):
 
     # FIXME BS
     # asignado = ejecutado = porclase = None
-    #asignado y ejecutado de ingresos
+    # asignado y ejecutado de ingresos
     asignado = ingresos_asignados
     ejecutado = ingresos_ejecutados
     gastos_asignados = gastos_asignados
@@ -369,10 +369,10 @@ def ep_chart(request):
         from core.utils import obtener_excel_response
         data = {
             'charts': (bar, ),
-            'ep_ingresos': ep_ingresos, 
-            'ep_gastos':ep_gastos,
+            'ep_ingresos': ep_ingresos,
+            'ep_gastos': ep_gastos,
             'asignado': asignado,
-            'ejecutado':ejecutado,
+            'ejecutado': ejecutado,
             'gejecutado': gastos_ejecutados,
             'gasignado': gastos_asignados,
             'mi_clase': mi_clase, 'municipio': municipio_row,
@@ -395,12 +395,12 @@ def ep_chart(request):
                 Es decir, evaluamos que tanto cambio el presupuesto con
                 respecto la ejecución versus lo presupuestado y aprobado en los
                 procesos de consulta.""",
-            'bubble_data_1': bubble_data_ingreso,
-            'bubble_data_2': bubble_data_gasto,
-            'ep_ingresos': ep_ingresos,
-            'ep_gastos': ep_gastos,
-            'mi_clase': mi_clase,
-            'municipio': municipio_row,
+        'bubble_data_1': bubble_data_ingreso,
+        'bubble_data_2': bubble_data_gasto,
+        'ep_ingresos': ep_ingresos,
+        'ep_gastos': ep_gastos,
+        'mi_clase': mi_clase,
+        'municipio': municipio_row,
             'year': year,
             'ejecutado': ejecutado,
             'asignado': asignado,
