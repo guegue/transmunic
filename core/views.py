@@ -489,10 +489,10 @@ def transferencias(request):
         final_filter['municipio__slug'] = municipio
 
     data_inicial = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio').\
-            filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     data_final = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio').\
-            filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     # adds 'clasificacion' for each row
     for row in data_inicial:
