@@ -61,10 +61,10 @@
                         </td>
                     </tr>
                     <tr class="bg-primary">
-                        <th class="text-left">Rubro de Ingreso</th>
+                        <th class="text-left">Tipo de Ingreso</th>
                         <th class="text-right">Inicial</th>
                         <th class="text-right">Ejecutado</th>
-                        <th class="text-right">% ejecutado</th>
+                        <th class="text-right">% Ejecutado</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,7 +74,7 @@
                             <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                             <td class="text-right">
 			        {% if periodo_list|keyvalue:year != 'I' %}
-				    {{ row.ejecutado|million|default:0|intcomma }}
+				    {{ row.final_ejecutado|million|default:0|intcomma }}
 				{% else %}
 				    0
 				{% endif %}
@@ -92,10 +92,8 @@
                     <tr class="bold">
                         <td>TOTAL</td>
                         <td class="text-right">{{ asignado|million|intcomma }}</td>
-			{% if periodo_list|keyvalue:year != 'I' %}
-                            <td class="text-right">{{ ejecutado|million|intcomma }}</td>
-                            <td class="text-right">{{ ejecutado|div:asignado|sub:1|mul:100|floatformat:2 }}%</td>
-			{% endif %}
+                        <td class="text-right">{{ ejecutado|million|intcomma|default:0 }}</td>
+                        <td class="text-right">{{ ep_ingresos|floatformat:2|default:0 }}%</td>
                     </tr>
                 </table>
             </div>
@@ -121,7 +119,7 @@
                     <thead>
                     <tr>
                         <td colspan="4" rowspan="1" class="text-justify">
-                            <h4>Rubros de gastos corrientes para el per&iacute;odo {{ year }}
+                            <h4>Total de gastos  para el per&iacute;odo {{ year }}
                                 {% if periodo_list|keyvalue:year == 'F' %}
                                     cierre
                                 {% elif periodo_list|keyvalue:year == 'A' %}
@@ -132,52 +130,44 @@
                             </h4>
                             <h5>
                                 {% if periodo_list|keyvalue:year == 'F' %}
-                                    Ejecuci&oacute;n de gastos corrientes
+                                    Ejecuci&oacute;n de gastos
                                 {% elif periodo_list|keyvalue:year == 'A' %}
-                                    Ejecuci&oacute;n intermedia de gastos corrientes
+                                    Ejecuci&oacute;n intermedia de gastos
                                 {% elif periodo_list|keyvalue:year == 'I' %}
-                                    Presupuesto inicial de gastos corrientes
+                                    Presupuesto inicial de gastos
                                 {% endif %}
                                 {{ year }}
                                 por su destino {% descargar_excel "oim1" %}</h5>
                         </td>
                     </tr>
                     <tr class="bg-primary">
-                        <th class="text-left">Rubro de Gasto</th>
-                        {% if periodo_list|keyvalue:year == 'I' %}
-                            <th class="text-right">Inicial</th>
-                        {% else %}
-                            <th class="text-right">Ejecutado</th>
-                        {% endif %}
-                        <th class="text-right">%</th>
+                        <th class="text-left">Tipo de Gasto</th>
+                        <th class="text-right">Asignado</th>
+                        <th class="text-right">Ejecutado</th>
+                        <th class="text-right">% Ejecutado</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for row in rubrosg %}
                         <tr>
-                            <td>
-                                {% firstof row.tipogasto__nombre row.tipogasto__clasificacion|default:'Otros' %}</td>
-                            {% if periodo_list|keyvalue:year == 'I' %}
-                                <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                                {% if asignado %}
-                                    <td class="text-right">{{ row.inicial_asignado|div:asignado|mul:100|floatformat:3 }}%</td>
+			    <td>{% firstof row.subsubtipogasto__nombre row.subsubtipogasto__clasificacion|default:'Otros' %}</td>
+                            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                            <td class="text-right">{{ row.ejecutado|million|intcomma|default:0 }}</td>
+                            <td class="text-right">
+                                {% if row.inicial_asignado %}
+				    {{ row.ejecutado|div:row.inicial_asignado|sub:1|mul:100|floatformat:2 }}%
+				{% else %}
+				    0%
                                 {% endif %}
-                            {% else %}
-                                <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                                {% if ejecutado %}
-                                    <td class="text-right">{{ row.ejecutado|div:ejecutado|mul:100|floatformat:3 }}%</td>
-                                {% endif %}
-                            {% endif %}
+			    </td>
                         </tr>
                     {% endfor %}
                     </tbody>
-                    <tr class="">
+                    <tr>
                         <td>TOTAL</td>
-                        {% if periodo_list|keyvalue:year == 'I' %}
-                            <td class="text-right">{{ rubrosg|total_sum:'inicial_asignado'|million|intcomma }}</td>
-                        {% else %}
-                            <td class="text-right">{{ rubrosg|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% endif %}
+                        <td class="text-right">{{ gasignado|million|intcomma|default:0 }}</td>
+                        <td class="text-right">{{ gejecutado|million|intcomma|default:0 }}</td>
+                        <td class="text-right">{{ ep_gastos|default:0 }}%</td>
                     </tr>
                 </table>
             </div>
@@ -485,7 +475,7 @@
                             <td class="text-right">{{ row.asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                             {% if row.asignado %}
-                                <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+			    <td class="montos text-right">{{ row.ejecutado|div:row.asignado|sub:-1|mul:100|floatformat:1 }}%</td>
                             {% endif %}
                         </tr>
                     {% endfor %}
@@ -495,7 +485,7 @@
                         <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
                         {% with total_sum_asignado=anuales|total_sum:'asignado' %}
                             {% if total_sum_asignado %}
-                                <td class="montos text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                                <td class="montos text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|sub:-1|mul:100|floatformat:1 }}%</td>
                             {% endif %}
                         {% endwith %}
                     </tr>
@@ -548,7 +538,7 @@
                         Ingresos corrientes propios y gastos corientes totales
                         {% if municipio %} {{ municipio }} {% endif %}{{ year }}
                         {% if not municipio %}consolidado 153 municipios{% endif %}<br/>
-                        Presupuesto inicial, intermedio, de cierre y su modificación por rubro
+                        Presupuesto inicial, intermedio, de cierre y su modificación
                     </h2>
                     <h4>Millones de córdobas corrientes</h4>
                     <hr class="pma-line-3"/>
