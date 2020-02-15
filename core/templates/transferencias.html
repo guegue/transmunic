@@ -1,73 +1,95 @@
-{% load humanize %}
-{% load core_extras %}
+{% extends '_indicator.html' %}
+{% load humanize core_extras %}
 
-{% if request.GET.municipio %}
-{{ municipio }}
-<table border=1>
-    <tr>
-        <th>Asignación Anual</th>
-        {% for year in years %}
-            <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
-        {% endfor %}
-    </tr>
-    {% for asignacion in asignaciones %}
-        <tr>
-        <td>{{ asignacion }}</td>
-        {% for row in data_asignacion|keyvalue:asignacion %}
-        <td>{{ row }}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
-{% if request.GET.municipio2 %}
-{{ municipio2 }}
-<table border=1>
-    <tr>
-        <th>Asignación Anual</th>
-        {% for year in years2 %}
-            <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
-        {% endfor %}
-    </tr>
-    {% for asignacion in asignaciones %}
-        <tr>
-        <td>{{ asignacion }}</td>
-        {% for row in data_asignacion2|keyvalue:asignacion %}
-        <td>{{ row }}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
-{% endif %}
-
-{% else %}
-<table border=1>
-    <tr>
-        <th>Clase</th>
-        <th>Asignación Anual</th>
-        {% for year in years %}
-            <th>{{ year }}</th>
-        {% endfor %}
-    </tr>
-    {% for row in data %}
-    {% ifchanged row.clasificacion %}
-        <tr>
-        <td rowspan=3>{{ row.clasificacion }}</td>
-        {% for row2 in data_clase|keyvalue:row.clasificacion %}
-        {% if forloop.first %}<td>Corriente</td>{% endif %}
-        <td>{{ row2.corriente|intcomma }}</td>
-        {% endfor %}
-        </tr>
-        {% for row2 in data_clase|keyvalue:row.clasificacion %}
-        {% if forloop.first %}<td>Capital</td>{% endif %}
-        <td>{{ row2.capital|intcomma }}</td>
-        {% endfor %}
-        </tr>
-        {% for row2 in data_clase|keyvalue:row.clasificacion %}
-        {% if forloop.first %}<td>Total</td>{% endif %}
-        <td>{{ row2.capital|add:row2.corriente|intcomma }}</td>
-        {% endfor %}
-        </tr>
-    {% endifchanged %}
-    {% endfor %}
-</table>
-{% endif %}
+{% block main_content %}
+    <div class="container wide">
+        <div class="row">
+            {% if request.GET.municipio %}
+                {{ municipio }}
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-primary">
+                            <th>Asignación Anual</th>
+                            {% for year in years %}
+                                <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for asignacion in asignaciones %}
+                            <tr>
+                                <td>{{ asignacion }}</td>
+                                {% for row in data_asignacion|keyvalue:asignacion %}
+                                    <td>{{ row }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% if request.GET.municipio2 %}
+            {{ municipio2 }}
+            <table border=1>
+                <tr>
+                    <th>Asignación Anual</th>
+                    {% for year in years2 %}
+                        <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+                    {% endfor %}
+                </tr>
+                {% for asignacion in asignaciones %}
+                    <tr>
+                    <td>{{ asignacion }}</td>
+                    {% for row in data_asignacion2|keyvalue:asignacion %}
+                    <td>{{ row }}</td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            {% else %}
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-primary">
+                            <th>Clase</th>
+                            <th>Asignación Anual</th>
+                            {% for year in years %}
+                                <th>{{ year }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in data %}
+                            {% ifchanged row.clasificacion %}
+                                <tr>
+                                    <td rowspan=3>{{ row.clasificacion }}</td>
+                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
+                                        {% if forloop.first %}
+                                            <td>Corriente</td>{% endif %}
+                                        <td>{{ row2.corriente|intcomma }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
+                                        {% if forloop.first %}
+                                            <td>Capital</td>{% endif %}
+                                        <td>{{ row2.capital|intcomma }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
+                                        {% if forloop.first %}
+                                            <td>Total</td>{% endif %}
+                                        <td>{{ row2.capital|add:row2.corriente|intcomma }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endifchanged %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

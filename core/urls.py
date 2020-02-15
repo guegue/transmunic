@@ -3,7 +3,8 @@ from django.views.generic import TemplateView, ListView
 from model_report import report
 from . import charts
 from core import views
-from core.importer import UploadExcelView, ResultadoDetailView, ReglonIngresosView
+from core.importer import (UploadExcelView, ResultadoDetailView,
+                           ReglonIngresosView, RenglonGastosView)
 from core.charts import funcionamiento, personal, ago, aci, misc, ep
 from core.models import Organizacion
 
@@ -12,6 +13,7 @@ report.autodiscover()
 urlpatterns = [
     url(r'^importar/$', UploadExcelView.as_view(), name='importar'),
     url(r'^renglon/ingresos/$', ReglonIngresosView.as_view(), name='rengloningreso'),
+    url(r'^renglon/gastos/$', RenglonGastosView.as_view(), name='renglon-gasto'),
     url(r'^resultado/(?P<table>ingreso|gasto|inversion)/(?P<pk>\d+)/$',
         ResultadoDetailView.as_view(), name='importar-resultado'),
     url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
