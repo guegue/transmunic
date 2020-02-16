@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from decimal import Decimal
+
 from django.shortcuts import render_to_response, render
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
@@ -7,7 +10,7 @@ from django.db.models import Sum
 from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
-from lugar.models import ClasificacionMunicAno
+from lugar.models import ClasificacionMunicAno, Periodo
 from tools import getYears, getPeriods
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
@@ -497,6 +500,9 @@ def getTransferencias(municipio=None):
 
     data = list(data_inicial) + list(data_final)
 
+    for row in data:
+        row['total'] = row['corriente'] + row['capital']
+
     context = {}
     asignaciones = ('corriente', 'capital', 'total')
     context['asignaciones'] = asignaciones
@@ -509,8 +515,6 @@ def getTransferencias(municipio=None):
                 values_list('clasificacion__clasificacion', flat=True).\
                 filter(anio=year, municipio__slug=municipio).first()
             years.append({'year': year, 'clasificacion': clasificacion})
-        for row in data:
-            row['total'] = row['corriente'] + row['capital']
 
         # re-arrange data
         data_asignacion = {}
@@ -530,10 +534,11 @@ def getTransferencias(municipio=None):
         for row in data:
             a_key = "{}_{}".format(row['clasificacion'], row['anio'])
             if not data_sum.get(a_key):
-                data_sum[a_key] = {'corriente': 0, 'capital': 0}
+                data_sum[a_key] = {'corriente': 0, 'capital': 0, 'total': 0}
             data_sum_row = data_sum[a_key]
             data_sum[a_key] = {'corriente': data_sum_row['corriente'] + row['corriente'],
                                'capital': data_sum_row['capital'] + row['capital'],
+                               'total': data_sum_row['total'] + row['total'],
                                'anio': row['anio'], 'clasificacion': row['clasificacion']}
         data = data_sum.values()
         data = sorted(data, key=lambda k: (k['clasificacion'],
@@ -575,3 +580,66 @@ def transferencias(request):
         context['years2'] = data.get('years')
 
     return render(request, 'transferencias.html', context)
+
+
+def tasa_transferencias(request):
+
+    context = {}
+
+    data = getTransferencias(request.GET.get('municipio'))
+    datadata = data.get('data')
+    data_clase = data.get('data_clase')
+    years = data.get('years')
+    data_periodo = {}
+    prev_periodo = None
+    data_tasa = {}
+    clasificaciones = []
+    for periodo in Periodo.objects.all().order_by('desde'):
+        data_tasa[periodo] = {}
+        anios = periodo.hasta - periodo.desde
+        ultimo_anio = {}
+        ultimo_anio_previo = {}
+        print(periodo)
+        if prev_periodo:
+            print("prev: {} curr: {}".format(prev_periodo.hasta, periodo.hasta))
+        for row in datadata:
+            clasificacion = row['clasificacion']
+            if clasificacion not in clasificaciones:
+                clasificaciones.append(clasificacion)
+            anio = row['anio']
+            total = row['total']
+            if prev_periodo and anio == prev_periodo.hasta:
+                ultimo_anio_previo[clasificacion] = total
+            if anio == periodo.hasta:
+                ultimo_anio[clasificacion] = total
+        for clasificacion in clasificaciones:
+            if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
+                print(anios)
+                print(clasificacion)
+                print(ultimo_anio[clasificacion])
+                print(ultimo_anio_previo[clasificacion])
+                tasa = ((ultimo_anio[clasificacion] / ultimo_anio_previo[clasificacion]) *\
+                        Decimal(1.0 / anios) -1) * 100
+                data_tasa[periodo][clasificacion] = tasa
+                print("{}: {}: {}".format(clasificacion, periodo, tasa))
+                print('------')
+        prev_periodo = periodo
+
+
+
+    context['municipio'] = data.get('municipio')
+    context['data'] = data.get('data')
+    context['data_clase'] = data.get('data_clase')
+    context['data_asignacion'] = data.get('data_asignacion')
+    context['asignaciones'] = data.get('asignaciones')
+    context['years'] = data.get('years')
+
+    if request.GET.get('municipio2'):
+        data = getTransferencias(request.GET.get('municipio2'))
+
+        context['municipio2'] = data.get('municipio')
+        context['data2'] = data.get('data')
+        context['data_asignacion2'] = data.get('data_asignacion')
+        context['years2'] = data.get('years')
+
+    return render(request, 'tasa_transferencias.html', context)
