@@ -1,10 +1,25 @@
 {% extends '_indicator.html' %}
-{% load humanize core_extras %}
+{% load static humanize core_extras %}
 
 {% block main_content %}
     <div class="container wide">
         <div class="row">
             {% if request.GET.municipio %}
+
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <form class="navbar-form navbar-left">
+                        <p>
+                            Escoger el municipio: <select class="form-control" name="municipio2" id="municipio2">
+                            <option value="">(Municipio)</option>
+                            {% for municipio in municipios %}
+                                <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                            con el que desea comparar.
+                        </p>
+                    </form>
+                </div>
+
                 <h3>{{ municipio }}</h3>
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <table class="table table-bordered">
@@ -98,4 +113,34 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block extra_footer_scripts %}
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip({
+                placement: 'top'
+            });
+        });
+    </script>
+    <script src="{% static 'js/pma.js' %}"></script>
+    <script>
+        $(function () {
+            let municipio2 = $('#municipio2');
+
+            municipio2.on('change', function () {
+                let parameters = window.location.search;
+                let current_url = window.location.pathname;
+                const urlParams = new URLSearchParams(parameters);
+                //valido si existe municipio2 en la url para agregar o actualizar su valor
+                if (urlParams.has('municipio2')){
+                    urlParams.set('municipio2',$(this).val())
+                }else{
+                    urlParams.append('municipio2',$(this).val())
+                }
+
+                window.location.href = `${current_url}?${urlParams.toString()}`;
+            })
+        })
+    </script>
 {% endblock %}
