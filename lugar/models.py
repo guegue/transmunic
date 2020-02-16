@@ -104,6 +104,9 @@ class Periodo(models.Model):
     class Meta:
         ordering = ['desde']
 
+    def __unicode__(self):
+        return "{}-{}".format(self.desde, self.hasta)
+
 class PeriodoMunic(models.Model):
     municipio = models.ForeignKey(Municipio)
     periodo = models.ForeignKey(Periodo)
