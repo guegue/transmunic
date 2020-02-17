@@ -95,6 +95,7 @@ class Anio(models.Model):
     def __unicode__(self):
         return u'%s %s' % (self.anio, self.periodo)
 
+
 class AnioTransferencia(models.Model):
     anio = models.IntegerField(unique=True)
     periodo = models.CharField(max_length=1)
