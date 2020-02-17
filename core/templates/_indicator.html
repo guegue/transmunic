@@ -112,6 +112,10 @@
                                                     {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
                                                 Ejecuci&oacute;n del presupuesto
                                             </option>
+                                            <option value="{% url 'transferencias' %}"
+                                                    {% if request.resolver_match.url_name == 'transferencias' %}selected{% endif %}>
+                                                Transferencias
+                                            </option>
                                         </select>
                                     </div>
                                 {% else %}
