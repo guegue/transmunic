@@ -570,7 +570,7 @@ def getTransferencias(municipio=None):
             data_clase[clase] = filter(
                 lambda x: x['clasificacion'] == clase, data)
 
-        years_list =  sorted(list(iniciales) + list(finales))
+        years_list = sorted(list(iniciales) + list(finales))
         context['data_clase'] = data_clase
         context['years'] = years_list
 
