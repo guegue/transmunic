@@ -498,20 +498,23 @@ def getTransferencias(municipio=None):
             values_list('clasificacion__clasificacion', flat=True).\
             filter(anio=row['anio'], municipio=row['municipio']).first()
 
-    # llena con ceros años por si quedan vacios
     data_inicial = list(data_inicial)
     data_final = list(data_final)
-    clasificaciones = ClasificacionMunicAno.objects.values_list('clasificacion__clasificacion',
-                                                                flat=True).distinct()
-    for year in iniciales:
-        for clasificacion in clasificaciones:
-            data_inicial.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
-                                 'municipio': 0, 'capital': 0})
-    for year in finales:
-        for clasificacion in clasificaciones:
-            data_final.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
-                               'municipio': 0, 'capital': 0})
-    data = list(data_inicial) + list(data_final)
+
+    # llena con ceros años por si quedan vacios
+    if not municipio:
+        clasificaciones = ClasificacionMunicAno.objects.values_list('clasificacion__clasificacion',
+                                                                    flat=True).distinct()
+        for year in iniciales:
+            for clasificacion in clasificaciones:
+                data_inicial.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
+                                     'municipio': 0, 'capital': 0})
+        for year in finales:
+            for clasificacion in clasificaciones:
+                data_final.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
+                                   'municipio': 0, 'capital': 0})
+
+    data = data_inicial + data_final
 
     for row in data:
         row['total'] = row['corriente'] + row['capital']
