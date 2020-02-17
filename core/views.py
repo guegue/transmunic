@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.db.models import Sum
 
-from models import Anio, Departamento, Municipio, Inversion, Proyecto, \
+from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, Proyecto, \
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
@@ -473,8 +473,9 @@ def descargar_detalle(request):
 def getTransferencias(municipio=None):
     # botiene anios y sus periodos
     # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
-    iniciales = Anio.objects.values_list('anio', flat=True).filter(periodo=PERIODO_INICIAL)
-    finales = Anio.objects.values_list('anio', flat=True).filter(periodo=PERIODO_FINAL)
+    iniciales = AnioTransferencia.objects.values_list(
+        'anio', flat=True).filter(periodo=PERIODO_INICIAL)
+    finales = AnioTransferencia.objects.values_list('anio', flat=True).filter(periodo=PERIODO_FINAL)
     inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 

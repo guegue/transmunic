@@ -96,6 +96,17 @@ class Anio(models.Model):
         return u'%s %s' % (self.anio, self.periodo)
 
 
+class AnioTransferencia(models.Model):
+    anio = models.IntegerField(unique=True)
+    periodo = models.CharField(max_length=1)
+
+    class Meta:
+        verbose_name = u'Años Transferencias'
+
+    def __unicode__(self):
+        return u'%s %s' % (self.anio, self.periodo)
+
+
 class CatInversion(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=80)
