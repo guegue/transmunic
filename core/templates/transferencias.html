@@ -1,21 +1,21 @@
 {% extends '_indicator.html' %}
-{% load static humanize core_extras %}
+{% load static humanize core_extras chartit %}
 
 {% block main_content %}
-    <div class="container wide">
+    <div class="container-fluid wide">
         <div class="row">
             {% if request.GET.municipio %}
 
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <form class="navbar-form navbar-left">
                         <p>
-                            Escoger el municipio: <select class="form-control" name="municipio2" id="municipio2">
+                            Elija el municipio: <select class="form-control" name="municipio2" id="municipio2">
                             <option value="">(Municipio)</option>
                             {% for municipio in municipios %}
                                 <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
                             {% endfor %}
                         </select>
-                            con el que desea comparar.
+                            con el cual desea compararse.
                         </p>
                     </form>
                 </div>
@@ -110,6 +110,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div id="bar_chart" class="view-alternative"> grafico de barras
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -133,14 +137,16 @@
                 let current_url = window.location.pathname;
                 const urlParams = new URLSearchParams(parameters);
                 //valido si existe municipio2 en la url para agregar o actualizar su valor
-                if (urlParams.has('municipio2')){
-                    urlParams.set('municipio2',$(this).val())
-                }else{
-                    urlParams.append('municipio2',$(this).val())
+                if (urlParams.has('municipio2')) {
+                    urlParams.set('municipio2', $(this).val())
+                } else {
+                    urlParams.append('municipio2', $(this).val())
                 }
 
                 window.location.href = `${current_url}?${urlParams.toString()}`;
             })
         })
     </script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    {{ charts|load_charts:'bar_chart' }}
 {% endblock %}
