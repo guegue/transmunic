@@ -25,18 +25,18 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>Asignación Anual</th>
-                            {% for year in years %}
-                                <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+                            <th>Clase</th>
+                            {% for periodo in periodos %}
+                                <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
                             {% endfor %}
                         </tr>
                         </thead>
                         <tbody>
-                        {% for asignacion in asignaciones %}
+                        {% for clasificacion in clasificaciones %}
                             <tr>
-                                <td>{{ asignacion }}</td>
-                                {% for row in data_asignacion|keyvalue:asignacion %}
-                                    <td>{{ row }}</td>
+                                <td>{{ clasificacion }}</td>
+                                {% for value in data_tasa|keyvalue:clasificacion %}
+                                    <td> {{ value }} </td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -49,21 +49,21 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr class="bg-primary">
-                                <th>Asignación Anual</th>
-                                {% for year in years2 %}
-                                    <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
+                                <th>Clase</th>
+                                {% for periodo in periodos %}
+                                    <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
                                 {% endfor %}
                             </tr>
                             </thead>
                             <tbody>
-                            {% for asignacion in asignaciones %}
-                                <tr>
-                                    <td>{{ asignacion }}</td>
-                                    {% for row in data_asignacion2|keyvalue:asignacion %}
-                                        <td>{{ row }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
+                        {% for clasificacion in clasificaciones %}
+                            <tr>
+                                <td>{{ clasificacion }}</td>
+                                {% for value in data_tasa|keyvalue:clasificacion %}
+                                    <td> {{ value }} </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
                             </tbody>
                         </table>
                     </div>
