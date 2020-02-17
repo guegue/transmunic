@@ -12,21 +12,13 @@ def million(number):
 
 @register.filter
 def keyvalue(dictionary, key):
-    print("key={}".format(key))
-    print(dictionary)
     if dictionary.get(key):
-        print('----')
-        print(dictionary.get(key))
-        print("YES")
         return(dictionary.get(key))
     key=str(key)
     if dictionary.get(key):
-        print(dictionary.get(key))
-        print('---')
         return dictionary.get(key)
     if key.isdigit() and int(key) in dictionary:
         return dict[int(key)]
-    print('not found')
     return 'KeyError'
 
 @register.filter
