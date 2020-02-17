@@ -14,34 +14,37 @@
     <div id="content-main">
 
         {% if app_list %}
-            <div class="app-importar module">
-                <table style="width: 100%">
-                    <caption>Importador e Ingreso manual de Ingresos y Gastos</caption>
-                    <tbody>
-                    <tr>
-                        <th colspan="3">
-                            <a href="{% url 'importar' %}">
-                                Importador
-                            </a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan="3">
-                            <a href="{% url 'rengloningreso' %}">
-                                Ingreso manual de Ingresos
-                            </a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan="3">
-                            <a href="{% url 'renglon-gasto' %}">
-                                Ingreso manual de Gastos
-                            </a>
-                        </th>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% if user.profile or user.is_superuser %}
+                <div class="app-importar module">
+                    <table style="width: 100%">
+                        <caption>Importador e Ingreso manual de Ingresos y Gastos</caption>
+                        <tbody>
+                        <tr>
+                            <th colspan="3">
+                                <a href="{% url 'importar' %}">
+                                    Importador
+                                </a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">
+                                <a href="{% url 'rengloningreso' %}">
+                                    Ingreso manual de Ingresos
+                                </a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">
+                                <a href="{% url 'renglon-gasto' %}">
+                                    Ingreso manual de Gastos
+                                </a>
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
             {% for app in app_list %}
                 <div class="app-{{ app.app_label }} module">
                     <table>
