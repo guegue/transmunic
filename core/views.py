@@ -593,19 +593,20 @@ def tasa_transferencias(request):
     data_periodo = {}
     prev_periodo = None
     data_tasa = {}
+    tasas = {}
     clasificaciones = []
-    for periodo in Periodo.objects.all().order_by('desde'):
-        data_tasa[periodo] = {}
+    periodos = Periodo.objects.all().order_by('desde')
+    for periodo in periodos:
+        periodo_key = "{}-{}".format(periodo.desde, periodo.hasta)
+        data_tasa[periodo_key] = {}
         anios = periodo.hasta - periodo.desde
         ultimo_anio = {}
         ultimo_anio_previo = {}
-        print(periodo)
-        if prev_periodo:
-            print("prev: {} curr: {}".format(prev_periodo.hasta, periodo.hasta))
         for row in datadata:
             clasificacion = row['clasificacion']
             if clasificacion not in clasificaciones:
                 clasificaciones.append(clasificacion)
+                tasas[clasificacion] = []
             anio = row['anio']
             total = row['total']
             if prev_periodo and anio == prev_periodo.hasta:
@@ -614,25 +615,22 @@ def tasa_transferencias(request):
                 ultimo_anio[clasificacion] = total
         for clasificacion in clasificaciones:
             if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
-                print(anios)
-                print(clasificacion)
-                print(ultimo_anio[clasificacion])
-                print(ultimo_anio_previo[clasificacion])
                 tasa = ((ultimo_anio[clasificacion] / ultimo_anio_previo[clasificacion]) *\
                         Decimal(1.0 / anios) -1) * 100
-                data_tasa[periodo][clasificacion] = tasa
-                print("{}: {}: {}".format(clasificacion, periodo, tasa))
-                print('------')
+                data_tasa[periodo_key][clasificacion] = tasa
+                tasas[clasificacion].append(tasa)
+            else:
+                tasas[clasificacion].append('')
         prev_periodo = periodo
+    print(tasas)
+    print(clasificaciones)
 
 
 
     context['municipio'] = data.get('municipio')
-    context['data'] = data.get('data')
-    context['data_clase'] = data.get('data_clase')
-    context['data_asignacion'] = data.get('data_asignacion')
-    context['asignaciones'] = data.get('asignaciones')
-    context['years'] = data.get('years')
+    context['data_tasa'] = tasas
+    context['clasificaciones'] = clasificaciones
+    context['periodos'] = periodos
 
     if request.GET.get('municipio2'):
         data = getTransferencias(request.GET.get('municipio2'))
