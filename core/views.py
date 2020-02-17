@@ -504,7 +504,7 @@ def getTransferencias(municipio=None):
     # llena con ceros años por si quedan vacios
     if not municipio:
         clasificaciones = ClasificacionMunicAno.objects.values_list('clasificacion__clasificacion',
-                                                                flat=True).distinct()
+                                                                    flat=True).distinct()
         for year in iniciales:
             for clasificacion in clasificaciones:
                 data_inicial.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
