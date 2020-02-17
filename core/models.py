@@ -99,6 +99,14 @@ class Anio(models.Model):
 class AnioTransferencia(models.Model):
     anio = models.IntegerField(unique=True)
     periodo = models.CharField(max_length=1)
+    pgr = models.DecimalField(
+            max_digits=12, decimal_places=2, blank=True, null=True)
+    partida_presupuestaria = models.DecimalField(
+            max_digits=12, decimal_places=2, blank=True, null=True)
+    inversion_publica = models.DecimalField(
+            max_digits=12, decimal_places=2, blank=True, null=True)
+    pip = models.DecimalField(
+            max_digits=12, decimal_places=2, blank=True, null=True)
 
     class Meta:
         verbose_name = u'Años Transferencias'
