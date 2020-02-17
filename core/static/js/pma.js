@@ -45,6 +45,14 @@ $(function() {
         let indicador = inputs_datos.find((obj) => {
             return (obj.name.toLowerCase() === 'indicador');
         });
+
+         //NOTE: eliminando year de arreglo si indicador es transferencias
+        if (indicador.value.includes('/transferencias')){
+            inputs_datos = inputs_datos.filter((obj) => {
+                return (obj.name.toLowerCase() !== 'year');
+            });
+        }
+
         //NOTE: eliminando indicador de arreglo
         inputs_datos = inputs_datos.filter((obj) => {
             return (obj.name !== indicador.name);
