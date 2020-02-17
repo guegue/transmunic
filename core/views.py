@@ -489,6 +489,7 @@ def getTransferencias(municipio=None):
     data_final = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio').\
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
+
     # adds 'clasificacion' for each row
     for row in data_inicial:
         row['clasificacion'] = ClasificacionMunicAno.objects.\
@@ -651,3 +652,35 @@ def tasa_transferencias(request):
         context['years2'] = data.get('years')
 
     return render(request, 'tasa_transferencias.html', context)
+
+
+def evolucion_transferencias(request):
+
+    context = {}
+
+    data = getTransferencias(request.GET.get('municipio'))
+
+    iniciales = AnioTransferencia.objects.values_list(
+        'anio', flat=True).filter(periodo=PERIODO_INICIAL)
+    finales = AnioTransferencia.objects.values_list('anio',flat=True).filter(periodo=PERIODO_FINAL)
+    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
+    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+
+    anios_trans = AnioTransferencia.objects.all().filter(periodo=PERIODO_INICIAL)
+
+    #Obteiendo totales de transferencias de capital y  corrientes por anio
+    total_data_inicial = Transferencia.objects.order_by('anio').values('anio').\
+        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),\
+        total=Sum('corriente')+Sum('capital'))
+    total_data_final = Transferencia.objects.order_by('anio').values('anio').\
+        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),\
+        total=Sum('corriente')+Sum('capital'))
+    context['municipio'] = data.get('municipio')
+    context['data'] = list(total_data_inicial) + list(total_data_final)
+    context['data_clase'] = data.get('data_clase')
+    context['data_asignacion'] = data.get('data_asignacion')
+    context['asignaciones'] = data.get('asignaciones')
+    context['years'] = data.get('years')
+
+    return render(request, 'evolucion_transferencias.html', context)
+

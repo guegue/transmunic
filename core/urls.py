@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^gasto-minimo-sector$', views.inversion_minima_sector_view, name='gasto_minimo_sector'),
     url(r'^transferencias$', views.transferencias, name='transferencias'),
     url(r'^tasa-transferencias$', views.tasa_transferencias, name='tasa_transferencias'),
+    #evolucion de partida de transferencias
+    url(r'^evolucion-transferencias$', views.evolucion_transferencias, name='evolucion-transferencias'),
     url(r'^oim$', views.oim_view, name='origen_ingresos'),
     url(r'^ogm$', views.ogm_view, name='origen_gastos'),
     url(r'^inversion-categoria$', views.inversion_categoria_view, name='inversion_categoria'),
