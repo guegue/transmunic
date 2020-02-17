@@ -601,9 +601,6 @@ def tasa_transferencias(request):
 
     data = getTransferencias(request.GET.get('municipio'))
     datadata = data.get('data')
-    data_clase = data.get('data_clase')
-    years = data.get('years')
-    data_periodo = {}
     prev_periodo = None
     data_tasa = {}
     tasas = {}
