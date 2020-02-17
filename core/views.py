@@ -502,15 +502,15 @@ def getTransferencias(municipio=None):
     data_inicial = list(data_inicial)
     data_final = list(data_final)
     clasificaciones = ClasificacionMunicAno.objects.values_list('clasificacion__clasificacion',
-            flat=True).distinct()
+                                                                flat=True).distinct()
     for year in iniciales:
         for clasificacion in clasificaciones:
             data_inicial.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
-                'municipio': 0, 'capital': 0})
+                                 'municipio': 0, 'capital': 0})
     for year in finales:
         for clasificacion in clasificaciones:
             data_final.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
-                'municipio': 0, 'capital': 0})
+                               'municipio': 0, 'capital': 0})
     data = list(data_inicial) + list(data_final)
 
     for row in data:
@@ -628,8 +628,8 @@ def tasa_transferencias(request):
                 ultimo_anio[clasificacion] = total
         for clasificacion in clasificaciones:
             if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
-                tasa = ((ultimo_anio[clasificacion] / ultimo_anio_previo[clasificacion]) *\
-                        Decimal(1.0 / anios) -1) * 100
+                tasa = ((ultimo_anio[clasificacion] / ultimo_anio_previo[clasificacion]) *
+                        Decimal(1.0 / anios) - 1) * 100
                 data_tasa[periodo_key][clasificacion] = tasa
                 tasas[clasificacion].append(tasa)
             else:
