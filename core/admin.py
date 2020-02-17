@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import (Profile, Organizacion, Anio, Grafico, CatInversion, TipoGasto,
+from core.models import (Profile, Organizacion, Anio, AnioTransferencia, Grafico, CatInversion, TipoGasto,
                          SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, TipoIngreso,
                          SubSubTipoIngreso, Sub3TipoIngreso, SubTipoIngreso, TipoFuenteFmto, FuenteFmto,
                          InversionFuente, Transferencia, Inversion, Proyecto, Ingreso, Gasto, IngresoRenglon,
@@ -101,6 +101,7 @@ class TransferenciaAdmin(admin.ModelAdmin):
 admin.site.register(Profile)
 admin.site.register(Organizacion)
 admin.site.register(Anio)
+admin.site.register(AnioTransferencia)
 admin.site.register(Grafico)
 admin.site.register(CatInversion)
 admin.site.register(TipoGasto)
