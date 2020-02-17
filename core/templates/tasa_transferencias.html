@@ -74,38 +74,19 @@
                         <thead>
                         <tr class="bg-primary">
                             <th>Clase</th>
-                            <th>Asignación Anual</th>
-                            {% for year in years %}
-                                <th>{{ year }}</th>
+                            {% for periodo in periodos %}
+                                <th>{{ periodo }}</th>
                             {% endfor %}
                         </tr>
                         </thead>
                         <tbody>
-                        {% for row in data %}
-                            {% ifchanged row.clasificacion %}
-                                <tr>
-                                    <td rowspan=3>{{ row.clasificacion }}</td>
-                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
-                                        {% if forloop.first %}
-                                            <td>Corriente</td>{% endif %}
-                                        <td>{{ row2.corriente|intcomma }}</td>
-                                    {% endfor %}
-                                </tr>
-                                <tr>
-                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
-                                        {% if forloop.first %}
-                                            <td>Capital</td>{% endif %}
-                                        <td>{{ row2.capital|intcomma }}</td>
-                                    {% endfor %}
-                                </tr>
-                                <tr>
-                                    {% for row2 in data_clase|keyvalue:row.clasificacion %}
-                                        {% if forloop.first %}
-                                            <td>Total</td>{% endif %}
-                                        <td>{{ row2.total|intcomma }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endifchanged %}
+                        {% for clasificacion in clasificaciones %}
+                            <tr>
+                                <td>{{ clasificacion }}</td>
+                                {% for value in data_tasa|keyvalue:clasificacion %}
+                                    <td> {{ value }} </td>
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>
