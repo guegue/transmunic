@@ -11,7 +11,8 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
-from tools import getYears, getPeriods, graphBarChart, graphTwoBarChart
+from tools import getYears, getPeriods, xnumber
+from tools import getYears, getPeriods, xnumber, graphBarChart, graphTwoBarChart
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -699,3 +700,72 @@ def tasa_transferencias(request):
         context['years2'] = data.get('years')
 
     return render(request, 'tasa_transferencias.html', context)
+
+
+def evolucion_transferencias(request):
+
+    context = {}
+
+    data = getTransferencias(request.GET.get('municipio'))
+
+    iniciales = AnioTransferencia.objects.values_list(
+        'anio', flat=True).filter(periodo=PERIODO_INICIAL)
+    finales = AnioTransferencia.objects.values_list(
+        'anio', flat=True).filter(periodo=PERIODO_FINAL)
+    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
+    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+
+    # obteniendo de manere ascendente los años con su pgr y pip
+    anios_trans = list(AnioTransferencia.objects.order_by('anio').values(
+        'anio', 'pgr', 'pip', 'recurso_tesoro_pip'))
+
+    # Obteiendo totales de transferencias de capital y  corrientes por anio
+    total_data_inicial = Transferencia.objects.order_by('anio').values('anio').\
+        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
+                                          total=Sum('corriente')+Sum('capital'))
+    total_data_final = Transferencia.objects.order_by('anio').values('anio').\
+        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
+                                        total=Sum('corriente')+Sum('capital'))
+
+    joined_total_data = list(total_data_inicial) + list(total_data_final)
+    joined_total_data = sorted(joined_total_data, key=lambda d: d['anio'])
+
+    # agregaremos nuevas key a joined_total_data
+    for row in joined_total_data:
+        anio_trans = filter(lambda i: i['anio'] == row['anio'], anios_trans)[0]
+        pgr = xnumber(anio_trans['pgr'])
+        pip = xnumber(anio_trans['pip'])
+        recurso_tesoro_pip = xnumber(anio_trans['recurso_tesoro_pip'])
+
+        row['pgr'] = pgr
+        row['pip'] = pip
+        row['recurso_tesoro_pip'] = recurso_tesoro_pip
+
+        # calculando Porcentaje partida presupuestaria
+        if row.get('pgr') > 0:
+            row['partida'] = (xnumber(row.get('total')) / xnumber(row.get('pgr')))*100
+
+        # % para destinar a inversión
+        if row.get('total') > 0:
+            row['porcentaje_inversion_ttotal'] = (
+                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+
+        if pip > 0:
+            # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
+            row['precurso_tesoro_ttotal'] = (xnumber(row.get('total')) / pip)*100
+
+            # como % del Programa de Inversiones Públicas
+            row['pprograma_inversion_publica'] = (xnumber(row.get('capital')) / pip) * 100
+
+        if recurso_tesoro_pip > 0:
+            # como % de los Recursos del Tesoro en el PIP
+            row['precurso_tesoro'] = (xnumber(row.get('capital')) / recurso_tesoro_pip) * 100
+
+    context['municipio'] = data.get('municipio')
+    context['data'] = joined_total_data
+    context['data_clase'] = data.get('data_clase')
+    context['data_asignacion'] = data.get('data_asignacion')
+    context['asignaciones'] = data.get('asignaciones')
+    context['years'] = data.get('years')
+
+    return render(request, 'evolucion_transferencias.html', context)
