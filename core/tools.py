@@ -197,4 +197,57 @@ def graphBarChart(parameters):
             }
         })
 
-    return (bar_chart,)
+    return bar_chart
+
+def graphTwoBarChart(parameters):
+
+    data_bar = RawDataPool(
+        series=[
+            {
+                'options': {
+                    'source': parameters.get('data')
+                },
+                'terms': [
+                    parameters.get('field1'),
+                    parameters.get('field2'),
+                    parameters.get('field3'),
+                ]
+            }
+        ]
+    )
+    bar_chart = Chart(
+        datasource=data_bar,
+        series_options=[
+            {
+                'options': {
+                    'type': 'column',
+                    'colorByPoint': True,
+                },
+                'terms': {
+                    parameters.get('field1'): [
+                        parameters.get('field2'),
+                        parameters.get('field3'),
+                    ]
+                },
+            }],
+        chart_options={
+            'legend': {
+                'enabled': False
+            },
+            'colors': colors_array,
+            'title': {
+                'text': parameters.get('title')
+            },
+            'xAxis': {
+                'title': {
+                    'text': parameters.get('labelX_axis')
+                }
+            },
+            'yAxis': {
+                'title': {
+                    'text': parameters.get('labelY_axis')
+                }
+            }
+        })
+
+    return bar_chart
