@@ -11,7 +11,7 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
-from tools import getYears, getPeriods
+from tools import getYears, getPeriods, xnumber
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -662,11 +662,13 @@ def evolucion_transferencias(request):
 
     iniciales = AnioTransferencia.objects.values_list(
         'anio', flat=True).filter(periodo=PERIODO_INICIAL)
-    finales = AnioTransferencia.objects.values_list('anio',flat=True).filter(periodo=PERIODO_FINAL)
+    finales = AnioTransferencia.objects.values_list(
+        'anio', flat=True).filter(periodo=PERIODO_FINAL)
     inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 
-    anios_trans = AnioTransferencia.objects.all().filter(periodo=PERIODO_INICIAL)
+    # obteniendo de manere ascendente los años con su pgr y pip
+    anios_trans = list(AnioTransferencia.objects.order_by('anio').values('anio', 'pgr', 'pip'))
 
     #Obteiendo totales de transferencias de capital y  corrientes por anio
     total_data_inicial = Transferencia.objects.order_by('anio').values('anio').\
@@ -675,6 +677,22 @@ def evolucion_transferencias(request):
     total_data_final = Transferencia.objects.order_by('anio').values('anio').\
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),\
         total=Sum('corriente')+Sum('capital'))
+
+    joined_total_data = list(total_data_inicial) + list(total_data_final)
+    joined_total_data = sorted(joined_total_data, key=lambda d: d['anio'])
+
+    # agregaremos nuevas key a joined_total_data
+    for row in joined_total_data:
+        anio_trans = filter(lambda i: i['anio'] == row['anio'], anios_trans)[0]
+        pgr = xnumber(anio_trans['pgr'])
+        pip = xnumber(anio_trans['pip'])
+
+        row['pgr'] = pgr
+        row['pip'] = pip
+        row['pgr_corriente'] = pgr * row.get('corriente')
+        row['pip_corriente'] = pip * row.get('corriente')
+
+
     context['municipio'] = data.get('municipio')
     context['data'] = list(total_data_inicial) + list(total_data_final)
     context['data_clase'] = data.get('data_clase')
