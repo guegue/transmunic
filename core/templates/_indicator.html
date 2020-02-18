@@ -19,9 +19,9 @@
 {% endblock %}
 
 {% block header %}
-    <div class="pma-search-bar pma-bg-blue">
-        <div class="container">
-            <div class="row">
+    <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}pma-search-bar pma-bg-blue{% endif %}">
+        <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}container{% endif %}">
+            <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}row{% endif %}">
                 {% if request.resolver_match.url_name == 'importar' or request.resolver_match.url_name == 'importar-resultado' %}
 
                     <a href="{% url 'rengloningreso' %}" class="btn btn-primary pull-right">Ir a registrar manualmente
@@ -33,7 +33,6 @@
                         <a href="{% url 'importar' %}" class="btn btn-primary pull-right mr-5px">Ir a
                             Importador</a>
                     {% endif %}
-
                 {% elif request.resolver_match.url_name == 'rengloningreso' or request.resolver_match.url_name == 'renglon-gasto' %}
 
                     {% if request.resolver_match.url_name == 'rengloningreso' %}
@@ -41,7 +40,6 @@
                             manualmente
                             los gastos</a>
                     {% endif %}
-
                     {% if request.resolver_match.url_name == 'renglon-gasto' %}
                         <a href="{% url 'rengloningreso' %}" class="btn btn-primary pull-right">Ir a registrar
                             manualmente
@@ -49,13 +47,10 @@
                     {% endif %}
                     <a href="{% url 'importar' %}" class="btn btn-primary pull-right mr-5px">Ir a
                         Importador</a>
-
                 {% else %}
                     <div class="col-md-12">
                         <form id="indicatorfilter" method="GET">
                             <div class="row">
-
-
                                 {% if municipio %}
                                     <div class="col-lg-6 col-md-6 text-center">
                                         <h2 class="title-municipio-name">{{ municipio.nombre }}</h2>
@@ -63,15 +58,19 @@
                                                value="{{ municipio.slug }}">
                                     </div>
                                 {% endif %}
-                                <div class="col-xs-4 col-sm-2 col-md-1">
-                                    <span class="pma-fg-light-green titsearch years"><strong>A&ncaron;o</strong></span>
-                                    <select name="year" id="year">
-                                        {% for ayear in year_list %}
-                                            <option {% if ayear == year|add:"0" %}selected{% endif %}
-                                                    value="{{ ayear }}">{{ ayear }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
+
+                                {% if request.resolver_match.url_name != 'transferencias' %}
+                                    <div class="col-xs-4 col-sm-2 col-md-1">
+                                        <span class="pma-fg-light-green titsearch years"><strong>A&ncaron;o</strong></span>
+                                        <select name="year" id="year">
+                                            {% for ayear in year_list %}
+                                                <option {% if ayear == year|add:"0" %}selected{% endif %}
+                                                        value="{{ ayear }}">{{ ayear }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                {% endif %}
+
                                 {% if request.resolver_match.url_name == 'municipio' or request.GET.municipio %}
                                     <div class="col-xs-9 col-sm-5 col-md-4 indicadores">
                                         <span class="pma-fg-light-green titsearch"><strong>Indicador</strong></span>
@@ -112,15 +111,22 @@
                                                     {% if request.resolver_match.url_name == 'ejecucion_presupuesto' %}selected{% endif %}>
                                                 Ejecuci&oacute;n del presupuesto
                                             </option>
+                                            <option value="{% url 'transferencias' %}"
+                                                    {% if request.resolver_match.url_name == 'transferencias' %}selected{% endif %}>
+                                                Transferencias
+                                            </option>
                                         </select>
                                     </div>
                                 {% else %}
                                     <input type="hidden" name="indicador" id="indicador"
                                            value="{{ request.path|lower }}">
                                 {% endif %}
-                                <div class="col-xs-2 col-sm-1 col-md-1">
-                                    <input type="submit" value="Buscar" class="btn buscar"/>
-                                </div>
+
+                                {% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}
+                                    <div class="col-xs-2 col-sm-1 col-md-1">
+                                        <input type="submit" value="Buscar" class="btn buscar"/>
+                                    </div>
+                                {% endif %}
                             </div>
                         </form>
                     </div>

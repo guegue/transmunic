@@ -12,6 +12,7 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
 from tools import getYears, getPeriods, xnumber
+from tools import getYears, getPeriods, xnumber, graphBarChart, graphTwoBarChart
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -473,9 +474,12 @@ def descargar_detalle(request):
 def getTransferencias(municipio=None):
     # botiene anios y sus periodos
     # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
-    iniciales = AnioTransferencia.objects.values_list(
-        'anio', flat=True).filter(periodo=PERIODO_INICIAL)
-    finales = AnioTransferencia.objects.values_list('anio', flat=True).filter(periodo=PERIODO_FINAL)
+    iniciales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_INICIAL)
+    finales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_FINAL)
     inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 
@@ -543,7 +547,28 @@ def getTransferencias(municipio=None):
 
         context['municipio'] = Municipio.objects.get(slug=municipio)
         context['data_asignacion'] = data_asignacion
-        context['years'] = sorted(years)
+        years = sorted(years)
+        context['years'] = years
+
+        data_by_municipio = []
+        i = 0
+        while i < len(data_asignacion['total']):
+            data_by_municipio.append({
+                'corriente': data_asignacion['corriente'][i],
+                'capital': data_asignacion['capital'][i],
+                'anio': years[i]['year'],
+            })
+            i += 1
+        dict_parameters = {
+            'data': data_by_municipio,
+            'field1': 'anio',
+            'field2': 'corriente',
+            'field3': 'capital',
+            'title': 'Transferencias totales por anio',
+            'labelX_axis': 'Años',
+            'labelY_axis': 'Córdobas',
+        }
+        context['charts'] = graphTwoBarChart(dict_parameters)
 
     if not municipio:
         # group by clasificacion
@@ -567,8 +592,26 @@ def getTransferencias(municipio=None):
             data_clase[clase] = filter(
                 lambda x: x['clasificacion'] == clase, data)
 
+        years_list = sorted(list(iniciales) + list(finales))
         context['data_clase'] = data_clase
-        context['years'] = sorted(list(iniciales) + list(finales))
+        context['years'] = years_list
+
+        data_by_years = []
+        for year in years_list:
+            data_by_years.append({
+                'total': sum(row['total'] for row in data if row['anio'] == year),
+                'anio': year
+            })
+
+        dict_parameters = {
+            'data': data_by_years,
+            'field1': 'anio',
+            'field2': 'total',
+            'title': 'Transferencias totales por anio',
+            'labelX_axis': 'Años',
+            'labelY_axis': 'Córdobas',
+        }
+        context['charts'] = graphBarChart(dict_parameters)
 
     context['data'] = data
 
@@ -587,6 +630,8 @@ def transferencias(request):
     context['data_asignacion'] = data.get('data_asignacion')
     context['asignaciones'] = data.get('asignaciones')
     context['years'] = data.get('years')
+    if data.get('charts'):
+        context['charts'] = [data.get('charts')]
 
     if request.GET.get('municipio2'):
         data = getTransferencias(request.GET.get('municipio2'))
@@ -595,6 +640,10 @@ def transferencias(request):
         context['data2'] = data.get('data')
         context['data_asignacion2'] = data.get('data_asignacion')
         context['years2'] = data.get('years')
+
+        if data.get('charts'):
+            chart2 = data.get('charts')
+            context['charts'].append(chart2)
 
     return render(request, 'transferencias.html', context)
 
