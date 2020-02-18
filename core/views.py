@@ -586,8 +586,8 @@ def getTransferencias(municipio=None):
             'field1': 'anio',
             'field2': 'total',
             'title': 'Transferencias totales por anio',
-            'labelX_axis': 'Córdobas',
-            'labelY_axis': 'Años',
+            'labelX_axis': 'Años',
+            'labelY_axis': 'Córdobas',
         }
         context['charts'] = graphBarChart(dict_parameters)
 
@@ -604,7 +604,10 @@ def transferencias(request):
 
     context['municipio'] = data.get('municipio')
     context['data'] = data.get('data')
-    context['charts'] = data.get('charts')
+    context['charts'] = []
+    context['charts'].append(
+        data.get('charts')
+    )
     context['data_clase'] = data.get('data_clase')
     context['data_asignacion'] = data.get('data_asignacion')
     context['asignaciones'] = data.get('asignaciones')
