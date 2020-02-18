@@ -199,6 +199,7 @@ def graphBarChart(parameters):
 
     return bar_chart
 
+
 def graphTwoBarChart(parameters):
 
     data_bar = RawDataPool(
