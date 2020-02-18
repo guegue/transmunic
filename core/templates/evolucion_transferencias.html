@@ -4,90 +4,60 @@
 {% block main_content %}
     <div class="container wide">
         <div class="row">
-            {% if request.GET.municipio %}
-
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    <form class="navbar-form navbar-left">
-                        <p>
-                            Escoger el municipio: <select class="form-control" name="municipio2" id="municipio2">
-                            <option value="">(Municipio)</option>
-                            {% for municipio in municipios %}
-                                <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                            con el que desea comparar.
-                        </p>
-                    </form>
-                </div>
-
-                <h3>{{ municipio }}</h3>
+		<h2>Ingresos tributarios, transferencias municipales 
+			e inversiones p&uacute;blicas</h2>
+		<h4>Millones de córdobas corrientes</h4>
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>Asignación Anual</th>
-                            {% for year in years %}
-                                <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for asignacion in asignaciones %}
-                            <tr>
-                                <td>{{ asignacion }}</td>
-                                {% for row in data_asignacion|keyvalue:asignacion %}
-                                    <td>{{ row }}</td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% if request.GET.municipio2 %}
-                    <h3>{{ municipio2 }}</h3>
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr class="bg-primary">
-                                <th>Asignación Anual</th>
-                                {% for year in years2 %}
-                                    <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
-                                {% endfor %}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for asignacion in asignaciones %}
-                                <tr>
-                                    <td>{{ asignacion }}</td>
-                                    {% for row in data_asignacion2|keyvalue:asignacion %}
-                                        <td>{{ row }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% endif %}
-            {% else %}
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>Asignación Anual</th>
+                            <th>CONCEPTO</th>
                             {% for year in years %}
                                 <th>{{ year }}</th>
                             {% endfor %}
                         </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-primary">
-                                <th>Ingresos Tributarios PGR</th>
-                                {% for year in years %}
-                                    <th>{{ year }}</th>
+                            <tr>
+                                <td>Ingresos Tributarios PGR</td>
+                                {% for i in data %}
+				    <td>{{ i.pgr|million|intcomma }}</td>
                                 {% endfor %}
                             </tr>
                             <tr>
-			        <td>Corriente</td>
+                                <td>Partida presupuestaria</td>
+                                {% for i in data %}
+				    <td>{{ i.partida|floatformat:"0" }}%</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td>Programa Inversión Publica</td>
+                                {% for i in data %}
+				    <td>
+					{% if i.pip > 0 %}
+					    {{ i.pip|million|intcomma }}
+					{% endif %}
+				    </td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td>Recursos del tesoro en el PIP</td>
+                                {% for i in data %}
+				    <td>
+					{% if i.recurso_tesoro_pip  %}
+					    {{ i.recurso_tesoro_pip|million|intcomma }}
+					{% endif %}
+				    </td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+				<td><strong>Transferencias totales</strong></td>
+                                {% for row in data %}
+			            <td>{{ row.total|million|intcomma }}</td>
+                                {% endfor %}
+			    </tr>
+                            <tr>
+			        <td>Corrientes</td>
                                 {% for row in data|dictsort:'anio' %}
 			            <td>{{ row.corriente|million|intcomma }}</td>
                                 {% endfor %}
@@ -99,15 +69,51 @@
                                 {% endfor %}
 			    </tr>
                             <tr>
-			        <td>Transferencias totales</td>
+			        <td>% para destinar a inversión</td>
                                 {% for row in data|dictsort:'anio' %}
-			            <td>{{ row.total|million|intcomma }}</td>
+				    <td>
+				        {% if row.porcentaje_inversion_ttotal %}
+					    {{ row.porcentaje_inversion_ttotal|floatformat:"2" }}%
+					{% endif %}
+				    </td>
                                 {% endfor %}
 			    </tr>
+			    <tr><td colspan="18">Transferencias Totales</td></tr>
+                            <tr>
+			        <td>como % de los Recursos del Tesoro en el PIP</td>
+                                {% for row in data|dictsort:'anio' %}
+			 	    <td>
+                                        {% if row.precurso_tesoro_ttotal %}
+					    {{ row.precurso_tesoro_ttotal|intcomma|floatformat:"2" }}%
+					{% endif %}
+				    </td>
+                                {% endfor %}
+			    </tr>
+			    <tr><td colspan="18">Transferencias de capital</td></tr>
+                            <tr>
+			        <td>como % del Programa de Inversiones Públicas</td>
+                                {% for row in data|dictsort:'anio' %}
+				    <td>
+				         {% if row.pprograma_inversion_publica %}
+					     {{ row.pprograma_inversion_publica|floatformat:"2" }}%
+					 {% endif %}
+				    </td>
+                                {% endfor %}
+			    </tr>
+                            <tr>
+			        <td>como % de los Recursos del Tesoro en el PIP</td>
+                                {% for row in data|dictsort:'anio' %}
+				    <td>
+				        {% if row.precurso_tesoro %}
+					    {{ row.precurso_tesoro|floatformat:"2" }}%
+					{% endif %}
+				    </td>
+                                {% endfor %}
+			    </tr>
+
                         </tbody>
                     </table>
                 </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
