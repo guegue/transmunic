@@ -663,7 +663,8 @@ def tasa_transferencias(request):
     for periodo in periodos:
         periodo_key = "{}-{}".format(periodo.desde, periodo.hasta)
         data_tasa[periodo_key] = {}
-        anios = periodo.hasta - periodo.desde
+        #temporalmente periodo +1
+        anios = (periodo.hasta - periodo.desde)+1
         ultimo_anio = {}
         ultimo_anio_previo = {}
         for row in datadata:
