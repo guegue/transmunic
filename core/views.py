@@ -676,28 +676,28 @@ def tasa_transferencias(request):
                                         }
             anio = row['anio']
             total = {
-                    'total': row['total'],
-                    'corriente': row['corriente'],
-                    'capital': row['capital']
-                    }
+                'total': row['total'],
+                'corriente': row['corriente'],
+                'capital': row['capital']
+            }
             if prev_periodo and anio == prev_periodo.hasta:
                 ultimo_anio_previo[clasificacion] = total
             if anio == periodo.hasta:
                 ultimo_anio[clasificacion] = total
         for clasificacion in clasificaciones:
             if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
-                tasa = (pow(ultimo_anio[clasificacion]['total'] / 
+                tasa = (pow(ultimo_anio[clasificacion]['total'] /
                             ultimo_anio_previo[clasificacion]['total'],
                             Decimal(1.0 / anios))
                         - 1) * 100
-                tasa_cr = (pow(ultimo_anio[clasificacion]['corriente'] / 
-                            ultimo_anio_previo[clasificacion]['corriente'],
-                            Decimal(1.0 / anios)) 
-                        - 1) * 100
-                tasa_cp = (pow(ultimo_anio[clasificacion]['capital'] / 
-                            ultimo_anio_previo[clasificacion]['capital'],
-                            Decimal(1.0 / anios)) 
-                        - 1) * 100
+                tasa_cr = (pow(ultimo_anio[clasificacion]['corriente'] /
+                               ultimo_anio_previo[clasificacion]['corriente'],
+                               Decimal(1.0 / anios))
+                           - 1) * 100
+                tasa_cp = (pow(ultimo_anio[clasificacion]['capital'] /
+                               ultimo_anio_previo[clasificacion]['capital'],
+                               Decimal(1.0 / anios))
+                           - 1) * 100
                 data_tasa[periodo_key][clasificacion] = tasa
                 tasas[clasificacion]['total'].append(tasa)
                 tasas[clasificacion]['corriente'].append(tasa_cr)
