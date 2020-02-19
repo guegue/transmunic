@@ -40,7 +40,7 @@
                     <table class="table table-responsive table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>Asignación Anual</th>
+                            <th class="fixed">Asignación Anual</th>
                             {% for year in years %}
                                 <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
                             {% endfor %}
@@ -49,7 +49,7 @@
                         <tbody>
                         {% for asignacion in asignaciones %}
                             <tr>
-                                <td>{{ asignacion }}</td>
+                                <td class="fixed">{{ asignacion }}</td>
                                 {% for row in data_asignacion|keyvalue:asignacion %}
                                     <td>{{ row }}</td>
                                 {% endfor %}
@@ -67,7 +67,7 @@
                         <table class="table table-responsive table-bordered">
                             <thead>
                             <tr class="bg-primary">
-                                <th>Asignación Anual</th>
+                                <th class="fixed">Asignación Anual</th>
                                 {% for year in years2 %}
                                     <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
                                 {% endfor %}
@@ -76,7 +76,7 @@
                             <tbody>
                             {% for asignacion in asignaciones %}
                                 <tr>
-                                    <td>{{ asignacion }}</td>
+                                    <td class="fixed">{{ asignacion }}</td>
                                     {% for row in data_asignacion2|keyvalue:asignacion %}
                                         <td>{{ row }}</td>
                                     {% endfor %}
@@ -94,8 +94,8 @@
                     <table class="table table-responsive table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>Clase</th>
-                            <th>Asignación Anual</th>
+                            <th class="fixed">Clase</th>
+                            <th class="fixed2">Asignación Anual</th>
                             {% for year in years %}
                                 <th>{{ year }}</th>
                             {% endfor %}
@@ -105,24 +105,24 @@
                         {% for row in data %}
                             {% ifchanged row.clasificacion %}
                                 <tr>
-                                    <td rowspan=3>{{ row.clasificacion }}</td>
+                                    <td rowspan="3" class="fixed vertical-middle">{{ row.clasificacion }}</td>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td>Corriente</td>{% endif %}
+                                            <td class="fixed2">Corriente</td>{% endif %}
                                         <td>{{ row2.corriente|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td>Capital</td>{% endif %}
+                                            <td class="fixed2">Capital</td>{% endif %}
                                         <td>{{ row2.capital|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td>Total</td>{% endif %}
+                                            <td class="fixed2">Total</td>{% endif %}
                                         <td>{{ row2.total|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
