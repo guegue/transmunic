@@ -558,12 +558,13 @@ def getTransferencias(municipio=None):
                 'anio': years[i]['year'],
             })
             i += 1
+
         dict_parameters = {
             'data': data_by_municipio,
             'field1': 'anio',
             'field2': 'corriente',
             'field3': 'capital',
-            'title': 'Transferencias totales por anio',
+            'title': 'Transferencias totales por año',
             'labelX_axis': 'Años',
             'labelY_axis': 'Córdobas',
         }
@@ -606,7 +607,7 @@ def getTransferencias(municipio=None):
             'data': data_by_years,
             'field1': 'anio',
             'field2': 'total',
-            'title': 'Transferencias totales por anio',
+            'title': 'Transferencias totales por año',
             'labelX_axis': 'Años',
             'labelY_axis': 'Córdobas',
         }
