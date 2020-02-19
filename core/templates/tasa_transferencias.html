@@ -85,12 +85,19 @@
                 {% endif %}
             {% else %}
                 <div class="col-lg-12 col-md-12 col-sm-12">
+		    <h2>Tasa de crecimiento promedio anual
+			    por periodo de gobierno
+		    </h2>
+		    <h4>Asignaci&oacute;n total</h4>
+                    <hr class="pma-line-1"/>
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
                             <th>Clase</th>
                             {% for periodo in periodos %}
-                                <th>{{ periodo }}</th>
+                                {% if not forloop.first %}
+				    <th>{{ periodo }}</th>
+				{% endif %}
                             {% endfor %}
                         </tr>
                         </thead>
@@ -98,13 +105,81 @@
                         {% for clasificacion in clasificaciones %}
                             <tr>
                                 <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion %}
-                                    <td> {{ value }} </td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+				    {% if not forloop.first %}
+                                        <td> {{ value|floatformat:"2"}} </td>
+				    {% endif %}
                                 {% endfor %}
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+
+		    <h2>Tasa de crecimiento promedio anual
+			    Asignaci&oacute;n por grupo de municipios
+			    por periodo de gobierno
+		    </h2>
+		    <h4>Gastos corrientes</h4>
+                    <hr class="pma-line-1"/>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-primary">
+                            <th>Clase</th>
+                            {% for periodo in periodos %}
+				{% if not forloop.first %}
+                                    <th>{{ periodo }}</th>
+				{% endif %}
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for clasificacion in clasificaciones %}
+                            <tr>
+                                <td>{{ clasificacion }}</td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
+				    {% if not forloop.first %}
+                                        <td> {{ value|floatformat:"2" }} </td>
+				    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+
+		    <h2>Tasa de crecimiento promedio anual
+			    Asignaci&oacute;n por grupo de municipios
+			    por periodo de gobierno
+		    </h2>
+		    <h4>Gastos de capital</h4>
+                    <hr class="pma-line-1"/>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-primary">
+                            <th>Clase</th>
+                            {% for periodo in periodos %}
+				{% if not forloop.first %}
+                                    <th>{{ periodo }}</th>
+				{% endif %}
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for clasificacion in clasificaciones %}
+                            <tr>
+                                <td>{{ clasificacion }}</td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
+				    {% if not forloop.first %}
+                                        <td> {{ value|floatformat:"2"}} </td>
+				    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                </div>
                 </div>
             {% endif %}
         </div>
