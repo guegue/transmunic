@@ -1,6 +1,21 @@
 {% extends '_indicator.html' %}
 {% load static humanize core_extras chartit %}
 
+{% block custom_header_links %}
+    <style>
+        .table-responsive {
+            display: block;
+            overflow-x: auto;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-responsive > .table-bordered {
+            border: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block main_content %}
     <div class="container-fluid wide">
         <div class="row">
