@@ -221,5 +221,3 @@
 .sticky-header nav.navbar { height: 30px; margin-bottom:10px; transition: height 1s,margin-bottom 1s; }
 .sticky-header div.pma-search-bar { padding: 3px; }
 .table-sm th, .table-sm td {padding: 0.3rem;}
-.table-responsive {display: block;overflow-x: auto;width: 100%;-webkit-overflow-scrolling: touch;}
-.table-responsive > .table-bordered { border: 0; }
