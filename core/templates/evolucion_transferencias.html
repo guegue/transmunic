@@ -1,164 +1,120 @@
-{% extends '_indicator.html' %}
 {% load static humanize core_extras %}
 
-{% block custom_header_links %}
-    <style>
-        .table-responsive {
-            display: block;
-            overflow-x: auto;
-            width: 100%;
-            -webkit-overflow-scrolling: touch;
-        }
+<div class="container wide">
+    <div class="row">
+        <h2>Ingresos tributarios, transferencias municipales
+            e inversiones p&uacute;blicas</h2>
+        <h4>Millones de córdobas corrientes</h4>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table class="table table-bordered table-responsive small-font">
+                <thead>
+                <tr class="bg-primary">
+                    <th>CONCEPTO</th>
+                    {% for year in years %}
+                        <th>{{ year }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Ingresos Tributarios PGR</td>
+                    {% for i in evolucion %}
+                        <td>{{ i.pgr|million|intcomma }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Partida presupuestaria</td>
+                    {% for i in evolucion %}
+                        <td>{{ i.partida|floatformat:"0" }}%</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Programa Inversión Publica</td>
+                    {% for i in evolucion %}
+                        <td>
+                            {% if i.pip > 0 %}
+                                {{ i.pip|million|intcomma }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Recursos del tesoro en el PIP</td>
+                    {% for i in evolucion %}
+                        <td>
+                            {% if i.recurso_tesoro_pip %}
+                                {{ i.recurso_tesoro_pip|million|intcomma }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td><strong>Transferencias totales</strong></td>
+                    {% for row in evolucion %}
+                        <td>{{ row.total|million|intcomma }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Corrientes</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>{{ row.corriente|million|intcomma }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>de Capital</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>{{ row.capital|million|intcomma }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>% para destinar a inversión</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>
+                            {% if row.porcentaje_inversion_ttotal %}
+                                {{ row.porcentaje_inversion_ttotal|floatformat:"2" }}%
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td colspan="18">Transferencias Totales</td>
+                </tr>
+                <tr>
+                    <td>como % de los Recursos del Tesoro en el PIP</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>
+                            {% if row.precurso_tesoro_ttotal %}
+                                {{ row.precurso_tesoro_ttotal|intcomma|floatformat:"2" }}%
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td colspan="18">Transferencias de capital</td>
+                </tr>
+                <tr>
+                    <td>como % del Programa de Inversiones Públicas</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>
+                            {% if row.pprograma_inversion_publica %}
+                                {{ row.pprograma_inversion_publica|floatformat:"2" }}%
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>como % de los Recursos del Tesoro en el PIP</td>
+                    {% for row in evolucion|dictsort:'anio' %}
+                        <td>
+                            {% if row.precurso_tesoro %}
+                                {{ row.precurso_tesoro|floatformat:"2" }}%
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
 
-        .table-responsive > .table-bordered {
-            border: 0;
-        }
-    </style>
-{% endblock %}
-
-{% block main_content %}
-    <div class="container wide">
-        <div class="row">
-		<h2>Ingresos tributarios, transferencias municipales 
-			e inversiones p&uacute;blicas</h2>
-		<h4>Millones de córdobas corrientes</h4>
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>CONCEPTO</th>
-                            {% for year in years %}
-                                <th>{{ year }}</th>
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ingresos Tributarios PGR</td>
-                                {% for i in data %}
-				    <td>{{ i.pgr|million|intcomma }}</td>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                <td>Partida presupuestaria</td>
-                                {% for i in data %}
-				    <td>{{ i.partida|floatformat:"0" }}%</td>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                <td>Programa Inversión Publica</td>
-                                {% for i in data %}
-				    <td>
-					{% if i.pip > 0 %}
-					    {{ i.pip|million|intcomma }}
-					{% endif %}
-				    </td>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                <td>Recursos del tesoro en el PIP</td>
-                                {% for i in data %}
-				    <td>
-					{% if i.recurso_tesoro_pip  %}
-					    {{ i.recurso_tesoro_pip|million|intcomma }}
-					{% endif %}
-				    </td>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-				<td><strong>Transferencias totales</strong></td>
-                                {% for row in data %}
-			            <td>{{ row.total|million|intcomma }}</td>
-                                {% endfor %}
-			    </tr>
-                            <tr>
-			        <td>Corrientes</td>
-                                {% for row in data|dictsort:'anio' %}
-			            <td>{{ row.corriente|million|intcomma }}</td>
-                                {% endfor %}
-			    </tr>
-                            <tr>
-			        <td>de Capital</td>
-                                {% for row in data|dictsort:'anio' %}
-			            <td>{{ row.capital|million|intcomma }}</td>
-                                {% endfor %}
-			    </tr>
-                            <tr>
-			        <td>% para destinar a inversión</td>
-                                {% for row in data|dictsort:'anio' %}
-				    <td>
-				        {% if row.porcentaje_inversion_ttotal %}
-					    {{ row.porcentaje_inversion_ttotal|floatformat:"2" }}%
-					{% endif %}
-				    </td>
-                                {% endfor %}
-			    </tr>
-			    <tr><td colspan="18">Transferencias Totales</td></tr>
-                            <tr>
-			        <td>como % de los Recursos del Tesoro en el PIP</td>
-                                {% for row in data|dictsort:'anio' %}
-			 	    <td>
-                                        {% if row.precurso_tesoro_ttotal %}
-					    {{ row.precurso_tesoro_ttotal|intcomma|floatformat:"2" }}%
-					{% endif %}
-				    </td>
-                                {% endfor %}
-			    </tr>
-			    <tr><td colspan="18">Transferencias de capital</td></tr>
-                            <tr>
-			        <td>como % del Programa de Inversiones Públicas</td>
-                                {% for row in data|dictsort:'anio' %}
-				    <td>
-				         {% if row.pprograma_inversion_publica %}
-					     {{ row.pprograma_inversion_publica|floatformat:"2" }}%
-					 {% endif %}
-				    </td>
-                                {% endfor %}
-			    </tr>
-                            <tr>
-			        <td>como % de los Recursos del Tesoro en el PIP</td>
-                                {% for row in data|dictsort:'anio' %}
-				    <td>
-				        {% if row.precurso_tesoro %}
-					    {{ row.precurso_tesoro|floatformat:"2" }}%
-					{% endif %}
-				    </td>
-                                {% endfor %}
-			    </tr>
-
-                        </tbody>
-                    </table>
-                </div>
+                </tbody>
+            </table>
         </div>
     </div>
-{% endblock %}
-
-{% block extra_footer_scripts %}
-    <script>
-        $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip({
-                placement: 'top'
-            });
-        });
-    </script>
-    <script src="{% static 'js/pma.js' %}"></script>
-    <script>
-        $(function () {
-            let municipio2 = $('#municipio2');
-
-            municipio2.on('change', function () {
-                let parameters = window.location.search;
-                let current_url = window.location.pathname;
-                const urlParams = new URLSearchParams(parameters);
-                //valido si existe municipio2 en la url para agregar o actualizar su valor
-                if (urlParams.has('municipio2')){
-                    urlParams.set('municipio2',$(this).val())
-                }else{
-                    urlParams.append('municipio2',$(this).val())
-                }
-
-                window.location.href = `${current_url}?${urlParams.toString()}`;
-            })
-        })
-    </script>
-{% endblock %}
+</div>
