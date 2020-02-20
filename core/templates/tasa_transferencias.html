@@ -302,7 +302,9 @@
                 ],
                 'ylabel': 'Promedio Anual',
                 'xlabel': 'Periodos del Gobierno',
-                'type_chart': 'line'
+                'type_chart': 'line',
+                'title': 'Tasa promedio de crecimiento por período',
+                'subtitle': '',
             };
             let custom_options_total = {
                 'xTick': [
@@ -314,7 +316,8 @@
                 ],
                 'ylabel': 'Promedio Anual',
                 'xlabel': 'Periodos del Gobierno',
-                'type_chart': 'line'
+                'type_chart': 'line',
+                'subtitle': '',
             };
             let charts_dict = null;
             {% if not municipio %}
@@ -351,6 +354,13 @@
                     {% endfor %}
                 };
                 {% for i in '123'|make_list %}
+                    {% if forloop.first %}
+                        custom_options['subtitle'] = 'transferencias totales';
+                    {% elif forloop.last %}
+                        custom_options['subtitle'] = 'transferencias capital';
+                    {% else %}
+                        custom_options['subtitle'] = 'transferencias corriente';
+                    {% endif %}
                     graphChart('line_chart{{i}}', charts_dict['data_chart{{ i }}'], custom_options);
                 {% endfor %}
             {% else %}
@@ -398,8 +408,14 @@
                     {% endfor %}
                 ];
 
+                custom_options['title'] = 'asignación transferencias de corrientes y de capital';
+                custom_options_total['title'] = 'asignación transferencias totales';
 
                 {% if municipio2 %}
+                    custom_options['title'] = 'gráfico comparativo';
+                    custom_options_total['title'] = 'gráfico comparativo';
+                    custom_options['subtitle'] = 'asignación transferencias de corrientes y de capital';
+                    custom_options_total['subtitle'] = 'asignación transferencias totales';
                     charts_dict['data_chart_municipio'].push(
                         {% for clasificacion in clasificaciones2 %}
                             {
@@ -482,12 +498,21 @@
                         type: custom_options['type_chart'],
                     },
                     title: {
-                        text: '',
+                        text: custom_options['title'],
+                    },
+                    subtitle: {
+                        text: custom_options['subtitle'],
+                        style: {
+                            fontSize: '18px'
+                        }
                     },
                     legend: {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'middle'
+                    },
+                    tooltip: {
+                        pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
                     },
                     xAxis: {
                         categories: custom_options['xTick'],
