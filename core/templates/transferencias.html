@@ -50,7 +50,7 @@
 
                 <h3>{{ municipio }}</h3>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <table class="table table-responsive table-bordered">
+                    <table class="table table-responsive table-bordered small-font">
                         <thead>
                         <tr class="bg-primary">
                             <th class="fixed">Asignación Anual</th>
@@ -64,7 +64,7 @@
                             <tr>
                                 <td class="fixed">{{ asignacion }}</td>
                                 {% for row in data_asignacion|keyvalue:asignacion %}
-                                    <td>{{ row }}</td>
+                                    <td>{{ row|million }}</td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -77,7 +77,7 @@
                 {% if request.GET.municipio2 %}
                     <h3>{{ municipio2 }}</h3>
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        <table class="table table-responsive table-bordered">
+                        <table class="table table-responsive table-bordered small-font">
                             <thead>
                             <tr class="bg-primary">
                                 <th class="fixed">Asignación Anual</th>
@@ -91,7 +91,7 @@
                                 <tr>
                                     <td class="fixed">{{ asignacion }}</td>
                                     {% for row in data_asignacion2|keyvalue:asignacion %}
-                                        <td>{{ row }}</td>
+                                        <td>{{ row|million }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
