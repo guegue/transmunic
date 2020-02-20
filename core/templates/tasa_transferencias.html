@@ -49,9 +49,21 @@
                         <tbody>
                         {% for clasificacion in clasificaciones %}
                             <tr>
-                                <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion %}
-                                    <td> {{ value }} </td>
+                                <td>Corriente</td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                    <td> {{ value|floatformat:2 }} </td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td>Capital</td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
+                                    <td> {{ value|floatformat:2 }} </td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+                                    <td> {{ value|floatformat:2 }} </td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -72,12 +84,12 @@
                             </thead>
                             <tbody>
                             {% for clasificacion in clasificaciones %}
-                                <tr>
-                                    <td>{{ clasificacion }}</td>
-                                    {% for value in data_tasa|keyvalue:clasificacion %}
-                                        <td> {{ value }} </td>
-                                    {% endfor %}
-                                </tr>
+                              <tr>
+                                 <td>Total</td>
+                                 {% for value in data2|keyvalue:clasificacion|keyvalue:'total' %}
+                                    <td> {{ value }} </td>
+                                 {% endfor %}
+                               </tr>
                             {% endfor %}
                             </tbody>
                         </table>
