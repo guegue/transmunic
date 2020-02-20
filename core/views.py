@@ -5,13 +5,13 @@ from decimal import Decimal
 from django.shortcuts import render_to_response, render
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
-from django.db.models import Sum
+from django.db.models import Sum, CharField, F, Value as V
+from django.db.models.functions import Concat
 
 from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, Proyecto, \
     InversionFuente, Grafico, CatInversion, Transferencia, \
-    PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL
+    PERIODO_INICIAL, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
-from tools import getYears, getPeriods, xnumber
 from tools import getYears, getPeriods, xnumber, graphBarChart, graphTwoBarChart
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
@@ -707,13 +707,27 @@ def transferencias(request):
     return render(request, 'transferencias.html', context)
 
 
-def getPeriodos(datadata):
+def getPeriodos(datadata, municipio=None):
     context = {}
     prev_periodo = None
     data_tasa = {}
     tasas = {}
     clasificaciones = []
-    periodos = Periodo.objects.all().order_by('desde')
+
+    if municipio:
+        partidos = Periodo.objects. \
+            filter(periodomunic__municipio__slug=municipio). \
+            values(periodo=Concat(
+            'desde', V('-'), 'desde', output_field=CharField()),
+            nombre=F('periodomunic__partido')).\
+            order_by('desde')
+
+        context['partidos'] = partidos
+
+    periodos = Periodo.objects. \
+        all(). \
+        order_by('desde')
+
     for periodo in periodos:
         periodo_key = "{}-{}".format(periodo.desde, periodo.hasta)
         data_tasa[periodo_key] = {}
@@ -773,21 +787,24 @@ def getPeriodos(datadata):
 def tasa_transferencias(request):
 
     context = {}
-
-    data = getTransferencias(request.GET.get('municipio'))
-    data_periodo = getPeriodos(data.get('data'))
+    municipio = request.GET.get('municipio')
+    municipio2 = request.GET.get('municipio2')
+    data = getTransferencias(municipio)
+    data_periodo = getPeriodos(data.get('data'), municipio)
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
     context['clasificaciones'] = data_periodo.get('clasificaciones')
     context['periodos'] = data_periodo.get('periodos')
+    context['partidos'] = data_periodo.get('partidos')
 
-    if request.GET.get('municipio2'):
-        data2 = getTransferencias(request.GET.get('municipio2'))
-        data_periodo2 = getPeriodos(data2.get('data'))
+    if municipio2:
+        data2 = getTransferencias(municipio2)
+        data_periodo2 = getPeriodos(data2.get('data'), municipio2)
         context['municipio2'] = data2.get('municipio')
         context['data_tasa_municipio2'] = data_periodo2.get('data_tasa')
         context['clasificaciones2'] = data_periodo2.get('clasificaciones')
         context['periodos'] = data_periodo2.get('periodos')
+        context['partidos_municpio2'] = data_periodo2.get('partidos')
 
     return render(request, 'tasa_transferencias.html', context)
 
