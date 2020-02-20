@@ -196,9 +196,9 @@ class SubSubTipoGasto(models.Model):
     CAPITAL = '1'
     OTRA = '2'
     CLASIFICACION_CHOICES = (
-        (CORRIENTE, 'Gasto Corriente'),
-        (CAPITAL, 'Gasto de Capital'),
-        (OTRA, 'Otra'),
+        (0, 'Gasto Corriente'),
+        (1, 'Gasto de Capital'),
+        (2, 'Otra'),
     )
     TRANSFERENCIAS_CAPITAL = '6000000'
     codigo = models.CharField(max_length=25,  primary_key=True)
