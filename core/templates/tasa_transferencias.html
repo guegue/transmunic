@@ -71,115 +71,137 @@
                             </tr>
                             </thead>
                             <tbody>
-                        {% for clasificacion in clasificaciones %}
-                            <tr>
-                                <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion %}
-                                    <td> {{ value }} </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
+                            {% for clasificacion in clasificaciones %}
+                                <tr>
+                                    <td>{{ clasificacion }}</td>
+                                    {% for value in data_tasa|keyvalue:clasificacion %}
+                                        <td> {{ value }} </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 {% endif %}
             {% else %}
                 <div class="col-lg-12 col-md-12 col-sm-12">
-		    <h2>Tasa de crecimiento promedio anual
-			    por periodo de gobierno
-		    </h2>
-		    <h4>Asignaci&oacute;n total</h4>
-                    <hr class="pma-line-1"/>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>Clase</th>
-                            {% for periodo in periodos %}
-                                {% if not forloop.first %}
-				    <th>{{ periodo }}</th>
-				{% endif %}
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for clasificacion in clasificaciones %}
-                            <tr>
-                                <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
-				    {% if not forloop.first %}
-                                        <td> {{ value|floatformat:"2"}} </td>
-				    {% endif %}
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <h2>
+                                Tasa de crecimiento promedio anual
+                                por periodo de gobierno
+                            </h2>
+                            <h4>Asignaci&oacute;n total</h4>
+                            <hr class="pma-line-1"/>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th>Clase</th>
+                                    {% for periodo in periodos %}
+                                        {% if not forloop.first %}
+                                            <th>{{ periodo }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for clasificacion in clasificaciones %}
+                                    <tr>
+                                        <td>{{ clasificacion }}</td>
+                                        {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+                                            {% if not forloop.first %}
+                                                <td> {{ value|floatformat:"2" }} </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
                                 {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                                </tbody>
+                            </table>
+                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                        </div>
 
-		    <h2>Tasa de crecimiento promedio anual
-			    Asignaci&oacute;n por grupo de municipios
-			    por periodo de gobierno
-		    </h2>
-		    <h4>Gastos corrientes</h4>
-                    <hr class="pma-line-1"/>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>Clase</th>
-                            {% for periodo in periodos %}
-				{% if not forloop.first %}
-                                    <th>{{ periodo }}</th>
-				{% endif %}
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for clasificacion in clasificaciones %}
-                            <tr>
-                                <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
-				    {% if not forloop.first %}
-                                        <td> {{ value|floatformat:"2" }} </td>
-				    {% endif %}
+                        <div class="col-lg-6 col-md-6">
+                            <div id="line_chart1"></div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <h2>Tasa de crecimiento promedio anual
+                                Asignaci&oacute;n por grupo de municipios
+                                por periodo de gobierno
+                            </h2>
+                            <h4>Gastos corrientes</h4>
+                            <hr class="pma-line-1"/>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th>Clase</th>
+                                    {% for periodo in periodos %}
+                                        {% if not forloop.first %}
+                                            <th>{{ periodo }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for clasificacion in clasificaciones %}
+                                    <tr>
+                                        <td>{{ clasificacion }}</td>
+                                        {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                            {% if not forloop.first %}
+                                                <td> {{ value|floatformat:"2" }} </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
                                 {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
-
-		    <h2>Tasa de crecimiento promedio anual
-			    Asignaci&oacute;n por grupo de municipios
-			    por periodo de gobierno
-		    </h2>
-		    <h4>Gastos de capital</h4>
-                    <hr class="pma-line-1"/>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr class="bg-primary">
-                            <th>Clase</th>
-                            {% for periodo in periodos %}
-				{% if not forloop.first %}
-                                    <th>{{ periodo }}</th>
-				{% endif %}
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for clasificacion in clasificaciones %}
-                            <tr>
-                                <td>{{ clasificacion }}</td>
-                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
-				    {% if not forloop.first %}
-                                        <td> {{ value|floatformat:"2"}} </td>
-				    {% endif %}
+                                </tbody>
+                            </table>
+                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div id="line_chart2"></div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <h2>Tasa de crecimiento promedio anual
+                                Asignaci&oacute;n por grupo de municipios
+                                por periodo de gobierno
+                            </h2>
+                            <h4>Gastos de capital</h4>
+                            <hr class="pma-line-1"/>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th>Clase</th>
+                                    {% for periodo in periodos %}
+                                        {% if not forloop.first %}
+                                            <th>{{ periodo }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for clasificacion in clasificaciones %}
+                                    <tr>
+                                        <td>{{ clasificacion }}</td>
+                                        {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
+                                            {% if not forloop.first %}
+                                                <td> {{ value|floatformat:"2" }} </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
                                 {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-		    <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
-                </div>
+                                </tbody>
+                            </table>
+                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div id="line_chart3"></div>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -195,8 +217,61 @@
         });
     </script>
     <script src="{% static 'js/pma.js' %}"></script>
+
+    <script src="{% static 'js/highcharts.js' %}"></script>
     <script>
         $(function () {
+            let custom_options = {
+                'xTick': [
+                    {% for periodo in periodos %}
+                        {% if not forloop.first %}
+                            '{{ periodo|safe }}',
+                        {% endif %}
+                    {% endfor %}
+                ],
+                'ylabel': 'Promedio Anual',
+                'xlabel': 'Periodos del Gobierno',
+            };
+            {% if not municipio %}
+                let charts_dict = {
+                    {% for i in '123'|make_list %}
+                        'data_chart{{ i }}': [
+                            {% for clasificacion in clasificaciones %}
+                                {
+                                    'name': '{{ clasificacion }}',
+                                    'data': [
+                                        {% if i == '1' %}
+                                            {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+                                                {% if not forloop.first %}
+                                                    {{ value|floatformat:2|safe }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% elif i == '2' %}
+                                            {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                                {% if not forloop.first %}
+                                                    {{ value|floatformat:2|safe }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
+                                                {% if not forloop.first %}
+                                                    {{ value|floatformat:2|safe }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    ]
+                                },
+                            {% endfor %}
+                        ],
+                    {% endfor %}
+                };
+                {% for i in '123'|make_list %}
+                    graphLineChart('line_chart{{i}}', charts_dict['data_chart{{ i }}'], custom_options);
+                {% endfor %}
+            {% endif %}
+
+
+
             let municipio2 = $('#municipio2');
 
             municipio2.on('change', function () {
@@ -204,14 +279,41 @@
                 let current_url = window.location.pathname;
                 const urlParams = new URLSearchParams(parameters);
                 //valido si existe municipio2 en la url para agregar o actualizar su valor
-                if (urlParams.has('municipio2')){
-                    urlParams.set('municipio2',$(this).val())
-                }else{
-                    urlParams.append('municipio2',$(this).val())
+                if (urlParams.has('municipio2')) {
+                    urlParams.set('municipio2', $(this).val())
+                } else {
+                    urlParams.append('municipio2', $(this).val())
                 }
 
                 window.location.href = `${current_url}?${urlParams.toString()}`;
-            })
-        })
+            });
+
+
+            function graphLineChart(id_container, data, custom_options) {
+                Highcharts.chart(id_container, {
+                    title: {
+                        text: '',
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    },
+                    xAxis: {
+                        categories: custom_options['xTick'],
+                        title: {
+                            text: custom_options['xlabel']
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: custom_options['ylabel']
+                        }
+                    },
+                    series: data,
+
+                });
+            }
+        });
     </script>
 {% endblock %}
