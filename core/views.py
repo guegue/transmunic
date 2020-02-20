@@ -648,13 +648,8 @@ def transferencias(request):
 
     return render(request, 'transferencias.html', context)
 
-
-def tasa_transferencias(request):
-
+def getPeriodos(datadata):
     context = {}
-
-    data = getTransferencias(request.GET.get('municipio'))
-    datadata = data.get('data')
     prev_periodo = None
     data_tasa = {}
     tasas = {}
@@ -663,8 +658,8 @@ def tasa_transferencias(request):
     for periodo in periodos:
         periodo_key = "{}-{}".format(periodo.desde, periodo.hasta)
         data_tasa[periodo_key] = {}
-        #temporalmente periodo +1
-        anios = (periodo.hasta - periodo.desde)+1
+        # temporalmente periodo +1
+        anios = (periodo.hasta - periodo.desde) + 1
         ultimo_anio = {}
         ultimo_anio_previo = {}
         for row in datadata:
@@ -709,18 +704,31 @@ def tasa_transferencias(request):
                 tasas[clasificacion]['capital'].append('')
         prev_periodo = periodo
 
-    context['municipio'] = data.get('municipio')
     context['data_tasa'] = tasas
     context['clasificaciones'] = clasificaciones
     context['periodos'] = periodos
 
-    if request.GET.get('municipio2'):
-        data = getTransferencias(request.GET.get('municipio2'))
+    return context
 
-        context['municipio2'] = data.get('municipio')
-        context['data2'] = data.get('data')
-        context['data_asignacion2'] = data.get('data_asignacion')
-        context['years2'] = data.get('years')
+
+def tasa_transferencias(request):
+
+    context = {}
+
+    data = getTransferencias(request.GET.get('municipio'))
+    data_periodo = getPeriodos(data.get('data'))
+    context['municipio'] = data.get('municipio')
+    context['data_tasa'] = data_periodo.get('data_tasa')
+    context['clasificaciones'] = data_periodo.get('clasificaciones')
+    context['periodos'] = data_periodo.get('periodos')
+
+    if request.GET.get('municipio2'):
+        data2 = getTransferencias(request.GET.get('municipio2'))
+        data_periodo2 = getPeriodos(data2.get('data'))
+        context['municipio2'] = data2.get('municipio')
+        context['data_tasa_municipio2'] = data_periodo2.get('data_tasa')
+        context['clasificaciones2'] = data_periodo2.get('clasificaciones')
+        context['periodos'] = data_periodo2.get('periodos')
 
     return render(request, 'tasa_transferencias.html', context)
 
