@@ -718,8 +718,8 @@ def getPeriodos(datadata, municipio=None):
         partidos = Periodo.objects. \
             filter(periodomunic__municipio__slug=municipio). \
             values(periodo=Concat(
-            'desde', V('-'), 'desde', output_field=CharField()),
-            nombre=F('periodomunic__partido')).\
+                'desde', V('-'), 'desde', output_field=CharField()),
+                nombre=F('periodomunic__partido')).\
             order_by('desde')
 
         context['partidos'] = partidos
