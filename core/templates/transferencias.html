@@ -15,20 +15,20 @@
         }
     </style>
 {% endblock %}
-    {% block indicator_title %}
-        <h2 class="text-center">
-		<strong>Transferencias Municipales</strong><br />
-        	Evolución de la partida presupuestaria 
-        </h2>
-        <hr class="pma-line-5"/>
-        <h4 class="text-center">
-		{% if municipio %}
-		    <strong>{{ municipio }}</strong><br/>
-		{% else %}
-		    Por grupo de municipios
-		{% endif %}</h4>
-        <p class="text-center metric-description container"></p>
-    {% endblock %}
+{% block indicator_title %}
+    <h2 class="text-center">
+        <strong>Transferencias Municipales</strong><br/>
+        Evolución de la partida presupuestaria
+    </h2>
+    <hr class="pma-line-5"/>
+    <h4 class="text-center">
+        {% if municipio %}
+            <strong>{{ municipio }}</strong><br/>
+        {% else %}
+            Por grupo de municipios
+        {% endif %}</h4>
+    <p class="text-center metric-description container"></p>
+{% endblock %}
 {% block section1 %}
     <div class="container wide">
         <div class="row">
@@ -103,8 +103,8 @@
                     </div>
                 {% endif %}
             {% else %}
-		   <h3>Evolución de la asignación según uso y por grupo de municipios</h3>
-		   <h4>Millones de córdobas corrientes</h4>
+                <h3>Evolución de la asignación según uso y por grupo de municipios</h3>
+                <h4>Millones de córdobas corrientes</h4>
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <hr class="pma-line-1"/>
                     <table class="table table-responsive table-bordered small-font">
@@ -121,11 +121,11 @@
                         {% for row in data %}
                             {% ifchanged row.clasificacion %}
                                 <tr>
-					<td rowspan="3" class="fixed vertical-middle"><h3>{{ row.clasificacion }}<h3></td>
+                                    <td rowspan="3" class="fixed vertical-middle"><h3>{{ row.clasificacion }}</h3></td>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
                                             <td class="fixed2">Corriente</td>
-					{% endif %}
+                                        {% endif %}
                                         <td class="text-right">{{ row2.corriente|million|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
@@ -133,15 +133,15 @@
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
                                             <td class="fixed2">Capital</td>
-					{% endif %}
-                                        <td class="text-right">{{ row2.capital|million|intcomma}}</td>
+                                        {% endif %}
+                                        <td class="text-right">{{ row2.capital|million|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
                                             <td class="fixed2">Total</td>
-					{% endif %}
+                                        {% endif %}
                                         <td class="text-right">{{ row2.total|million|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
@@ -154,6 +154,8 @@
                     <div id="bar_chart" class="view-alternative"> grafico de barras
                     </div>
                 </div>
+
+                {% include 'evolucion_transferencias.html' %}
             {% endif %}
         </div>
     </div>
