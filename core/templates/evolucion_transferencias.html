@@ -25,7 +25,11 @@
         <tr>
             <td>Partida presupuestaria</td>
             {% for i in evolucion %}
-                <td>{{ i.partida|floatformat:"0" }}%</td>
+                <td>
+                    {% if i.partida %}
+                        {{ i.partida|floatformat:"0" }}%
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
         <tr>
