@@ -15,35 +15,56 @@
         }
     </style>
 {% endblock %}
-
-{% block main_content %}
+{% block indicator_title %}
+    <h2 class="text-center">
+	<strong>Transferencias Municipales</strong><br />
+         Tasa de crecimiento promedio anual  
+    </h2>
+    <hr class="pma-line-5"/>
+    <h4 class="text-center">
+	{% if municipio %}
+	    <strong>{{ municipio }}</strong><br/>
+	{% else %}
+	    Por grupo de municipios
+	{% endif %}</h4>
+    <p class="text-center metric-description container"></p>
+{% endblock %}
+{% block section1 %}
     <div class="container wide">
         <div class="row">
             {% if request.GET.municipio %}
+                    <div class="col-lg-12 col-md-12">
+                        <h2>
+				Tasa de crecimiento promedio anual de 
+				por período de gobierno<br />
+                        </h2>
+                        <h4>Evolución de las asignaciones por uso y total</h4>
+                        <hr class="pma-line-1"/>
+                    </div>
 
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <form class="navbar-form navbar-left">
-                        <p>
-                            Escoger el municipio: <select class="form-control" name="municipio2" id="municipio2">
+                    <form class="navbar-form navbar-right">
+                        Elija el municipio con el cual desea comparar a {{ municipio }}:
+			<select class="form-control" name="municipio2" id="municipio2">
                             <option value="">(Municipio)</option>
                             {% for municipio in municipios %}
                                 <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
                             {% endfor %}
                         </select>
-                            con el que desea comparar.
-                        </p>
                     </form>
                 </div>
 
 
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <h3>{{ municipio }}</h3>
+		    <h2>{{ municipio }}</h2>
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
                             <th>Clase</th>
                             {% for periodo in periodos %}
-                                <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
+                                {% if not forloop.first %}
+                                    <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
+				{% endif %}
                             {% endfor %}
                         </tr>
                         </thead>
@@ -52,25 +73,33 @@
                             <tr>
                                 <td>Corriente</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                    <td>{% if value != '' %}
-                                        {{ value|floatformat:2 }}%
-                                    {% endif %}</td>
+                                    {% if not forloop.first %}
+                                        <td class="text-right">{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                            {% endif %}
+				        </td>
+				    {% endif %}
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Capital</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
-                                    <td>{% if value != '' %}
-                                        {{ value|floatformat:2 }}%
-                                    {% endif %}</td>
+                                    {% if not forloop.first %}
+                                        <td class="text-right">{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                            {% endif %}
+					</td>
+				    {% endif %}
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Total</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
-                                    <td>{% if value != '' %}
-                                        {{ value|floatformat:2 }}%
-                                    {% endif %}</td>
+                                    {% if not forloop.first %}
+                                        <td class="text-right">{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
+				    {% endif %}
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -86,7 +115,9 @@
                             <tr class="bg-primary">
                                 <th>Clase</th>
                                 {% for periodo in periodos %}
-                                    <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
+                                    {% if not forloop.first %}
+                                        <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
+				    {% endif %}
                                 {% endfor %}
                             </tr>
                             </thead>
@@ -95,9 +126,11 @@
                                 <tr>
                                     <td>Corriente</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                        <td>{% if value != '' %}
-                                            {{ value|floatformat:2 }}%
-                                        {% endif %}</td>
+                                        {% if not forloop.first %}
+                                            <td class="text-right">{% if value != '' %}
+                                                {{ value|floatformat:2 }}%
+                                            {% endif %}</td>
+					{% endif %}
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -105,19 +138,23 @@
                                 <tr>
                                     <td>Capital</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'capital' %}
-                                        <td>{% if value != '' %}
-                                            {{ value|floatformat:2 }}%
-                                        {% endif %}</td>
-                                    {% endfor %}
+                                        {% if not forloop.first %}
+                                            <td class="text-right">{% if value != '' %}
+                                                {{ value|floatformat:2 }}%
+                                            {% endif %}</td>
+					{% endif %}
+                                     {% endfor %}
                                 </tr>
                             {% endfor %}
                             {% for clasificacion in clasificaciones2 %}
                                 <tr>
                                     <td>Total</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'total' %}
-                                        <td>{% if value != '' %}
-                                            {{ value|floatformat:2 }}%
-                                        {% endif %}</td>
+                                        {% if not forloop.first %}
+                                            <td class="text-right">{% if value != '' %}
+                                                {{ value|floatformat:2 }}%
+                                            {% endif %}</td>
+					 {% endif %}
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -153,8 +190,8 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <h2>
-                                Tasa de crecimiento promedio anual
-                                por periodo de gobierno
+				Tasa de crecimiento promedio anual
+                                por período de gobierno
                             </h2>
                             <h4>Asignaci&oacute;n total</h4>
                             <hr class="pma-line-1"/>
@@ -177,7 +214,7 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
                                             {% if not forloop.first %}
-                                                <td>{% if value != '' %}
+                                                <td class="text-right">{% if value != '' %}
                                                     {{ value|floatformat:2 }}%
                                                 {% endif %}</td>
                                             {% endif %}
@@ -193,9 +230,9 @@
                             <div id="line_chart1"></div>
                         </div>
                         <div class="col-lg-12 col-md-12">
-                            <h2>Tasa de crecimiento promedio anual
-                                Asignaci&oacute;n por grupo de municipios
-                                por periodo de gobierno
+                            <h2>Tasa de crecimiento promedio anual<br />
+				Asignaci&oacute;n por grupo de municipios
+				por período de gobierno
                             </h2>
                             <h4>Gastos corrientes</h4>
                             <hr class="pma-line-1"/>
@@ -218,7 +255,7 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
                                             {% if not forloop.first %}
-                                                <td>{% if value != '' %}
+                                                <td class="text-right">{% if value != '' %}
                                                     {{ value|floatformat:2 }}%
                                                 {% endif %}</td>
                                             {% endif %}
@@ -233,9 +270,9 @@
                             <div id="line_chart2"></div>
                         </div>
                         <div class="col-lg-12 col-md-12">
-                            <h2>Tasa de crecimiento promedio anual
-                                Asignaci&oacute;n por grupo de municipios
-                                por periodo de gobierno
+			    <h2>Tasa de crecimiento promedio anual<br />
+				Asignaci&oacute;n por grupo de municipios
+                               	por período de gobierno
                             </h2>
                             <h4>Gastos de capital</h4>
                             <hr class="pma-line-1"/>
@@ -258,7 +295,7 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
                                             {% if not forloop.first %}
-                                                <td>{% if value != '' %}
+                                                <td class="text-right">{% if value != '' %}
                                                     {{ value|floatformat:2 }}%
                                                 {% endif %}</td>
                                             {% endif %}
