@@ -89,8 +89,8 @@ class InversionAdmin(admin.ModelAdmin):
 
 
 class SubSubTipoGastoAdmin(admin.ModelAdmin):
-    list_display = ['codigo', 'nombre', 'clasificacion']
-    list_filter = ('origen', 'clasificacion','subtipogasto__tipogasto__codigo','subtipogasto__codigo')
+    list_display = ['codigo', 'nombre', 'clasificacion' ]
+    list_filter = ('origen', 'clasificacion','subtipogasto__codigo')
 
 
 class TransferenciaAdmin(admin.ModelAdmin):
