@@ -35,8 +35,9 @@
                     </form>
                 </div>
 
-                <h3>{{ municipio }}</h3>
-                <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <h3>{{ municipio }}</h3>
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
@@ -51,28 +52,35 @@
                             <tr>
                                 <td>Corriente</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Capital</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Total</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
+
                 {% if request.GET.municipio2 %}
-                    <h3>{{ municipio2 }}</h3>
-                    <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <h3>{{ municipio2 }}</h3>
                         <table class="table table-bordered">
                             <thead>
                             <tr class="bg-primary">
@@ -87,7 +95,9 @@
                                 <tr>
                                     <td>Corriente</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -95,7 +105,9 @@
                                 <tr>
                                     <td>Capital</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'capital' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -103,7 +115,9 @@
                                 <tr>
                                     <td>Total</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'total' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -111,6 +125,29 @@
                         </table>
                     </div>
                 {% endif %}
+
+                <div class="{% if request.GET.municipio2 %}col-lg-12 col-md-12{% else %}col-lg-6 col-md-12{% endif %}">
+                    <ul class="nav nav-tabs" id="tab-graphics" role="tablist">
+                        <li class="nav-item active">
+                            <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab"
+                               aria-controls="tab1" aria-selected="true">Total Segregado</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab"
+                               aria-controls="tab2" aria-selected="false">Total</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active in" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <div id="line_chart_municipio"></div>
+                        </div>
+                        <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                            <div id="column_chart_municipio"></div>
+                        </div>
+                    </div>
+                </div>
+
+
             {% else %}
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="row">
@@ -140,7 +177,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
@@ -179,7 +218,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
@@ -217,7 +258,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
@@ -259,9 +302,26 @@
                 ],
                 'ylabel': 'Promedio Anual',
                 'xlabel': 'Periodos del Gobierno',
+                'type_chart': 'line',
+                'title': 'Tasa promedio de crecimiento por período',
+                'subtitle': '',
             };
+            let custom_options_total = {
+                'xTick': [
+                    {% for periodo in periodos %}
+                        {% if not forloop.first %}
+                            '{{ periodo|safe }}',
+                        {% endif %}
+                    {% endfor %}
+                ],
+                'ylabel': 'Promedio Anual',
+                'xlabel': 'Periodos del Gobierno',
+                'type_chart': 'line',
+                'subtitle': '',
+            };
+            let charts_dict = null;
             {% if not municipio %}
-                let charts_dict = {
+                charts_dict = {
                     {% for i in '123'|make_list %}
                         'data_chart{{ i }}': [
                             {% for clasificacion in clasificaciones %}
@@ -294,8 +354,110 @@
                     {% endfor %}
                 };
                 {% for i in '123'|make_list %}
-                    graphLineChart('line_chart{{i}}', charts_dict['data_chart{{ i }}'], custom_options);
+                    {% if forloop.first %}
+                        custom_options['subtitle'] = 'transferencias totales';
+                    {% elif forloop.last %}
+                        custom_options['subtitle'] = 'transferencias capital';
+                    {% else %}
+                        custom_options['subtitle'] = 'transferencias corriente';
+                    {% endif %}
+                    graphChart('line_chart{{i}}', charts_dict['data_chart{{ i }}'], custom_options);
                 {% endfor %}
+            {% else %}
+                custom_options['type_chart'] = 'bar';
+                charts_dict = {
+                    'data_chart_municipio': [
+                        {% for clasificacion in clasificaciones %}
+                            {
+                                'name': 'Corriente {{ municipio }}',
+                                'data': [
+                                    {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                        {% if not forloop.first %}
+                                            {{ value|floatformat:2|safe }},
+                                        {% endif %}
+                                    {% endfor %}
+                                ]
+                            },
+                            {
+                                'name': 'Capital {{ municipio }}',
+                                'data': [
+                                    {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
+                                        {% if not forloop.first %}
+                                            {{ value|floatformat:2|safe }},
+                                        {% endif %}
+                                    {% endfor %}
+                                ]
+                            },
+                        {% endfor %}
+                    ],
+                };
+
+                custom_options_total['type_chart'] = 'column';
+                charts_dict['data_chart_municipio_totals'] = [
+                    {% for clasificacion in clasificaciones %}
+                        {
+                            'name': 'Total {{ municipio }}',
+                            'data': [
+                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+                                    {% if not forloop.first %}
+                                        {{ value|floatformat:2|safe }},
+                                    {% endif %}
+                                {% endfor %}
+                            ]
+                        },
+                    {% endfor %}
+                ];
+
+                custom_options['title'] = 'asignación transferencias de corrientes y de capital';
+                custom_options_total['title'] = 'asignación transferencias totales';
+
+                {% if municipio2 %}
+                    custom_options['title'] = 'gráfico comparativo';
+                    custom_options_total['title'] = 'gráfico comparativo';
+                    custom_options['subtitle'] = 'asignación transferencias de corrientes y de capital';
+                    custom_options_total['subtitle'] = 'asignación transferencias totales';
+                    charts_dict['data_chart_municipio'].push(
+                        {% for clasificacion in clasificaciones2 %}
+                            {
+                                'name': 'Corriente {{ municipio2 }}',
+                                'data': [
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                        {% if not forloop.first %}
+                                            {{ value|floatformat:2|safe }},
+                                        {% endif %}
+                                    {% endfor %}
+                                ]
+                            },
+                            {
+                                'name': 'Capital {{ municipio2 }}',
+                                'data': [
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'capital' %}
+                                        {% if not forloop.first %}
+                                            {{ value|floatformat:2|safe }},
+                                        {% endif %}
+                                    {% endfor %}
+                                ]
+                            },
+                        {% endfor %}
+                    );
+
+                    charts_dict['data_chart_municipio_totals'].push(
+                        {% for clasificacion in clasificaciones2 %}
+                            {
+                                'name': 'Corriente {{ municipio2 }}',
+                                'data': [
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'total' %}
+                                        {% if not forloop.first %}
+                                            {{ value|floatformat:2|safe }},
+                                        {% endif %}
+                                    {% endfor %}
+                                ]
+                            },
+                        {% endfor %}
+                    );
+                {% endif %}
+                graphChart('line_chart_municipio', charts_dict['data_chart_municipio'], custom_options);
+                graphChart('column_chart_municipio', charts_dict['data_chart_municipio_totals'], custom_options_total);
             {% endif %}
 
 
@@ -316,16 +478,41 @@
                 window.location.href = `${current_url}?${urlParams.toString()}`;
             });
 
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { // on tab selection event
+                let id = $(this).attr('id');
+                let grafico1 = $('#line_chart_municipio');
+                let grafico2 = $('#column_chart_municipio');
+                if (id === 'tab2-tab') {
+                    grafico1.hide();
+                    grafico2.show();
+                } else {
+                    grafico2.hide();
+                    grafico1.show();
+                }
+            });
 
-            function graphLineChart(id_container, data, custom_options) {
+
+            function graphChart(id_container, data, custom_options) {
                 Highcharts.chart(id_container, {
+                    chart: {
+                        type: custom_options['type_chart'],
+                    },
                     title: {
-                        text: '',
+                        text: custom_options['title'],
+                    },
+                    subtitle: {
+                        text: custom_options['subtitle'],
+                        style: {
+                            fontSize: '18px'
+                        }
                     },
                     legend: {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'middle'
+                    },
+                    tooltip: {
+                        pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
                     },
                     xAxis: {
                         categories: custom_options['xTick'],
