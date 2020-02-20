@@ -83,13 +83,29 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for clasificacion in clasificaciones %}
-                              <tr>
-                                 <td>Total</td>
-                                 {% for value in data2|keyvalue:clasificacion|keyvalue:'total' %}
-                                    <td> {{ value }} </td>
-                                 {% endfor %}
-                               </tr>
+                            {% for clasificacion in clasificaciones2 %}
+                                <tr>
+                                    <td>Corriente</td>
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'corriente' %}
+                                        <td> {{ value|floatformat:2 }} </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            {% for clasificacion in clasificaciones2 %}
+                                <tr>
+                                    <td>Capital</td>
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'capital' %}
+                                        <td> {{ value|floatformat:2 }} </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            {% for clasificacion in clasificaciones2 %}
+                                <tr>
+                                    <td>Total</td>
+                                    {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'total' %}
+                                        <td> {{ value|floatformat:2 }} </td>
+                                    {% endfor %}
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
