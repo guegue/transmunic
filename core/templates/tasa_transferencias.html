@@ -52,19 +52,25 @@
                             <tr>
                                 <td>Corriente</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Capital</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                             <tr>
                                 <td>Total</td>
                                 {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
-                                    <td> {{ value|floatformat:2 }} </td>
+                                    <td>{% if value != '' %}
+                                        {{ value|floatformat:2 }}%
+                                    {% endif %}</td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -89,7 +95,9 @@
                                 <tr>
                                     <td>Corriente</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'corriente' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -97,7 +105,9 @@
                                 <tr>
                                     <td>Capital</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'capital' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -105,7 +115,9 @@
                                 <tr>
                                     <td>Total</td>
                                     {% for value in data_tasa_municipio2|keyvalue:clasificacion|keyvalue:'total' %}
-                                        <td> {{ value|floatformat:2 }} </td>
+                                        <td>{% if value != '' %}
+                                            {{ value|floatformat:2 }}%
+                                        {% endif %}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
@@ -165,7 +177,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
@@ -204,7 +218,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'corriente' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
@@ -242,7 +258,9 @@
                                         <td>{{ clasificacion }}</td>
                                         {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'capital' %}
                                             {% if not forloop.first %}
-                                                <td> {{ value|floatformat:"2" }} </td>
+                                                <td>{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
