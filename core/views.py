@@ -676,7 +676,8 @@ def transferencias(request):
 
         # % para destinar a inversión
         if row.get('total') > 0:
-            row['porcentaje_inversion_ttotal'] = (xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+            row['porcentaje_inversion_ttotal'] = (
+                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
 
         if pip > 0:
             # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
