@@ -86,7 +86,7 @@
                         {% for clasificacion in clasificaciones %}
                             <tr>
                                 <td>Total</td>
-                                {% for value in data_tasa|keyvalue:clasificacion|keyvalue:'total' %}
+                                {% for value in data2|keyvalue:clasificacion|keyvalue:'total' %}
                                     <td> {{ value }} </td>
                                 {% endfor %}
                             </tr>
