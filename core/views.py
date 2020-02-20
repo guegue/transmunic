@@ -608,9 +608,9 @@ def getTransferencias(municipio=None):
             'data': data_by_years,
             'field1': 'anio',
             'field2': 'total',
-            'title': 'Transferencias totales por año',
+            'title': 'Evolución de la asignación<br />Transferencias totales',
             'labelX_axis': 'Años',
-            'labelY_axis': 'Córdobas',
+            'labelY_axis': 'Mllones de córdobas',
         }
         context['charts'] = graphBarChart(dict_parameters)
 

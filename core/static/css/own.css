@@ -1,15 +1,19 @@
 .font-12px {
     font-size: 12px;
 }
-
 .font-13px {
     font-size: 13px;
 }
-
+.font-14px, .small-font td {
+    font-size: 14px;
+}
 .font-17px {
     font-size: 17px;
 }
-
+.small-font th {
+    font-size: 15px; 
+    font-weight: bold;
+}
 .font-30px {
     font-size: 30px;
 }
@@ -62,7 +66,9 @@
 .pt-0_8 {
     padding-top: 0.8em;
 }
-
+.small-font td {
+    padding: 4px 9px 4px 9px !important;
+}
 .info-box-number,
 .bubbletree .bubbletree-amount,
 .events {
@@ -224,3 +230,7 @@
 .vertical-middle {vertical-align: middle !important;}
 .fixed, .fixed2 {background-color: #48A1B1;border: 1px solid #fff !important; color: #fff;left: 0;position: sticky;}
 .fixed2 {left: 55px;}
+table.small-font { 
+    border-collapse: separate !important; 
+    border: 1px solid #ddd !important;
+}

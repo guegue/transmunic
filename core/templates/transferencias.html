@@ -15,9 +15,22 @@
         }
     </style>
 {% endblock %}
-
-{% block main_content %}
-    <div class="container-fluid wide">
+    {% block indicator_title %}
+        <h2 class="text-center">
+		<strong>Transferencias Municipales</strong><br />
+        	Evolución de la partida presupuestaria 
+        </h2>
+        <hr class="pma-line-5"/>
+        <h4 class="text-center">
+		{% if municipio %}
+		    <strong>{{ municipio }}</strong><br/>
+		{% else %}
+		    Por grupo de municipios
+		{% endif %}</h4>
+        <p class="text-center metric-description container"></p>
+    {% endblock %}
+{% block section1 %}
+    <div class="container wide">
         <div class="row">
             {% if request.GET.municipio %}
 
@@ -90,8 +103,11 @@
                     </div>
                 {% endif %}
             {% else %}
+		   <h3>Evolución de la asignación según uso y por grupo de municipios</h3>
+		   <h4>Millones de córdobas corrientes</h4>
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <table class="table table-responsive table-bordered">
+                    <hr class="pma-line-1"/>
+                    <table class="table table-responsive table-bordered small-font">
                         <thead>
                         <tr class="bg-primary">
                             <th class="fixed">Clase</th>
@@ -105,25 +121,28 @@
                         {% for row in data %}
                             {% ifchanged row.clasificacion %}
                                 <tr>
-                                    <td rowspan="3" class="fixed vertical-middle">{{ row.clasificacion }}</td>
+					<td rowspan="3" class="fixed vertical-middle"><h3>{{ row.clasificacion }}<h3></td>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td class="fixed2">Corriente</td>{% endif %}
-                                        <td>{{ row2.corriente|intcomma }}</td>
+                                            <td class="fixed2">Corriente</td>
+					{% endif %}
+                                        <td class="text-right">{{ row2.corriente|million|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td class="fixed2">Capital</td>{% endif %}
-                                        <td>{{ row2.capital|intcomma }}</td>
+                                            <td class="fixed2">Capital</td>
+					{% endif %}
+                                        <td class="text-right">{{ row2.capital|million|intcomma}}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     {% for row2 in data_clase|keyvalue:row.clasificacion %}
                                         {% if forloop.first %}
-                                            <td class="fixed2">Total</td>{% endif %}
-                                        <td>{{ row2.total|intcomma }}</td>
+                                            <td class="fixed2">Total</td>
+					{% endif %}
+                                        <td class="text-right">{{ row2.total|million|intcomma }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endifchanged %}
