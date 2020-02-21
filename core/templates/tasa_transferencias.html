@@ -119,14 +119,14 @@
                         <h3>{{ municipio2 }}</h3>
                         <table class="table table-bordered">
                             <thead>
-                             <tr class="bg-primary">
-                            <th>Partido de gobierno</th>
-                            {% for partido in partidos_municpio2 %}
-                                {% if not forloop.first %}
-                                    <td class="text-center">{{ partido.nombre }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
+                            <tr class="bg-primary">
+                                <th>Partido de gobierno</th>
+                                {% for partido in partidos_municpio2 %}
+                                    {% if not forloop.first %}
+                                        <td class="text-center">{{ partido.nombre }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
                             <tr class="bg-primary">
                                 <th>Clase</th>
                                 {% for periodo in periodos %}
@@ -512,24 +512,6 @@
                 graphChart('column_chart_municipio', charts_dict['data_chart_municipio_totals'], custom_options_total);
             {% endif %}
 
-
-
-            let municipio2 = $('#municipio2');
-
-            municipio2.on('change', function () {
-                let parameters = window.location.search;
-                let current_url = window.location.pathname;
-                const urlParams = new URLSearchParams(parameters);
-                //valido si existe municipio2 en la url para agregar o actualizar su valor
-                if (urlParams.has('municipio2')) {
-                    urlParams.set('municipio2', $(this).val())
-                } else {
-                    urlParams.append('municipio2', $(this).val())
-                }
-
-                window.location.href = `${current_url}?${urlParams.toString()}`;
-            });
-
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { // on tab selection event
                 let id = $(this).attr('id');
                 let grafico1 = $('#line_chart_municipio');
@@ -544,43 +526,6 @@
             });
 
 
-            function graphChart(id_container, data, custom_options) {
-                Highcharts.chart(id_container, {
-                    chart: {
-                        type: custom_options['type_chart'],
-                    },
-                    title: {
-                        text: custom_options['title'],
-                    },
-                    subtitle: {
-                        text: custom_options['subtitle'],
-                        style: {
-                            fontSize: '18px'
-                        }
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle'
-                    },
-                    tooltip: {
-                        pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
-                    },
-                    xAxis: {
-                        categories: custom_options['xTick'],
-                        title: {
-                            text: custom_options['xlabel']
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: custom_options['ylabel']
-                        }
-                    },
-                    series: data,
-
-                });
-            }
         });
     </script>
 {% endblock %}

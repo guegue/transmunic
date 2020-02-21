@@ -1,5 +1,5 @@
 {% extends '_indicator.html' %}
-{% load static humanize core_extras chartit %}
+{% load static humanize core_extras %}
 
 {% block custom_header_links %}
     <style>
@@ -170,33 +170,7 @@
         });
     </script>
     <script src="{% static 'js/pma.js' %}"></script>
-    <script>
-        $(function () {
-            let municipio2 = $('#municipio2');
-
-            municipio2.on('change', function () {
-                let parameters = window.location.search;
-                let current_url = window.location.pathname;
-                const urlParams = new URLSearchParams(parameters);
-                //valido si existe municipio2 en la url para agregar o actualizar su valor
-                if (urlParams.has('municipio2')) {
-                    urlParams.set('municipio2', $(this).val())
-                } else {
-                    urlParams.append('municipio2', $(this).val())
-                }
-
-                window.location.href = `${current_url}?${urlParams.toString()}`;
-            })
-        })
-    </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
-    {% if charts %}
-        {% if charts|length == 1 %}
-            {{ charts|load_charts:'bar_chart' }}
-        {% else %}
-            {{ charts|load_charts:'bar_chart,chart2' }}
-        {% endif %}
 
-    {% endif %}
 
 {% endblock %}
