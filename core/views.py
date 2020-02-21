@@ -12,7 +12,7 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
-from tools import getYears, getPeriods, xnumber, graphBarChart, graphTwoBarChart
+from tools import getYears, getPeriods, xnumber, graphTwoBarChart
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -597,22 +597,15 @@ def getTransferencias(municipio=None):
         context['data_clase'] = data_clase
         context['years'] = years_list
 
-        data_by_years = []
+        data_by_years = {}
         for year in years_list:
-            data_by_years.append({
-                'total': sum(row['total'] for row in data if row['anio'] == year),
-                'anio': year
-            })
+            data_by_years[year] = {
+                'corriente': sum([row['corriente'] for row in data if row['anio'] == year]),
+                'capital': sum([row['capital'] for row in data if row['anio'] == year]),
+            }
 
-        dict_parameters = {
-            'data': data_by_years,
-            'field1': 'anio',
-            'field2': 'total',
-            'title': 'Evolución de la asignación<br />Transferencias totales',
-            'labelX_axis': 'Años',
-            'labelY_axis': 'Mllones de córdobas',
-        }
-        context['charts'] = graphBarChart(dict_parameters)
+        context['data_by_years'] = data_by_years
+
 
     context['data'] = data
 
@@ -625,17 +618,15 @@ def transferencias(request):
 
     data = getTransferencias(request.GET.get('municipio'))
 
-    for key in data:
-        print(key, data[key])
-
     context['municipio'] = data.get('municipio')
     context['data'] = data.get('data')
     context['data_clase'] = data.get('data_clase')
     context['data_asignacion'] = data.get('data_asignacion')
     context['asignaciones'] = data.get('asignaciones')
     context['years'] = data.get('years')
-    if data.get('charts'):
-        context['charts'] = [data.get('charts')]
+    if data.get('data_by_years'):
+        context['data_by_years'] = data.get('data_by_years')
+
 
     iniciales = AnioTransferencia.objects.values_list(
         'anio', flat=True).filter(periodo=PERIODO_INICIAL)
@@ -699,10 +690,6 @@ def transferencias(request):
         context['data2'] = data.get('data')
         context['data_asignacion2'] = data.get('data_asignacion')
         context['years2'] = data.get('years')
-
-        if data.get('charts'):
-            chart2 = data.get('charts')
-            context['charts'].append(chart2)
 
     return render(request, 'transferencias.html', context)
 

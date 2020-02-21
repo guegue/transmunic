@@ -151,7 +151,7 @@
                     </table>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <div id="bar_chart" class="view-alternative"> grafico de barras
+                    <div id="stacked_chart" class="view-alternative"> grafico de barras
                     </div>
                 </div>
 
@@ -171,6 +171,37 @@
     </script>
     <script src="{% static 'js/pma.js' %}"></script>
     <script src="{% static 'js/highcharts.js' %}"></script>
-
+    <script>
+        $(function () {
+            let custom_options = {
+                'xTick': [{% for year in years %}'{{ year|safe }}',{% endfor %}],
+                'ylabel': 'Millones de córdobas',
+                'xlabel': 'Años',
+                'type_chart': 'column',
+                'title': 'Evolución de la asignación',
+                'subtitle': 'Transferencias totales',
+                'format': '<span>{series.name}</span>:<b>{point.y:.2f}M</b><br/>',
+                'stacked': true
+            };
+            let charts_dict = {};
+            {% if not municipio %}
+                charts_dict['stacked_years'] = [
+                    {
+                        'name': 'corriente',
+                        'stack': 0,
+                        'color': '#337AB7',
+                        'data': [{% for year in years %}{{ data_by_years|keyvalue:year|keyvalue:'corriente'|million }}, {% endfor %}],
+                    },
+                    {
+                        'name': 'capital',
+                        'stack': 0,
+                        'color': '#7cb5ec',
+                        'data': [{% for year in years %}{{ data_by_years|keyvalue:year|keyvalue:'capital'|million }}, {% endfor %}]
+                    },
+                ];
+                graphChart('stacked_chart', charts_dict['stacked_years'], custom_options);
+            {% endif %}
+        });
+    </script>
 
 {% endblock %}

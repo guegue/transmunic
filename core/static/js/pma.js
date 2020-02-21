@@ -1,5 +1,6 @@
 function graphChart(id_container, data, custom_options) {
-    Highcharts.chart(id_container, {
+    let format_percentage = '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>';
+    let options = {
         chart: {
             type: custom_options['type_chart'],
         },
@@ -18,7 +19,7 @@ function graphChart(id_container, data, custom_options) {
             verticalAlign: 'middle'
         },
         tooltip: {
-            pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
+            pointFormat: custom_options['format'] || format_percentage
         },
         xAxis: {
             categories: custom_options['xTick'],
@@ -32,8 +33,16 @@ function graphChart(id_container, data, custom_options) {
             }
         },
         series: data,
+    };
 
-    });
+    if (custom_options['stacked'])
+        options['plotOptions'] = {
+            column: {
+                stacking: 'normal'
+            }
+        };
+
+    Highcharts.chart(id_container, options);
 }
 
 $(function () {
