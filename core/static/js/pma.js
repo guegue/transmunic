@@ -1,4 +1,5 @@
 function graphChart(id_container, data, custom_options) {
+    let format_percentage = '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>';
     let options = {
         chart: {
             type: custom_options['type_chart'],
@@ -18,7 +19,7 @@ function graphChart(id_container, data, custom_options) {
             verticalAlign: 'middle'
         },
         tooltip: {
-            pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
+            pointFormat: custom_options['format'] || format_percentage
         },
         xAxis: {
             categories: custom_options['xTick'],
