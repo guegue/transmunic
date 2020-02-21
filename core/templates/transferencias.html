@@ -1,5 +1,5 @@
 {% extends '_indicator.html' %}
-{% load static humanize core_extras chartit %}
+{% load static humanize core_extras %}
 
 {% block custom_header_links %}
     <style>
@@ -190,13 +190,6 @@
         })
     </script>
     <script src="{% static 'js/highcharts.js' %}"></script>
-    {% if charts %}
-        {% if charts|length == 1 %}
-            {{ charts|load_charts:'bar_chart' }}
-        {% else %}
-            {{ charts|load_charts:'bar_chart,chart2' }}
-        {% endif %}
 
-    {% endif %}
 
 {% endblock %}
