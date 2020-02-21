@@ -1,5 +1,5 @@
 function graphChart(id_container, data, custom_options) {
-    Highcharts.chart(id_container, {
+    let options = {
         chart: {
             type: custom_options['type_chart'],
         },
@@ -33,7 +33,9 @@ function graphChart(id_container, data, custom_options) {
         },
         series: data,
 
-    });
+    };
+
+    Highcharts.chart(id_container, options);
 }
 
 $(function () {
