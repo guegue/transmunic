@@ -32,8 +32,14 @@ function graphChart(id_container, data, custom_options) {
             }
         },
         series: data,
-
     };
+
+    if (custom_options['stacked'])
+        options['plotOptions'] = {
+            column: {
+                stacking: 'normal'
+            }
+        };
 
     Highcharts.chart(id_container, options);
 }
