@@ -597,13 +597,14 @@ def getTransferencias(municipio=None):
         context['data_clase'] = data_clase
         context['years'] = years_list
 
-        data_by_years = []
+        data_by_years = {}
         for year in years_list:
-            data_by_years.append({
-                'corriente': [row['corriente'] for row in data if row['anio'] == year],
-                'capital': [row['capital'] for row in data if row['anio'] == year],
-                'anio': year
-            })
+            data_by_years[year] = {
+                'corriente': sum([row['corriente'] for row in data if row['anio'] == year]),
+                'capital': sum([row['capital'] for row in data if row['anio'] == year]),
+            }
+
+        context['data_by_years'] = data_by_years
 
 
     context['data'] = data
@@ -623,6 +624,8 @@ def transferencias(request):
     context['data_asignacion'] = data.get('data_asignacion')
     context['asignaciones'] = data.get('asignaciones')
     context['years'] = data.get('years')
+    if data.get('data_by_years'):
+        context['data_by_years'] = data.get('data_by_years')
 
 
     iniciales = AnioTransferencia.objects.values_list(
