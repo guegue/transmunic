@@ -1,3 +1,41 @@
+function graphChart(id_container, data, custom_options) {
+    Highcharts.chart(id_container, {
+        chart: {
+            type: custom_options['type_chart'],
+        },
+        title: {
+            text: custom_options['title'],
+        },
+        subtitle: {
+            text: custom_options['subtitle'],
+            style: {
+                fontSize: '18px'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        tooltip: {
+            pointFormat: '<span>{series.name}</span>:<b>{point.y:.2f}%</b><br/>'
+        },
+        xAxis: {
+            categories: custom_options['xTick'],
+            title: {
+                text: custom_options['xlabel']
+            }
+        },
+        yAxis: {
+            title: {
+                text: custom_options['ylabel']
+            }
+        },
+        series: data,
+
+    });
+}
+
 $(function () {
     $(".toggle-chart").click(function () {
         chartcontainer = $(this).data('chartcontainer');
@@ -78,5 +116,7 @@ $(function () {
             }
 
             window.location.href = `${current_url}?${urlParams.toString()}`;
-        })
+        });
+
+
 });
