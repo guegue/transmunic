@@ -72,7 +72,7 @@
                     </table>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <div id="bar_chart"></div>
+                    <div id="stacked_chart"></div>
                 </div>
                 {% if request.GET.municipio2 %}
                     <h3>{{ municipio2 }}</h3>
@@ -99,7 +99,7 @@
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div id="chart2"></div>
+                        <div id="stacked_chart2"></div>
                     </div>
                 {% endif %}
             {% else %}
@@ -174,7 +174,7 @@
     <script>
         $(function () {
             let custom_options = {
-                'xTick': [{% for year in years %}'{{ year|safe }}',{% endfor %}],
+                'xTick': [{% for year in years %}'{% firstof year.year year %}',{% endfor %}],
                 'ylabel': 'Millones de córdobas',
                 'xlabel': 'Años',
                 'type_chart': 'column',
@@ -200,6 +200,45 @@
                     },
                 ];
                 graphChart('stacked_chart', charts_dict['stacked_years'], custom_options);
+            {% else %}
+                custom_options['title'] = 'Transferencias por año';
+                custom_options['subtitle'] = '';
+
+                charts_dict['stacked_municipio1'] = [
+                    {
+                        'name': 'corriente',
+                        'stack': 0,
+                        'color': '#337AB7',
+                        'data': [{% for row in data_asignacion|keyvalue:'corriente' %}{{  row|million }}, {% endfor %}],
+                    },
+                    {
+                        'name': 'capital',
+                        'stack': 0,
+                        'color': '#7cb5ec',
+                        'data': [{% for row in data_asignacion|keyvalue:'capital' %}{{  row|million }}, {% endfor %}]
+                    },
+                ];
+
+                {% if municipio2 %}
+
+                    charts_dict['stacked_municipio2'] = [
+                        {
+                            'name': 'corriente',
+                            'stack': 0,
+                            'color': '#337AB7',
+                            'data': [{% for row in data_asignacion2|keyvalue:'corriente' %}{{  row|million }}, {% endfor %}],
+                        },
+                        {
+                            'name': 'capital',
+                            'stack': 0,
+                            'color': '#7cb5ec',
+                            'data': [{% for row in data_asignacion2|keyvalue:'capital' %}{{  row|million }}, {% endfor %}]
+                        },
+                    ];
+                {% endif %}
+
+                graphChart('stacked_chart', charts_dict['stacked_municipio1'], custom_options);
+                graphChart('stacked_chart2', charts_dict['stacked_municipio2'], custom_options);
             {% endif %}
         });
     </script>

@@ -12,7 +12,7 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo
-from tools import getYears, getPeriods, xnumber, graphTwoBarChart
+from tools import getYears, getPeriods, xnumber
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -550,26 +550,6 @@ def getTransferencias(municipio=None):
         years = sorted(years)
         context['years'] = years
 
-        data_by_municipio = []
-        i = 0
-        while i < len(data_asignacion['total']):
-            data_by_municipio.append({
-                'corriente': data_asignacion['corriente'][i],
-                'capital': data_asignacion['capital'][i],
-                'anio': years[i]['year'],
-            })
-            i += 1
-
-        dict_parameters = {
-            'data': data_by_municipio,
-            'field1': 'anio',
-            'field2': 'corriente',
-            'field3': 'capital',
-            'title': 'Transferencias totales por año',
-            'labelX_axis': 'Años',
-            'labelY_axis': 'Córdobas',
-        }
-        context['charts'] = graphTwoBarChart(dict_parameters)
 
     if not municipio:
         # group by clasificacion
@@ -626,6 +606,7 @@ def transferencias(request):
     context['years'] = data.get('years')
     if data.get('data_by_years'):
         context['data_by_years'] = data.get('data_by_years')
+
 
 
     iniciales = AnioTransferencia.objects.values_list(
