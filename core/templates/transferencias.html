@@ -174,7 +174,7 @@
     <script>
         $(function () {
             let custom_options = {
-                'xTick': [{% for year in years %}'{{ year|safe }}',{% endfor %}],
+                'xTick': [{% for year in years %}'{% firstof year.year year %}',{% endfor %}],
                 'ylabel': 'Millones de córdobas',
                 'xlabel': 'Años',
                 'type_chart': 'column',
