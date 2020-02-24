@@ -83,4 +83,6 @@ $(function () {
         .on('select2:selecting', function (e) {
             window.location = e.params.args.data.id;
         });
+
+    $('.pma-navbar').show();
 });
