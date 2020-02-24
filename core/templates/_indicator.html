@@ -72,7 +72,16 @@
                                         </select>
                                     </div>
                                 {% else %}
-                                    <div class="col-lg-3 col-md-3 col-md-offset-7 col-md-offset-7">
+                                    <div class="col-lg-6 col-md-6 text-center">
+                                        <h2 class="title-municipio-name">
+                                            {% if request.resolver_match.url_name == 'transferencias' %}
+                                                Transferencias
+                                            {% elif request.resolver_match.url_name == 'tasa_transferencias' %}
+                                                Tasa de Crecimiento
+                                            {% endif %}
+                                        </h2>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
                                         <span class="pma-fg-light-green titsearch"><strong>MUNICIPIO</strong></span>
                                         <select class="municipio" name="municipio" id="municipio">
                                             <optgroup>
