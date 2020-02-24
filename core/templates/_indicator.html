@@ -19,9 +19,9 @@
 {% endblock %}
 
 {% block header %}
-    <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}pma-search-bar pma-bg-blue{% endif %}">
-        <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}container{% endif %}">
-            <div class="{% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}row{% endif %}">
+    <div class="pma-search-bar pma-bg-blue">
+        <div class="container">
+            <div class="row">
                 {% if request.resolver_match.url_name == 'importar' or request.resolver_match.url_name == 'importar-resultado' %}
 
                     <a href="{% url 'rengloningreso' %}" class="btn btn-primary pull-right">Ir a registrar manualmente
@@ -118,11 +118,10 @@
                                            value="{{ request.path|lower }}">
                                 {% endif %}
 
-                                {% if request.resolver_match.url_name == 'transferencias' and request.GET.municipio or request.resolver_match.url_name != 'transferencias' %}
-                                    <div class="col-xs-2 col-sm-1 col-md-1">
-                                        <input type="submit" value="Buscar" class="btn buscar"/>
-                                    </div>
-                                {% endif %}
+
+                                <div class="col-xs-2 col-sm-1 col-md-1">
+                                    <input type="submit" value="Buscar" class="btn buscar"/>
+                                </div>
                             </div>
                         </form>
                     </div>
