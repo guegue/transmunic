@@ -2,6 +2,7 @@ $(function () {
 
     var lista_municipios = $('.listado-municipios');
     var lista_indicadores = $('.listado-indicadores');
+    var lista_transferencias = $('#listado-transferencias');
     var municipio = $('.municipio');
     let body = $('body');
     let select_indicador = $('#indicador');
@@ -17,6 +18,11 @@ $(function () {
     });
     lista_indicadores.select2({
         placeholder: 'Resumen Municipal',
+        allowClear: true
+    });
+
+    lista_transferencias.select2({
+        placeholder: 'Transferencias',
         allowClear: true
     });
 
@@ -60,6 +66,7 @@ $(function () {
         .on('select2:close', function () {
             $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
+
     lista_indicadores
         .on('select2:selecting', function (e) {
             window.location = e.params.args.data.id;
@@ -72,4 +79,8 @@ $(function () {
             $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
 
+    lista_transferencias
+        .on('select2:selecting', function (e) {
+            window.location = e.params.args.data.id;
+        });
 });
