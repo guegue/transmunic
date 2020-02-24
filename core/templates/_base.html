@@ -213,52 +213,6 @@
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="{% static 'js/tooltip.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-
-    <script type="text/javascript">
-        var lista_municipios = $('.listado-municipios');
-        var lista_indicadores = $('.listado-indicadores');
-        var municipio = $('.municipio');
-        $(document).ready(function () {
-            lista_municipios.select2({
-                placeholder: 'Municipio',
-                allowClear: true
-            });
-            lista_municipios.on('select2:selecting', function (e) {
-                window.location = e.params.args.data.id;
-            });
-            municipio.select2({
-                placeholder: 'Municipios',
-                allowClear: true
-            });
-            lista_indicadores.select2({
-                placeholder: 'Resumen Municipal',
-                allowClear: true
-            });
-            lista_indicadores.on('select2:selecting', function (e) {
-                window.location = e.params.args.data.id;
-            });
-        });
-        lista_municipios.on('select2:open', function () {
-            $('.select2-dropdown').addClass('select2-dropdown-middle_width');
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
-        });
-        lista_municipios.on('select2:close', function () {
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
-        });
-        municipio.on('select2:open', function () {
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el municipio');
-        });
-        municipio.on('select2:close', function () {
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
-        });
-        lista_indicadores.on('select2:open', function () {
-            $('.select2-dropdown').addClass('select2-dropdown-width');
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el Indicador');
-        });
-        lista_indicadores.on('select2:close', function () {
-            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
-        });
-    </script>
     <!-- Google Analytics -->
     <script>
         (function (i, s, o, g, r, a, m) {
