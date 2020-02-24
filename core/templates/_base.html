@@ -39,7 +39,7 @@
 </head>
 <body>
 <!-- Header -->
-<header class="pma-gradient {% if request.resolver_match.url_name != 'home' and 'importar' not in request.resolver_match.url_name and 'renglon' not in request.resolver_match.url_name and request.resolver_match.url_name != 'transferencias'  %}sticky-header{% endif %}">
+<header class="pma-gradient {% if request.resolver_match.url_name != 'home' and 'importar' not in request.resolver_match.url_name and 'renglon' not in request.resolver_match.url_name and request.resolver_match.url_name != 'transferencias' %}sticky-header{% endif %}">
     <nav class="navbar" role="navigation">
         <!-- El logotipo y el icono que despliega el menú se agrupan
        para mostrarlos mejor en los dispositivos móviles -->
@@ -122,6 +122,17 @@
                                     {% endfor %}
                                 </optgroup>
                             {% endfor %}
+                        </select>
+                    </form>
+                    <form class="navbar-form navbar-left pma-navbar" role="search">
+                        <select id="listado-transferencias" class="pull-right" name="transferencias">
+                            <option value=""></option>
+                            <option value="{% url 'transferencias' %}">
+                                Transferencias
+                            </option>
+                            <option value="{% url 'tasa_transferencias' %}">
+                                Tasa de Transferencias
+                            </option>
                         </select>
                     </form>
                 </div>
