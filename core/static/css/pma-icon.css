@@ -31,10 +31,8 @@
     content: "\e616";
 }
 /* 4 - Transferencias y donaciones */
-
 .transferencias-y-donaciones:before {
-    content: url(../new-icons/ingresos/otras_transferencias_donacioes.png);
-    display: flex;
+    background-image: url(../new-icons/ingresos/otras_transferencias_donacioes.png);
 }
 /* 6 - Transferencias */
 
@@ -49,14 +47,12 @@
 /* 3 - Otros */
 
 .otros-gastos:before {
-    content: url(../new-icons/gastos/otros_Destinos.png);
-    display: flex;
+    background-image: url(../new-icons/gastos/otros_Destinos.png);
 }
 /* 5 - Préstamos */
 
-.prestamos::before{
-    content: url(../new-icons/ingresos/endeudamiento.png);
-    display: flex;
+.prestamos::before {
+    background-image: url(../new-icons/ingresos/endeudamiento.png);
 }
 /* 5 - Materiales y Sumistros */
 
@@ -66,8 +62,7 @@
 /* 3 - Otras transferencias del gobierno central */
 
 .otras-transferencias-del-gobierno-central:before {
-    content: url(../new-icons/ingresos/otras_transferncias_gobierno_central.png);
-    display: flex;
+    background-image: url(../new-icons/ingresos/otras_transferncias_gobierno_central.png);
 }
 /* 1 - Gastos de Personal */
 
@@ -77,14 +72,12 @@
 /* 6 - Otros origenes */
 
 .otros-origenes:before {
-    content: url(../new-icons/ingresos/otros_origenes.png);
-    display: flex;
+    background-image: url(../new-icons/ingresos/otros_origenes.png);
 }
 /* 2 - Servicios No Personales */
 
 .inversion:before {
-    content: url(../new-icons/gastos/servicios_materiales_productos.png);
-    display: flex;
+    background-image: url(../new-icons/gastos/servicios_materiales_productos.png);
 }
 /* 4 - Bienes de Uso/Inversión */
 
@@ -94,12 +87,10 @@
 
 /* servcios a la deuda*/
 .servcios-a-la-deuda:before{
-    content: url(../new-icons/gastos/servicios_deuda_publica.png);
-    display: flex;
+    background-image: url(../new-icons/gastos/servicios_deuda_publica.png);
 }
 .servicios-no-personales:before{
-    content: url(../new-icons/gastos/activos_no_financieros.png);
-    display: flex;
+    background-image: url(../new-icons/gastos/activos_no_financieros.png);
 }
 
 .initial:before{
@@ -121,8 +112,7 @@
 }
 /*seguridad alimentaria */
 .seguridad-alimentaria:before{
-    content: url(../new-icons/inversion/seguridad_alimentaria.png);
-    display: flex;
+    background-image: url(../new-icons/inversion/seguridad_alimentaria.png);
 }
 .educacion-escuelas-alfabetizacion-becas:before {
     content: "\e60f";
@@ -141,9 +131,6 @@
 }
 .ninez-adolescencia-y-mujer-tercera-edad-grupos-vul:before {
     content: "\e693";
-}
-.seguridad-alimentaria:before {
-    content: "\e60e";
 }
 .energia-domiciliar-y-publica:before {
     content: "\e69a";
@@ -174,4 +161,17 @@
 }
 .pe-7s-info:before {
 	content: "\e647";
+}
+
+.transferencias-y-donaciones:before, .otros-gastos:before,
+.prestamos::before, .materiales-y-sumistros:before,
+.otras-transferencias-del-gobierno-central:before,
+.otros-origenes:before, .inversion:before,
+.servcios-a-la-deuda:before, .servicios-no-personales:before{
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    content: ' ';
+    display: flex;
+    height: 50px;
+    width: 50px;
 }
