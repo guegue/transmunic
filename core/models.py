@@ -472,11 +472,14 @@ class TipoProyecto(models.Model):
         return self.nombre
 
 # inversion del municipio
+
+
 class InversionQuerySet(models.QuerySet):
     def for_user(self, user):
         if hasattr(user, 'profile') and user.profile.municipio:
             return self.filter(municipio=user.profile.municipio)
         return self
+
 
 class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
