@@ -485,11 +485,11 @@ def getTransferenciasDetalle():
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 
     data_inicial = Transferencia.objects.order_by('municipio__nombre', 'anio').\
-            values('municipio__nombre', 'anio').\
+        values('municipio__nombre', 'anio').\
         filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     data_final = Transferencia.objects.order_by('municipio__nombre', 'anio').\
-            values('municipio__nombre', 'anio').\
+        values('municipio__nombre', 'anio').\
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     data_inicial = list(data_inicial)
@@ -755,9 +755,9 @@ def getPeriodosDetalle(datadata):
             if municipio not in municipios:
                 municipios.append(municipio)
                 tasas[municipio] = {'total': [],
-                                        'corriente': [],
-                                        'capital': []
-                                        }
+                                    'corriente': [],
+                                    'capital': []
+                                    }
             anio = row['anio']
             total = {
                 'total': row['total'],
@@ -772,8 +772,8 @@ def getPeriodosDetalle(datadata):
             if ultimo_anio.get(municipio) and ultimo_anio_previo.get(municipio):
                 if ultimo_anio_previo[municipio]['total']:
                     tasa = (pow(ultimo_anio[municipio]['total'] /
-                            ultimo_anio_previo[municipio]['total'],
-                            Decimal(1.0 / anios))
+                                ultimo_anio_previo[municipio]['total'],
+                                Decimal(1.0 / anios))
                             - 1) * 100
                 else:
                     tasa = 0
@@ -915,7 +915,6 @@ def tasa_transferencias(request):
         data_tasa_col_sorted_des.append(col)
         for row in col:
             print(row)
-
 
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
