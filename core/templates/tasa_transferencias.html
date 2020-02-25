@@ -411,34 +411,7 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        {% for col in data_tasa_col_des %}
-                            {% if not forloop.first %}
-                                <h1>Periodo: {{ periodos_array|index:forloop.counter0 }} DESC</h1>
-                                <table class="table table-bordered mt-3">
-                                    {% for row in col|slice:":10" %}
-                                        <tr>
-                                            <td>{{ row.name }}</td>
-                                            <td>{{ row.value|floatformat:2 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                                <hr>
-                            {% endif %}
-                        {% endfor %}
-                        {% for col in data_tasa_col_asc %}
-                            {% if not forloop.first %}
-                                <h1>Periodo: {{ periodos_array|index:forloop.counter0 }} ASC</h1>
-                                <table class="table table-bordered mt-3">
-                                    {% for row in col|slice:":10" %}
-                                        <tr>
-                                            <td>{{ row.name }}</td>
-                                            <td>{{ row.value|floatformat:2 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                                <hr>
-                            {% endif %}
-                        {% endfor %}
+                        <br>
 
                         <div class="col-lg-6 col-md-6">
                             <table class="table table-bordered mt-3">
