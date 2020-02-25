@@ -712,6 +712,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         }],
         chart_options=chart_options)
 
+    custom_chart_options = chart_options.copy()
+    custom_chart_options['tooltip']['pointFormat'] = ''
     pie = Chart(
         datasource=inversion_tipo,
         series_options=[
@@ -719,7 +721,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'options': {'type': 'pie', 'stacking': False},
                 'terms': {'catinversion__nombre': [datacol]},
             }],
-        chart_options=chart_options)
+        chart_options=custom_chart_options)
 
     data_ultimos = DataPool(
            series=
