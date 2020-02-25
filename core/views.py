@@ -906,9 +906,15 @@ def tasa_transferencias(request):
                 data_tasa_col.append([])
             data_tasa_col[i].append({'name': key, 'value': col})
             i += 1
-    for row in data_tasa_col:
-        for r2 in row:
-            print(r2)
+    data_tasa_col_sorted_asc = []
+    data_tasa_col_sorted_des = []
+    for col in data_tasa_col:
+        col = sorted(col, key=lambda d: d['value'])
+        data_tasa_col_sorted_asc.append(col)
+        col = sorted(col, key=lambda d: d['value'], reverse=True)
+        data_tasa_col_sorted_des.append(col)
+        for row in col:
+            print(row)
 
 
     context['municipio'] = data.get('municipio')
@@ -918,7 +924,8 @@ def tasa_transferencias(request):
     context['periodos_array'] = list(data_periodo.get('periodos'))
     context['partidos'] = data_periodo.get('partidos')
     context['data_tasa_detalle'] = data_periodo_detalle.get('data_tasa')
-    context['data_tasa_col'] = data_tasa_col
+    context['data_tasa_col_des'] = data_tasa_col_sorted_des
+    context['data_tasa_col_asc'] = data_tasa_col_sorted_asc
 
     if municipio2:
         data2 = getTransferencias(municipio2)
