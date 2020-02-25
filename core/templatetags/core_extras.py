@@ -13,6 +13,11 @@ def million(number):
 
 
 @register.filter
+def index(indexable, i):
+    return indexable[i]
+
+
+@register.filter
 def keyvalue(dictionary, key):
     if dictionary.get(key):
         return(dictionary.get(key))

@@ -896,13 +896,29 @@ def tasa_transferencias(request):
 
     data_detalle = getTransferenciasDetalle()
     data_periodo_detalle = getPeriodosDetalle(data_detalle.get('data'))
+    data_tasa_detalle = data_periodo_detalle.get('data_tasa')
+    data_tasa_col = []
+    for key in data_tasa_detalle:
+        row = data_tasa_detalle[key]['total']
+        i = 0
+        for col in row:
+            if len(data_tasa_col) <= i:
+                data_tasa_col.append([])
+            data_tasa_col[i].append({'name': key, 'value': col})
+            i += 1
+    for row in data_tasa_col:
+        for r2 in row:
+            print(r2)
+
 
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
     context['clasificaciones'] = data_periodo.get('clasificaciones')
     context['periodos'] = data_periodo.get('periodos')
+    context['periodos_array'] = list(data_periodo.get('periodos'))
     context['partidos'] = data_periodo.get('partidos')
     context['data_tasa_detalle'] = data_periodo_detalle.get('data_tasa')
+    context['data_tasa_col'] = data_tasa_col
 
     if municipio2:
         data2 = getTransferencias(municipio2)
