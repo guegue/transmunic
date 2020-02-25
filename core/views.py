@@ -913,8 +913,6 @@ def tasa_transferencias(request):
         data_tasa_col_sorted_asc.append(col)
         col = sorted(col, key=lambda d: d['value'], reverse=True)
         data_tasa_col_sorted_des.append(col)
-        for row in col:
-            print(row)
 
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
