@@ -380,6 +380,12 @@ class IngresoDetalle(models.Model):
 
 
 # gastos del municipio
+class GastoQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if hasattr(user, 'profile') and user.profile.municipio:
+            return self.filter(municipio=user.profile.municipio)
+        return self
+
 class Gasto(models.Model):
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
@@ -389,6 +395,8 @@ class Gasto(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+
+    objects = GastoQuerySet.as_manager()
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]
