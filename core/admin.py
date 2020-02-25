@@ -7,6 +7,16 @@ from core.models import (Profile, Organizacion, Anio, AnioTransferencia, Grafico
 
 # Register your models here.
 
+# Change default query
+
+
+class AdminForUserMixin:
+
+    def get_queryset(self, request):
+        if request.user:
+            return self.model.objects.for_user(request.user)
+        return super().get_queryset(request)
+
 
 class SubSubTipoIngresoInline(admin.TabularInline):
     model = SubSubTipoIngreso
@@ -35,7 +45,7 @@ class GastoDetalleInline(admin.TabularInline):
     extra = 1
 
 
-class GastoAdmin(admin.ModelAdmin):
+class GastoAdmin(AdminForUserMixin, admin.ModelAdmin):
     list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
     inlines = [GastoDetalleInline]
     list_filter = ('anio', 'periodo','departamento', 'municipio')
