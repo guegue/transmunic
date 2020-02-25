@@ -82,4 +82,15 @@
 {% endblock %}
 
 {% block extra_footer_scripts %}
+<script>
+$(document).ready(function() {
+	$('input:radio[name=table]').change(function() {
+		if (this.value == 'transferencia') {
+			$("#id_municipio").prop('disabled', 'disabled');
+		} else {
+			$("#id_municipio").removeAttr("disabled");
+		}
+	});
+});
+</script>
 {% endblock  %}
