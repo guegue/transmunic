@@ -11,7 +11,7 @@ from django.db.models.functions import Concat
 from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, Proyecto, \
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_FINAL
-from lugar.models import ClasificacionMunicAno, Periodo
+from lugar.models import ClasificacionMunicAno, Periodo, PeriodoMunic
 from tools import getYears, getPeriods, xnumber
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
@@ -531,11 +531,21 @@ def getTransferencias(municipio=None):
     if municipio:
         data = sorted(data, key=lambda k: (k['anio']))
         years = []
+        periodos = {}
         for year in list(iniciales) + list(finales):
             clasificacion = ClasificacionMunicAno.objects.\
                 values_list('clasificacion__clasificacion', flat=True).\
                 filter(anio=year, municipio__slug=municipio).first()
-            years.append({'year': year, 'clasificacion': clasificacion})
+            partido = PeriodoMunic.objects.values('partido', 'periodo__desde',
+                                                  'periodo__hasta').filter(
+                municipio__slug=municipio, periodo__desde__lte=year,
+                periodo__hasta__gte=year).first()
+            periodo = "{}-{}".format(partido['periodo__desde'], partido['periodo__hasta'])
+            periodos[periodo] = periodos.get(periodo, 0) + 1
+            years.append({'year': year, 'clasificacion': clasificacion,
+                          'partido': partido['partido'], 'periodo': periodo})
+        for year in years:
+            year['span'] = periodos[year['periodo']]
 
         # re-arrange data
         data_asignacion = {}
@@ -547,8 +557,8 @@ def getTransferencias(municipio=None):
 
         context['municipio'] = Municipio.objects.get(slug=municipio)
         context['data_asignacion'] = data_asignacion
-        years = sorted(years)
-        context['years'] = years
+        sorted_years = sorted(years, key=lambda x: x['year'])
+        context['years'] = sorted_years
 
 
     if not municipio:
