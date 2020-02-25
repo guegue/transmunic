@@ -411,37 +411,6 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        <br>
-
-                        <div class="col-lg-6 col-md-6">
-                            <table class="table table-bordered mt-3">
-                                <thead>
-                                <tr class="bg-primary">
-                                    <th>Municipio</th>
-                                    {% for periodo in periodos %}
-                                        {% if not forloop.first %}
-                                            <th>{{ periodo }}</th>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for municipio in municipios %}
-                                    <tr>
-                                        <td>{{ municipio }}</td>
-                                        {% for value in data_tasa_detalle|keyvalue:municipio|keyvalue:'total' %}
-                                            {% if not forloop.first %}
-                                                <td class="text-right">
-                                                    {{ value|floatformat:2 }}%
-                                                </td>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
-                        </div>
                     </div>
                 </div>
             {% endif %}
