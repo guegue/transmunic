@@ -229,7 +229,7 @@
                                             Inicial {{ asignado|million|intcomma }} M. de C&oacute;rdobas
                                             {% if asignado_percent %}
                                                 ({{ asignado_percent }}%)
-                                            {% else %}
+                                            {% elif ejecutado_percent %}
                                                 (0%)
                                             {% endif %}
                                         </strong>
@@ -246,7 +246,7 @@
                                         <strong>
                                             Cierre
                                             {% if periodo_list|keyvalue:year == 'I' %}
-                                                0 M. de C&oacute;rdobas (0%)
+                                                0 M. de C&oacute;rdobas 
                                             {% else %}
                                                 {{ ejecutado|million|intcomma }} M. de C&oacute;rdobas
                                                 {% if ejecutado_percent %}
