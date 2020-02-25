@@ -329,6 +329,13 @@ class IngresoRenglon(models.Model):
         return u"{}: {}".format(self.codigo, self.nombre)
 
 
+# ingreso del municipio
+class IngresoQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if hasattr(user, 'profile') and user.profile.municipio:
+            return self.filter(municipio=user.profile.municipio)
+        return self
+
 class Ingreso(models.Model):
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
@@ -338,6 +345,8 @@ class Ingreso(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+
+    objects = IngresoQuerySet.as_manager()
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]
@@ -462,6 +471,15 @@ class TipoProyecto(models.Model):
     def __unicode__(self):
         return self.nombre
 
+# inversion del municipio
+
+
+class InversionQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if hasattr(user, 'profile') and user.profile.municipio:
+            return self.filter(municipio=user.profile.municipio)
+        return self
+
 
 class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
@@ -470,6 +488,8 @@ class Inversion(models.Model):
     fecha = models.DateField(null=False)
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
+
+    objects = InversionQuerySet.as_manager()
 
     class Meta:
         unique_together = [['anio', 'periodo', 'municipio']]
