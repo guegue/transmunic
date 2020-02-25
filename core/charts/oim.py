@@ -70,22 +70,22 @@ def oim_chart(municipio=None, year=None, portada=False):
         municipio_nombre = municipio_row.nombre
 
         source = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year).values(
-            'subsubtipoingreso__origen__id').annotate(**{quesumar: Sum(quesumar)}).order_by(
-            'subsubtipoingreso__origen__orden')
+            subsubtipoingreso__origen__id).annotate(**{quesumar: Sum(quesumar)}).order_by(
+            subsubtipoingreso__origen__orden)
         tipos_inicial = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
                                                       ingreso__periodo=PERIODO_INICIAL).values(
-            'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__id',
-            'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__orden'). \
+            subsubtipoingreso__origen__nombre, subsubtipoingreso__origen__id,
+            subsubtipoingreso__origen__nombre, subsubtipoingreso__origen__orden). \
             annotate(asignado=Sum('asignado')). \
-            order_by('subsubtipoingreso__origen__orden')
+            order_by(subsubtipoingreso__origen__orden)
         tipos_final = IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio, ingreso__anio=year,
                                                     ingreso__periodo=periodo).values(
-            'subsubtipoingreso', 'subsubtipoingreso__origen__id',
-            'subsubtipoingreso__origen__nombre', 'subsubtipoingreso__origen__orden'). \
+            subsubtipoingreso__origen__nombre, subsubtipoingreso__origen__id,
+            subsubtipoingreso__origen__nombre, subsubtipoingreso__origen__orden). \
             annotate(ejecutado=Sum('ejecutado')). \
-            order_by('subsubtipoingreso__origen__orden')
+            order_by(subsubtipoingreso__origen__orden)
 
-        sources = glue(tipos_inicial, tipos_final, 'subsubtipoingreso__origen__id')
+        sources = glue(tipos_inicial, tipos_final, subsubtipoingreso__origen__id)
         source_barra = IngresoDetalle.objects.filter(
             ingreso__municipio__slug=municipio, ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(
