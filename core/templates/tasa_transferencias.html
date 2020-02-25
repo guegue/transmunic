@@ -326,68 +326,90 @@
                         </div>
                         <div class="col-lg-12 col-md-12">
                             <h2>Tasa de crecimiento promedio anual<br/>
-                                rankin municipal 
+                                rankin municipal
                                 por período de gobierno
                             </h2>
                             <hr class="pma-line-1"/>
                         </div>
 
-{% for col in data_tasa_col_des %}
-{% if not forloop.first %}
-<h1>Periodo: {{ periodos_array|index:forloop.counter0 }} DESC</h1>
-<table class="table table-bordered mt-3">
-    {% for row in col|slice:":10" %}
-    <tr>
-    <td>{{ row.name }}</td> <td>{{ row.value|floatformat:2 }}</td>
-    </tr>
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
-{% endfor %}
-{% for col in data_tasa_col_asc %}
-{% if not forloop.first %}
-<h1>Periodo: {{ periodos_array|index:forloop.counter0 }} ASC</h1>
-<table class="table table-bordered mt-3">
-    {% for row in col|slice:":10" %}
-    <tr>
-    <td>{{ row.name }}</td> <td>{{ row.value|floatformat:2 }}</td>
-    </tr>
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
-{% endfor %}
+                        <ul class="nav nav-tabs" id="periodos-tab" role="tablist">
+                            {% for periodo in periodos_array %}
+                                {% if not forloop.first %}
+                                    <li class="{% if forloop.counter0 == 1 %}active{% endif %}" role="presentation">
+                                        <a class="nav-item nav-link"
+                                           id="{{ periodo }}-tab" data-toggle="tab"
+                                           href="#nav-{{ periodo }}"
+                                           role="tab" aria-controls="nav-{{ periodo }}"
+                                           aria-selected="{% if forloop.counter0 == 1 %}true{% else %}false{% endif %}">
+                                            Periodo: {{ periodo }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content" id="periodosTabs">
+                            {% for periodo in periodos_array %}
+                                {% if not forloop.first %}
+                                    <div class="tab-pane fade {% if forloop.counter0 <= 1 %}active in{% endif %}"
+                                         id="nav-{{ periodo }}" role="tabpanel"
+                                         aria-labelledby="{{ periodo }}-tab">
 
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <h4>
+                                                        <strong>10 municipios con mayor tasa de crecimiento.</strong>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <h4>
+                                                        <strong>10 municipios con menor tasa de crecimiento.</strong>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr class="bg-primary">
+                                                            <th>Municipio</th>
+                                                            <th>Tasa de Crecimiento</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for row in data_tasa_col_des|index:forloop.counter0|slice:':10' %}
+                                                            {% if row.value %}
+                                                                <tr>
+                                                                    <td>{{ row.name }}</td>
+                                                                    <td>{{ row.value|floatformat:2 }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr class="bg-primary">
+                                                            <th>Municipio</th>
+                                                            <th>Tasa de Crecimiento</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for row in data_tasa_col_asc|index:forloop.counter0|slice:':10' %}
+                                                            <tr>
+                                                                <td>{{ row.name }}</td>
+                                                                <td>{{ row.value|floatformat:2 }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                        <div class="col-lg-6 col-md-6">
-                            <table class="table table-bordered mt-3">
-                                <thead>
-                                <tr class="bg-primary">
-                                    <th>Municipio</th>
-                                    {% for periodo in periodos %}
-                                        {% if not forloop.first %}
-                                            <th>{{ periodo }}</th>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for municipio in municipios %}
-                                    <tr>
-                                        <td>{{ municipio }}</td>
-                                        {% for value in data_tasa_detalle|keyvalue:municipio|keyvalue:'total' %}
-                                            {% if not forloop.first %}
-                                                <td class="text-right">
-                                                    {{ value|floatformat:2 }}%
-                                                </td>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
