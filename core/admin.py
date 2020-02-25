@@ -73,7 +73,7 @@ class InversionFuenteAdmin(admin.ModelAdmin):
     list_filter = ('fecha', 'departamento', 'municipio')
 
 
-class IngresoAdmin(admin.ModelAdmin):
+class IngresoAdmin(AdminForUserMixin, admin.ModelAdmin):
     inlines = [IngresoDetalleInline]
     list_display = ['id', 'anio','periodo', 'departamento', 'municipio']
     list_filter = ('anio', 'departamento', 'municipio')
@@ -92,7 +92,7 @@ class ProyectoInline(admin.TabularInline):
         localized_fields = ('__all__')
 
 
-class InversionAdmin(admin.ModelAdmin):
+class InversionAdmin(AdminForUserMixin, admin.ModelAdmin):
     inlines = [ProyectoInline]
     list_display = ['id', 'departamento', 'municipio', 'fecha', 'periodo']
     list_filter = ('departamento', 'municipio', 'periodo', 'anio')
