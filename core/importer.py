@@ -267,43 +267,57 @@ class ReglonIngresosView(LoginRequiredMixin, FormView):
         # obteniendo detalles del municipio seleccionado
         municipio = Municipio.objects.filter(id=municipio).first()
 
-        # insertando en core_ingreso
-        ingreso = Ingreso()
-        ingreso.fecha = date.today()
-        ingreso.departamento_id = municipio.depto_id
-        ingreso.municipio_id = municipio.id
-        ingreso.anio = anio
-        ingreso.periodo = periodo
-        ingreso.save()
+        # validando si existe un ingreso en el sistema que este relacionado
+        # a el municipio, en periodo del año indicados desdel formulario
+        ingreso = Ingreso.objects.filter(municipio_id=municipio.id,
+                               anio=anio,
+                               periodo=periodo).first()
 
-        # insertando en core_ingresodetalle
-        for codigo in renglon_codigo:
-            # obteniendo el asignado y ejecutado de un renglon
-            renglon_asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
-            renglon_ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
-            if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) >= 0:
-                subsubtipo = Sub3TipoIngreso.objects. \
-                    filter(ingresorenglon__codigo=codigo). \
-                    values(id=F('codigo'),
-                           id_subsubtipo=F('subsubtipoingreso_id'),
-                           id_subtipo=F('subsubtipoingreso__subtipoingreso_id'),
-                           id_tipo=F('subsubtipoingreso__subtipoingreso__tipoingreso_id')). \
-                    first()
+        if not ingreso:
+            # insertando en core_ingreso
+            ingreso = Ingreso()
+            ingreso.fecha = date.today()
+            ingreso.departamento_id = municipio.depto_id
+            ingreso.municipio_id = municipio.id
+            ingreso.anio = anio
+            ingreso.periodo = periodo
+            ingreso.save()
 
-                # guardando el detalle de cada renglon
-                ingreso_detalle = IngresoDetalle()
-                ingreso_detalle.codigo_id = codigo
-                ingreso_detalle.asignado = xnumber(renglon_asignado)
-                ingreso_detalle.ejecutado = xnumber(renglon_ejecutado)
-                ingreso_detalle.ingreso_id = ingreso.id
-                ingreso_detalle.sub3tipoingreso_id = subsubtipo.get('id')
-                ingreso_detalle.subsubtipoingreso_id = subsubtipo.get('id_subsubtipo')
-                ingreso_detalle.subtipoingreso_id = subsubtipo.get('id_subtipo')
-                ingreso_detalle.tipoingreso_id = subsubtipo.get('id_tipo')
-                ingreso_detalle.cuenta = 'SA'
-                ingreso_detalle.save()
+            # insertando en core_ingresodetalle
+            for codigo in renglon_codigo:
+                # obteniendo el asignado y ejecutado de un renglon
+                renglon_asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
+                renglon_ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
+                if xnumber(renglon_asignado) > 0 and xnumber(renglon_ejecutado) >= 0:
+                    subsubtipo = Sub3TipoIngreso.objects. \
+                        filter(ingresorenglon__codigo=codigo). \
+                        values(id=F('codigo'),
+                               id_subsubtipo=F('subsubtipoingreso_id'),
+                               id_subtipo=F('subsubtipoingreso__subtipoingreso_id'),
+                               id_tipo=F('subsubtipoingreso__subtipoingreso__tipoingreso_id')). \
+                        first()
 
-        return super(ReglonIngresosView, self).form_valid(form)
+                    # guardando el detalle de cada renglon
+                    ingreso_detalle = IngresoDetalle()
+                    ingreso_detalle.codigo_id = codigo
+                    ingreso_detalle.asignado = xnumber(renglon_asignado)
+                    ingreso_detalle.ejecutado = xnumber(renglon_ejecutado)
+                    ingreso_detalle.ingreso_id = ingreso.id
+                    ingreso_detalle.sub3tipoingreso_id = subsubtipo.get('id')
+                    ingreso_detalle.subsubtipoingreso_id = subsubtipo.get('id_subsubtipo')
+                    ingreso_detalle.subtipoingreso_id = subsubtipo.get('id_subtipo')
+                    ingreso_detalle.tipoingreso_id = subsubtipo.get('id_tipo')
+                    ingreso_detalle.cuenta = 'SA'
+                    ingreso_detalle.save()
+
+            return super(ReglonIngresosView, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, 'El municipio ya cuenta con un ingreso para el'
+                                                           ' año seleccionado en el periodo indicado')
+        return super(ReglonIngresosView, self).form_invalid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.INFO, 'Guardado Exitosamente')
@@ -359,44 +373,58 @@ class RenglonGastosView(LoginRequiredMixin, FormView):
         # obteniendo detalles del municipio seleccionado
         municipio = Municipio.objects.filter(id=municipio).first()
 
-        # insertando en core_gasto
-        gasto = Gasto()
-        gasto.fecha = date.today()
-        gasto.departamento_id = municipio.depto_id
-        gasto.municipio_id = municipio.id
-        gasto.anio = anio
-        gasto.periodo = periodo
-        gasto.save()
+        # validando si existe un gasto en el sistema que este relacionado
+        # a el municipio, en periodo del año indicados desdel formulario
+        gasto = Gasto.objects.filter(municipio_id=municipio.id,
+                                     anio=anio,
+                                     periodo=periodo).first()
 
-        # insertando en core_ingresodetalle
-        for codigo in renglon_codigo:
-            # obteniendo el asignado y ejecutado de un renglon
-            asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
-            ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
-            asignado = xnumber(asignado)
-            ejecutado = xnumber(ejecutado)
+        if not gasto:
+            # insertando en core_gasto
+            gasto = Gasto()
+            gasto.fecha = date.today()
+            gasto.departamento_id = municipio.depto_id
+            gasto.municipio_id = municipio.id
+            gasto.anio = anio
+            gasto.periodo = periodo
+            gasto.save()
 
-            if asignado > 0 and ejecutado >= 0:
-                subsubtipo = SubSubTipoGasto.objects. \
-                    filter(gastorenglon__codigo='11100'). \
-                    values(id=F('codigo'),
-                           id_subtipo=F('subtipogasto_id'),
-                           id_tipo=F('subtipogasto__tipogasto_id')). \
-                    first()
+            # insertando en core_ingresodetalle
+            for codigo in renglon_codigo:
+                # obteniendo el asignado y ejecutado de un renglon
+                asignado = self.request.POST.get('renglon_asignado[{}]'.format(codigo))
+                ejecutado = self.request.POST.get('renglon_ejecutado[{}]'.format(codigo))
+                asignado = xnumber(asignado)
+                ejecutado = xnumber(ejecutado)
 
-                # guardando el detalle de cada renglon
-                gasto_detalle = GastoDetalle()
-                gasto_detalle.codigo_id = codigo
-                gasto_detalle.asignado = asignado
-                gasto_detalle.ejecutado = ejecutado
-                gasto_detalle.gasto_id = gasto.id
-                gasto_detalle.subsubtipogasto_id = subsubtipo.get('id')
-                gasto_detalle.subtipogasto_id = subsubtipo.get('id_subtipo')
-                gasto_detalle.tipogasto_id = subsubtipo.get('id_tipo')
-                gasto_detalle.cuenta = 'SA'
-                gasto_detalle.save()
+                if asignado > 0 and ejecutado >= 0:
+                    subsubtipo = SubSubTipoGasto.objects. \
+                        filter(gastorenglon__codigo='11100'). \
+                        values(id=F('codigo'),
+                               id_subtipo=F('subtipogasto_id'),
+                               id_tipo=F('subtipogasto__tipogasto_id')). \
+                        first()
 
-        return super(RenglonGastosView, self).form_valid(form)
+                    # guardando el detalle de cada renglon
+                    gasto_detalle = GastoDetalle()
+                    gasto_detalle.codigo_id = codigo
+                    gasto_detalle.asignado = asignado
+                    gasto_detalle.ejecutado = ejecutado
+                    gasto_detalle.gasto_id = gasto.id
+                    gasto_detalle.subsubtipogasto_id = subsubtipo.get('id')
+                    gasto_detalle.subtipogasto_id = subsubtipo.get('id_subtipo')
+                    gasto_detalle.tipogasto_id = subsubtipo.get('id_tipo')
+                    gasto_detalle.cuenta = 'SA'
+                    gasto_detalle.save()
+
+            return super(RenglonGastosView, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, 'El municipio ya cuenta con un gasto para el'
+                                                           ' año seleccionado en el periodo indicado')
+        return super(RenglonGastosView, self).form_invalid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.INFO, 'Guardado Exitosamente')
