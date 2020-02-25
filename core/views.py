@@ -537,9 +537,9 @@ def getTransferencias(municipio=None):
                 values_list('clasificacion__clasificacion', flat=True).\
                 filter(anio=year, municipio__slug=municipio).first()
             partido = PeriodoMunic.objects.values('partido', 'periodo__desde',
-                                                       'periodo__hasta').filter(
-                    municipio__slug=municipio, periodo__desde__lte=year,
-                    periodo__hasta__gte=year).first()
+                                                  'periodo__hasta').filter(
+                municipio__slug=municipio, periodo__desde__lte=year,
+                periodo__hasta__gte=year).first()
             periodo = "{}-{}".format(partido['periodo__desde'], partido['periodo__hasta'])
             periodos[periodo] = periodos.get(periodo, 0) + 1
             years.append({'year': year, 'clasificacion': clasificacion,
