@@ -708,7 +708,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             'stacking': False},
             'terms': {
             'catinversion__nombre': [datacol],
-            },
+        },
         }],
         chart_options=chart_options)
 
