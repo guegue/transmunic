@@ -55,6 +55,12 @@
                         <tr class="bg-primary">
                             <th class="fixed">Asignación Anual</th>
                             {% for year in years %}
+                                {% ifchanged %}<th colspan="{{ year.span }}">{{ year.periodo }}<br>{{ year.partido }}</th>{% endifchanged %}
+                            {% endfor %}
+                        </tr>
+                        <tr class="bg-primary">
+                            <th class="fixed">Asignación Anual</th>
+                            {% for year in years %}
                                 <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
                             {% endfor %}
                         </tr>
