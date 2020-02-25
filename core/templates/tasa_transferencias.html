@@ -324,6 +324,43 @@
                         <div class="col-lg-6 col-md-6">
                             <div id="line_chart3"></div>
                         </div>
+                        <div class="col-lg-12 col-md-12">
+                            <h2>Tasa de crecimiento promedio anual<br/>
+                                rankin municipal 
+                                por período de gobierno
+                            </h2>
+                            <hr class="pma-line-1"/>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6">
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th>Clase</th>
+                                    {% for periodo in periodos %}
+                                        {% if not forloop.first %}
+                                            <th>{{ periodo }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for clasificacion in clasificaciones %}
+                                    <tr>
+                                        <td>{{ clasificacion }}</td>
+                                        {% for value in data_tasa_detalle|keyvalue:clasificacion|keyvalue:'total' %}
+                                            {% if not forloop.first %}
+                                                <td class="text-right">{% if value != '' %}
+                                                    {{ value|floatformat:2 }}%
+                                                {% endif %}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <p class="fuente">Fuente: Elaboración propia a partir de transmuni.gob.ni</p>
+                        </div>
                     </div>
                 </div>
             {% endif %}
