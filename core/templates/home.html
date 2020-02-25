@@ -69,8 +69,8 @@
                             <hr class="pma-line-3">
                             <img class="visible-xs img-responsive" src="static/images/illustration-all-icons.png"
                                  alt="Sobre este sitio">
-                            <p>{{ page.content|safe|truncatewords:80 }}</p>
-                            <p><a href="/transferencias-presupuestarias/"> Leer m&aacute;s</a></p>
+                            <p>{{ page.content|safe|truncatewords:80 }}
+                            <a href="/transferencias-presupuestarias/"> Leer m&aacute;s</a></p>
                         {% endfor %}
                     </div>
                 </div>
@@ -85,9 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
-    </div>
-    <div class="container pma-index-icons">
+    <div class="container pma-index-icons mt-3">
         <h3>
             Consolidado de Presupuesto
             {% if periodo == 'F' %}
