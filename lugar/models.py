@@ -118,4 +118,4 @@ class PeriodoMunic(models.Model):
 
     def __unicode__(self):
         return u"{}-{} {}: {}".format(self.periodo.desde, self.periodo.hasta, self.municipio,
-                self.partido)
+                                      self.partido)
