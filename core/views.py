@@ -471,6 +471,60 @@ def descargar_detalle(request):
                               )
 
 
+def getTransferenciasDetalle():
+    context = {}
+    # botiene anios y sus periodos
+    # TODO: usar anio__periodo='I' en vez de esto (crear realacion FK)
+    iniciales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_INICIAL)
+    finales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_FINAL)
+    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
+    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+
+    data_inicial = Transferencia.objects.order_by('municipio__nombre', 'anio').\
+            values('municipio__nombre', 'anio').\
+        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+
+    data_final = Transferencia.objects.order_by('municipio__nombre', 'anio').\
+            values('municipio__nombre', 'anio').\
+        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+
+    data_inicial = list(data_inicial)
+    data_final = list(data_final)
+
+    # llena con ceros años por si quedan vacios
+    #for year in iniciales:
+    #    data_inicial.append({'anio': year, 'corriente': 0, 'municipio': '', 'capital': 0})
+    #for year in finales:
+    #    data_final.append({'anio': year, 'corriente': 0, 'municipio': '', 'capital': 0})
+
+    data = data_inicial + data_final
+
+    for row in data:
+        row['total'] = row['corriente'] + row['capital']
+
+    asignaciones = ('corriente', 'capital', 'total')
+    context['asignaciones'] = asignaciones
+
+    years_list = sorted(list(iniciales) + list(finales))
+    context['years'] = years_list
+
+    data_by_years = {}
+    for year in years_list:
+        data_by_years[year] = {
+            'corriente': sum([row['corriente'] for row in data if row['anio'] == year]),
+            'capital': sum([row['capital'] for row in data if row['anio'] == year]),
+        }
+
+    context['data_by_years'] = data_by_years
+    context['data'] = data
+
+    return context
+
+
 def getTransferencias(municipio=None):
     context = {}
     # botiene anios y sus periodos
@@ -685,6 +739,73 @@ def transferencias(request):
     return render(request, 'transferencias.html', context)
 
 
+def getPeriodosDetalle(datadata):
+    context = {}
+    prev_periodo = None
+    data_tasa = {}
+    tasas = {}
+    municipios = []
+
+    periodos = Periodo.objects. \
+        all(). \
+        order_by('desde')
+
+    for periodo in periodos:
+        periodo_key = "{}-{}".format(periodo.desde, periodo.hasta)
+        data_tasa[periodo_key] = {}
+        # temporalmente periodo +1
+        anios = (periodo.hasta - periodo.desde) + 1
+        ultimo_anio = {}
+        ultimo_anio_previo = {}
+        for row in datadata:
+            municipio = row['municipio__nombre']
+            if municipio not in municipios:
+                municipios.append(municipio)
+                tasas[municipio] = {'total': [],
+                                        'corriente': [],
+                                        'capital': []
+                                        }
+            anio = row['anio']
+            total = {
+                'total': row['total'],
+                'corriente': row['corriente'],
+                'capital': row['capital']
+            }
+            if prev_periodo and anio == prev_periodo.hasta:
+                ultimo_anio_previo[municipio] = total
+            if anio == periodo.hasta:
+                ultimo_anio[municipio] = total
+        for municipio in municipios:
+            if ultimo_anio.get(municipio) and ultimo_anio_previo.get(municipio):
+                tasa = (pow(ultimo_anio[municipio]['total'] /
+                            ultimo_anio_previo[municipio]['total'],
+                            Decimal(1.0 / anios))
+                        - 1) * 100
+                tasa_cr = (pow(ultimo_anio[municipio]['corriente'] /
+                               ultimo_anio_previo[municipio]['corriente'],
+                               Decimal(1.0 / anios))
+                           - 1) * 100
+                tasa_cp = (pow(ultimo_anio[municipio]['capital'] /
+                               ultimo_anio_previo[municipio]['capital'],
+                               Decimal(1.0 / anios))
+                           - 1) * 100
+                data_tasa[periodo_key][municipio] = tasa
+                tasas[municipio]['total'].append(tasa)
+                tasas[municipio]['corriente'].append(tasa_cr)
+                tasas[municipio]['capital'].append(tasa_cp)
+            else:
+                tasas[municipio]['total'].append('')
+                tasas[municipio]['corriente'].append('')
+                tasas[municipio]['capital'].append('')
+        prev_periodo = periodo
+
+    context['data_tasa'] = tasas
+    context['municipios'] = municipios
+    context['periodos'] = periodos
+
+    return context
+
+
 def getPeriodos(datadata, municipio=None):
     context = {}
     prev_periodo = None
@@ -767,13 +888,19 @@ def tasa_transferencias(request):
     context = {}
     municipio = request.GET.get('municipio')
     municipio2 = request.GET.get('municipio2')
+
     data = getTransferencias(municipio)
     data_periodo = getPeriodos(data.get('data'), municipio)
+
+    data_detalle = getTransferenciasDetalle()
+    data_periodo_detalle = getPeriodosDetalle(data_detalle.get('data'))
+
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
     context['clasificaciones'] = data_periodo.get('clasificaciones')
     context['periodos'] = data_periodo.get('periodos')
     context['partidos'] = data_periodo.get('partidos')
+    context['data_tasa_detalle'] = data_periodo_detalle.get('data_tasa')
 
     if municipio2:
         data2 = getTransferencias(municipio2)
