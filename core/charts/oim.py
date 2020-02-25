@@ -43,7 +43,9 @@ def oim_chart(municipio=None, year=None, portada=False):
         prefix = 'sub3tipoingreso'
     subsubtipoingreso__origen__id = '{}__origen__id'.format(prefix)
     subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
+    subsubtipoingreso__origen__slug = '{}__origen__slug'.format(prefix)
     subsubtipoingreso__origen__shortname = '{}__origen__shortname'.format(prefix)
+    subsubtipoingreso__origen__orden = '{}__origen__orden'.format(prefix)
 
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
@@ -432,30 +434,30 @@ def oim_chart(municipio=None, year=None, portada=False):
             filter(ingreso__anio=year,
                    ingreso__periodo=periodo). \
             exclude(tipoingreso_id=saldo_caja). \
-            values('subsubtipoingreso__origen__nombre'). \
-            order_by('subsubtipoingreso__origen__nombre'). \
+            values(subsubtipoingreso__origen__nombre). \
+            order_by(subsubtipoingreso__origen__nombre). \
             annotate(**{quesumar: Sum(quesumar)})
         tipos_inicial = IngresoDetalle.objects. \
             filter(ingreso__anio=year,
                    ingreso__periodo=PERIODO_INICIAL). \
             exclude(tipoingreso_id=saldo_caja). \
-            values('subsubtipoingreso__origen__nombre',
-                   'subsubtipoingreso__origen__slug',
-                   'subsubtipoingreso__origen__orden'). \
+            values(subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__slug,
+                   subsubtipoingreso__origen__orden). \
             annotate(asignado=Sum('asignado')). \
-            order_by('subsubtipoingreso__origen__orden')
+            order_by(subsubtipoingreso__origen__orden)
         tipos_final = IngresoDetalle.objects. \
             filter(ingreso__anio=year,
                    ingreso__periodo=periodo). \
             exclude(tipoingreso_id=saldo_caja). \
-            values('subsubtipoingreso__origen__nombre',
-                   'subsubtipoingreso__origen__nombre',
-                   'subsubtipoingreso__origen__orden'). \
+            values(subsubtipoingreso__origen__nombre,
+                   subsubtipoingreso__origen__slug,
+                   subsubtipoingreso__origen__orden). \
             annotate(ejecutado=Sum('ejecutado')). \
-            order_by('subsubtipoingreso__origen__orden')
+            order_by(subsubtipoingreso__origen__orden)
 
         sources = glue(tipos_inicial, tipos_final,
-                       'subsubtipoingreso__origen__nombre')
+                       subsubtipoingreso__origen__nombre)
         source_barra = IngresoDetalle.objects.filter(ingreso__periodo=periodo)
         source_barra2 = IngresoDetalle.objects.filter(
             ingreso__periodo=periodo, ingreso__anio__gt=year_list[-3])
@@ -1139,7 +1141,7 @@ def oim_chart(municipio=None, year=None, portada=False):
         charts = (pie, bar)
 
     ''  # ordenando origen de los recursos por campo orden
-    sources = sorted(sources, key=lambda i: i['subsubtipoingreso__origen__orden'])
+    sources = sorted(sources, key=lambda i: i[subsubtipoingreso__origen__orden])
 
     return {
         'charts': charts, 'year_data': year_data,
