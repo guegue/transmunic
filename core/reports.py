@@ -37,7 +37,7 @@ class PlanInversionModelReport(ReportAdmin):
         #'ficha',
         'self.porcentaje_ejecutado',
     ]
-    years = [(year, year) for year in range(2010, 2017)]
+    years = [(year, year) for year in range(2010, 2019)]
     periodos = [(None, '--'), ('I', 'Inicial'), ('A', 'Actualizado'), ('F', 'Final')]
     list_filter_widget = {
         'inversion__anio': Select(choices=years),
