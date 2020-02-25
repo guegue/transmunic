@@ -8,6 +8,8 @@ from core.models import (Profile, Organizacion, Anio, AnioTransferencia, Grafico
 # Register your models here.
 
 # Change default query
+
+
 class AdminForUserMixin:
 
     def get_queryset(self, request):
