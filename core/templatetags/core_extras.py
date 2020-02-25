@@ -16,11 +16,14 @@ def million(number):
 def keyvalue(dictionary, key):
     if dictionary.get(key):
         return(dictionary.get(key))
-    key = str(key)
-    if dictionary.get(key):
-        return dictionary.get(key)
-    if key.isdigit() and int(key) in dictionary:
-        return dict[int(key)]
+    str_key = str(key)
+    if dictionary.get(str_key):
+        return dictionary.get(str_key)
+    ukey = unicode(key)
+    if dictionary.get(ukey):
+        return dictionary.get(ukey)
+    if str_key.isdigit() and int(str_key) in dictionary:
+        return dict[int(str_key)]
     return 'KeyError'
 
 

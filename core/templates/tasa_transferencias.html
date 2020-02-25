@@ -336,7 +336,7 @@
                             <table class="table table-bordered mt-3">
                                 <thead>
                                 <tr class="bg-primary">
-                                    <th>Clase</th>
+                                    <th>Municipio</th>
                                     {% for periodo in periodos %}
                                         {% if not forloop.first %}
                                             <th>{{ periodo }}</th>
@@ -345,14 +345,14 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for clasificacion in clasificaciones %}
+                                {% for municipio in municipios %}
                                     <tr>
-                                        <td>{{ clasificacion }}</td>
-                                        {% for value in data_tasa_detalle|keyvalue:clasificacion|keyvalue:'total' %}
+                                        <td>{{ municipio }}</td>
+                                        {% for value in data_tasa_detalle|keyvalue:municipio|keyvalue:'total' %}
                                             {% if not forloop.first %}
-                                                <td class="text-right">{% if value != '' %}
+                                                <td class="text-right">
                                                     {{ value|floatformat:2 }}%
-                                                {% endif %}</td>
+                                                </td>
                                             {% endif %}
                                         {% endfor %}
                                     </tr>

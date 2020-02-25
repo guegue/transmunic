@@ -494,13 +494,6 @@ def getTransferenciasDetalle():
 
     data_inicial = list(data_inicial)
     data_final = list(data_final)
-
-    # llena con ceros años por si quedan vacios
-    #for year in iniciales:
-    #    data_inicial.append({'anio': year, 'corriente': 0, 'municipio': '', 'capital': 0})
-    #for year in finales:
-    #    data_final.append({'anio': year, 'corriente': 0, 'municipio': '', 'capital': 0})
-
     data = data_inicial + data_final
 
     for row in data:
@@ -777,18 +770,27 @@ def getPeriodosDetalle(datadata):
                 ultimo_anio[municipio] = total
         for municipio in municipios:
             if ultimo_anio.get(municipio) and ultimo_anio_previo.get(municipio):
-                tasa = (pow(ultimo_anio[municipio]['total'] /
+                if ultimo_anio_previo[municipio]['total']:
+                    tasa = (pow(ultimo_anio[municipio]['total'] /
                             ultimo_anio_previo[municipio]['total'],
                             Decimal(1.0 / anios))
-                        - 1) * 100
-                tasa_cr = (pow(ultimo_anio[municipio]['corriente'] /
-                               ultimo_anio_previo[municipio]['corriente'],
-                               Decimal(1.0 / anios))
-                           - 1) * 100
-                tasa_cp = (pow(ultimo_anio[municipio]['capital'] /
-                               ultimo_anio_previo[municipio]['capital'],
-                               Decimal(1.0 / anios))
-                           - 1) * 100
+                            - 1) * 100
+                else:
+                    tasa = 0
+                if ultimo_anio_previo[municipio]['corriente']:
+                    tasa_cr = (pow(ultimo_anio[municipio]['corriente'] /
+                                   ultimo_anio_previo[municipio]['corriente'],
+                                   Decimal(1.0 / anios))
+                               - 1) * 100
+                else:
+                    tasa_cr = 0
+                if ultimo_anio_previo[municipio]['capital']:
+                    tasa_cp = (pow(ultimo_anio[municipio]['capital'] /
+                                   ultimo_anio_previo[municipio]['capital'],
+                                   Decimal(1.0 / anios))
+                               - 1) * 100
+                else:
+                    tasa_cp = 0
                 data_tasa[periodo_key][municipio] = tasa
                 tasas[municipio]['total'].append(tasa)
                 tasas[municipio]['corriente'].append(tasa_cr)
