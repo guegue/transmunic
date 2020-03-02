@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^importar/$', UploadExcelView.as_view(), name='importar'),
     url(r'^renglon/ingresos/$', ReglonIngresosView.as_view(), name='rengloningreso'),
     url(r'^renglon/gastos/$', RenglonGastosView.as_view(), name='renglon-gasto'),
-    url(r'^resultado/(?P<table>ingreso|gasto|inversion)/(?P<pk>\d+)/$',
+    url(r'^resultado/(?P<table>ingreso|gasto|inversion|transferencia)/(?P<pk>\d+)/$',
         ResultadoDetailView.as_view(), name='importar-resultado'),
     url(r'^lista$', TemplateView.as_view(template_name='lista.html')),
     url(r'^organizaciones$', ListView.as_view(model=Organizacion)),

@@ -337,7 +337,7 @@ class IngresoQuerySet(models.QuerySet):
         return self
 
 class Ingreso(models.Model):
-    fecha = models.DateField(null=False)
+    fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
@@ -396,7 +396,7 @@ class GastoQuerySet(models.QuerySet):
         return self
 
 class Gasto(models.Model):
-    fecha = models.DateField(null=False)
+    fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
@@ -485,7 +485,7 @@ class Inversion(models.Model):
     departamento = models.ForeignKey(Departamento, null=True)
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
     nombremunic = models.CharField(max_length=250, null=True, blank=True)
-    fecha = models.DateField(null=False)
+    fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
 
@@ -576,7 +576,7 @@ class FuenteFmto(models.Model):
 
 # Ingresos del municipio
 class InversionFuente(models.Model):
-    fecha = models.DateField(null=False)
+    fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
@@ -611,7 +611,7 @@ class InversionFuenteDetalle(models.Model):
 class Transferencia(models.Model):
     departamento = models.ForeignKey(Departamento, null=True, blank=True)
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
-    fecha = models.DateField(null=False)
+    fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
     corriente = models.DecimalField(

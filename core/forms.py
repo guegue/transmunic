@@ -16,10 +16,11 @@ class UploadExcelForm(forms.Form):
     CHOICES = [('ingreso', u'Ingreso'), ('gasto', u'Gasto'), ('inversion', u'Inversión'),
                ('transferencia', u'Transferencias')]
     table = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required=True)
-    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(),
+    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(), required=False,
                                        empty_label="(Municipio)",
                                        widget=forms.ChoiceField.widget(
-                                           attrs={'class': "form-control required"})
+                                           attrs={'class': "form-control"})
+                                           #attrs={'class': "form-control required"})
                                        )
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
         attrs={'class': "form-control required"}),
