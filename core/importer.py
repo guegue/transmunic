@@ -14,7 +14,7 @@ from openpyxl import load_workbook
 from core.models import (Ingreso, IngresoDetalle, TipoIngreso, SubTipoIngreso, SubSubTipoIngreso,
                          Sub3TipoIngreso, IngresoRenglon, Gasto, GastoDetalle, TipoGasto,
                          SubTipoGasto, SubSubTipoGasto, GastoRenglon,
-                         Inversion, Proyecto, CatInversion)
+                         Inversion, Proyecto, CatInversion, Transferencia)
 from lugar.models import (Municipio)
 from core.forms import UploadExcelForm, RenglonForm
 from core.tools import xnumber
@@ -35,19 +35,41 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
               'gasto': {'main': Gasto, 'detalle': GastoDetalle, 'tipo': TipoGasto,
                         'subtipo': SubTipoGasto, 'subsubtipo': SubSubTipoGasto,
                         'renglon': GastoRenglon},
-              'inversion': {'main': Inversion, 'detalle': Proyecto, 'tipo': CatInversion}}
+              'inversion': {'main': Inversion, 'detalle': Proyecto, 'tipo': CatInversion},
+              'transferencia': {'main': Transferencia, },
+              }
     t = tables[table]
     book = load_workbook(filename=excel_file)
     sheet = book.active
     today = date.today()
     year = int(year)
+
+    # proceso para 'transferencia' es diferente, no hay main_object (o detalle)
+    if table == 'transferencia':
+        for row in sheet[start_row:end_row]:
+            municipio = Municipio.objects.filter(
+                nombre__unaccent__iexact=unicode(row[0].value)).first()
+            if not municipio:
+                municipio = Municipio.objects.filter(nombre=row[0].value).first()
+            if not municipio:
+                raise ObjectDoesNotExist(u'Municipio "%s" no existe' % (row[0].value,))
+
+            aobject, created = t['main'].objects.\
+                update_or_create(municipio=municipio,
+                                 anio=year,
+                                 periodo=periodo,
+                                 defaults={'fecha': today, 'corriente': xnumber(row[1].value),
+                                           'capital': xnumber(row[2].value)})
+        return aobject
+    # enf of 'transferencia' import
+
     main_object, created = t['main'].objects.\
         get_or_create(municipio=municipio,
                       anio=year,
                       periodo=periodo,
                       defaults={'fecha': today})
 
-    # proceso para 'inversion' es diferente
+    # proceso para 'inversion' es diferente, menos tablas relacionadas
     if table == 'inversion':
         for row in sheet[start_row:end_row]:
             if year >= 2018:
@@ -57,7 +79,7 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
                     catinversion = t['tipo'].objects.get(nombre=catinversion_str)
                 except ObjectDoesNotExist:
                     raise ObjectDoesNotExist(
-                        u'Categoría de Inversión %s no existe' % (catinversion_str,))
+                        u'Categoría de Inversión "%s" no existe' % (catinversion_str,))
 
                 nombre = unicode(row[1].value)
                 asignado = xnumber(row[3].value)
@@ -226,7 +248,7 @@ class UploadExcelView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        if hasattr(self.request.user, 'profile') and \
+        if data.get('municipio') and hasattr(self.request.user, 'profile') and \
                 self.request.user.profile.municipio != data['municipio']:
             raise PermissionDenied("Limite de municipio excedido {} <> {}.".
                                    format(self.request.user.profile.municipio, data['municipio']))
