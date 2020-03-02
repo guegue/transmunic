@@ -47,8 +47,8 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
     # proceso para 'transferencia' es diferente, no hay main_object (o detalle)
     if table == 'transferencia':
         for row in sheet[start_row:end_row]:
-            municipio = Municipio.objects.filter(\
-                    nombre__unaccent__iexact=unicode(row[0].value)).first()
+            municipio = Municipio.objects.filter(
+                nombre__unaccent__iexact=unicode(row[0].value)).first()
             if not municipio:
                 municipio = Municipio.objects.filter(nombre=row[0].value).first()
             if not municipio:
@@ -56,10 +56,10 @@ def import_file(excel_file, municipio, year, periodo, start_row, end_row, table)
 
             aobject, created = t['main'].objects.\
                 update_or_create(municipio=municipio,
-                    anio=year,
-                    periodo=periodo,
-                    defaults={'fecha': today, 'corriente': xnumber(row[1].value),
-                              'capital': xnumber(row[2].value)})
+                                 anio=year,
+                                 periodo=periodo,
+                                 defaults={'fecha': today, 'corriente': xnumber(row[1].value),
+                                           'capital': xnumber(row[2].value)})
         return aobject
     # enf of 'transferencia' import
 

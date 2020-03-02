@@ -20,11 +20,11 @@ class UploadExcelForm(forms.Form):
                                        empty_label="(Municipio)",
                                        widget=forms.ChoiceField.widget(
                                            attrs={'class': "form-control"})
-                                           #attrs={'class': "form-control required"})
+                                       # attrs={'class': "form-control required"})
                                        )
     year = forms.IntegerField(label=u"Año", widget=forms.IntegerField.widget(
         attrs={'class': "form-control required"}),
-                              initial=lambda: datetime.date.today().year, required=True)
+        initial=lambda: datetime.date.today().year, required=True)
     periodo = forms.ChoiceField(choices=PERIODO_CHOICES, widget=forms.ChoiceField.widget(
         attrs={'class': "form-control required"}), required=True)
     start_row = forms.IntegerField(min_value=1, max_value=1000,

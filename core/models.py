@@ -395,6 +395,7 @@ class GastoQuerySet(models.QuerySet):
             return self.filter(municipio=user.profile.municipio)
         return self
 
+
 class Gasto(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')

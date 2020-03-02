@@ -35,12 +35,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subsubtipogasto',
             name='clasificacion',
-            field=models.IntegerField(choices=[(0, b'Gasto Corriente'), (1, b'Gasto de Capital'), (2, b'Otra')], default=0, null=True),
+            field=models.IntegerField(
+                choices=[(0, b'Gasto Corriente'), (1, b'Gasto de Capital'), (2, b'Otra')], default=0, null=True),
         ),
         migrations.AlterField(
             model_name='tipogasto',
             name='clasificacion',
-            field=models.IntegerField(choices=[(0, b'Gasto Corriente'), (1, b'Gasto de Capital')], default=0, null=True),
+            field=models.IntegerField(
+                choices=[(0, b'Gasto Corriente'), (1, b'Gasto de Capital')], default=0, null=True),
         ),
         migrations.AlterField(
             model_name='transferencia',
