@@ -105,7 +105,8 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
 
     for record in source:
         try:
-            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
+            record['asignado'] = 0 if not source_asignado else source_asignado.filter(
+                catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
         except IndexError:
             record['asignado'] = 0
     data = RawDataPool(
@@ -129,7 +130,6 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
                   'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
               })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
-
 
 
 def fuentes_chart(municipio=None, year=None, portada=False):

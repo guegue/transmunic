@@ -364,7 +364,7 @@ class Ingreso(models.Model):
 
 class IngresoDetalleManager(models.Manager):
     def get_queryset(self):
-	return super(IngresoDetalleManager, self).get_queryset().filter(ingreso__aprobado=True)
+        return super(IngresoDetalleManager, self).get_queryset().filter(ingreso__aprobado=True)
 
 
 class IngresoDetalle(models.Model):
@@ -445,7 +445,7 @@ class GastoRenglon(models.Model):
 
 class GastoDetalleManager(models.Manager):
     def get_queryset(self):
-	return super(GastoDetalleManager, self).get_queryset().filter(gasto__aprobado=True)
+        return super(GastoDetalleManager, self).get_queryset().filter(gasto__aprobado=True)
 
 
 class GastoDetalle(models.Model):
@@ -521,7 +521,7 @@ class Inversion(models.Model):
 
 class ProyectoDetalleManager(models.Manager):
     def get_queryset(self):
-	return super(ProyectoDetalleManager, self).get_queryset().filter(inversion__aprobado=True)
+        return super(ProyectoDetalleManager, self).get_queryset().filter(inversion__aprobado=True)
 
 
 class Proyecto(models.Model):
