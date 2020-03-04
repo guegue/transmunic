@@ -345,6 +345,7 @@ class Ingreso(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+    aprobado = models.BooleanField(default=False)
 
     objects = IngresoQuerySet.as_manager()
 
@@ -405,6 +406,7 @@ class Gasto(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+    aprobado = models.BooleanField(default=False)
 
     objects = GastoQuerySet.as_manager()
 
@@ -489,6 +491,7 @@ class Inversion(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
+    aprobado = models.BooleanField(default=False)
 
     objects = InversionQuerySet.as_manager()
 
