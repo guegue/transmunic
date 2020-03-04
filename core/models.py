@@ -345,6 +345,7 @@ class Ingreso(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+    aprobado = models.BooleanField(default=False)
 
     objects = IngresoQuerySet.as_manager()
 
@@ -359,6 +360,11 @@ class Ingreso(models.Model):
         if not self.departamento_id and self.municipio_id:
             self.departamento_id = self.municipio.depto_id
         super(Ingreso, self).save(*args, **kwargs)
+
+
+class IngresoDetalleManager(models.Manager):
+    def get_queryset(self):
+        return super(IngresoDetalleManager, self).get_queryset().filter(ingreso__aprobado=True)
 
 
 class IngresoDetalle(models.Model):
@@ -377,6 +383,8 @@ class IngresoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
             max_digits=12, decimal_places=2, blank=False, null=False)
+
+    objects = IngresoDetalleManager()
 
     class Meta:
         unique_together = [['ingreso', 'codigo']]
@@ -405,6 +413,7 @@ class Gasto(models.Model):
         Municipio, chained_field='departamento',
         chained_model_field='depto')
     descripcion = models.TextField(blank=True, null=True)
+    aprobado = models.BooleanField(default=False)
 
     objects = GastoQuerySet.as_manager()
 
@@ -434,6 +443,11 @@ class GastoRenglon(models.Model):
         return u"{}: {}".format(self.codigo, self.nombre)
 
 
+class GastoDetalleManager(models.Manager):
+    def get_queryset(self):
+        return super(GastoDetalleManager, self).get_queryset().filter(gasto__aprobado=True)
+
+
 class GastoDetalle(models.Model):
     gasto = models.ForeignKey(Gasto)
     codigo = models.ForeignKey(GastoRenglon)
@@ -449,6 +463,8 @@ class GastoDetalle(models.Model):
             max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
             max_digits=12, decimal_places=2, blank=False, null=False)
+
+    objects = GastoDetalleManager()
 
     class Meta:
         unique_together = [['gasto', 'codigo']]
@@ -489,6 +505,7 @@ class Inversion(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
+    aprobado = models.BooleanField(default=False)
 
     objects = InversionQuerySet.as_manager()
 
@@ -500,6 +517,11 @@ class Inversion(models.Model):
 
     def __unicode__(self):
         return u"{}:{}:{}".format(self.anio, self.periodo, self.municipio)
+
+
+class ProyectoDetalleManager(models.Manager):
+    def get_queryset(self):
+        return super(ProyectoDetalleManager, self).get_queryset().filter(inversion__aprobado=True)
 
 
 class Proyecto(models.Model):
@@ -527,6 +549,8 @@ class Proyecto(models.Model):
     ejecutado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=False, null=False)
     ficha = models.FileField(upload_to='proyecto', blank=True, null=True)
+
+    objects = ProyectoDetalleManager()
 
     @property
     def porcentaje_ejecutado(self):

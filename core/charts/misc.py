@@ -94,57 +94,49 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
         quesumar = 'ejecutado'
 
     if municipio:
-        #source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
-        #source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
-        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__minimo__gt=0, inversion__municipio__slug=municipio).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo,
+                                                  catinversion__minimo__gt=0,
+                                                  inversion__municipio__slug=municipio
+                                                  ).values('catinversion__nombre'
+                                                           ).annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        #total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
-        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, inversion__municipio__slug=municipio).aggregate(total=Sum('asignado'))['total']
+        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo,
+                                                 inversion__municipio__slug=municipio
+                                                 ).aggregate(total=Sum('asignado'))['total']
     else:
         municipio = ''
-        #source_ejecutado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(ejecutado=Sum(quesumar))
-        #source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
-        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
+        source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo,
+                                                  catinversion__minimo__gt=0).values(
+            'catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
-        #total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
-        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(total=Sum('asignado'))['total'] / 100
+        total_asignado = (Proyecto.objects.filter(inversion__anio=year,
+                                                  inversion__periodo=periodo).aggregate(
+            total=Sum('asignado'))['total'] or 0) / 100
 
     for record in source:
-        #try:
-        #    record['ejecutado'] = 0 if not source_ejecutado else source_ejecutado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
-        #except IndexError:
-        #    record['ejecutado'] = 0
         try:
-            record['asignado'] = 0 if not source_asignado else source_asignado.filter(catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
+            record['asignado'] = 0 if not source_asignado else source_asignado.filter(
+                catinversion__nombre=record['nombre'])[0][quesumar] / total_asignado
         except IndexError:
             record['asignado'] = 0
-        #record['minimo'] = 0 if not total_asignado['total'] else total_asignado['total'] * (record['minimo']/100)
     data = RawDataPool(
-           series=
-            [{'options': {'source': source },
-              #'names': [u'Sector priorizado', u'Mínimo por ley', u'Ejecutado', u'Presupuestado'],
-              #'terms': ['nombre','minimo','ejecutado','asignado']
-              'names': [u'Sector priorizado', u'Mínimo por ley', u'Presupuestado'],
-              'terms': ['nombre', 'minimo', 'asignado']
-                }
-             ])
+        series=[{'options': {'source': source},
+                 'names': [u'Sector priorizado', u'Mínimo por ley', u'Presupuestado'],
+                 'terms': ['nombre', 'minimo', 'asignado']
+                 }
+                ])
 
     chart = Chart(
-            datasource = data,
-            series_options =
-              [{'options':{ 'type': 'column', },
-                  #'terms':{ 'nombre': [ 'asignado', 'ejecutado', 'minimo', ] },
-                  'terms':{ 'nombre': [ 'asignado', 'minimo', ] },
-                  #'terms':{ 'nombre': [ {'asignado': {'name':'Test', 'legendIndex': '1'} }, 'ejecutado', 'minimo', ] },
-              }],
-            chart_options =
-              {
-                  #grafico 5 de portada Arto 12
-                  'title': {'text': u' '},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>' },
-              })
+        datasource=data,
+        series_options=[{'options': {'type': 'column', },
+                         'terms': {'nombre': ['asignado', 'minimo', ]},
+                         }],
+        chart_options={
+            # grafico 5 de portada Arto 12
+            'title': {'text': u' '},
+            'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+        })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
-
 
 
 def fuentes_chart(municipio=None, year=None, portada=False):
