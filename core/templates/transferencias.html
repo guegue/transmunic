@@ -33,9 +33,11 @@
     <div class="container wide">
         <div class="row">
             {% if request.GET.municipio %}
-
+	        <h3>Evolución de la asignación según uso, municipio de {{ municipio }}</h3>
+                <h4>Millones de córdobas corrientes</h4>
+                <hr class="pma-line-1"/>
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <form class="navbar-form navbar-left">
+                    <form class="navbar-form navbar-right">
                         <p>
                             Elija el municipio: <select class="form-control" name="municipio2" id="municipio2">
                             <option value="">(Municipio)</option>
@@ -47,19 +49,16 @@
                         </p>
                     </form>
                 </div>
-
-                <h3>{{ municipio }}</h3>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <table class="table table-responsive table-bordered small-font">
                         <thead>
                         <tr class="bg-primary">
-                            <th class="fixed">Asignación Anual</th>
+                            <th class="fixed" rowspan=2>Asignación Anual</th>
                             {% for year in years %}
-                                {% ifchanged %}<th colspan="{{ year.span }}">{{ year.periodo }}<br>{{ year.partido }}</th>{% endifchanged %}
+                                {% ifchanged %}<th colspan="{{ year.span }}" class="text-center">{{ year.periodo }}<br>{{ year.partido }}</th>{% endifchanged %}
                             {% endfor %}
                         </tr>
                         <tr class="bg-primary">
-                            <th class="fixed">Asignación Anual</th>
                             {% for year in years %}
                                 <th>{{ year.year }}<br>{{ year.clasificacion }}</th>
                             {% endfor %}
@@ -77,11 +76,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <div id="stacked_chart"></div>
                 </div>
                 {% if request.GET.municipio2 %}
-                    <h3>{{ municipio2 }}</h3>
+		    <div class="mt-3">
+	            <h3>Evolución de la asignación según uso, municipio de {{ municipio2 }}</h3>
+                    <h4>Millones de córdobas corrientes</h4>
+                    <hr class="pma-line-1"/>
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <table class="table table-responsive table-bordered small-font">
                             <thead>
@@ -107,6 +109,7 @@
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <div id="stacked_chart2"></div>
                     </div>
+		    </div>
                 {% endif %}
             {% else %}
                 <h3>Evolución de la asignación según uso y por grupo de municipios</h3>
