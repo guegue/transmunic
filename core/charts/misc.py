@@ -143,7 +143,7 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
         chart_options={
             # grafico 5 de portada Arto 12
             'title': {'text': u' '},
-                  'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
+            'tooltip': {'pointFormat': '{series.name}: <b>{point.y:.2f}%</b>'},
         })
     return {'charts': (chart,), 'year_list': year_list, 'municipio_list': municipio_list}
 
