@@ -107,7 +107,7 @@ def inversion_minima_sector_chart(municipio=None, year=None, portada=False):
         source_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, catinversion__minimo__gt=0).values('catinversion__nombre').annotate(asignado=Sum('asignado'))
         source = CatInversion.objects.filter(minimo__gt=0).values('nombre', 'minimo',)
         #total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).aggregate(total=Sum('asignado'))['total'] / 100
-        total_asignado = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(total=Sum('asignado'))['total'] / 100
+        total_asignado = (Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(total=Sum('asignado'))['total'] or 0) / 100
 
     for record in source:
         #try:
