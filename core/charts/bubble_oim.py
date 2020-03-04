@@ -32,7 +32,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             on id.ingreso_id = i.id
             left join core_subsubtipoingreso as ssti
             on id.subsubtipoingreso_id=ssti.codigo
-            where i.anio = %s
+            where i.aprobado AND i.anio = %s
             and i.periodo = %s
             and i.municipio_id = %s
             and id.tipoingreso_id != %s
@@ -65,7 +65,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 left join core_ingreso as i on id.ingreso_id = i.id
                 left join core_subsubtipoingreso as ssti
                 on id.subsubtipoingreso_id=ssti.codigo
-                where i.anio = %s
+                where i.aprobado AND i.anio = %s
                 and i.periodo = %s
                 and i.municipio_id = %s
                 and id.tipoingreso_id != %s
@@ -102,7 +102,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     on id.subsubtipoingreso_id=ssti.codigo
                     left join core_subtipoingreso as sti
                     on sti.codigo= ssti.subtipoingreso_id
-                    where i.anio = %s
+                    where i.aprobado AND i.anio = %s
                     and i.periodo = %s
                     and i.municipio_id = %s
                     and id.tipoingreso_id != %s
@@ -135,7 +135,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 left join core_ingreso as i on id.ingreso_id = i.id
                 left join core_subsubtipoingreso as ssti
                 on id.subsubtipoingreso_id=ssti.codigo
-                where i.anio = %s
+                where i.aprobado AND i.anio = %s
                 and i.periodo = %s
                 and id.tipoingreso_id != %s
                 and origen_id is not null) as sd
@@ -159,7 +159,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 left join core_ingreso as i on id.ingreso_id = i.id
                 left join core_subsubtipoingreso as ssti
                 on id.subsubtipoingreso_id=ssti.codigo
-                where i.anio = %s
+                where i.aprobado AND i.anio = %s
                 and i.periodo = %s
                 and id.tipoingreso_id != %s
                 and origen_id is not null) as sd
@@ -192,7 +192,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                     on id.subsubtipoingreso_id=ssti.codigo
                     left join core_subtipoingreso as sti
                     on sti.codigo= ssti.subtipoingreso_id
-                    where i.anio = %s
+                    where i.aprobado AND i.anio = %s
                     and i.periodo = %s
                     and id.tipoingreso_id != %s
                     and ssti.origen_id = '%s') as sd

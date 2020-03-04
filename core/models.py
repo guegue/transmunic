@@ -371,12 +371,8 @@ class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso)
     codigo = models.ForeignKey(IngresoRenglon)
     tipoingreso = models.ForeignKey(TipoIngreso)
-    subtipoingreso = ChainedForeignKey(
-            SubTipoIngreso, chained_field='tipoingreso',
-            chained_model_field='tipoingreso', null=True, blank=True)
-    subsubtipoingreso = ChainedForeignKey(
-            SubSubTipoIngreso, chained_field='subtipoingreso',
-            chained_model_field='subtipoingreso', null=True, blank=True)
+    subtipoingreso = models.ForeignKey(SubTipoIngreso, null=True, blank=True)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True)
     sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
@@ -384,6 +380,7 @@ class IngresoDetalle(models.Model):
     ejecutado = models.DecimalField(
             max_digits=12, decimal_places=2, blank=False, null=False)
 
+    default_objects = models.Manager()
     objects = IngresoDetalleManager()
 
     class Meta:
@@ -464,6 +461,7 @@ class GastoDetalle(models.Model):
     ejecutado = models.DecimalField(
             max_digits=12, decimal_places=2, blank=False, null=False)
 
+    default_objects = models.Manager()
     objects = GastoDetalleManager()
 
     class Meta:
@@ -550,6 +548,7 @@ class Proyecto(models.Model):
         max_digits=12, decimal_places=2, blank=False, null=False)
     ficha = models.FileField(upload_to='proyecto', blank=True, null=True)
 
+    default_objects = models.Manager()
     objects = ProyectoDetalleManager()
 
     @property
