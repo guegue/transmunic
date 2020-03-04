@@ -564,7 +564,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
                 ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
                 ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
-                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                WHERE core_Ingreso.aprobado AND\
+                core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
                 AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) AS {quesumar}_total,\
                 (SELECT SUM(poblacion) FROM lugar_poblacion JOIN lugar_clasificacionmunicano\
                 ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
@@ -576,7 +577,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
                 ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
                 ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
-                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                WHERE core_Ingreso.aprobado AND\
+                core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
                 AND lugar_clasificacionmunicano.clasificacion_id=clase.id )/(SELECT SUM(poblacion)\
                 FROM lugar_poblacion JOIN lugar_clasificacionmunicano ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
                 AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
@@ -618,7 +620,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
                 ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
                 ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
-                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                WHERE core_Ingreso.aprobado AND\
+                core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
                 AND lugar_clasificacionmunicano.clasificacion_id=clase.id ) AS {quesumar}_total,\
                 (SELECT SUM(poblacion) FROM lugar_poblacion JOIN lugar_clasificacionmunicano\
                 ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
@@ -630,7 +633,8 @@ def oim_chart(municipio=None, year=None, portada=False):
                 JOIN core_subsubtipoingreso ON core_IngresoDetalle.subsubtipoingreso_id=core_subsubtipoingreso.codigo JOIN core_origenrecurso\
                 ON core_subsubtipoingreso.origen_id=core_origenrecurso.id JOIN lugar_clasificacionmunicano\
                 ON core_Ingreso.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Ingreso.anio=lugar_clasificacionmunicano.anio\
-                WHERE core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
+                WHERE core_Ingreso.aprobado AND\
+                core_origenrecurso.id={recaudacion} AND core_Ingreso.anio={year} AND core_Ingreso.periodo='{periodo}'\
                 AND lugar_clasificacionmunicano.clasificacion_id=clase.id )/(SELECT SUM(poblacion)\
                 FROM lugar_poblacion JOIN lugar_clasificacionmunicano ON lugar_poblacion.municipio_id=lugar_clasificacionmunicano.municipio_id\
                 AND lugar_poblacion.anio=lugar_clasificacionmunicano.anio\
