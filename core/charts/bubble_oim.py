@@ -2,7 +2,7 @@
 import json
 
 from django.db import connection
-from core.tools import getYears, dictfetchall
+from core.tools import getYears, dictfetchall, xnumber
 from core.models import Ingreso, Anio, PERIODO_INICIAL
 from lugar.models import Municipio
 
@@ -46,7 +46,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         if totals[0][data_source] is not None:
             data = {
                 'label': "Ingresos Totales",
-                'amount': round(totals[0][data_source]/1000000, 2)
+                'amount': round(xnumber(totals[0][data_source]) / 1000000,
+                                2)
             }
         else:
             data = {
@@ -83,7 +84,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 'name': source['id'],
                 'id': source['id'],
                 'label': source['shortname'] if source['shortname'] else source['nombre'],
-                'amount': round(source[data_source]/1000000, 2)
+                'amount': round(xnumber(source[data_source]) / 1000000,
+                                2)
             }
 
             child_l2 = []
@@ -117,7 +119,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             for subtype in subtype_list:
                 subtype_data = {
                     'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
-                    'amount': round(subtype[data_source]/1000000, 2)
+                    'amount': round(xnumber(subtype[data_source]) / 1000000,
+                                    2)
                     }
 
                 child_l2.append(subtype_data)
@@ -145,7 +148,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         totals = dictfetchall(cursor)
         data = {
             'label': "Ingresos Totales",
-            'amount': round((totals[0][data_source] or 0)/1000000, 2)
+            'amount': round(xnumber(totals[0][data_source]) / 1000000,
+                            2)
         }
 
         child_l1 = []
@@ -175,7 +179,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 'name': source['id'],
                 'id': source['id'],
                 'label': source['shortname'] if source['shortname'] else source['nombre'],
-                'amount': round(source[data_source]/1000000, 2)
+                'amount': round(xnumber(source[data_source]) / 1000000,
+                                2)
                 }
             child_l2 = []
             level_2_sql = """select sum(sd.asignado) as asignado,
@@ -206,7 +211,8 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
             for subtype in subtype_list:
                 subtype_data = {
                     'label': subtype['shortname'] if subtype['shortname'] else subtype['nombre'],
-                    'amount': round(subtype[data_source]/1000000, 2)
+                    'amount': round(xnumber(subtype[data_source]) / 1000000,
+                                    2)
                 }
 
                 child_l2.append(subtype_data)
