@@ -19,7 +19,8 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
+from core.tools import (getYears, getPeriods, dictfetchall,
+                        glue, superglue, xnumber)
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 
@@ -876,7 +877,8 @@ def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):
             .aggregate(total=Sum(amount_column))
     data = {
         'label': "Gasto de Personal",
-        'amount': round(amount['total']/1000000, 2)
+        'amount': round(xnumber(amount['total']) / 1000000,
+                        2)
         }
     children = []
     for idx, child in enumerate(tipos):
@@ -906,7 +908,8 @@ def personal_bubbletree_data_gasto(municipio=None, year=None, portada=False):
             'id': idx,
             'name': idx,
             'label': label,
-            'amount': round(child['amount']/1000000, 2)
+            'amount': round(xnumber(child['amount']) / 1000000,
+                            2)
             }
         children.append(child_data)
     data['children'] = children
