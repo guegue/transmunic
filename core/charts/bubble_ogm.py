@@ -87,7 +87,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                 'name': source['id'],
                 'id': source['id'],
                 'label': label,
-                'amount': round(source[data_source]/1000000, 2)
+                'amount': round(xnumber(source[data_source]) / 1000000,
+                                2)
                 }
             child_l2 = []
             level_2_sql = """select sum(sd.asignado) as asignado,
@@ -124,7 +125,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     label = subtype['nombre']
                 subtype_data = {
                     'label': label,
-                    'amount': round(subtype[data_source]/1000000, 2)
+                    'amount': round(xnumber(subtype[data_source]) / 1000000,
+                                    2)
                     }
                 child_l2.append(subtype_data)
             source_data['children'] = child_l2
@@ -151,7 +153,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
         totals = dictfetchall(cursor)
         data = {
             'label': "Gastos Totales",
-            'amount': round(totals[0][data_source]/1000000, 2)
+            'amount': round(xnumber(totals[0][data_source]) / 1000000,
+                            2)
             }
         child_l1 = []
         level_1_sql = """select sum(sd.asignado) as asignado,
@@ -185,7 +188,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                 'name': source['id'],
                 'id': source['id'],
                 'label': label,
-                'amount': round(source[data_source]/1000000, 2)
+                'amount': round(xnumber(source[data_source]) / 1000000,
+                                2)
                 }
             child_l2 = []
             level_2_sql = """select sum(sd.asignado) as asignado,
@@ -223,7 +227,8 @@ def ogm_bubble_chart_data(municipio=None, year=None, portada=False):
                     label = subtype['nombre']
                 subtype_data = {
                     'label': label,
-                    'amount': round(subtype[data_source]/1000000, 2)
+                    'amount': round(xnumber(subtype[data_source]) / 1000000,
+                                    2)
                     }
 
                 child_l2.append(subtype_data)

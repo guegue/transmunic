@@ -354,8 +354,10 @@
                         <td>TOTAL</td>
                         <td class="text-right">{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
                         <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% with total_sum_asignado=anuales|total_sum:'asignado' %}</td>
-                            <td class="text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                        {% with total_sum_asignado=anuales|total_sum:'asignado' %}
+                            {% if total_sum_asignado %}
+                                <td class="text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
+                            {% endif %}
                         {% endwith %}
                     </tr>
                 </table>

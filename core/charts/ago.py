@@ -13,7 +13,8 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE, CLASIFICACION_VERBOSE
-from core.tools import getYears, getPeriods, dictfetchall, glue, superglue
+from core.tools import (getYears, getPeriods, dictfetchall,
+                        glue, superglue, xnumber)
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 
@@ -535,7 +536,8 @@ def aci_bubbletree_data_ingreso(
 
     data = {
         'label': "Ingreso Corriente",
-        'amount': round((amount['total'] or 0)/1000000, 2)
+        'amount': round(xnumber(amount['total']) / 1000000,
+                        2)
         }
     children = []
     for idx, child in enumerate(tipos):
@@ -570,7 +572,8 @@ def aci_bubbletree_data_ingreso(
                 'id': '{}.{}'.format(idx, ix),
                 'name': '{}.{}'.format(idx, ix),
                 'label': label,
-                'amount': round(grandchild['amount']/1000000, 2)
+                'amount': round(xnumber(grandchild['amount']) / 1000000,
+                                2)
             }
             grandchildren.append(grandchild_data)
         if child['tipoingreso__shortname']:
@@ -582,7 +585,8 @@ def aci_bubbletree_data_ingreso(
             'id': idx,
             'name': idx,
             'label': label,
-            'amount': round(child['amount']/1000000, 2),
+            'amount': round(xnumber(child['amount']) / 1000000,
+                            2),
         }
         if grandchildren.__len__() > 3 :
             child_data['children'] = grandchildren
@@ -628,7 +632,8 @@ def aci_bubbletree_data_gasto(
             .annotate(amount=Sum(amount_column))
     data = {
         'label': "Gasto Corriente",
-        'amount': round((amount['total'] or 0)/1000000, 2)
+        'amount': round(xnumber(amount['total']) / 1000000,
+                        2)
         }
     children = []
     for idx, child in enumerate(tipos):
@@ -659,7 +664,8 @@ def aci_bubbletree_data_gasto(
                 'id': '{}.{}'.format(idx, ix),
                 'name': '{}.{}'.format(idx, ix),
                 'label': label,
-                'amount': round(grandchild['amount']/1000000, 2)
+                'amount': round(xnumber(grandchild['amount']) / 1000000,
+                                2)
             }
             grandchildren.append(grandchild_data)
         if child['tipogasto__shortname']:
@@ -671,7 +677,8 @@ def aci_bubbletree_data_gasto(
             'id': idx,
             'name': idx,
             'label': label,
-            'amount': round(child['amount']/1000000, 2),
+            'amount': round(xnumber(child['amount']) / 1000000,
+                            2),
             'children': grandchildren
             }
         children.append(child_data)
