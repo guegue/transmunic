@@ -693,7 +693,7 @@ def aci_bubbletree_data_ingreso(municipio=None, year=None, portada=False):
             .aggregate(total=Sum(amount_column))
     data = {
         'label': "Ingreso Corriente",
-        'amount': round(amount['total']/1000000, 2)
+        'amount': round((amount['total'] or 0)/1000000, 2)
         }
     children = []
     for idx, child in enumerate(tipos):
@@ -780,7 +780,7 @@ def aci_bubbletree_data_gasto(municipio=None, year=None, portada=False):
             .aggregate(total=Sum(amount_column))
     data = {
         'label': "Gasto Corriente",
-        'amount': round(amount['total']/1000000, 2)
+        'amount': round((amount['total'] or 0)/1000000, 2)
         }
     children = []
     for idx, child in enumerate(tipos):
