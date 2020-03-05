@@ -145,7 +145,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
         totals = dictfetchall(cursor)
         data = {
             'label': "Ingresos Totales",
-            'amount': round(totals[0][data_source]/1000000, 2)
+            'amount': round((totals[0][data_source] or 0)/1000000, 2)
         }
 
         child_l1 = []
