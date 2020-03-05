@@ -793,8 +793,10 @@
                                 <td class="text-right">{{ anuales|total_sum:'ejecutado'|million }}</td>
                                 <td class="montos">
                                     {% with total_sum_asignado=anuales|total_sum:'asignado' %}
-                                        {{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}
-                                        %
+                                        {% if total_sum_asignado %}
+                                            {{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}
+                                            %
+                                        {% endif %}
                                     {% endwith %}
                                 </td>
                             </tr>
