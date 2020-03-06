@@ -198,7 +198,9 @@ def graphChart(parameters):
             'tooltip': {
                 'pointFormat': parameters.get('pointFormat'),
             }
-        })
+        },
+        x_sortf_mapf_mts=(None, None, False, True),
+    )
 
     return bar_chart
 
