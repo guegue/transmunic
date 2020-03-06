@@ -148,7 +148,7 @@ def dictfetchall(cursor):
     ]
 
 
-def graphBarChart(parameters):
+def graphChart(parameters):
 
     data_bar = RawDataPool(
         series=[
@@ -168,7 +168,7 @@ def graphBarChart(parameters):
         series_options=[
             {
                 'options': {
-                    'type': 'column',
+                    'type': parameters.get('typechart'),
                     'colorByPoint': True,
                 },
                 'terms': {
@@ -194,6 +194,9 @@ def graphBarChart(parameters):
                 'title': {
                     'text': parameters.get('labelY_axis')
                 }
+            },
+            'tooltip': {
+                'pointFormat': parameters.pointFormat,
             }
         })
 
