@@ -246,7 +246,7 @@
                                         <strong>
                                             Cierre
                                             {% if periodo_list|keyvalue:year == 'I' %}
-                                                0 M. de C&oacute;rdobas 
+                                                0 M. de C&oacute;rdobas
                                             {% else %}
                                                 {{ ejecutado|million|intcomma }} M. de C&oacute;rdobas
                                                 {% if ejecutado_percent %}
@@ -289,27 +289,31 @@
                 {% block charts %}
                     {% if indicator != 'gf' %}
                         <div class="col-xs-12 col-sm-12 col-md-7">
-                            <div class="chart-update col-xs-12 col-sm-12 col-md-1 text-right">
+                            {% if rubros|length > 0 %}
+                                <div class="chart-update col-xs-12 col-sm-12 col-md-1 text-right">
                             <span class="pma-icon pe-7s-bubble pma-fg-gray toggle-chart"
                                   aria-hidden="true" id="chart-bubble-1"
                                   data-chartcontainer="bubble-1">
                             </span>
-                                <span id="chart-pie-1"
-                                      class="pma-icon pe-7s-graph pma-fg-gray toggle-chart"
-                                      data-chartcontainer="pie">
+                                    <span id="chart-pie-1"
+                                          class="pma-icon pe-7s-graph pma-fg-gray toggle-chart"
+                                          data-chartcontainer="pie">
                             </span>
-                                <span id="chart-bar-1"
-                                      class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart"
-                                      data-chartcontainer="bar">
+                                    <span id="chart-bar-1"
+                                          class="pma-icon pe-7s-graph3 pma-fg-gray toggle-chart"
+                                          data-chartcontainer="bar">
                             </span>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-11 bubbletree-container chart-container">
-                                <div id="bubble-1" class="bubbletree-wrapper view-main">
-                                    <div class="bubbletree"></div>
                                 </div>
-                                <div id='pie' class="view-alternative"> Chart will be rendered here</div>
-                                <div id='bar' class="view-alternative"> Chart will be rendered here</div>
-                            </div>
+                                <div class="col-xs-12 col-sm-12 col-md-11 bubbletree-container chart-container">
+                                    <div id="bubble-1" class="bubbletree-wrapper view-main">
+                                        <div class="bubbletree"></div>
+                                    </div>
+                                    <div id='pie' class="view-alternative"> Chart will be rendered here</div>
+                                    <div id='bar' class="view-alternative"> Chart will be rendered here</div>
+                                </div>
+                            {% else %}
+                                <h3>Información no disponible.</h3>
+                            {% endif %}
                         </div>
                     {% endif %}
                 {% endblock %}
