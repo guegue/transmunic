@@ -196,7 +196,7 @@ def graphChart(parameters):
                 }
             },
             'tooltip': {
-                'pointFormat': parameters.pointFormat,
+                'pointFormat': parameters.get('pointFormat'),
             }
         })
 
