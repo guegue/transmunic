@@ -720,7 +720,7 @@ def gpersonal_chart(request):
             'field2': '{}_percent'.format(quesumar),
             'typechart': 'bar',
             'title': "Ranking de Municipios Categoría '{}'".
-                format(mi_clase.clasificacion),
+            format(mi_clase.clasificacion),
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
             'pointFormat': '<span>Porcentaje del gasto total</span>:<b>{point.y}%</b>',

@@ -367,7 +367,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'field2': quesumar,
             'typechart': 'bar',
             'title': "Ranking de Municipios Categoría '{}'".
-                format(mi_clase.clasificacion),
+            format(mi_clase.clasificacion),
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
             'pointFormat': '<span>'+quesumar+'</span>:<b>{point.y:.2f}%</b>',

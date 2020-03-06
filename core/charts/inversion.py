@@ -780,7 +780,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             'field2': '{}_percent'.format(quesumar),
             'typechart': 'bar',
             'title': "Ranking de Municipios Categoría '{}'".
-                format(mi_clase.clasificacion),
+            format(mi_clase.clasificacion),
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Gasto por habitante',
             'pointFormat': '<span>Inversion Asignada</span>:<b>{point.y}</b>',

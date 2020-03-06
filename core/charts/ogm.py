@@ -845,7 +845,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             'field2': '{}_percent'.format(quesumar),
             'typechart': 'bar',
             'title': "Ranking de Municipio Categoría '{}'".
-                    format(mi_clase.clasificacion),
+            format(mi_clase.clasificacion),
             'labelX_axis': 'Categoria',
             'labelY_axis': 'Gasto por habitante',
             'pointFormat': '<span>Gasto Inicial</span>:<b>{point.y}</b>',
