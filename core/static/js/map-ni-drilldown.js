@@ -1,14 +1,14 @@
-$(function() {
+$(function () {
     var data = Highcharts.geojson(Highcharts.maps['countries/ni/ni-all']),
         // Some responsiveness
         small = $('#nic-map-container').width() < 400;
 
     // Set drilldown pointers
-    $.each(data, function(i) {
+    $.each(data, function (i) {
         this.drilldown = this.properties['hc-key'];
         this.value = i; // Non-random bogus data
     });
-    $.each(ni_custom_data[0]['data'], function(i) {
+    $.each(ni_custom_data[0]['data'], function (i) {
         if (this.properties !== undefined) {
             this.drilldown = this.properties['hc-key'];
             this.name = this.properties['name'];
@@ -29,17 +29,17 @@ $(function() {
                 fontFamily: '"Raleway",sans-serif'
             },
             events: {
-                drilldown: function(e) {
+                drilldown: function (e) {
                     if (!e.seriesOptions) {
                         var chart = this;
                         mapkey = '/static/maps/' + e.point.drilldown;
-                        $.get(mapkey + '.json', function(data) {
-                            $.each(data, function(i) {
+                        $.get(mapkey + '.json', function (data) {
+                            $.each(data, function (i) {
                                 this.value = i;
                                 this.cursor = 'pointer';
                             });
                             chart.showLoading('<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>');
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 chart.hideLoading();
                                 chart.addSeriesAsDrilldown(e.point, {
                                     name: e.point.name,
@@ -51,11 +51,13 @@ $(function() {
                                         overflow: 'none',
                                         format: '{point.name}'
                                     },
+                                    tooltip: {
+                                        headerFormat: '<small>{series.name}</small>',
+                                        pointFormat: '<br><span>{point.name}</span>'
+                                    },
                                     events: {
                                         click: function (e) {
-                                            // console.log(e.point);
                                             location.href = '/municipio/' + e.point.slug;
-                                            //location.href = '/core/oim?year=2015&municipio=' + e.point.slug;
                                         }
                                     },
                                     states: {
@@ -72,12 +74,16 @@ $(function() {
                         text: e.point.name
                     });
                 },
-                drillup: function() {
+                drillup: function () {
                     this.setTitle('Regresar a ', {
                         text: 'Nicaragua'
                     });
                 }
             }
+        },
+        tooltip: {
+            headerFormat: '',
+            pointFormat: '<span>{point.name}</span>'
         },
         title: {
             text: '<b>Presupuesto</b> Municipal',
@@ -122,7 +128,7 @@ $(function() {
                     allowOverlap: true,
                     overflow: 'none',
                     cursor: 'pointer'
-                }   
+                }
             }
         },
         series: ni_custom_data,
@@ -149,14 +155,14 @@ $(function() {
             downloadSVG: "Descargar SVG",
             drillUpText: "↩ Regresar",
             loading: "Cargando...",
-            months: [ "January" , "February" , "March" , "April" , "May" , "June" , "July" , "August", "September" , "October" , "November" , "December"],
+            months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             noData: "No hay datos que mostrar",
             numericSymbolMagnitude: 1000,
-            numericSymbols: [ "k" , "M" , "G" , "T" , "P" , "E"],
+            numericSymbols: ["k", "M", "G", "T", "P", "E"],
             printChart: "Imprimir gráfico",
             resetZoom: "Restablecer zoom",
             resetZoomTitle: "Restablecer nivel de zoom 1:1",
-            shortMonths: [ "Jan" , "Feb" , "Mar" , "Apr" , "May" , "Jun" , "Jul" , "Aug" , "Sep" , "Oct" , "Nov" , "Dec"],
+            shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
             thousandsSep: " ",
             weekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         }

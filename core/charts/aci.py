@@ -18,7 +18,8 @@ from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, \
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
     PERIODO_VERBOSE
 from core.tools import (getYears, getPeriods, dictfetchall,
-                        glue, superglue, xnumber)
+                        glue, superglue, xnumber,
+                        graphChart)
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 from operator import itemgetter
@@ -522,98 +523,31 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     bar_horizontal = None
     # bar horizontal
     if otros:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': otros},
-                    'terms': [
-                        'nombre',
-                        quesumar
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'bar',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'nombre': [
-                            quesumar
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'colors': colors_array,
-                'title': {
-                    'text': "Ranking de Municipios Categoría '{}'".
-                    format(mi_clase.clasificacion)
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Municipio'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Recaudación por habitante en córdobas corrientes'
-                    }
-                },
-            },
-            x_sortf_mapf_mts=(None, None, False, True),
-        )
+        parameters = {
+            'data': otros,
+            'field1': 'nombre',
+            'field2': quesumar,
+            'typechart': 'bar',
+            'title': "Ranking de Municipios Categoría '{}'".
+            format(mi_clase.clasificacion),
+            'labelX_axis': 'Municipio',
+            'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
+            'pointFormat': '<span>' + quesumar.capitalize() +
+                           '</span>:<b>{point.y:.2f}</b>',
+        }
+        bar_horizontal = graphChart(parameters)
     elif porclasep:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': porclasep},
-                    'terms': [
-                        'clasificacion',
-                        quesumar
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'clasificacion': [
-                            quesumar
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'colors': colors_array,
-                'title': {
-                    'text': 'Recaudación percápita'
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Grupos'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Córdobas'
-                    }
-                }
-            })
+        parameters = {
+            'data': porclasep,
+            'field1': 'clasificacion',
+            'field2': quesumar,
+            'typechart': 'column',
+            'title': 'Recaudación percápita',
+            'labelX_axis': 'Grupos',
+            'labelY_axis': 'Córdobas',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}</b>',
+        }
+        bar_horizontal = graphChart(parameters)
 
     bubble_data_ingreso = aci_bubbletree_data_ingreso(municipio, year, portada)
     bubble_data_gasto = aci_bubbletree_data_gasto(municipio, year, portada)

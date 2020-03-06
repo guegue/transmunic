@@ -11,8 +11,8 @@ from core.models import (Anio, Proyecto, Inversion, Municipio,
                          InversionFuenteDetalle, PERIODO_INICIAL,
                          PERIODO_ACTUALIZADO, PERIODO_FINAL,
                          AREAGEOGRAFICA_VERBOSE)
-from core.tools import (getYears, getPeriods, dictfetchall, glue, superglue, percentage,
-                        xnumber)
+from core.tools import (getYears, getPeriods, dictfetchall, glue,
+                        superglue, percentage, xnumber, graphChart)
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -774,94 +774,30 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
     # bar horizontal
     if otros:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': otros},
-                    'terms': [
-                        'inversion__municipio__nombre',
-                        '{}_percent'.format(quesumar)
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'bar',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'inversion__municipio__nombre': [
-                            '{}_percent'.format(quesumar)
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'title': {
-                    'text': "Ranking de Municipio Categoría '{}'".
-                    format(mi_clase.clasificacion)
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Municipio'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Gasto por habitante'
-                    }
-                }
-            })
+        parameters = {
+            'data': otros,
+            'field1': 'inversion__municipio__nombre',
+            'field2': '{}_percent'.format(quesumar),
+            'typechart': 'bar',
+            'title': "Ranking de Municipios Categoría '{}'".
+            format(mi_clase.clasificacion),
+            'labelX_axis': 'Municipio',
+            'labelY_axis': 'Gasto por habitante',
+            'pointFormat': '<span>Inversion Asignada</span>:<b>{point.y}</b>',
+        }
+        bar_horizontal = graphChart(parameters)
     elif porclasep:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': porclasep},
-                    'terms': [
-                        'clasificacion',
-                        quesumar
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'clasificacion': [
-                            quesumar
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'title': {
-                    'text': 'Inversión percápita'
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Grupos'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Córdobas'
-                    }
-                }
-            })
+        parameters = {
+            'data': porclasep,
+            'field1': 'clasificacion',
+            'field2': quesumar,
+            'typechart': 'column',
+            'title': 'Inversión percápita',
+            'labelX_axis': 'Grupos',
+            'labelY_axis': 'Córdobas',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}</b>',
+        }
+        bar_horizontal = graphChart(parameters)
 
     # tabla: get total and percent
     total = {}

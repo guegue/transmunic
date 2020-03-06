@@ -20,7 +20,9 @@ from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
-from core.tools import getYears, getPeriods, dictfetchall, glue, superglue, percentage
+from core.tools import (getYears, getPeriods, dictfetchall,
+                        glue, superglue, percentage,
+                        graphChart)
 from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
 from lugar.models import ClasificacionMunicAno
@@ -717,98 +719,30 @@ def gf_chart(request):
 
     bar_horizontal = None
     if otros:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': otros},
-                    'terms': [
-                        'gasto__municipio__nombre',
-                        '{}_percent'.format(quesumar)
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'bar',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'gasto__municipio__nombre': [
-                            '{}_percent'.format(quesumar)
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'colors': colors_array,
-                'title': {
-                    'text': "Ranking de Municipios Categoría '{}'".
-                    format(mi_clase.clasificacion)
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Municipio'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Recaudación por habitante en córdobas corrientes'
-                    }
-                },
-            },
-            x_sortf_mapf_mts=(None, None, False, True),
-        )
+        parameters = {
+            'data': otros,
+            'field1': 'gasto__municipio__nombre',
+            'field2': '{}_percent'.format(quesumar),
+            'typechart': 'bar',
+            'title': "Ranking de Municipios Categoría '{}'".
+            format(mi_clase.clasificacion),
+            'labelX_axis': 'Municipio',
+            'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
+            'pointFormat': '<span>Presupuesto Inicial</span>:<b>{point.y}</b>',
+        }
+        bar_horizontal = graphChart(parameters)
     elif porclasep:
-        data_bar_horizontal = RawDataPool(
-            series=[
-                {
-                    'options': {'source': porclasep},
-                    'terms': [
-                        'clasificacion',
-                        quesumar
-                    ]
-                }
-            ]
-        )
-        bar_horizontal = Chart(
-            datasource=data_bar_horizontal,
-            series_options=[
-                {
-                    'options': {
-                        'type': 'column',
-                        'colorByPoint': True,
-                    },
-                    'terms': {
-                        'clasificacion': [
-                            quesumar
-                        ]
-                    },
-                }],
-            chart_options={
-                'legend': {
-                    'enabled': False
-                },
-                'colors': colors_array,
-                'title': {
-                    'text': 'Porcentaje del Gasto Total'
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Grupos'
-                    }
-                },
-                'yAxis': {
-                    'title': {
-                        'text': 'Porcentaje'
-                    }
-                }
-            })
+        parameters = {
+            'data': porclasep,
+            'field1': 'clasificacion',
+            'field2': quesumar,
+            'typechart': 'column',
+            'title': 'Porcentaje del Gasto Total',
+            'labelX_axis': 'Grupos',
+            'labelY_axis': 'Porcentaje',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
+        }
+        bar_horizontal = graphChart(parameters)
 
     portada = False #FIXME: convert to view
     if portada:
