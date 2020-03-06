@@ -904,7 +904,8 @@ def tasa_transferencias(request):
         for col in row:
             if len(data_tasa_col) <= i:
                 data_tasa_col.append([])
-            data_tasa_col[i].append({'name': key, 'value': col})
+            if col:
+                data_tasa_col[i].append({'name': key, 'value': col})
             i += 1
     data_tasa_col_sorted_asc = []
     data_tasa_col_sorted_des = []
