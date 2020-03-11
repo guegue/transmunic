@@ -775,12 +775,18 @@ def gpersonal_chart(request):
                'municipio_list': municipio_list, 'year_list': year_list,
                'indicator_name': "Gastos de personal",
                'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal",
-               'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado,
+               'otros': otros,
+               'rubros': rubros,
+               'anuales': anual2,
+               'ejecutado': ejecutado,
+               'asignado': asignado,
                'porclase': porclase,
                'bubble_data': bubble_source,
                'periodo_list': periodo_list,
-               'porclasep': porclasep, 'mi_clase': mi_clase,
-               'year': year, 'mostraren': "porcentaje",
+               'porclasep': porclasep,
+               'mi_clase': mi_clase,
+               'year': year,
+               'mostraren': "porcentaje",
                }
     return render(request, template_name, context)
 
