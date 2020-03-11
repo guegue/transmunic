@@ -54,7 +54,7 @@ def getPeriods(model):  # ;)
     years = [x[0] for x in years]
     alist = {}
     for year in years:
-        alist[year] = Anio.objects.get(anio=year).periodo
+        alist[str(year)] = Anio.objects.get(anio=year).periodo
     # return {x[0]:x[1] for x in years}
     return alist
 

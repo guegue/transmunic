@@ -750,26 +750,46 @@ def gpersonal_chart(request):
     # Bubble tree data
     bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)
 
-    #Descarga en Excel
-    reporte = request.POST.get("reporte","")
+    # Descarga en Excel
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
 
-        data = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
-            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year}
+        data = {'charts': charts,
+                'municipio': municipio_row,
+                'municipio_list': municipio_list,
+                'year_list': year_list,
+                'otros': otros, 'rubros': rubros,
+                'anuales': anual2,
+                'ejecutado': ejecutado,
+                'asignado': asignado,
+                'porclase': porclase,
+                'porclasep': porclasep,
+                'mi_clase': mi_clase,
+                'year': year}
 
         return obtener_excel_response(reporte=reporte, data=data)
 
-    template_name =  'expenses.html'
-    context = {'charts': charts, 'municipio': municipio_row, 'municipio_list': municipio_list, 'year_list': year_list,\
-            'indicator_name': "Gastos de personal", \
-            'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal", \
-            'otros': otros, 'rubros': rubros, 'anuales': anual2, 'ejecutado': ejecutado, 'asignado': asignado, 'porclase': porclase, \
-            'bubble_data': bubble_source, \
-            'periodo_list': periodo_list, \
-            'porclasep': porclasep, 'mi_clase': mi_clase, 'year': year
-            }
+    template_name = 'expenses.html'
+    context = {'charts': charts, 'municipio': municipio_row,
+               'municipio_list': municipio_list, 'year_list': year_list,
+               'indicator_name': "Gastos de personal",
+               'indicator_description': "Mide el porcentaje del gasto total, "
+                                        "destinado a sufragar los salarios y"
+                                        " pasivos laborales del personal municipal",
+               'otros': otros,
+               'rubros': rubros,
+               'anuales': anual2,
+               'ejecutado': ejecutado,
+               'asignado': asignado,
+               'porclase': porclase,
+               'bubble_data': bubble_source,
+               'periodo_list': periodo_list,
+               'porclasep': porclasep,
+               'mi_clase': mi_clase,
+               'year': year,
+               'mostraren': "porcentaje",
+               }
     return render(request, template_name, context)
 
 

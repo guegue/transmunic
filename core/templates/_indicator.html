@@ -385,46 +385,6 @@
 
 {% endblock %}
 
-{% block custom_body_blocks %}
-    {% block section7 %}
-        <div class="pma-gradient">
-            <div class="container">
-                <div class="row" id="other-metrics-links">
-                    <div class="col-xs-12 col-sm-6 col-md-3">
-                        <h3 class="other-metrics-title"><strong>Otros Indicadores</strong><br/>
-                            que puedes consultar</h3>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'origen_gastos' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Origen
-                            de Gastos </a>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'inversion_categoria' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Destinos
-                            de Inversi&oacute;n</a>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'gastos_funcion' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos
-                            de Funcionamiento </a>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'ahorro_corriente' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ahorro
-                            Corriente de Inversi&oacute;n</a>
-                    </div>
-                    <div class="col-xs-12 col-md-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'gastos_personal' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Gastos
-                            de Personal </a>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 container-metrics-links">
-                        <a href="{% url 'ejecucion_presupuesto' %}?{% if municipio %}municipio={{ municipio.slug }}{% endif %}&{% if year %}year={{ year }}{% endif %}">Ejecuci&oacute;n
-                            Presupuestaria</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endblock %}
-
-{% endblock %}
-
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script> -->
