@@ -13,7 +13,7 @@
         <div class="row">
             <h2><strong>{{ indicator_subtitle }}
                 {% if periodo_list|keyvalue:year == 'I' %}
-		    presupuestados 
+                    presupuestados
                 {% elif periodo_list|keyvalue:year == 'F' %}
                     y ejecutados
                 {% elif periodo_list|keyvalue:year == 'A' %}
@@ -73,19 +73,19 @@
                             <td>{% firstof row.tipoingreso__nombre row.tipoingreso__clasificacion %}</td>
                             <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                             <td class="text-right">
-			        {% if periodo_list|keyvalue:year != 'I' %}
-				    {{ row.final_ejecutado|million|default:0|intcomma }}
-				{% else %}
-				    0
-				{% endif %}
-			    </td>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    {{ row.final_ejecutado|million|default:0|intcomma }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
                             <td class="text-right">
-                                {% if ejecutado and periodo_list|keyvalue:year != 'I'%}
+                                {% if ejecutado and periodo_list|keyvalue:year != 'I' %}
                                     {{ row.ejecutado|div:row.inicial_asignado|sub:1|mul:100|floatformat:2 }}%
                                 {% else %}
-				    0%
+                                    0%
                                 {% endif %}
-		            </td>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -119,7 +119,7 @@
                     <thead>
                     <tr>
                         <td colspan="4" rowspan="1" class="text-justify">
-                            <h4>Total de gastos  para el per&iacute;odo {{ year }}
+                            <h4>Total de gastos para el per&iacute;odo {{ year }}
                                 {% if periodo_list|keyvalue:year == 'F' %}
                                     cierre
                                 {% elif periodo_list|keyvalue:year == 'A' %}
@@ -150,16 +150,16 @@
                     <tbody>
                     {% for row in rubrosg %}
                         <tr>
-			    <td>{% firstof row.subsubtipogasto__nombre row.subsubtipogasto__clasificacion|default:'Otros' %}</td>
+                            <td>{% firstof row.subsubtipogasto__nombre row.subsubtipogasto__clasificacion|default:'Otros' %}</td>
                             <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.ejecutado|million|intcomma|default:0 }}</td>
                             <td class="text-right">
                                 {% if row.inicial_asignado %}
-				    {{ row.ejecutado|div:row.inicial_asignado|sub:1|mul:100|floatformat:2 }}%
-				{% else %}
-				    0%
+                                    {{ row.ejecutado|div:row.inicial_asignado|sub:1|mul:100|floatformat:2 }}%
+                                {% else %}
+                                    0%
                                 {% endif %}
-			    </td>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -261,7 +261,7 @@
                         </table>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 {% elif not municipio and request.resolver_match.url_name == 'ejecucion_presupuesto' %}
@@ -346,7 +346,7 @@
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-left">Municipios</th>
-				{% if periodo_list|keyvalue:year == 'I' %}
+                                {% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-right">
                                         {% if ep %}
                                             Ingreso
@@ -354,7 +354,7 @@
                                             P. Inicial
                                         {% endif %}
                                     </th>
-				{% else %}
+                                {% else %}
                                     <th class="text-right">
                                         {% if ep %}
                                             Gasto
@@ -362,14 +362,14 @@
                                             Ejecución
                                         {% endif %}
                                     </th>
-				{% endif %}
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for row in otros %}
                                 <tr>
                                     <td class="text-left">{{ row.nombre }}</td>
-				    {% if periodo_list|keyvalue:year == 'I' %}
+                                    {% if periodo_list|keyvalue:year == 'I' %}
                                         <td class="text-right">
                                             {% if row.asignado %}
                                                 {{ row.asignado|floatformat:2 }}
@@ -392,7 +392,7 @@
                         </table>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
@@ -475,7 +475,7 @@
                             <td class="text-right">{{ row.asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                             {% if row.asignado %}
-			    <td class="montos text-right">{{ row.ejecutado|div:row.asignado|sub:-1|mul:100|floatformat:1 }}%</td>
+                                <td class="montos text-right">{{ row.ejecutado|div:row.asignado|sub:-1|mul:100|floatformat:1 }}%</td>
                             {% endif %}
                         </tr>
                     {% endfor %}
