@@ -322,7 +322,7 @@
                                         <tr {% if municipio.slug == row.inversion__municipio__slug %}class="info"{% endif %}>
                                             <td class="text-center"> {{ forloop.counter }} </td>
                                             <td>{{ row.inversion__municipio__nombre }}</td>
-                                            {% if row.inversion__periodo == 'I' %}
+                                            {% if periodo_list|keyvalue:year == 'I' %}
                                                 <td class="text-center">{{ row.asignado_percent|intcomma }}</td>
                                             {% else %}
                                                 <td class="text-center">{{ row.ejecutado_percent|intcomma }}</td>
