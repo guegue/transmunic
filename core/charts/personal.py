@@ -774,7 +774,9 @@ def gpersonal_chart(request):
     context = {'charts': charts, 'municipio': municipio_row,
                'municipio_list': municipio_list, 'year_list': year_list,
                'indicator_name': "Gastos de personal",
-               'indicator_description': "Mide el porcentaje del gasto total, destinado a sufragar los salarios y pasivos laborales del personal municipal",
+               'indicator_description': "Mide el porcentaje del gasto total, "
+                                        "destinado a sufragar los salarios y"
+                                        " pasivos laborales del personal municipal",
                'otros': otros,
                'rubros': rubros,
                'anuales': anual2,
