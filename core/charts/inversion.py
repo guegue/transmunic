@@ -582,132 +582,118 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     #
     if municipio:
         inversion_percapita_anios = RawDataPool(
-            series=
-                [{'options': {'source': percapita3 },
-                'names':  [u'Años',u'Actualizado',u'P. Inicial',u'Ejecutado',],
-                'terms':  ['inversion__anio','actualizado','asignado','ejecutado',],
-                }],
-            )
-        inversion_percapita_anios_column = Chart(
-                datasource = inversion_percapita_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'inversion__anio': ['asignado', 'actualizado', 'ejecutado', ],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': u'Seguimiento de las Inversiones percápita %s' % (municipio,)}},
-                )
-        inversion_comparativo_anios = RawDataPool(
-            series=
-                [{'options': {'source': anual3 },
-                'names':  [u'Años',u'Actualizado',u'P. Inicial',u'Ejecutado',],
-                'terms':  ['inversion__anio','actualizado','asignado','ejecutado',],
-                }],
-            )
-        inversion_comparativo_anios_column = Chart(
-                datasource = inversion_comparativo_anios,
-                series_options =
-                [{'options':{
-                    'type': 'column',
-                    'stacking': False},
-                    'terms':{
-                    'inversion__anio': ['asignado', 'actualizado', 'ejecutado', ],
-                    },
-                    }],
-                chart_options =
-                {'title': { 'text': 'Seguimiento de las Inversiones %s' % (municipio,)}},
-                )
-    inversion_fuente = RawDataPool(
-        series=
-            [{'options': {'source': fuente },
-            'terms':  ['fuente__nombre','ejecutado','asignado'],
-            }],
+            series=[{'options': {'source': percapita3},
+                     'names':  [u'Años', u'Actualizado', u'P. Inicial', u'Ejecutado', ],
+                     'terms':  ['inversion__anio', 'actualizado', 'asignado', 'ejecutado', ],
+                     }],
         )
-    inversion_fuente_column = Chart(
-            datasource = inversion_fuente,
-            series_options =
-            [{'options':{
+        inversion_percapita_anios_column = Chart(
+            datasource=inversion_percapita_anios,
+            series_options=[{'options': {
                 'type': 'column',
                 'stacking': False},
-                'terms':{
-                'fuente__nombre': ['ejecutado', 'asignado'],
-                },
-                }],
-            chart_options =
-            {
-                'title': { 'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
-                'data': { 'table': 'datatable'},})
-    inversion_fuente_actual = RawDataPool(
-        series=
-            [{'options': {'source': fuente_actual },
-            'terms':  ['fuente__nombre','ejecutado'],
+                'terms': {
+                'inversion__anio': ['asignado', 'actualizado', 'ejecutado', ],
+            },
             }],
+            chart_options={
+                'title': {'text': u'Seguimiento de las Inversiones percápita %s' % (municipio,)}},
         )
-    inversion_fuente_pie = Chart(
-            datasource = inversion_fuente_actual,
-            series_options =
-            [{'options':{
-                'type': 'pie',
+        inversion_comparativo_anios = RawDataPool(
+            series=[{'options': {'source': anual3},
+                     'names':  [u'Años', u'Actualizado', u'P. Inicial', u'Ejecutado', ],
+                     'terms':  ['inversion__anio', 'actualizado', 'asignado', 'ejecutado', ],
+                     }],
+        )
+        inversion_comparativo_anios_column = Chart(
+            datasource=inversion_comparativo_anios,
+            series_options=[{'options': {
+                'type': 'column',
                 'stacking': False},
-                'terms':{
-                'fuente__nombre': ['ejecutado'],
-                },
-                }],
-            chart_options =
-              {'title': {
-                  'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
-                  'options3d': { 'enabled': 'true',  'alpha': '45', 'beta': '0' },
-                  'plotOptions': { 'pie': { 'dataLabels': { 'enabled': True, 'format': '{point.percentage:.2f} %' }, 'showInLegend': True, 'depth': 35}},
-                  'tooltip': { 'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>' },
-                  'colors':  colorscheme
-              }
+                'terms': {
+                'inversion__anio': ['asignado', 'actualizado', 'ejecutado', ],
+            },
+            }],
+            chart_options={'title': {'text': 'Seguimiento de las Inversiones %s' % (municipio,)}},
+        )
+    inversion_fuente = RawDataPool(
+        series=[{'options': {'source': fuente},
+                 'terms':  ['fuente__nombre', 'ejecutado', 'asignado'],
+                 }],
+    )
+    inversion_fuente_column = Chart(
+        datasource=inversion_fuente,
+        series_options=[{'options': {
+            'type': 'column',
+            'stacking': False},
+            'terms': {
+            'fuente__nombre': ['ejecutado', 'asignado'],
+        },
+        }],
+        chart_options={
+            'title': {'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
+            'data': {'table': 'datatable'}, })
+    inversion_fuente_actual = RawDataPool(
+        series=[{'options': {'source': fuente_actual},
+                 'terms':  ['fuente__nombre', 'ejecutado'],
+                 }],
+    )
+    inversion_fuente_pie = Chart(
+        datasource=inversion_fuente_actual,
+        series_options=[{'options': {
+            'type': 'pie',
+            'stacking': False},
+            'terms': {
+            'fuente__nombre': ['ejecutado'],
+        },
+        }],
+        chart_options={'title': {
+            'text': 'Inversions por fuente origen %s %s' % (year, municipio,)},
+            'options3d': {'enabled': 'true',  'alpha': '45', 'beta': '0'},
+            'plotOptions': {'pie': {'dataLabels': {'enabled': True, 'format': '{point.percentage:.2f} %'}, 'showInLegend': True, 'depth': 35}},
+            'tooltip': {'pointFormat': '{series.name}: <b>{point.percentage:.2f}%</b>'},
+            'colors':  colorscheme
+        }
     )
     inversion_area = RawDataPool(
-        series=
-            [{'options': {'source': area },
-            'terms':  ['areageografica','ejecutado','asignado'],
-            }],
-        )
+        series=[{'options': {'source': area},
+                 'terms':  ['areageografica', 'ejecutado', 'asignado'],
+                 }],
+    )
     inversion_area_column = Chart(
-            datasource = inversion_area,
-            series_options =
-            [{'options':{
-                'type': 'column',
-                'stacking': False},
-                'terms':{
-                'areageografica': ['ejecutado', 'asignado'],
-                },
-                }],
-            chart_options =
-            {
-                'title': { 'text': 'Inversions por area origen %s %s' % (year, municipio,)},
-                'data': { 'table': 'datatable'},
-            },
+        datasource=inversion_area,
+        series_options=[{'options': {
+            'type': 'column',
+            'stacking': False},
+            'terms': {
+            'areageografica': ['ejecutado', 'asignado'],
+        },
+        }],
+        chart_options={
+            'title': {'text': 'Inversions por area origen %s %s' % (year, municipio,)},
+            'data': {'table': 'datatable'},
+        },
     )
 
     tipos = []
     for row in tipo:
         tipos.append({
-          'catinversion__nombre': row['catinversion__nombre'],
-          datacol: row[datacol] / 1000000,
+            'catinversion__nombre': row['catinversion__nombre'],
+            datacol: row[datacol] / 1000000,
         })
 
     inversion_tipo = RawDataPool(
         series=[{
             'options': {'source': tipos},
             'terms':  ['catinversion__nombre', datacol],
-            }],
-        )
+        }],
+    )
     inversion_source = RawDataPool(
         series=[{
             'options': {'source': tipo},
             'terms':  ['catinversion__nombre', datacol],
-            }]
-        )
+        }]
+    )
     bar = Chart(
         datasource=inversion_tipo,
         series_options=[{'options': {
