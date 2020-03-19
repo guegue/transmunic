@@ -15,7 +15,7 @@ from django.db.models import Sum
 from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
 
 from core.models import (Anio, IngresoDetalle, Ingreso,
-                         TipoIngreso, OrigenRecurso, Municipio,
+                         OrigenRecurso, Municipio,
                          PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, dictfetchall, glue,
@@ -904,8 +904,8 @@ def oim_chart(municipio=None, year=None, portada=False):
         rubros_pie.append({
             'name': row.get(subsubtipoingreso__origen__shortname) or
             row.get(subsubtipoingreso__origen__nombre),
-            'inicial_asignado': row.get('inicial_asignado', 0),
-            'ejecutado': row.get('ejecutado', 0),
+            'inicial_asignado': row.get('inicial_asignado', 0) / 1000000,
+            'ejecutado': row.get('ejecutado', 0) / 1000000,
         })
 
     data_ingreso = RawDataPool(

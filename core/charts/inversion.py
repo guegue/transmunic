@@ -688,9 +688,17 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'data': { 'table': 'datatable'},
             },
     )
+
+    tipos = []
+    for row in tipo:
+        tipos.append({
+          'catinversion__nombre': row['catinversion__nombre'],
+          datacol: row[datacol] / 1000000,
+        })
+
     inversion_tipo = RawDataPool(
         series=[{
-            'options': {'source': tipo},
+            'options': {'source': tipos},
             'terms':  ['catinversion__nombre', datacol],
             }],
         )
