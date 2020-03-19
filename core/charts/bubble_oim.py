@@ -315,7 +315,7 @@ def oim_bubble_chart_data(municipio=None, year=None, portada=False):
                 cursor = connection.cursor()
                 cursor.execute(
                     level_2_sql,
-                    [year_data.anio, periodo,source['id']])
+                    [year_data.anio, periodo, source['id']])
             else:
                 level_2_sql = """select sum(sd.asignado) as asignado,
                     sum(sd.ejecutado) as ejecutado, sd.nombre, sd.codigo,
