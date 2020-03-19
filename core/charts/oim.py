@@ -998,8 +998,8 @@ def oim_chart(municipio=None, year=None, portada=False):
     # calculando la suma total de asignado y ejectuado para tabla de ranking por recaudacion
     if porclasep:
         for row in porclasep:
-            total_asignado_ranking += xnumber(row['asignado'])
-            total_ejecutado_ranking += xnumber(row['ejecutado'])
+            total_asignado_ranking += (xnumber(row['asignado']) / len(porclasep))
+            total_ejecutado_ranking += (xnumber(row['ejecutado']) / len(porclasep))
 
     total_asignado_ranking_porcentaje = 0
     total_ejecutado_ranking_porcenteje = 0
