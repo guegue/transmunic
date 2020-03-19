@@ -798,9 +798,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
     field_name = 'subsubtipogasto__origen__shortname'
     for row in rubros:
         rubros_pie.append({
-            'name': row.get(field_name) or row.get('subsubtipogasto__origen__nombre'),
-            'inicial_asignado': row.get('inicial_asignado', 0),
-            'ejecutado': row.get('ejecutado', 0),
+            'name': row.get(field_name) or
+            row.get('subsubtipogasto__origen__nombre'),
+            'inicial_asignado': row.get('inicial_asignado', 0) / 1000000,
+            'ejecutado': row.get('ejecutado', 0) / 1000000,
         })
 
     data_gasto = RawDataPool(
