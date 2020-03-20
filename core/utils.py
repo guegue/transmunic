@@ -203,7 +203,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "titulo": u"Resultado presupuestario gastos de personal",
         "subtitulo": u"Millones de córdobas corrientes",
         "encabezados": [u"Rubros gastos de personal", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["subtipogasto__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
+        "celdas": ["subtipogasto__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
         "qs": "rubros"
     },
     "gp2": {
