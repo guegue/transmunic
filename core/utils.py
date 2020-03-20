@@ -25,7 +25,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "titulo": u"Eficiencia en la ejecución del gasto municipal",
         "subtitulo": u"Gastos en millones de córdobas corrientes",
         "encabezados": ["Rubro", "Inicial", "Ejecutado", "%(ejecutado/inicial)"],
-        "celdas": ["tipogasto__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
+        "celdas": ["subsubtipogasto__origen__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
         "qs": "rubros"
     },
     "ogm2": {
@@ -652,11 +652,11 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         year = data.get('year', 0)
         reportes = [reporte]
         if year >= 2018:
-            sub3_name = 'sub3tipoingreso__origen__nombre'
-            index_column = CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'].index(
-                'subsubtipoingreso__origen__nombre'
-            )
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][index_column] = sub3_name
+            sub3_name = CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0]
+            if 'oim' in reporte:
+                sub3_name = 'sub3tipoingreso__origen__nombre'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub3_name
+
         file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
 
     for report_name in reportes:
