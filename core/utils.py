@@ -649,7 +649,14 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         )
 
     else:
+        year = data.get('year', 0)
         reportes = [reporte]
+        if year >= 2018:
+            sub3_name = 'sub3tipoingreso__origen__nombre'
+            index_column = CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'].index(
+                'subsubtipoingreso__origen__nombre'
+            )
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][index_column] = sub3_name
         file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
 
     for report_name in reportes:
