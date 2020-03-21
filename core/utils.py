@@ -265,7 +265,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "titulo": u"Resultado presupuestario gastos corrientes totales",
         "subtitulo": u"Millones de córdobas corrientes",
         "encabezados": ["Rubros de gastos", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["tipogasto__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
+        "celdas": ["tipogasto__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
         "qs": "rubrosg",
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
@@ -284,7 +284,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "subtitulo": u"Millones de córdobas corrientes",
         "encabezados": ["Rubros del gastos corrientes", "Inicial", "Actualizado", "Modificado", "Ejecutado",
                         "% (ejecutado/actualizado)"],
-        "celdas": ["tipogasto__nombre", "asignado", "actualizado", "actualizado-asignado", "ejecutado",
+        "celdas": ["tipogasto__nombre", "inicial_asignado", "actualizado", "actualizado-asignado", "ejecutado",
                    "ejecutado/actualizado"],
         "qs": "rubrosg",
         "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
@@ -468,7 +468,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "subtitulo": u"Millones de córdobas corrientes",
         "encabezados": [u"Rubros del gastos corrientes", "Inicial", "Actualizado", u"Modificación", "Ejecutado",
                         "% Ejecutado/Actualizado"],
-        "celdas": ["tipogasto__clasificacion", "asignado", "actualizado", "actualizado-asignado", "ejecutado",
+        "celdas": ["subsubtipogasto__clasificacion", "asignado", "actualizado", "actualizado-asignado", "ejecutado",
                    "ejecutado/actualizado"],
         "qs": "rubrosg"
     },
