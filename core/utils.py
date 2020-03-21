@@ -13,13 +13,15 @@ HEADER4 = xlwt.easyxf('font: bold on, height 200, name Arial; align:   vert cent
 TOTAL_ROW_FORMAT = xlwt.easyxf('font: bold on, height 200, name Arial', num_format_str='##,##0.00')
 CENTER = xlwt.easyxf('align: wrap on, vert centre, horiz center')
 PERCENTAGE_FORMAT = xlwt.easyxf(num_format_str='0.0%')
-TOTAL_PERCENTAGE_FORMAT = xlwt.easyxf('font: bold on, height 200, name Arial', num_format_str='0.0%')
+TOTAL_PERCENTAGE_FORMAT = xlwt.easyxf(
+    'font: bold on, height 200, name Arial', num_format_str='0.0%')
 NUMBER_FORMAT = xlwt.easyxf(num_format_str='##,##0.00')
 LEFT_FORMAT = xlwt.easyxf('align: wrap on, vert centre, horiz left; font: name Arial')
 DATE_FORMAT = xlwt.easyxf(num_format_str='DD/MM/YYYY')
 COLUMN_HEADER_FORMAT = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center; pattern: pattern 0x01, pattern_fore_colour 40')
-COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf('font: bold on; align: wrap on, vert centre, horiz center;')
+COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf(
+    'font: bold on; align: wrap on, vert centre, horiz center;')
 CONFIGURACION_TABLAS_EXCEL = {
     "ogm1": {
         "titulo": u"Eficiencia en la ejecución del gasto municipal",
@@ -573,13 +575,11 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
                 valor_anterior = totales.get(atributo, Decimal("0"))
                 totales[atributo] = valor_anterior + value
                 formato = PERCENTAGE_FORMAT if "/" in atributo else NUMBER_FORMAT
-                hoja.write(indice_fila, indice_columna + c, value
-                           , formato
+                hoja.write(indice_fila, indice_columna + c, value, formato
                            )
             else:
                 value = value if value != 0 else "-"
-                hoja.write(indice_fila, indice_columna + c, unicode(value)
-                           , LEFT_FORMAT
+                hoja.write(indice_fila, indice_columna + c, unicode(value), LEFT_FORMAT
                            )
 
     if tipo_totales:
@@ -595,7 +595,8 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
                     formato = TOTAL_PERCENTAGE_FORMAT
                 else:
                     formula = '{0}({1}:{2})'.format(tipo_totales[c],
-                                                    xlwt.Utils.rowcol_to_cell(4, indice_columna + c),
+                                                    xlwt.Utils.rowcol_to_cell(
+                                                        4, indice_columna + c),
                                                     xlwt.Utils.rowcol_to_cell(indice_fila - 1, indice_columna + c))
                     formato = TOTAL_ROW_FORMAT
                 hoja.write(indice_fila, indice_columna + c, xlwt.Formula(formula),
@@ -690,7 +691,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
                     tipo_totales.append("SUM" if "/" not in celda else "AVERAGE")
 
         if queryset is not None:
-            crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados, celdas, tipo_totales)
+            crear_hoja_excel(libro, sheet_name, queryset, titulo,
+                             subtitulo, encabezados, celdas, tipo_totales)
         elif len(reportes) == 1:
             libro.add_sheet("{0} vacio".format(sheet_name))
 
@@ -785,13 +787,15 @@ def descargar_detalle_excel(form, request):
             encabezados = MODEL_FIELDS['Proyecto']
             celdas = MODEL_FIELDS['Proyecto']
             tipo_totales = []
-            crear_hoja_excel(libro, tipo, queryset, titulo, subtitulo, encabezados, celdas, tipo_totales)
+            crear_hoja_excel(libro, tipo, queryset, titulo, subtitulo,
+                             encabezados, celdas, tipo_totales)
         else:
             titulo = "Detalle {0}".format(tipo)
             encabezados = MODEL_FIELDS["{0}Detalle".format(tipo)]
             celdas = MODEL_FIELDS["{0}Detalle".format(tipo)]
             tipo_totales = []
-            crear_hoja_excel(libro, tipo, queryset, titulo, subtitulo, encabezados, celdas, tipo_totales)
+            crear_hoja_excel(libro, tipo, queryset, titulo, subtitulo,
+                             encabezados, celdas, tipo_totales)
     else:
         return None
 
