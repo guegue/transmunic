@@ -37,21 +37,21 @@ def home(request):
     # descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
-    #desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
+    # desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionsector = Grafico.objects.get(pk='inversion')
     # fin de descripcion de graficos de portada
     # consulta sobre consulta presupuestaria muelle de los bueyes
-    #desc_consultamb = Grafico.objects.get(pk='consultamb')
+    # desc_consultamb = Grafico.objects.get(pk='consultamb')
 
     departamentos = Departamento.objects.all()
     categorias = CatInversion.objects.filter(destacar=True)
     otras_categorias = CatInversion.objects.filter(destacar=False)
 
     # InversionFuente tiene su propio último año
-    #year_list = getYears(InversionFuente)
-    #year = year_list[-1]
-    #data_fuentes = fuentes_chart(year=year, portada=True)
+    # year_list = getYears(InversionFuente)
+    # year = year_list[-1]
+    # data_fuentes = fuentes_chart(year=year, portada=True)
 
     # obtiene último año
     year_list = getYears(Anio)
@@ -72,17 +72,18 @@ def home(request):
         data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
         total_inversion = Proyecto.objects.filter(
             inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
-        inversiones_categoria = Proyecto.objects.\
+        inversiones_categoria = Proyecto.objects. \
             filter(inversion__anio=year,
-                   inversion__periodo=periodo).\
+                   inversion__periodo=periodo). \
             values('catinversion__slug', 'catinversion__minimo',
                    'catinversion__nombre', 'catinversion__id',
-                   'catinversion__destacar').\
+                   'catinversion__destacar'). \
             order_by('-catinversion__destacar',
-                     '-{}'.format(quesumar)).\
+                     '-{}'.format(quesumar)). \
             annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
 
-    context = {'banners': banners, 'desc_oim_chart': desc_oim_chart, 'desc_ogm_chart': desc_ogm_chart, 'desc_inversionminima': desc_inversionminima, 'desc_inversionsector': desc_inversionsector,
+    context = {'banners': banners, 'desc_oim_chart': desc_oim_chart, 'desc_ogm_chart': desc_ogm_chart,
+               'desc_inversionminima': desc_inversionminima, 'desc_inversionsector': desc_inversionsector,
                'charts': (
                    data_oim['charts'][0],
                    data_ogm['charts'][0],
@@ -95,16 +96,16 @@ def home(request):
                'inversion_categoria': inversiones_categoria,
                'total_inversion': total_inversion,
                'departamentos': departamentos,
-                'categorias': categorias,
-                'otras_categorias': otras_categorias,
-                'totales_oim': data_oim['totales'],
-                'totales_ogm': data_ogm['totales'],
-                'rubros': data_oim['rubros'],
-                'data_oim': data_oim,
-                'data_ogm': data_ogm,
-                'home': 'home',
-                'year': year,
-                'periodo': periodo,
+               'categorias': categorias,
+               'otras_categorias': otras_categorias,
+               'totales_oim': data_oim['totales'],
+               'totales_ogm': data_ogm['totales'],
+               'rubros': data_oim['rubros'],
+               'data_oim': data_oim,
+               'data_ogm': data_ogm,
+               'home': 'home',
+               'year': year,
+               'periodo': periodo,
                }
     return render(request, template_name, context)
 
@@ -121,15 +122,15 @@ def municipio(request, slug=None, year=None):
     ''  # si el parametro year no existe se asigna el ultimo
     ''  # año registrado en la base de datos
     year = request.GET.get('year', year_list[-1])
-    #banners = Banner.objects.filter(municipio__slug=slug)
+    # banners = Banner.objects.filter(municipio__slug=slug)
     banners = Banner.objects.all()
-    #descripcion de graficos de portada
+    # descripcion de graficos de portada
     desc_oim_chart = Grafico.objects.get(pk='oim_ejecutado')
     desc_ogm_chart = Grafico.objects.get(pk='ogm_ejecutado')
     desc_invfuentes_chart = Grafico.objects.get(pk='fuentes')
     desc_inversionminima = Grafico.objects.get(pk='inversiones')
     desc_inversionsector = Grafico.objects.get(pk='inversion')
-    #fin de descripcion de graficos de portada
+    # fin de descripcion de graficos de portada
     departamentos = Departamento.objects.all()
     categorias = CatInversion.objects.filter(destacar=True)
     otras_categorias = CatInversion.objects.filter(destacar=False)
@@ -145,7 +146,7 @@ def municipio(request, slug=None, year=None):
     periodo = Anio.objects.get(anio=year).periodo
 
     # siempre sumar 'asginado'
-    #quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+    # quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     quesumar = 'asignado'
 
     if slug is not None:
@@ -154,76 +155,78 @@ def municipio(request, slug=None, year=None):
         bubble_oim = oim_bubble_chart_data(municipio=slug, year=year)
         data_inversion_minima_sector = inversion_minima_sector_chart(municipio=slug, portada=True)
     else:
-        data_oim = oim_chart( year=year, portada=True)
-        data_ogm = ogm_chart( year=year, portada=True)
-        bubble_oim = oim_bubble_chart_data( year=year )
+        data_oim = oim_chart(year=year, portada=True)
+        data_ogm = ogm_chart(year=year, portada=True)
+        bubble_oim = oim_bubble_chart_data(year=year)
         data_inversion_minima_sector = inversion_minima_sector_chart(year=year, municipio=slug, portada=True)
 
     data_inversion_minima_porclase = inversion_minima_porclase(year, portada=True)
 
     if slug is not None:
-        total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo, inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
+        total_inversion = Proyecto.objects.filter(inversion__municipio__slug=slug, inversion__periodo=periodo,
+                                                  inversion__anio=year).aggregate(ejecutado=Sum(quesumar))
         inversion_categoria = Proyecto.objects.filter(
             inversion__municipio__slug=slug,
             inversion__anio=investyear,
-            inversion__periodo=periodo, catinversion__destacar=True)\
+            inversion__periodo=periodo, catinversion__destacar=True) \
             .values(
-                'catinversion__slug',
-                'catinversion__minimo',
-                'catinversion__nombre')\
-            .order_by()\
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre') \
+            .order_by() \
             .annotate(ejecutado=Sum(quesumar))
         inversion_categoria2 = Proyecto.objects.filter(
             inversion__municipio__slug=slug,
             inversion__anio=investyear,
             inversion__periodo=periodo,
-            catinversion__destacar=False)\
+            catinversion__destacar=False) \
             .values(
-                'catinversion__slug',
-                'catinversion__minimo',
-                'catinversion__nombre',
-                'catinversion__id')\
-            .order_by()\
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre',
+            'catinversion__id') \
+            .order_by() \
             .annotate(ejecutado=Sum(quesumar))
     else:
-        total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(ejecutado=Sum(quesumar))
+        total_inversion = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo).aggregate(
+            ejecutado=Sum(quesumar))
         inversion_categoria = Proyecto.objects.filter(
             inversion__anio=investyear,
-            inversion__periodo=periodo, catinversion__destacar=True)\
+            inversion__periodo=periodo, catinversion__destacar=True) \
             .values(
-                'catinversion__slug',
-                'catinversion__minimo',
-                'catinversion__nombre')\
-            .order_by()\
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre') \
+            .order_by() \
             .annotate(ejecutado=Sum(quesumar))
         inversion_categoria2 = Proyecto.objects.filter(
             inversion__anio=investyear,
             inversion__periodo=periodo,
-            catinversion__destacar=False)\
+            catinversion__destacar=False) \
             .values(
-                'catinversion__slug',
-                'catinversion__minimo',
-                'catinversion__nombre',
-                'catinversion__id')\
-            .order_by()\
+            'catinversion__slug',
+            'catinversion__minimo',
+            'catinversion__nombre',
+            'catinversion__id') \
+            .order_by() \
             .annotate(ejecutado=Sum(quesumar))
 
     context = {
         'banners': banners,
-        'desc_oim_chart':desc_oim_chart,
-        'desc_ogm_chart':desc_ogm_chart,
-        'desc_invfuentes_chart':desc_invfuentes_chart,
-        'desc_inversionminima':desc_inversionminima,
-        'desc_inversionsector':desc_inversionsector,
-        'charts':(
+        'desc_oim_chart': desc_oim_chart,
+        'desc_ogm_chart': desc_ogm_chart,
+        'desc_invfuentes_chart': desc_invfuentes_chart,
+        'desc_inversionminima': desc_inversionminima,
+        'desc_inversionsector': desc_inversionsector,
+        'charts': (
             data_oim['charts'][0],
             data_ogm['charts'][0],
-            #data_inversion['charts'][0],
+            # data_inversion['charts'][0],
             data_inversion_minima_sector['charts'][0],
-            #data_inversion_area['charts'][0],
+            # data_inversion_area['charts'][0],
             data_inversion_minima_porclase['charts'][0],
             data_fuentes['charts'][1],
-            ),
+        ),
         'mi_clase': data_oim['mi_clase'],
         'bubble_data': bubble_oim,
         'inversion_categoria': inversion_categoria,
@@ -277,7 +280,7 @@ def inversion_categoria_view(request):
 
     bubble_data = {
         'label': "Total",
-        'amount': round(data['asignado']/1000000, 2)
+        'amount': round(data['asignado'] / 1000000, 2)
     }
     child_l1 = []
     for child in data['cat']:
@@ -291,7 +294,7 @@ def inversion_categoria_view(request):
             'name': child['catinversion__id'],
             'slug': child['catinversion__slug'],
             'label': label,
-            'amount': round(child['asignado']/1000000, 2)
+            'amount': round(child['asignado'] / 1000000, 2)
         }
         child_l1.append(child_data)
     bubble_data['children'] = child_l1
@@ -351,21 +354,23 @@ def ogm_view(request):
     data = ogm_chart(municipio=municipio, year=year)
     indicator_name = "Destino de los gastos"
     bubble_data = ogm_bubble_chart_data(municipio=municipio, year=year)
-    reporte = request.POST.get("reporte","")
+    reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
         return obtener_excel_response(reporte=reporte, data=data)
 
     context = {
-            'indicator_name': indicator_name,
-            'periodo_list': data['periodo_list'],
-            'year_data': data['year_data'],
-            'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
-            'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
-            'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'], 'anuales': data['anuales'],
-            'rubrosp': data['rubrosp'], 'otros': data['otros'],
-            'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data,
-            }
+        'indicator_name': indicator_name,
+        'periodo_list': data['periodo_list'],
+        'year_data': data['year_data'],
+        'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
+        'totales': data['totales'], 'charts': data['charts'], 'year_list': data['year_list'],
+        'municipio_list': data['municipio_list'],
+        'porclase': data['porclase'], 'porclasep': data['porclasep'], 'rubros': data['rubros'],
+        'anuales': data['anuales'],
+        'rubrosp': data['rubrosp'], 'otros': data['otros'],
+        'asignado': data['asignado'], 'ejecutado': data['ejecutado'], 'bubble_data': bubble_data,
+    }
     return render(request, template_name, context)
 
 
@@ -425,8 +430,9 @@ def inversion_view(request):
     year = getVar('year', request)
     data = inversion_chart(municipio=municipio, year=year)
     return render_to_response(template_name, {'charts': data['charts'], 'municipio_list': data['municipio_list'],
-                                              'municipio': data['municipio'], 'year': data['year'], 'mi_clase': data['mi_clase'], 'porano': data['porano'],
-                                              'porclasep': data['porclasep'], 'periodo_list':data['periodo_list']},
+                                              'municipio': data['municipio'], 'year': data['year'],
+                                              'mi_clase': data['mi_clase'], 'porano': data['porano'],
+                                              'porclasep': data['porclasep'], 'periodo_list': data['periodo_list']},
                               context_instance=RequestContext(request))
 
 
@@ -444,7 +450,8 @@ def fuentes_view(request):
     municipio = request.GET.get('municipio', '')
     year = request.GET.get('year', '')
     data = fuentes_chart(municipio=municipio, year=year)
-    return render_to_response(template_name, {'charts': data['charts'], 'year_list': data['year_list'], 'municipio_list': data['municipio_list'],
+    return render_to_response(template_name, {'charts': data['charts'], 'year_list': data['year_list'],
+                                              'municipio_list': data['municipio_list'],
                                               'municipio': municipio, 'year': year, },
                               context_instance=RequestContext(request))
 
@@ -484,12 +491,12 @@ def getTransferenciasDetalle():
     inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
     final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 
-    data_inicial = Transferencia.objects.order_by('municipio__nombre', 'anio').\
-        values('municipio__nombre', 'anio').\
+    data_inicial = Transferencia.objects.order_by('municipio__nombre', 'anio'). \
+        values('municipio__nombre', 'anio'). \
         filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
-    data_final = Transferencia.objects.order_by('municipio__nombre', 'anio').\
-        values('municipio__nombre', 'anio').\
+    data_final = Transferencia.objects.order_by('municipio__nombre', 'anio'). \
+        values('municipio__nombre', 'anio'). \
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     data_inicial = list(data_inicial)
@@ -535,20 +542,20 @@ def getTransferencias(municipio=None):
         inicial_filter['municipio__slug'] = municipio
         final_filter['municipio__slug'] = municipio
 
-    data_inicial = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio').\
+    data_inicial = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio'). \
         filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
-    data_final = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio').\
+    data_final = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio'). \
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
 
     # adds 'clasificacion' for each row
     for row in data_inicial:
-        row['clasificacion'] = ClasificacionMunicAno.objects.\
-            values_list('clasificacion__clasificacion', flat=True).\
+        row['clasificacion'] = ClasificacionMunicAno.objects. \
+            values_list('clasificacion__clasificacion', flat=True). \
             filter(anio=row['anio'], municipio=row['municipio']).first()
     for row in data_final:
-        row['clasificacion'] = ClasificacionMunicAno.objects.\
-            values_list('clasificacion__clasificacion', flat=True).\
+        row['clasificacion'] = ClasificacionMunicAno.objects. \
+            values_list('clasificacion__clasificacion', flat=True). \
             filter(anio=row['anio'], municipio=row['municipio']).first()
 
     data_inicial = list(data_inicial)
@@ -580,8 +587,8 @@ def getTransferencias(municipio=None):
         years = []
         periodos = {}
         for year in list(iniciales) + list(finales):
-            clasificacion = ClasificacionMunicAno.objects.\
-                values_list('clasificacion__clasificacion', flat=True).\
+            clasificacion = ClasificacionMunicAno.objects. \
+                values_list('clasificacion__clasificacion', flat=True). \
                 filter(anio=year, municipio__slug=municipio).first()
             partido = PeriodoMunic.objects.values('partido', 'periodo__desde',
                                                   'periodo__hasta').filter(
@@ -606,7 +613,6 @@ def getTransferencias(municipio=None):
         context['data_asignacion'] = data_asignacion
         sorted_years = sorted(years, key=lambda x: x['year'])
         context['years'] = sorted_years
-
 
     if not municipio:
         # group by clasificacion
@@ -643,7 +649,6 @@ def getTransferencias(municipio=None):
 
         context['data_by_years'] = data_by_years
 
-
     context['data'] = data
 
     return context
@@ -662,8 +667,6 @@ def transferencias(request):
     context['years'] = data.get('years')
     if data.get('data_by_years'):
         context['data_by_years'] = data.get('data_by_years')
-
-
 
     iniciales = AnioTransferencia.objects.values_list(
         'anio', flat=True).filter(periodo=PERIODO_INICIAL)
@@ -705,7 +708,7 @@ def transferencias(request):
         # % para destinar a inversión
         if row.get('total') > 0:
             row['porcentaje_inversion_ttotal'] = (
-                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+                                                         xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
 
         if pip > 0:
             # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
@@ -818,8 +821,8 @@ def getPeriodos(datadata, municipio=None):
         partidos = Periodo.objects. \
             filter(periodomunic__municipio__slug=municipio). \
             values(periodo=Concat(
-                'desde', V('-'), 'desde', output_field=CharField()),
-                nombre=F('periodomunic__partido')).\
+            'desde', V('-'), 'desde', output_field=CharField()),
+            nombre=F('periodomunic__partido')). \
             order_by('desde')
 
         context['partidos'] = partidos
@@ -885,7 +888,6 @@ def getPeriodos(datadata, municipio=None):
 
 
 def tasa_transferencias(request):
-
     context = {}
     municipio = request.GET.get('municipio')
     municipio2 = request.GET.get('municipio2')
@@ -937,7 +939,6 @@ def tasa_transferencias(request):
 
 
 def evolucion_transferencias(request):
-
     context = {}
 
     data = getTransferencias(request.GET.get('municipio'))
@@ -954,12 +955,12 @@ def evolucion_transferencias(request):
         'anio', 'pgr', 'pip', 'recurso_tesoro_pip'))
 
     # Obteiendo totales de transferencias de capital y  corrientes por anio
-    total_data_inicial = Transferencia.objects.order_by('anio').values('anio').\
+    total_data_inicial = Transferencia.objects.order_by('anio').values('anio'). \
         filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
-                                          total=Sum('corriente')+Sum('capital'))
-    total_data_final = Transferencia.objects.order_by('anio').values('anio').\
+                                          total=Sum('corriente') + Sum('capital'))
+    total_data_final = Transferencia.objects.order_by('anio').values('anio'). \
         filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
-                                        total=Sum('corriente')+Sum('capital'))
+                                        total=Sum('corriente') + Sum('capital'))
 
     joined_total_data = list(total_data_inicial) + list(total_data_final)
     joined_total_data = sorted(joined_total_data, key=lambda d: d['anio'])
@@ -977,16 +978,16 @@ def evolucion_transferencias(request):
 
         # calculando Porcentaje partida presupuestaria
         if row.get('pgr') > 0:
-            row['partida'] = (xnumber(row.get('total')) / xnumber(row.get('pgr')))*100
+            row['partida'] = (xnumber(row.get('total')) / xnumber(row.get('pgr'))) * 100
 
         # % para destinar a inversión
         if row.get('total') > 0:
             row['porcentaje_inversion_ttotal'] = (
-                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+                                                         xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
 
         if pip > 0:
             # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
-            row['precurso_tesoro_ttotal'] = (xnumber(row.get('total')) / pip)*100
+            row['precurso_tesoro_ttotal'] = (xnumber(row.get('total')) / pip) * 100
 
             # como % del Programa de Inversiones Públicas
             row['pprograma_inversion_publica'] = (xnumber(row.get('capital')) / pip) * 100
