@@ -12,7 +12,7 @@ from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, 
     InversionFuente, Grafico, CatInversion, Transferencia, \
     PERIODO_INICIAL, PERIODO_FINAL
 from lugar.models import ClasificacionMunicAno, Periodo, PeriodoMunic
-from tools import getYears, getPeriods, xnumber
+from tools import getYears, getPeriods, xnumber, growthRate
 from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
     inversion_area_chart, inversion_minima_porclase, getVar
 from charts.inversion import inversion_chart, inversion_categoria_chart
@@ -773,24 +773,21 @@ def getPeriodosDetalle(datadata):
         for municipio in municipios:
             if ultimo_anio.get(municipio) and ultimo_anio_previo.get(municipio):
                 if ultimo_anio_previo[municipio]['total']:
-                    tasa = (pow(ultimo_anio[municipio]['total'] /
-                                ultimo_anio_previo[municipio]['total'],
-                                Decimal(1.0 / anios))
-                            - 1) * 100
+                    tasa = growthRate(ultimo_anio[municipio]['total'],
+                                      ultimo_anio_previo[municipio]['total'],
+                                      anios)
                 else:
                     tasa = 0
                 if ultimo_anio_previo[municipio]['corriente']:
-                    tasa_cr = (pow(ultimo_anio[municipio]['corriente'] /
-                                   ultimo_anio_previo[municipio]['corriente'],
-                                   Decimal(1.0 / anios))
-                               - 1) * 100
+                    tasa_cr = growthRate(ultimo_anio[municipio]['corriente'],
+                                         ultimo_anio_previo[municipio]['corriente'],
+                                         anios)
                 else:
                     tasa_cr = 0
                 if ultimo_anio_previo[municipio]['capital']:
-                    tasa_cp = (pow(ultimo_anio[municipio]['capital'] /
-                                   ultimo_anio_previo[municipio]['capital'],
-                                   Decimal(1.0 / anios))
-                               - 1) * 100
+                    tasa_cp = growthRate(ultimo_anio[municipio]['capital'],
+                                         ultimo_anio_previo[municipio]['capital'],
+                                         anios)
                 else:
                     tasa_cp = 0
                 data_tasa[periodo_key][municipio] = tasa
@@ -821,7 +818,7 @@ def getPeriodos(datadata, municipio=None):
         partidos = Periodo.objects. \
             filter(periodomunic__municipio__slug=municipio). \
             values(periodo=Concat(
-            'desde', V('-'), 'desde', output_field=CharField()),
+            'desde', V('-'), 'hasta', output_field=CharField()),
             nombre=F('periodomunic__partido')). \
             order_by('desde')
 
@@ -858,18 +855,15 @@ def getPeriodos(datadata, municipio=None):
                 ultimo_anio[clasificacion] = total
         for clasificacion in clasificaciones:
             if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
-                tasa = (pow(ultimo_anio[clasificacion]['total'] /
-                            ultimo_anio_previo[clasificacion]['total'],
-                            Decimal(1.0 / anios))
-                        - 1) * 100
-                tasa_cr = (pow(ultimo_anio[clasificacion]['corriente'] /
-                               ultimo_anio_previo[clasificacion]['corriente'],
-                               Decimal(1.0 / anios))
-                           - 1) * 100
-                tasa_cp = (pow(ultimo_anio[clasificacion]['capital'] /
-                               ultimo_anio_previo[clasificacion]['capital'],
-                               Decimal(1.0 / anios))
-                           - 1) * 100
+                tasa = growthRate(ultimo_anio[clasificacion]['total'],
+                                      ultimo_anio_previo[clasificacion]['total'],
+                                      anios)
+                tasa_cr = growthRate(ultimo_anio[clasificacion]['corriente'],
+                                      ultimo_anio_previo[clasificacion]['corriente'],
+                                      anios)
+                tasa_cp = growthRate(ultimo_anio[clasificacion]['capital'],
+                                      ultimo_anio_previo[clasificacion]['capital'],
+                                      anios)
                 data_tasa[periodo_key][clasificacion] = tasa
                 tasas[clasificacion]['total'].append(tasa)
                 tasas[clasificacion]['corriente'].append(tasa_cr)

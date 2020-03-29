@@ -100,6 +100,12 @@ def glue(inicial, final, key, actualizado=[]):
     return glued
 
 
+def growthRate(current_year, previus_year, years):
+    "Contains the formula to calculate the growth rate"
+    return (pow(current_year / previus_year,
+                decimal.Decimal(1.0 / years)) - 1) * 100
+
+
 def superglue(data=(), key='id', default=0):
     "Glues together different lists of dictionaries using a common key"
 
