@@ -650,7 +650,6 @@ def getTransferencias(municipio=None):
 
 
 def transferencias(request):
-
     context = {}
 
     data = getTransferencias(request.GET.get('municipio'))
