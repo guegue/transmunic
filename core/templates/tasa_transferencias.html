@@ -68,7 +68,7 @@
                             {% endfor %}
                         </tr>
                         <tr class="bg-primary">
-                            <th>Clase</th>
+                            <th>Asignaci&oacute;n</th>
                             {% for periodo in periodos %}
                                 {% if not forloop.first %}
                                     <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
@@ -128,7 +128,7 @@
                                 {% endfor %}
                             </tr>
                             <tr class="bg-primary">
-                                <th>Clase</th>
+                                <th>Asignaci&oacute;n</th>
                                 {% for periodo in periodos %}
                                     {% if not forloop.first %}
                                         <th>{{ periodo }}<br>{{ periodo.clasificacion }}</th>
@@ -375,7 +375,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {% for row in data_tasa_col_des|index:forloop.counter0|slice:':10' %}
+                                                        {% for row in data_tasa_col_des|index:forloop.counter0|slice:':10'|dictsort:'name' %}
                                                             <tr>
                                                                 <td>{{ row.name }}</td>
                                                                 <td>{{ row.value|floatformat:2 }}</td>
@@ -393,7 +393,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {% for row in data_tasa_col_asc|index:forloop.counter0|slice:':10' %}
+                                                        {% for row in data_tasa_col_asc|index:forloop.counter0|slice:':10'|dictsort:'name' %}
                                                             <tr>
                                                                 <td>{{ row.name }}</td>
                                                                 <td>{{ row.value|floatformat:2 }}</td>

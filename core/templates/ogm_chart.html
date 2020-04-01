@@ -165,10 +165,10 @@
                         <td>TOTAL</td>
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <td class="text-center">{{ asignado|million|intcomma }}</td>
-                            <td class="text-center">{{ rubros|total_sum:"ini_asig_porcentaje"|floatformat:0 }}</td>
+                            <td class="text-center">{{ rubros|total_sum:"ini_asig_porcentaje"|floatformat:0 }}%</td>
                         {% else %}
                             <td class="text-center">{{ ejecutado|million|intcomma }}</td>
-                            <td class="text-center">{{ rubros|total_sum:"ejec_porcentaje"|floatformat:0 }}</td>
+                            <td class="text-center">{{ rubros|total_sum:"ejec_porcentaje"|floatformat:0 }}%</td>
                         {% endif %}
                     </tr>
                     </tbody>
