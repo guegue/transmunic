@@ -708,7 +708,7 @@ def transferencias(request):
         # % para destinar a inversión
         if row.get('total') > 0:
             row['porcentaje_inversion_ttotal'] = (
-                                                         xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
 
         if pip > 0:
             # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
@@ -818,8 +818,8 @@ def getPeriodos(datadata, municipio=None):
         partidos = Periodo.objects. \
             filter(periodomunic__municipio__slug=municipio). \
             values(periodo=Concat(
-            'desde', V('-'), 'hasta', output_field=CharField()),
-            nombre=F('periodomunic__partido')). \
+                'desde', V('-'), 'hasta', output_field=CharField()),
+                nombre=F('periodomunic__partido')). \
             order_by('desde')
 
         context['partidos'] = partidos
@@ -856,14 +856,14 @@ def getPeriodos(datadata, municipio=None):
         for clasificacion in clasificaciones:
             if ultimo_anio.get(clasificacion) and ultimo_anio_previo.get(clasificacion):
                 tasa = growthRate(ultimo_anio[clasificacion]['total'],
-                                      ultimo_anio_previo[clasificacion]['total'],
-                                      anios)
+                                  ultimo_anio_previo[clasificacion]['total'],
+                                  anios)
                 tasa_cr = growthRate(ultimo_anio[clasificacion]['corriente'],
-                                      ultimo_anio_previo[clasificacion]['corriente'],
-                                      anios)
+                                     ultimo_anio_previo[clasificacion]['corriente'],
+                                     anios)
                 tasa_cp = growthRate(ultimo_anio[clasificacion]['capital'],
-                                      ultimo_anio_previo[clasificacion]['capital'],
-                                      anios)
+                                     ultimo_anio_previo[clasificacion]['capital'],
+                                     anios)
                 data_tasa[periodo_key][clasificacion] = tasa
                 tasas[clasificacion]['total'].append(tasa)
                 tasas[clasificacion]['corriente'].append(tasa_cr)
@@ -977,7 +977,7 @@ def evolucion_transferencias(request):
         # % para destinar a inversión
         if row.get('total') > 0:
             row['porcentaje_inversion_ttotal'] = (
-                                                         xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
+                xnumber(row.get('capital')) / xnumber(row.get('total'))) * 100
 
         if pip > 0:
             # calculando como % de los Recursos del Tesoro en el PIP en transferencias totales
