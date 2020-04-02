@@ -4,6 +4,7 @@ $(function () {
     var lista_indicadores = $('.listado-indicadores');
     var lista_transferencias = $('#listado-transferencias');
     var municipio = $('.municipio');
+    var municipio2 = $('#municipio2');
     let body = $('body');
     let select_indicador = $('#indicador');
     let select_year = $('#year');
@@ -33,6 +34,12 @@ $(function () {
     if (select_year.length > 0) {
         select_year.select2();
     }
+    if (municipio2.length > 0) {
+        municipio2.select2({
+            placeholder: '(Municipio)'
+        });
+    }
+
 
     body
         .on('click', '.ver-mas', function () {

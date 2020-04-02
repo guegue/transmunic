@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-from decimal import Decimal
+import json
 
 from django.shortcuts import render_to_response, render
 from django.shortcuts import get_object_or_404
@@ -8,13 +7,15 @@ from django.template import RequestContext
 from django.db.models import Sum, CharField, F, Value as V
 from django.db.models.functions import Concat
 
-from models import Anio, AnioTransferencia, Departamento, Municipio, Inversion, Proyecto, \
-    InversionFuente, Grafico, CatInversion, Transferencia, \
-    PERIODO_INICIAL, PERIODO_FINAL
+from models import (Anio, AnioTransferencia, Departamento,
+                    Municipio, Inversion, Proyecto,
+                    InversionFuente, Grafico, CatInversion,
+                    Transferencia, PERIODO_INICIAL, PERIODO_FINAL)
 from lugar.models import ClasificacionMunicAno, Periodo, PeriodoMunic
 from tools import getYears, getPeriods, xnumber, growthRate
-from charts.misc import fuentes_chart, inversion_minima_sector_chart, \
-    inversion_area_chart, inversion_minima_porclase, getVar
+from charts.misc import (fuentes_chart, inversion_minima_sector_chart,
+                         inversion_area_chart, inversion_minima_porclase,
+                         getVar)
 from charts.inversion import inversion_chart, inversion_categoria_chart
 from charts.oim import oim_chart
 from charts.ogm import ogm_chart
@@ -22,7 +23,6 @@ from charts.bubble_oim import oim_bubble_chart_data
 from charts.bubble_ogm import ogm_bubble_chart_data
 from website.models import Banner
 from core.forms import DetallePresupuestoForm
-import json
 
 
 # Create your views here.
