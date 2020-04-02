@@ -25,10 +25,13 @@ COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center;')
 CONFIGURACION_TABLAS_EXCEL = {
     "ogm1": {
-        "titulo": u"Eficiencia en la ejecución del gasto municipal",
-        "subtitulo": u"Gastos en millones de córdobas corrientes",
-        "encabezados": ["Rubro", "Inicial", "Ejecutado", "%(ejecutado/inicial)"],
-        "celdas": ["subsubtipogasto__origen__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
+        "titulo": u"Rubros de gastos para el período",
+        "subtitulo": '',
+        "subtitulo_inicio": u"Presupuesto inicial de gastos {} por su destino",
+        "subtitulo_intermedio": u"Ejecución intermedia de gastos {} por su destino",
+        "subtitulo_cierre": u"Ejecución de gastos {} por su destino",
+        "encabezados": ['Rubro', 'Inicial', '%'],
+        "celdas": ['subsubtipogasto__origen__nombre', 'inicial_asignado', 'ini_asig_porcentaje'],
         "qs": "rubros"
     },
     "ogm2": {
@@ -91,7 +94,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "otros"
     },
     "oim1": {
-        "titulo": u"Rubros de ingresos para el período ",
+        "titulo": u"Rubros de ingresos para el período",
         "subtitulo": '',
         "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
         "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
@@ -590,7 +593,7 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         # ESCRIBIR FILA DE TOTALES
         indice_fila += 1
         for c, atributo in enumerate(celdas):
-            if 'percent' not in atributo:
+            if 'percent' not in atributo and 'porcentaje' not in atributo:
                 if c > 0:
                     if tipo_totales[c] == "/":
                         formula = 'IF({2}<>0;{0}{1}{2};0)'.format(
@@ -672,18 +675,24 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
         if periodo_nombre != 'inicial':
             CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][3] = 'ejecutado_percent'
+            columna_porcentaje = ''
+            if 'oim' in reporte:
+                columna_porcentaje = 'ejecutado_percent'
+            elif 'ogm' in reporte:
+                columna_porcentaje = 'ejec_porcentaje'
 
-        CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] += '{} {}'.format(year,
-                                                                        periodo_nombre)
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
+
+        titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] + ' {} {}'.format(year,
+                                                                                 periodo_nombre)
+        CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] = titulo
 
         if year >= 2018 and 'oim' in reporte:
             sub3_name = 'sub3tipoingreso__origen__nombre'
             CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub3_name
 
-        file_name = '{} {}'.format(CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"],
-                                   datetime.date.today())
+        file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
 
     for report_name in reportes:
         report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
