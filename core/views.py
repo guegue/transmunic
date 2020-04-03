@@ -485,19 +485,33 @@ def getTransferenciasDetalle():
     iniciales = AnioTransferencia.objects. \
         values_list('anio', flat=True). \
         filter(periodo=PERIODO_INICIAL)
+
     finales = AnioTransferencia.objects. \
         values_list('anio', flat=True). \
         filter(periodo=PERIODO_FINAL)
-    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
-    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
 
-    data_inicial = Transferencia.objects.order_by('municipio__nombre', 'anio'). \
-        values('municipio__nombre', 'anio'). \
-        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+    inicial_filter = {
+        'anio__in': iniciales,
+        'periodo': PERIODO_INICIAL}
+    final_filter = {
+        'anio__in': finales,
+        'periodo': PERIODO_FINAL}
 
-    data_final = Transferencia.objects.order_by('municipio__nombre', 'anio'). \
-        values('municipio__nombre', 'anio'). \
-        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+    data_inicial = Transferencia.objects. \
+        order_by('municipio__nombre', 'anio'). \
+        values('municipio__id', 'municipio__nombre',
+               'anio'). \
+        filter(**inicial_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'))
+
+    data_final = Transferencia.objects. \
+        order_by('municipio__nombre', 'anio'). \
+        values('municipio__id', 'municipio__nombre',
+               'anio'). \
+        filter(**final_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'))
 
     data_inicial = list(data_inicial)
     data_final = list(data_final)
@@ -758,7 +772,10 @@ def getPeriodosDetalle(datadata):
                 municipios.append(municipio)
                 tasas[municipio] = {'total': [],
                                     'corriente': [],
-                                    'capital': []
+                                    'capital': [],
+                                    'partido': [],
+                                    'clasificacion': [],
+                                    'municipio_id': row['municipio__id']
                                     }
             anio = row['anio']
             total = {
@@ -772,6 +789,19 @@ def getPeriodosDetalle(datadata):
                 ultimo_anio[municipio] = total
         for municipio in municipios:
             if ultimo_anio.get(municipio) and ultimo_anio_previo.get(municipio):
+                municipio_id = tasas[municipio]['municipio_id']
+                partido = Municipio.objects. \
+                    filter(periodomunic__municipio__id=municipio_id,
+                           periodomunic__periodo__id=periodo.id). \
+                    values('periodomunic__partido'). \
+                    first()
+
+                clasificacion = ClasificacionMunicAno.objects. \
+                    filter(municipio_id=municipio_id,
+                           anio=periodo.hasta). \
+                    values('clasificacion__clasificacion'). \
+                    first()['clasificacion__clasificacion']
+
                 if ultimo_anio_previo[municipio]['total']:
                     tasa = growthRate(ultimo_anio[municipio]['total'],
                                       ultimo_anio_previo[municipio]['total'],
@@ -794,10 +824,17 @@ def getPeriodosDetalle(datadata):
                 tasas[municipio]['total'].append(tasa)
                 tasas[municipio]['corriente'].append(tasa_cr)
                 tasas[municipio]['capital'].append(tasa_cp)
+                if partido:
+                    tasas[municipio]['partido'].append(partido['periodomunic__partido'])
+                else:
+                    tasas[municipio]['partido'].append('')
+                tasas[municipio]['clasificacion'].append(clasificacion)
             else:
                 tasas[municipio]['total'].append('')
                 tasas[municipio]['corriente'].append('')
                 tasas[municipio]['capital'].append('')
+                tasas[municipio]['partido'].append('')
+                tasas[municipio]['clasificacion'].append('')
         prev_periodo = periodo
 
     context['data_tasa'] = tasas
@@ -895,13 +932,22 @@ def tasa_transferencias(request):
     data_tasa_col = []
     for key in data_tasa_detalle:
         row = data_tasa_detalle[key]['total']
+        cantidad_registros = len(data_tasa_detalle[key]['partido']) - 1
+        ultimo_partido = data_tasa_detalle[key]['partido'][cantidad_registros]
+        ultima_clasificacion = data_tasa_detalle[key]['clasificacion'][cantidad_registros]
         i = 0
         for col in row:
             if len(data_tasa_col) <= i:
                 data_tasa_col.append([])
             if col:
-                data_tasa_col[i].append({'name': key, 'value': col})
+                data_tasa_col[i].append({
+                    'name': key,
+                    'value': col,
+                    'partido': ultimo_partido,
+                    'clasificacion': ultima_clasificacion
+                })
             i += 1
+
     data_tasa_col_sorted_asc = []
     data_tasa_col_sorted_des = []
     for col in data_tasa_col:
@@ -909,6 +955,8 @@ def tasa_transferencias(request):
         data_tasa_col_sorted_asc.append(col)
         col = sorted(col, key=lambda d: d['value'], reverse=True)
         data_tasa_col_sorted_des.append(col)
+
+    print(data_tasa_col_sorted_des)
 
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
