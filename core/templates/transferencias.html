@@ -39,15 +39,15 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <form class="navbar-form navbar-right" id="formularioMunicipio2">
                         <p>
-                            Elija el municipio: <select name="municipio2" id="municipio2">
-                            <option value="">(Municipio)</option>
-                            {% for municipio in municipios|dictsort:'nombre' %}
-                                {% if municipio.slug != request.GET.municipio %}
-                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}-{{ municipio.clasificacion }}-{{ municipio.periodomunic__partido }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                            con el cual desea compararse.
+                            Elija el municipio con el cual desea comparar a {{ municipio }}:
+                            <select name="municipio2" id="municipio2">
+                                <option value="">(Municipio)</option>
+                                {% for municipio in municipios|dictsort:'nombre' %}
+                                    {% if municipio.slug != request.GET.municipio %}
+                                        <option value="{{ municipio.slug }}">{{ municipio.nombre }}-{{ municipio.clasificacion }}-{{ municipio.periodomunic__partido }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
                         </p>
                     </form>
                 </div>

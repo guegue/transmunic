@@ -234,6 +234,5 @@ table.small-font {
     border-collapse: separate !important; 
     border: 1px solid #ddd !important;
 }
-span#select2-municipio2-container {text-align: center;}
-span#select2-municipio2-container span.select2-selection__placeholder{color: #000 !important;}
+span#select2-municipio2-container span.select2-selection__placeholder, ul#select2-municipio2-results{color: rgba(0,0,255,0.6) !important;}
 form#formularioMunicipio2 span.select2{width: 180px !important;}

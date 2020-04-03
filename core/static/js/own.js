@@ -36,7 +36,19 @@ $(function () {
     }
     if (municipio2.length > 0) {
         municipio2.select2({
-            placeholder: '(Municipio)'
+            placeholder: `Dando click aquí<i class="fa fa-hand-o-up"></i>`,
+            escapeMarkup: function(m) {
+               return m;
+            }
+        });
+
+        municipio2
+            .on('select2:open', function () {
+            $('.select2-dropdown').addClass('select2-dropdown-width');
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', 'Escribir el Municipio');
+        })
+        .on('select2:close', function () {
+            $('.select2-search--dropdown .select2-search__field').attr('placeholder', null);
         });
     }
 
