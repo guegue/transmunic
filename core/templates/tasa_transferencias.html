@@ -49,7 +49,7 @@
                             <option value="">(Municipio)</option>
                             {% for municipio in municipios|dictsort:'nombre' %}
                                 {% if municipio.slug != request.GET.municipio %}
-                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
+                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }} - {{ municipio.clasificacion }} - {{ municipio.periodomunic__partido }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>

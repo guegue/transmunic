@@ -40,10 +40,10 @@
                     <form class="navbar-form navbar-right" id="formularioMunicipio2">
                         <p>
                             Elija el municipio: <select name="municipio2" id="municipio2">
-                            <option value="" hidden>(Municipio)</option>
+                            <option value="">(Municipio)</option>
                             {% for municipio in municipios|dictsort:'nombre' %}
                                 {% if municipio.slug != request.GET.municipio %}
-                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
+                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}-{{ municipio.clasificacion }}-{{ municipio.periodomunic__partido }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
