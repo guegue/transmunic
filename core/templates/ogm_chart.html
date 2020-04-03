@@ -260,7 +260,7 @@
                     </div>
                     {# chart horizontal chart #}
                     <div class="col-lg-7 col-md-7 col-sm-12">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
@@ -283,7 +283,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <h2>
-                            <strong>Rankin de gastos de personal percápita {{ year }}</strong>
+                            <strong>Ranking de gastos de personal percápita {{ year }}</strong>
                             Municipio de <strong>{{ municipio }}</strong> grupo
                             <strong>"{{ mi_clase.clasificacion }}"</strong>
                             {% if municipio|lower == 'managua' %}
@@ -340,6 +340,25 @@
                         <div class="col-lg-5 col-md-5 col-sm-12 table-responsive">
                             <table class="table table-bordered table-condensed table-striped pma-bg-white">
                                 <thead class="thead-inverse">
+                                <tr>
+                                    <td colspan="3">
+                                        <h4>Ranking de gastos de personal perc&aacute;pita {{ year }}
+                                            Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
+                                        </h4>
+                                        <h5>
+                                            Córdobas corrientes por habitante en base a
+                                            {% if periodo_list|keyvalue:year == 'F' %}
+                                                Ejecuci&oacute;n de cierre de gastos
+                                            {% elif periodo_list|keyvalue:year == 'A' %}
+                                                Ejecuci&oacute;n intermedia de gastos
+                                            {% elif periodo_list|keyvalue:year == 'I' %}
+                                                Presupuesto inicial de gastos
+                                            {% endif %}
+                                            {{ year }}
+                                            {% descargar_excel "oim8" %}
+                                        </h5>
+                                    </td>
+                                </tr>
                                 <tr class="bg-primary">
                                     <th class="text-center"><strong>Posici&oacute;n</strong></th>
                                     <th class="text-center"><strong>Municipios</strong></th>
@@ -403,7 +422,7 @@
                             </table>
                         </div>
                         <div class="col-lg-7 col-md-7 col-sm-12">
-                            <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                            <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                             </div>
                         </div>
                     </div>

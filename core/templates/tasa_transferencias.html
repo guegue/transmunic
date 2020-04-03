@@ -49,7 +49,8 @@
                             <option value="">(Municipio)</option>
                             {% for municipio in municipios|dictsort:'nombre' %}
                                 {% if municipio.slug != request.GET.municipio %}
-                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }} - {{ municipio.clasificacion }} - {{ municipio.periodomunic__partido }}</option>
+                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}
+                                        - {{ municipio.clasificacion }} - {{ municipio.periodomunic__partido }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -65,6 +66,14 @@
                             {% for partido in partidos %}
                                 {% if not forloop.first %}
                                     <td class="text-center">{{ partido.nombre }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        <tr class="bg-primary">
+                            <th>Clasificacion</th>
+                            {% for clasificacion_periodo in clasificaciones_periodo %}
+                                {% if not forloop.first %}
+                                    <th class="text-center">{{ clasificacion_periodo }}</th>
                                 {% endif %}
                             {% endfor %}
                         </tr>
@@ -125,6 +134,14 @@
                                 {% for partido in partidos_municpio2 %}
                                     {% if not forloop.first %}
                                         <td class="text-center">{{ partido.nombre }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            <tr class="bg-primary">
+                                <th>Clasificacion</th>
+                                {% for clasificacion_periodo in clasificaciones_periodo2 %}
+                                    {% if not forloop.first %}
+                                        <th class="text-center">{{ clasificacion_periodo }}</th>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
