@@ -87,7 +87,7 @@
                                             <optgroup>
                                                 <option value="">Todos</option>
                                             </optgroup>
-                                            {% regroup municipios by depto as departamentos %}
+                                            {% regroup municipios by depto__nombre as departamentos %}
                                             {% for departamento in departamentos %}
                                                 <optgroup label="{{ departamento.grouper }}">
                                                     {% for m in departamento.list %}
