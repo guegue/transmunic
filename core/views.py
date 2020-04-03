@@ -727,8 +727,8 @@ def transferencias(request):
         'periodo': PERIODO_FINAL}
 
     # obteniendo de manere ascendente los años con su pgr y pip
-    anios_trans = list(AnioTransferencia.objects. \
-                       order_by('anio'). \
+    anios_trans = list(AnioTransferencia.objects.
+                       order_by('anio').
                        values('anio', 'pgr',
                               'pip',
                               'recurso_tesoro_pip'))
