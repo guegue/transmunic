@@ -546,46 +546,67 @@ def getTransferencias(municipio=None):
     iniciales = AnioTransferencia.objects. \
         values_list('anio', flat=True). \
         filter(periodo=PERIODO_INICIAL)
+
     finales = AnioTransferencia.objects. \
         values_list('anio', flat=True). \
         filter(periodo=PERIODO_FINAL)
-    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
-    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+
+    inicial_filter = {
+        'anio__in': iniciales,
+        'periodo': PERIODO_INICIAL}
+    final_filter = {
+        'anio__in': finales,
+        'periodo': PERIODO_FINAL}
 
     if municipio:
         inicial_filter['municipio__slug'] = municipio
         final_filter['municipio__slug'] = municipio
 
-    data_inicial = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio'). \
-        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+    data_inicial = Transferencia.objects. \
+        order_by('municipio', 'anio'). \
+        values('municipio', 'anio'). \
+        filter(**inicial_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'))
 
-    data_final = Transferencia.objects.order_by('municipio', 'anio').values('municipio', 'anio'). \
-        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'))
+    data_final = Transferencia.objects. \
+        order_by('municipio', 'anio'). \
+        values('municipio', 'anio'). \
+        filter(**final_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'))
 
     # adds 'clasificacion' for each row
     for row in data_inicial:
         row['clasificacion'] = ClasificacionMunicAno.objects. \
             values_list('clasificacion__clasificacion', flat=True). \
-            filter(anio=row['anio'], municipio=row['municipio']).first()
+            filter(anio=row['anio'], municipio=row['municipio']). \
+            first()
     for row in data_final:
         row['clasificacion'] = ClasificacionMunicAno.objects. \
             values_list('clasificacion__clasificacion', flat=True). \
-            filter(anio=row['anio'], municipio=row['municipio']).first()
+            filter(anio=row['anio'], municipio=row['municipio']). \
+            first()
 
     data_inicial = list(data_inicial)
     data_final = list(data_final)
 
     # llena con ceros años por si quedan vacios
     if not municipio:
-        clasificaciones = ClasificacionMunicAno.objects.values_list('clasificacion__clasificacion',
-                                                                    flat=True).distinct()
+        clasificaciones = ClasificacionMunicAno.objects. \
+            values_list('clasificacion__clasificacion', flat=True). \
+            distinct()
         for year in iniciales:
             for clasificacion in clasificaciones:
-                data_inicial.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
+                data_inicial.append({'anio': year,
+                                     'clasificacion': clasificacion,
+                                     'corriente': 0,
                                      'municipio': 0, 'capital': 0})
         for year in finales:
             for clasificacion in clasificaciones:
-                data_final.append({'anio': year, 'clasificacion': clasificacion, 'corriente': 0,
+                data_final.append({'anio': year,
+                                   'clasificacion': clasificacion,
+                                   'corriente': 0,
                                    'municipio': 0, 'capital': 0})
 
     data = data_inicial + data_final
@@ -604,14 +625,22 @@ def getTransferencias(municipio=None):
             clasificacion = ClasificacionMunicAno.objects. \
                 values_list('clasificacion__clasificacion', flat=True). \
                 filter(anio=year, municipio__slug=municipio).first()
-            partido = PeriodoMunic.objects.values('partido', 'periodo__desde',
-                                                  'periodo__hasta').filter(
-                municipio__slug=municipio, periodo__desde__lte=year,
-                periodo__hasta__gte=year).first()
-            periodo = "{}-{}".format(partido['periodo__desde'], partido['periodo__hasta'])
+            partido = PeriodoMunic.objects. \
+                values('partido', 'periodo__desde',
+                       'periodo__hasta'). \
+                filter(municipio__slug=municipio,
+                       periodo__desde__lte=year,
+                       periodo__hasta__gte=year). \
+                first()
+
+            periodo = "{}-{}".format(partido['periodo__desde'],
+                                     partido['periodo__hasta'])
+
             periodos[periodo] = periodos.get(periodo, 0) + 1
-            years.append({'year': year, 'clasificacion': clasificacion,
-                          'partido': partido['partido'], 'periodo': periodo})
+            years.append({'year': year,
+                          'clasificacion': clasificacion,
+                          'partido': partido['partido'],
+                          'periodo': periodo})
         for year in years:
             year['span'] = periodos[year['periodo']]
 
@@ -682,24 +711,44 @@ def transferencias(request):
     if data.get('data_by_years'):
         context['data_by_years'] = data.get('data_by_years')
 
-    iniciales = AnioTransferencia.objects.values_list(
-        'anio', flat=True).filter(periodo=PERIODO_INICIAL)
-    finales = AnioTransferencia.objects.values_list(
-        'anio', flat=True).filter(periodo=PERIODO_FINAL)
-    inicial_filter = {'anio__in': iniciales, 'periodo': PERIODO_INICIAL}
-    final_filter = {'anio__in': finales, 'periodo': PERIODO_FINAL}
+    iniciales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_INICIAL)
+
+    finales = AnioTransferencia.objects. \
+        values_list('anio', flat=True). \
+        filter(periodo=PERIODO_FINAL)
+
+    inicial_filter = {
+        'anio__in': iniciales,
+        'periodo': PERIODO_INICIAL}
+    final_filter = {
+        'anio__in': finales,
+        'periodo': PERIODO_FINAL}
 
     # obteniendo de manere ascendente los años con su pgr y pip
-    anios_trans = list(AnioTransferencia.objects.order_by('anio').values(
-        'anio', 'pgr', 'pip', 'recurso_tesoro_pip'))
+    anios_trans = list(AnioTransferencia.objects. \
+                       order_by('anio'). \
+                       values('anio', 'pgr',
+                              'pip',
+                              'recurso_tesoro_pip'))
 
     # Obteiendo totales de transferencias de capital y  corrientes por anio
-    total_data_inicial = Transferencia.objects.order_by('anio').values('anio'). \
-        filter(**inicial_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
-                                          total=Sum('corriente') + Sum('capital'))
-    total_data_final = Transferencia.objects.order_by('anio').values('anio'). \
-        filter(**final_filter).annotate(corriente=Sum('corriente'), capital=Sum('capital'),
-                                        total=Sum('corriente') + Sum('capital'))
+    total_data_inicial = Transferencia.objects. \
+        order_by('anio'). \
+        values('anio'). \
+        filter(**inicial_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'),
+                 total=Sum('corriente') + Sum('capital'))
+
+    total_data_final = Transferencia.objects. \
+        order_by('anio'). \
+        values('anio'). \
+        filter(**final_filter). \
+        annotate(corriente=Sum('corriente'),
+                 capital=Sum('capital'),
+                 total=Sum('corriente') + Sum('capital'))
 
     joined_total_data = list(total_data_inicial) + list(total_data_final)
     joined_total_data = sorted(joined_total_data, key=lambda d: d['anio'])
