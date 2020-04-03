@@ -186,7 +186,7 @@
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
                                     <td>{{ row.clasificacion }}</td>
-                                    <td class="tex-center">
+                                    <td class="text-right">
                                         {% if row.asignado %}
                                             {{ row.asignado|floatformat:2 }}
                                         {% else %}
@@ -220,7 +220,7 @@
                     </div>
                     {# chart horizontal chart #}
                     <div class="col-lg-8 col-md-8 col-sm-12 mt-1">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
@@ -232,44 +232,44 @@
             <div class="{% if municipio|lower == 'managua' %}container-fluid pma-bg-blue pma-fg-white text-center{% else %}container{% endif %}">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12">
-		    {% if municipio|lower == 'managua' %}
-		        <h2><strong>La inversi&oacute;n perc&aacute;pita</strong> para el municipio de
-			    <strong>{{ municipio }} </strong>grupo "{{ mi_clase.clasificacion }}"<br />
-			    para el periodo
-                            {% if periodo_list|keyvalue:year == 'F' %}
-                                de cierre
-                            {% elif periodo_list|keyvalue:year == 'A' %}
-                                intermedio
-                            {% elif periodo_list|keyvalue:year == 'I' %}
-                                inicial
-                            {% endif %}
-			    {{ year }}
-			    es de 
-                            {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
-			      <span class="amarillo pma-number">{{ numerator|div:denominator|floatformat:2|intcomma }}</span>
-			    {% endwith %}
-                       </h2>
-		       <h5> Córdobas corrientes por habitante</h5>
-		       <hr class="pma-line-5">
-                    {% else %}
-                       <h2><strong>Rankin de inversi&oacute;n perc&aacute;pita {{ year }}</strong><br />
-                            Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
-                       </h2>
-                       <h5>
-                            Córdobas corrientes por habitante en base a
-                            {% if periodo_list|keyvalue:year == 'F' %}
-                                Ejecuci&oacute;n de cierre de inversi&oacute;n
-                            {% elif periodo_list|keyvalue:year == 'A' %}
-                                Ejecuci&oacute;n intermedia de inversi&oacute;n
-                            {% elif periodo_list|keyvalue:year == 'I' %}
-                                Presupuesto inicial de inversi&oacute;n
-                            {% endif %}
-                            {{ year }}
-                            {% descargar_excel "icat2" %}
-                       </h5>
-                        <hr class="pma-line-3"/>
+                        {% if municipio|lower == 'managua' %}
+                            <h2><strong>La inversi&oacute;n perc&aacute;pita</strong> para el municipio de
+                                <strong>{{ municipio }} </strong>grupo "{{ mi_clase.clasificacion }}"<br/>
+                                para el periodo
+                                {% if periodo_list|keyvalue:year == 'F' %}
+                                    de cierre
+                                {% elif periodo_list|keyvalue:year == 'A' %}
+                                    intermedio
+                                {% elif periodo_list|keyvalue:year == 'I' %}
+                                    inicial
+                                {% endif %}
+                                {{ year }}
+                                es de
+                                {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                                    <span class="amarillo pma-number">{{ numerator|div:denominator|floatformat:2|intcomma }}</span>
+                                {% endwith %}
+                            </h2>
+                            <h5> Córdobas corrientes por habitante</h5>
+                            <hr class="pma-line-5">
+                        {% else %}
+                            <h2><strong>Rankin de inversi&oacute;n perc&aacute;pita {{ year }}</strong><br/>
+                                Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}"
+                            </h2>
+                            <h5>
+                                Córdobas corrientes por habitante en base a
+                                {% if periodo_list|keyvalue:year == 'F' %}
+                                    Ejecuci&oacute;n de cierre de inversi&oacute;n
+                                {% elif periodo_list|keyvalue:year == 'A' %}
+                                    Ejecuci&oacute;n intermedia de inversi&oacute;n
+                                {% elif periodo_list|keyvalue:year == 'I' %}
+                                    Presupuesto inicial de inversi&oacute;n
+                                {% endif %}
+                                {{ year }}
+                                {% descargar_excel "icat2" %}
+                            </h5>
+                            <hr class="pma-line-3"/>
                             {% include 'municipal-triangle.html' %}
-		    {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -380,117 +380,118 @@
 {% endblock %}
 
 {% block section4 %}
-{% if periodo_list|keyvalue:year != 'I' %}
-    <div class="container wide">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>
-		    <strong> Inversi&oacute;n total 
-	            {% if municipio %}
-			{{ municipio }} 
-		    {% else %}
-		        consolidado 153 municipios 
-		    {% endif %}
-		    {{ year }} 
-		    </strong><br />
-		    Presupuesto inicial, intermedio, de cierre y su modificación por rubro
-                </h2>
-                <h4>Millones de c&oacute;rdobas</h4>
-                <hr class="pma-line-3"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-bordered table-condensed table-striped">
-                    <thead>
-                    <tr>
-                        <td colspan="2"></td>
-                        <td colspan="4" class="text-center">
-                            <h4>Modificaci&oacute;n intermedia
-                                <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
-                                   class="link-info">*</a>
-                            </h4>
-                        </td>
-                        <td colspan="4" class="text-center">
-                            <h4>Modificaci&oacute;n al cierre
-                                <a href="#" data-toggle="tooltip"
-                                   data-original-title="Modificaci&oacute;n al {{ year_data.final }}" class="link-info">*</a>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Rubros de inversi&oacute;n</th>
-                        <th>Inicial</th>
-                        <th>Actualizado</th>
-                        <th>Modificaci&oacute;n</th>
-                        <th>Ejecutado</th>
-                        <th>
-                            <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
-                               class="link-info font-color-white">%</a>
-                        </th>
-                        <th>Actualizado</th>
-                        <th>Modificaci&oacute;n</th>
-                        <th>Ejecutado</th>
-                        <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
-                               class="link-info font-color-white">%</a></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in cat %}
-                        <tr>
-                            <td class="text-left">{{ row.catinversion__nombre }}</td>
-                            <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
-                            <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
-                            <td class="text-right">
-                                {% if row.actualizado_asignado and row.inicial_asignado %}
-                                    {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </td>
-                            <td class="text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
-                            {% if row.actualizado_asignado %}
-                                <td class="montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+    {% if periodo_list|keyvalue:year != 'I' %}
+        <div class="container wide">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>
+                        <strong> Inversi&oacute;n total
+                            {% if municipio %}
+                                {{ municipio }}
                             {% else %}
-                                <td class="montos">0%</td>
+                                consolidado 153 municipios
                             {% endif %}
-                            <td class="text-right">
-                                {% if row.final_asignado %}
-                                    {{ row.final_asignado|million|intcomma }}
-                                {% else %}
-                                    0
-                                {% endif %}</td>
-                            <td class="text-right">
-                                {% if row.final_asignado and row.inicial_asignado %}
-                                    {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}
-                                {% else %}
-                                    0
-                                {% endif %}</td>
-                            <td class="text-right">
-                                {% if row.final_ejecutado %}
-                                    {{ row.final_ejecutado|million|intcomma }}
-                                {% else %}
-                                    0
-                                {% endif %}
+                            {{ year }}
+                        </strong><br/>
+                        Presupuesto inicial, intermedio, de cierre y su modificación por rubro
+                    </h2>
+                    <h4>Millones de c&oacute;rdobas</h4>
+                    <hr class="pma-line-3"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="4" class="text-center">
+                                <h4>Modificaci&oacute;n intermedia
+                                    <a href="#" data-toggle="tooltip"
+                                       data-original-title="Modificaci&oacute;n al {{ year_data.actualizado }}"
+                                       class="link-info">*</a>
+                                </h4>
                             </td>
-                            {% if row.final_asignado %}
-                                <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
-                            {% endif %}
+                            <td colspan="4" class="text-center">
+                                <h4>Modificaci&oacute;n al cierre
+                                    <a href="#" data-toggle="tooltip"
+                                       data-original-title="Modificaci&oacute;n al {{ year_data.final }}"
+                                       class="link-info">*</a>
+                                </h4>
+                            </td>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot class="font-12px font-color-azul">
-                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
-                        <strong>Fuente: </strong>Elaboraci&oacute;n
-                        propia a partir
-                        de transmunic.gob.ni<strong>.</strong></th>
-                    </tfoot>
-                </table>
+                        <tr>
+                            <th>Rubros de inversi&oacute;n</th>
+                            <th>Inicial</th>
+                            <th>Actualizado</th>
+                            <th>Modificaci&oacute;n</th>
+                            <th>Ejecutado</th>
+                            <th>
+                                <a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
+                                   class="link-info font-color-white">%</a>
+                            </th>
+                            <th>Actualizado</th>
+                            <th>Modificaci&oacute;n</th>
+                            <th>Ejecutado</th>
+                            <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Actualizado"
+                                   class="link-info font-color-white">%</a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in cat %}
+                            <tr>
+                                <td class="text-left">{{ row.catinversion__nombre }}</td>
+                                <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
+                                <td class="text-right">{{ row.actualizado_asignado|million|intcomma }}</td>
+                                <td class="text-right">
+                                    {% if row.actualizado_asignado and row.inicial_asignado %}
+                                        {{ row.actualizado_asignado|sub:row.inicial_asignado|million|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">{{ row.actualizado_ejecutado|million|intcomma }}</td>
+                                {% if row.actualizado_asignado %}
+                                    <td class="montos">{{ row.actualizado_ejecutado|div:row.actualizado_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                                {% else %}
+                                    <td class="montos">0%</td>
+                                {% endif %}
+                                <td class="text-right">
+                                    {% if row.final_asignado %}
+                                        {{ row.final_asignado|million|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}</td>
+                                <td class="text-right">
+                                    {% if row.final_asignado and row.inicial_asignado %}
+                                        {{ row.final_asignado|sub:row.inicial_asignado|million|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}</td>
+                                <td class="text-right">
+                                    {% if row.final_ejecutado %}
+                                        {{ row.final_ejecutado|million|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                {% if row.final_asignado %}
+                                    <td class="danger montos">{{ row.final_ejecutado|div:row.final_asignado|mul:100|floatformat:1|intcomma }}%</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot class="font-12px font-color-azul">
+                        <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                            <strong>Fuente: </strong>Elaboraci&oacute;n
+                            propia a partir
+                            de transmunic.gob.ni<strong>.</strong></th>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-{% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block section5 %}
@@ -498,13 +499,13 @@
         <div class="row">
             <div class="col-md-12">
                 <h2><strong>Informaci&oacute;n Hist&oacute;rica</strong><br>
-			Comportamiento hist&oacute;rico de las inversiones <br />
-		    {% if not municipio %}
-		        Consolidado 153 municipios
-		    {% else %}
-		        {{ municipio }}
-                    {% endif %} 
-		</h2>
+                    Comportamiento hist&oacute;rico de las inversiones <br/>
+                    {% if not municipio %}
+                        Consolidado 153 municipios
+                    {% else %}
+                        {{ municipio }}
+                    {% endif %}
+                </h2>
                 <hr class="pma-line-3"/>
             </div>
         </div>
@@ -521,7 +522,7 @@
                                    style="left:{{ forloop.counter|mul:"135" }}px;"><span
                                         class="posicion">{{ row.inversion__anio }}</span>
                                     <br/>
-				    {% if row.inversion__periodo == 'I' %}
+                                    {% if row.inversion__periodo == 'I' %}
                                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
                                     {% else %}
                                         <span class="line-cifra">{{ row.ejecutado|million|intcomma }}</span>
@@ -566,10 +567,10 @@
                     Ejecuci&oacute;n presupuestaria
                 </h2>
                 {% if not municipio %}
-		    <h4>Consolidado 153 municipios</h4>
-		{% else %}
+                    <h4>Consolidado 153 municipios</h4>
+                {% else %}
                     <h4>{{ municipio }}</h4>
-		{% endif %}
+                {% endif %}
                 {% descargar_excel "icat7" %}
                 </h4>
                 <table class="table">

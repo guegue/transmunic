@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-from django.http.response import HttpResponse
 import xlwt
+from django.http.response import HttpResponse
 from decimal import Decimal, ROUND_HALF_EVEN
 
 QUANTIZE_VALUES = [Decimal("0.01"), ROUND_HALF_EVEN]
@@ -8,15 +8,16 @@ HEADER1 = xlwt.easyxf(
     'font: bold on, height 280, name Arial, colour_index 2; align: vert centre, horiz center; pattern: pattern 0x01, pattern_fore_colour 40')
 HEADER2 = xlwt.easyxf('font: bold on, height 200, name Arial; align:  vert centre, horiz center')
 HEADER3 = xlwt.easyxf(
-    'font: bold on, height 200, name Arial; align:   vert centre, horiz center;  pattern: pattern 0x01, pattern_fore_colour 50')
+    'font: bold on, height 200, name Arial; align: vert centre, horiz center;  pattern: pattern 0x01, pattern_fore_colour 50')
 HEADER4 = xlwt.easyxf('font: bold on, height 200, name Arial; align:   vert centre, horiz center;')
 TOTAL_ROW_FORMAT = xlwt.easyxf('font: bold on, height 200, name Arial', num_format_str='##,##0.00')
 CENTER = xlwt.easyxf('align: wrap on, vert centre, horiz center')
-PERCENTAGE_FORMAT = xlwt.easyxf(num_format_str='0.0%')
+PERCENTAGE_FORMAT = xlwt.easyxf('align: wrap on, vert centre, horiz center; font: name Arial',
+                                num_format_str='0.0%')
 TOTAL_PERCENTAGE_FORMAT = xlwt.easyxf(
     'font: bold on, height 200, name Arial', num_format_str='0.0%')
 NUMBER_FORMAT = xlwt.easyxf(num_format_str='##,##0.00')
-LEFT_FORMAT = xlwt.easyxf('align: wrap on, vert centre, horiz left; font: name Arial')
+LEFT_FORMAT = xlwt.easyxf('align: wrap on, vert centre, horiz right; font: name Arial')
 DATE_FORMAT = xlwt.easyxf(num_format_str='DD/MM/YYYY')
 COLUMN_HEADER_FORMAT = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center; pattern: pattern 0x01, pattern_fore_colour 40')
@@ -24,10 +25,13 @@ COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center;')
 CONFIGURACION_TABLAS_EXCEL = {
     "ogm1": {
-        "titulo": u"Eficiencia en la ejecución del gasto municipal",
-        "subtitulo": u"Gastos en millones de córdobas corrientes",
-        "encabezados": ["Rubro", "Inicial", "Ejecutado", "%(ejecutado/inicial)"],
-        "celdas": ["subsubtipogasto__origen__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
+        "titulo": u"Rubros de gastos para el período",
+        "subtitulo": '',
+        "subtitulo_inicio": u"Presupuesto inicial de gastos {} por su destino",
+        "subtitulo_intermedio": u"Ejecución intermedia de gastos {} por su destino",
+        "subtitulo_cierre": u"Ejecución de gastos {} por su destino",
+        "encabezados": ['Rubro', 'Inicial', '%'],
+        "celdas": ['subsubtipogasto__origen__nombre', 'inicial_asignado', 'ini_asig_porcentaje'],
         "qs": "rubros"
     },
     "ogm2": {
@@ -90,10 +94,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "otros"
     },
     "oim1": {
-        "titulo": u"Ingresos del periodo",
-        "subtitulo": u"Ingresos en millones de córdobas corrientes",
-        "encabezados": ["Rubros de ingresos", "Inicial", "Ejecutado", "%(ejecutado/inicial)"],
-        "celdas": ["subsubtipoingreso__origen__nombre", "inicial_asignado", "ejecutado", "ejecutado/inicial_asignado"],
+        "titulo": u"Rubros de ingresos para el período",
+        "subtitulo": '',
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
+        "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
+        "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
+        "encabezados": ['Rubros de ingresos', 'Inicial', '%'],
+        "celdas": ["subsubtipoingreso__origen__nombre", "inicial_asignado", 'inicial_asignado_percent'],
         "qs": "rubros"
     },
     "oim2": {
@@ -568,8 +575,8 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
     for row in queryset:
         indice_fila += 1
         for c, atributo in enumerate(celdas):
-            value = 0
             value = obtener_valor(row, atributo)
+
             if isinstance(value, Decimal):
                 value = value if isinstance(value, Decimal) else Decimal("{0}".format(value))
                 valor_anterior = totales.get(atributo, Decimal("0"))
@@ -586,25 +593,24 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         # ESCRIBIR FILA DE TOTALES
         indice_fila += 1
         for c, atributo in enumerate(celdas):
-            if c > 0:
-                if tipo_totales[c] == "/":
-                    formula = 'IF({2}<>0;{0}{1}{2};0)'.format(
-                        xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 1),
-                        tipo_totales[c],
-                        xlwt.Utils.rowcol_to_cell(indice_fila, indice_columna + c - 2))
-                    formato = TOTAL_PERCENTAGE_FORMAT
+            if 'percent' not in atributo and 'porcentaje' not in atributo:
+                if c > 0:
+                    if tipo_totales[c] == "/":
+                        formula = 'IF({2}<>0;{0}{1}{2};0)'.format(
+                            0, tipo_totales[c], 0)
+                        formato = TOTAL_PERCENTAGE_FORMAT
+                    else:
+                        formula = '{0}({1}:{2})'.format(tipo_totales[c],
+                                                        xlwt.Utils.rowcol_to_cell(
+                                                            4, indice_columna + c),
+                                                        xlwt.Utils.rowcol_to_cell(indice_fila - 1,
+                                                                                  indice_columna + c))
+                        formato = TOTAL_ROW_FORMAT
+                    hoja.write(indice_fila, indice_columna + c,
+                               xlwt.Formula(formula), formato)
                 else:
-                    formula = '{0}({1}:{2})'.format(tipo_totales[c],
-                                                    xlwt.Utils.rowcol_to_cell(
-                                                        4, indice_columna + c),
-                                                    xlwt.Utils.rowcol_to_cell(indice_fila - 1, indice_columna + c))
-                    formato = TOTAL_ROW_FORMAT
-                hoja.write(indice_fila, indice_columna + c, xlwt.Formula(formula),
-                           formato
-                           )
-            else:
-                hoja.write(indice_fila, indice_columna, tipo_totales[c], TOTAL_ROW_FORMAT
-                           )
+                    hoja.write(indice_fila, indice_columna,
+                               tipo_totales[c], TOTAL_ROW_FORMAT)
 
     return hoja
 
@@ -612,7 +618,8 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
 def obtener_excel_response(reporte, data, sheet_name="hoja1"):
     response = HttpResponse(content_type='application/vnd-ms-excel')
     libro = xlwt.Workbook(encoding='utf8')
-    titulo = "reporte"
+    periodo_anio = data['periodo_list'][str(data['year'])]
+
     if "all" in reporte:
 
         municipio = data.get("municipio", "")
@@ -652,10 +659,37 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
     else:
         year = data.get('year', 0)
         reportes = [reporte]
-        if year >= 2018:
-            sub3_name = CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0]
+
+        if periodo_anio == 'I':
+            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
+                'subtitulo_inicio'].format(year)
+            periodo_nombre = 'inicial'
+        elif periodo_anio == 'A':
+            periodo_nombre = 'intermedio'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
+                'subtitulo_intermedio'].format(year)
+        else:
+            periodo_nombre = 'cierre'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
+                'subtitulo_cierre'].format(year)
+
+        if periodo_nombre != 'inicial':
+            CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
+            columna_porcentaje = ''
             if 'oim' in reporte:
-                sub3_name = 'sub3tipoingreso__origen__nombre'
+                columna_porcentaje = 'ejecutado_percent'
+            elif 'ogm' in reporte:
+                columna_porcentaje = 'ejec_porcentaje'
+
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
+
+        titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] + ' {} {}'.format(year,
+                                                                                 periodo_nombre)
+        CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] = titulo
+
+        if year >= 2018 and 'oim' in reporte:
+            sub3_name = 'sub3tipoingreso__origen__nombre'
             CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub3_name
 
         file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
@@ -678,8 +712,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
                 celdas.append(nombre)
             queryset = []
             for key, datos in data["porano"].items():
-                row = {}
-                row["descripcion"] = key
+                row = {"descripcion": key}
                 for anyo, valor in datos.items():
                     row[unicode(anyo)] = valor
                 queryset.append(row)
@@ -688,11 +721,15 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             tipo_totales.append("TOTALES")
             for c, celda in enumerate(celdas):
                 if c > 0:
-                    tipo_totales.append("SUM" if "/" not in celda else "AVERAGE")
+                    if "/" not in celda or '%' not in celda:
+                        tipo_totales.append("SUM")
+                    else:
+                        tipo_totales.append("AVERAGE")
 
         if queryset is not None:
-            crear_hoja_excel(libro, sheet_name, queryset, titulo,
-                             subtitulo, encabezados, celdas, tipo_totales)
+            crear_hoja_excel(libro, sheet_name, queryset,
+                             titulo, subtitulo, encabezados,
+                             celdas, tipo_totales)
         elif len(reportes) == 1:
             libro.add_sheet("{0} vacio".format(sheet_name))
 

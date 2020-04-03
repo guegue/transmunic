@@ -14,7 +14,7 @@
     </div>
     {% if periodo_list|keyvalue:year == 'I' %}
         {% if otros.0.asignado_percent %}
-            {% for row in otros|dictsortreversed:'asignado_percent' %}
+            {% for row in otros %}
                 {% if forloop.first %}
                     <div class="balloon-dialogue first-balloon-dialogue">
                         <strong>
@@ -92,7 +92,7 @@
                                     {% if row.asignado_percent|intcomma|floatformat:-2 %}
                                         {{ row.asignado_percent|default_if_none:0|intcomma|floatformat:-2 }}
                                     {% else %}
-                                        {{ row.asignado_percen|default_if_none:0t|intcomma }}
+                                        {{ row.asignado_percent|default_if_none:0|intcomma }}
                                     {% endif %}
                                     {% if mostraren == 'porcentaje' %}
                                         % del gasto total

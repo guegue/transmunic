@@ -43,17 +43,18 @@
                 </div>
 
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <form class="navbar-form navbar-right">
+                    <form class="navbar-form navbar-right" id="formularioMunicipio2">
                         Elija el municipio con el cual desea comparar a {{ municipio }}:
-                        <select class="form-control" name="municipio2" id="municipio2">
+                        <select name="municipio2" id="municipio2">
                             <option value="">(Municipio)</option>
-                            {% for municipio in municipios %}
-                                <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
+                            {% for municipio in municipios|dictsort:'nombre' %}
+                                {% if municipio.slug != request.GET.municipio %}
+                                    <option value="{{ municipio.slug }}">{{ municipio.nombre }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </form>
                 </div>
-
 
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <h2>{{ municipio }}</h2>
@@ -199,7 +200,6 @@
                     </div>
                 </div>
 
-
             {% else %}
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="row">
@@ -326,7 +326,7 @@
                         </div>
                         <div class="col-lg-12 col-md-12">
                             <h2>Tasa de crecimiento promedio anual<br/>
-                                rankin municipal
+                                ranking municipal
                                 por período de gobierno
                             </h2>
                             <hr class="pma-line-1"/>
@@ -372,13 +372,17 @@
                                                         <tr class="bg-primary">
                                                             <th>Municipio</th>
                                                             <th>Tasa de Crecimiento</th>
+                                                            <th>Clasificaci&oacute;n</th>
+                                                            <th>Partido Politico</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {% for row in data_tasa_col_des|index:forloop.counter0|slice:':10'|dictsort:'name' %}
+                                                        {% for row in data_tasa_col_des|index:forloop.counter0|slice:':10' %}
                                                             <tr>
                                                                 <td>{{ row.name }}</td>
                                                                 <td>{{ row.value|floatformat:2 }}</td>
+                                                                <td>{{ row.clasificacion }}</td>
+                                                                <td>{{ row.partido }}</td>
                                                             </tr>
                                                         {% endfor %}
                                                         </tbody>
@@ -390,13 +394,17 @@
                                                         <tr class="bg-primary">
                                                             <th>Municipio</th>
                                                             <th>Tasa de Crecimiento</th>
+                                                            <th>Clasificaci&oacute;n</th>
+                                                            <th>Partido Politico</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {% for row in data_tasa_col_asc|index:forloop.counter0|slice:':10'|dictsort:'name' %}
+                                                        {% for row in data_tasa_col_asc|index:forloop.counter0|slice:':10' %}
                                                             <tr>
                                                                 <td>{{ row.name }}</td>
                                                                 <td>{{ row.value|floatformat:2 }}</td>
+                                                                <td>{{ row.clasificacion }}</td>
+                                                                <td>{{ row.partido }}</td>
                                                             </tr>
                                                         {% endfor %}
                                                         </tbody>
@@ -417,13 +425,6 @@
 {% endblock %}
 
 {% block extra_footer_scripts %}
-    <script>
-        $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip({
-                placement: 'top'
-            });
-        });
-    </script>
     <script src="{% static 'js/pma.js' %}"></script>
 
     <script src="{% static 'js/highcharts.js' %}"></script>
