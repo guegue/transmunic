@@ -114,7 +114,7 @@
                         <select class="listado-municipios pull-right" name="municipio">
                             <option></option>
                             <!--option class="amarillo">Consolidado Municipal</option-->
-                            {% regroup municipios by depto as departamentos %}
+                            {% regroup municipios by depto__nombre as departamentos %}
                             {% for departamento in departamentos %}
                                 <optgroup label="{{ departamento.grouper }}">
                                     {% for m in departamento.list %}
