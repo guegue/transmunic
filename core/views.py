@@ -956,8 +956,6 @@ def tasa_transferencias(request):
         col = sorted(col, key=lambda d: d['value'], reverse=True)
         data_tasa_col_sorted_des.append(col)
 
-    print(data_tasa_col_sorted_des)
-
     context['municipio'] = data.get('municipio')
     context['data_tasa'] = data_periodo.get('data_tasa')
     context['clasificaciones'] = data_periodo.get('clasificaciones')
