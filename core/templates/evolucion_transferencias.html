@@ -19,7 +19,7 @@
         <tr>
             <td>Ingresos Tributarios PGR</td>
             {% for i in evolucion %}
-                <td>{{ i.pgr|million|intcomma }}</td>
+                <td>{{ i.pgr|million|intcomma|floatformat:1 }}</td>
             {% endfor %}
         </tr>
         <tr>
@@ -27,7 +27,7 @@
             {% for i in evolucion %}
                 <td>
                     {% if i.partida %}
-                        {{ i.partida|floatformat:"0" }}%
+                        {{ i.partida|floatformat:0 }}%
                     {% endif %}
                 </td>
             {% endfor %}
@@ -37,7 +37,7 @@
             {% for i in evolucion %}
                 <td>
                     {% if i.pip > 0 %}
-                        {{ i.pip|million|intcomma }}
+                        {{ i.pip|million|intcomma|floatformat:1 }}
                     {% endif %}
                 </td>
             {% endfor %}
@@ -47,7 +47,7 @@
             {% for i in evolucion %}
                 <td>
                     {% if i.recurso_tesoro_pip %}
-                        {{ i.recurso_tesoro_pip|million|intcomma }}
+                        {{ i.recurso_tesoro_pip|million|intcomma|floatformat:1 }}
                     {% endif %}
                 </td>
             {% endfor %}
@@ -55,19 +55,19 @@
         <tr>
             <td><strong>Transferencias totales</strong></td>
             {% for row in evolucion %}
-                <td>{{ row.total|million|intcomma }}</td>
+                <td>{{ row.total|million|intcomma|floatformat:1 }}</td>
             {% endfor %}
         </tr>
         <tr>
             <td>Corrientes</td>
             {% for row in evolucion|dictsort:'anio' %}
-                <td>{{ row.corriente|million|intcomma }}</td>
+                <td>{{ row.corriente|million|intcomma|floatformat:1 }}</td>
             {% endfor %}
         </tr>
         <tr>
             <td>de Capital</td>
             {% for row in evolucion|dictsort:'anio' %}
-                <td>{{ row.capital|million|intcomma }}</td>
+                <td>{{ row.capital|million|intcomma|floatformat:1 }}</td>
             {% endfor %}
         </tr>
         <tr>
@@ -75,7 +75,7 @@
             {% for row in evolucion|dictsort:'anio' %}
                 <td>
                     {% if row.porcentaje_inversion_ttotal %}
-                        {{ row.porcentaje_inversion_ttotal|floatformat:"2" }}%
+                        {{ row.porcentaje_inversion_ttotal|floatformat:1 }}%
                     {% endif %}
                 </td>
             {% endfor %}
@@ -88,7 +88,7 @@
             {% for row in evolucion|dictsort:'anio' %}
                 <td>
                     {% if row.precurso_tesoro_ttotal %}
-                        {{ row.precurso_tesoro_ttotal|intcomma|floatformat:"2" }}%
+                        {{ row.precurso_tesoro_ttotal|intcomma|floatformat:1 }}%
                     {% endif %}
                 </td>
             {% endfor %}
@@ -101,7 +101,7 @@
             {% for row in evolucion|dictsort:'anio' %}
                 <td>
                     {% if row.pprograma_inversion_publica %}
-                        {{ row.pprograma_inversion_publica|floatformat:"2" }}%
+                        {{ row.pprograma_inversion_publica|floatformat:1 }}%
                     {% endif %}
                 </td>
             {% endfor %}
@@ -111,7 +111,7 @@
             {% for row in evolucion|dictsort:'anio' %}
                 <td>
                     {% if row.precurso_tesoro %}
-                        {{ row.precurso_tesoro|floatformat:"2" }}%
+                        {{ row.precurso_tesoro|floatformat:1 }}%
                     {% endif %}
                 </td>
             {% endfor %}

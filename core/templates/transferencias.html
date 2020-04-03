@@ -74,7 +74,7 @@
                             <tr>
                                 <td class="fixed">{{ asignacion }}</td>
                                 {% for row in data_asignacion|keyvalue:asignacion %}
-                                    <td>{{ row|million }}</td>
+                                    <td>{{ row|million|floatformat:1 }}</td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
@@ -112,7 +112,7 @@
                                     <tr>
                                         <td class="fixed">{{ asignacion }}</td>
                                         {% for row in data_asignacion2|keyvalue:asignacion %}
-                                            <td>{{ row|million }}</td>
+                                            <td>{{ row|million|floatformat:1 }}</td>
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
@@ -148,7 +148,7 @@
                                         {% if forloop.first %}
                                             <td class="fixed2">Corriente</td>
                                         {% endif %}
-                                        <td class="text-right">{{ row2.corriente|million|intcomma }}</td>
+                                        <td class="text-right">{{ row2.corriente|million|intcomma|floatformat:1 }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
@@ -156,7 +156,7 @@
                                         {% if forloop.first %}
                                             <td class="fixed2">Capital</td>
                                         {% endif %}
-                                        <td class="text-right">{{ row2.capital|million|intcomma }}</td>
+                                        <td class="text-right">{{ row2.capital|million|intcomma|floatformat:1 }}</td>
                                     {% endfor %}
                                 </tr>
                                 <tr>
@@ -164,7 +164,7 @@
                                         {% if forloop.first %}
                                             <td class="fixed2">Total</td>
                                         {% endif %}
-                                        <td class="text-right">{{ row2.total|million|intcomma }}</td>
+                                        <td class="text-right">{{ row2.total|million|intcomma|floatformat:1 }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endifchanged %}
@@ -195,7 +195,7 @@
                 'type_chart': 'column',
                 'title': 'Evolución de la asignación',
                 'subtitle': 'Transferencias totales',
-                'format': '<span>{series.name}</span>:<b>{point.y:.2f}M</b><br/>',
+                'format': '<span>{series.name}</span>:<b>{point.y:.1f}M</b><br/>',
                 'stacked': true
             };
             let charts_dict = {};
