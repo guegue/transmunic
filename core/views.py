@@ -925,9 +925,9 @@ def getPeriodos(datadata, municipio=None):
 
         if municipio:
             clasificacion_periodo = ClasificacionMunicAno.objects. \
-            values_list('clasificacion__clasificacion', flat=True). \
-            filter(anio=periodo.hasta, municipio__slug=municipio). \
-            first()
+                values_list('clasificacion__clasificacion', flat=True). \
+                filter(anio=periodo.hasta, municipio__slug=municipio). \
+                first()
             clasificaciones_periodo.append(clasificacion_periodo)
 
         for row in datadata:
