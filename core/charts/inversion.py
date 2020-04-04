@@ -574,8 +574,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         source_anios = glue(source_inicial, source_final, 'inversion__anio')
 
     # conviert R en Rural, etc.
-    for d in area:
-        d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
+    # for d in area:
+    #     d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
 
     #
     # chartit!
