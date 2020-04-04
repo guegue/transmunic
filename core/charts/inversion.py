@@ -593,7 +593,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                              annotate(ejecutado=Sum(quesumar)))
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl="SELECT clasificacion,\
+        sql_tpl = "SELECT clasificacion,\
                 ((SELECT SUM({quesumar}) FROM core_Proyecto as cp\
                 JOIN core_Inversion as ci ON cp.inversion_id=ci.id \
                 JOIN core_CatInversion cci ON cp.catinversion_id=cci.id \
