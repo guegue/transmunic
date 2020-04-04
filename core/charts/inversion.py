@@ -587,8 +587,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         source_anios = glue(source_inicial, source_final, 'inversion__anio')
 
     # conviert R en Rural, etc.
-    for d in area:
-        d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
+    # for d in area:
+    #     d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
 
     #
     # chartit!
@@ -668,25 +668,25 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             'colors':  colorscheme
         }
     )
-    inversion_area = RawDataPool(
-        series=[{'options': {'source': area},
-                 'terms':  ['areageografica', 'ejecutado', 'asignado'],
-                 }],
-    )
-    inversion_area_column = Chart(
-        datasource=inversion_area,
-        series_options=[{'options': {
-            'type': 'column',
-            'stacking': False},
-            'terms': {
-            'areageografica': ['ejecutado', 'asignado'],
-        },
-        }],
-        chart_options={
-            'title': {'text': 'Inversions por area origen %s %s' % (year, municipio,)},
-            'data': {'table': 'datatable'},
-        },
-    )
+    # inversion_area = RawDataPool(
+    #     series=[{'options': {'source': area},
+    #              'terms':  ['areageografica', 'ejecutado', 'asignado'],
+    #              }],
+    # )
+    # inversion_area_column = Chart(
+    #     datasource=inversion_area,
+    #     series_options=[{'options': {
+    #         'type': 'column',
+    #         'stacking': False},
+    #         'terms': {
+    #         'areageografica': ['ejecutado', 'asignado'],
+    #     },
+    #     }],
+    #     chart_options={
+    #         'title': {'text': 'Inversions por area origen %s %s' % (year, municipio,)},
+    #         'data': {'table': 'datatable'},
+    #     },
+    # )
 
     tipos = []
     for row in tipo:
