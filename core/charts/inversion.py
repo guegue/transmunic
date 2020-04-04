@@ -529,13 +529,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         sql_tpl="SELECT clasificacion,\
-                (SELECT SUM({quesumar}) FROM core_Proyecto JOIN core_Inversion ON core_Proyecto.inversion_id=core_Inversion.id JOIN core_CatInversion ON core_Proyecto.catinversion_id=core_CatInversion.id \
-                JOIN lugar_clasificacionmunicano ON core_Inversion.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Inversion.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Inversion.anio={year} AND core_Inversion.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
-                (SELECT SUM(poblacion) FROM lugar_Poblacion \
-                JOIN lugar_clasificacionmunicano ON lugar_Poblacion.municipio_id = lugar_clasificacionmunicano.municipio_id \
-                JOIN lugar_clasificacionmunic ON lugar_clasificacionmunicano.clasificacion_id=lugar_clasificacionmunic.id \
-                WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
+                ((SELECT SUM({quesumar}) FROM core_Proyecto \
+                JOIN core_Inversion ON core_Proyecto.inversion_id=core_Inversion.id \
+                JOIN core_CatInversion ON core_Proyecto.catinversion_id=core_CatInversion.id \
+                JOIN lugar_clasificacionmunicano ON core_Inversion.municipio_id=lugar_clasificacionmunicano.municipio_id \
+                AND core_Inversion.anio=lugar_clasificacionmunicano.anio \
+                WHERE core_Inversion.anio={year} AND core_Inversion.periodo='{periodo}' \
+                AND lugar_clasificacionmunicano.clasificacion_id=clase.id) / \
+                (select sum(lp.poblacion) from lugar_poblacion as lp \
+                where lp.anio={year} and lp.municipio_id in (select lc.municipio_id \
+                from lugar_clasificacionmunicano lc where lc.clasificacion_id = clase.id)))\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL,)
         cursor = connection.cursor()
