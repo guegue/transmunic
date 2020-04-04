@@ -504,54 +504,38 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             key='catinversion__nombre')
 
         # tabla4
-        anual_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL).values(
-            'inversion__anio').annotate(asignado=Sum('asignado')).order_by('inversion__anio')
-        anual_actualizado = Proyecto.objects.filter(inversion__periodo=PERIODO_ACTUALIZADO).values(
-            'inversion__anio').annotate(asignado=Sum('asignado')).order_by('inversion__anio')
-        anual_final = Proyecto.objects.filter(inversion__periodo=PERIODO_FINAL).values(
-            'inversion__anio').annotate(ejecutado=Sum('ejecutado')).order_by('inversion__anio')
+        anual_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL).values('inversion__anio').annotate(asignado=Sum('asignado')).order_by('inversion__anio')
+        anual_actualizado = Proyecto.objects.filter(inversion__periodo=PERIODO_ACTUALIZADO).values('inversion__anio').annotate(asignado=Sum('asignado')).order_by('inversion__anio')
+        anual_final = Proyecto.objects.filter(inversion__periodo=PERIODO_FINAL).values('inversion__anio').annotate(ejecutado=Sum('ejecutado')).order_by('inversion__anio')
         anual2 = glue(inicial=anual_inicial, final=anual_final, key='inversion__anio')
-        anual3 = glue(inicial=anual_inicial, final=anual_final,
-                      actualizado=anual_actualizado, key='inversion__anio')
+        anual3 = glue(inicial=anual_inicial, final=anual_final, actualizado=anual_actualizado, key='inversion__anio')
 
         # obtiene datos para grafico comparativo de tipo de inversions
-        tipo_inicial = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).values(
-            'catinversion__nombre').order_by('catinversion__nombre').annotate(asignado=Sum('asignado')))
-        tipo_actualizado = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_ACTUALIZADO).values(
-            'catinversion__nombre').annotate(asignado=Sum('asignado')))
-        tipo_final = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL).values(
-            'catinversion__nombre').order_by('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
-        tipo = glue(inicial=tipo_inicial, final=tipo_final,
-                    key='catinversion__nombre', actualizado=tipo_actualizado)
+        tipo_inicial= list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).values('catinversion__nombre').order_by('catinversion__nombre').annotate(asignado=Sum('asignado')))
+        tipo_actualizado = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_ACTUALIZADO).values('catinversion__nombre').annotate(asignado=Sum('asignado')))
+        tipo_final = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL).values('catinversion__nombre').order_by('catinversion__nombre').annotate(ejecutado=Sum('ejecutado')))
+        tipo = glue(inicial=tipo_inicial, final=tipo_final, key='catinversion__nombre', actualizado=tipo_actualizado)
 
         # obtiene datos para grafico comparativo de area
-        area_inicial = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).values(
-            'areageografica').order_by('areageografica').annotate(asignado=Sum('asignado')))
-        area_final = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL).values(
-            'areageografica').order_by('areageografica').annotate(ejecutado=Sum('ejecutado')))
+        area_inicial= list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_INICIAL).values('areageografica').order_by('areageografica').annotate(asignado=Sum('asignado')))
+        area_final = list(Proyecto.objects.filter(inversion__anio=year, inversion__periodo=PERIODO_FINAL).values('areageografica').order_by('areageografica').annotate(ejecutado=Sum('ejecutado')))
         area = glue(area_inicial, area_final, 'areageografica')
 
         # obtiene datos para grafico comparativo de fuente
-        fuente_inicial = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_INICIAL).values(
-            'fuente__nombre').order_by('fuente__nombre').annotate(asignado=Sum('asignado')))
-        fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_FINAL).values(
-            'fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
+        fuente_inicial= list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_INICIAL).values('fuente__nombre').order_by('fuente__nombre').annotate(asignado=Sum('asignado')))
+        fuente_final = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=PERIODO_FINAL).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum('ejecutado')))
         fuente = glue(fuente_inicial, fuente_final, 'fuente__nombre')
-        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).values(
-            'fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
+        fuente_actual = list(InversionFuenteDetalle.objects.filter(inversionfuente__anio=year, inversionfuente__periodo=periodo).values('fuente__nombre').order_by('fuente__nombre').annotate(ejecutado=Sum(quesumar)))
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl = "SELECT clasificacion,\
-                ((SELECT SUM({quesumar}) FROM core_Proyecto \
-                JOIN core_Inversion ON core_Proyecto.inversion_id=core_Inversion.id \
-                JOIN core_CatInversion ON core_Proyecto.catinversion_id=core_CatInversion.id \
-                JOIN lugar_clasificacionmunicano ON core_Inversion.municipio_id=lugar_clasificacionmunicano.municipio_id \
-                AND core_Inversion.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Inversion.anio={year} AND core_Inversion.periodo='{periodo}' \
-                AND lugar_clasificacionmunicano.clasificacion_id=clase.id) / \
-                (select sum(lp.poblacion) from lugar_poblacion as lp \
-                where lp.anio={year} and lp.municipio_id in (select lc.municipio_id \
-                from lugar_clasificacionmunicano lc where lc.clasificacion_id = clase.id)))\
+        sql_tpl="SELECT clasificacion,\
+                (SELECT SUM({quesumar}) FROM core_Proyecto JOIN core_Inversion ON core_Proyecto.inversion_id=core_Inversion.id JOIN core_CatInversion ON core_Proyecto.catinversion_id=core_CatInversion.id \
+                JOIN lugar_clasificacionmunicano ON core_Inversion.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Inversion.anio=lugar_clasificacionmunicano.anio \
+                WHERE core_Inversion.anio={year} AND core_Inversion.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
+                (SELECT SUM(poblacion) FROM lugar_Poblacion \
+                JOIN lugar_clasificacionmunicano ON lugar_Poblacion.municipio_id = lugar_clasificacionmunicano.municipio_id \
+                JOIN lugar_clasificacionmunic ON lugar_clasificacionmunicano.clasificacion_id=lugar_clasificacionmunic.id \
+                WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL,)
         cursor = connection.cursor()
@@ -590,8 +574,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         source_anios = glue(source_inicial, source_final, 'inversion__anio')
 
     # conviert R en Rural, etc.
-    # for d in area:
-    #     d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
+    for d in area:
+        d.update((k, AREAGEOGRAFICA_VERBOSE[v]) for k, v in d.iteritems() if k == "areageografica")
 
     #
     # chartit!

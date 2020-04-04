@@ -46,7 +46,6 @@ def percentage(dividend, divider):
 
     return round(dividend / xnumber(divider) * 100, 1)
 
-
 def getPeriods(model):  # ;)
     "Gets all years and their period with data from a model.anio"
 
@@ -119,18 +118,11 @@ def superglue(data=(), key='id', default=0):
     # do glue
     nonkeys = []
     merged = {}
-    key_nombre_rubro = ''
-    if len(alldata) > 0:
-        for llave in alldata[0].keys():
-            if 'nombre' in llave:
-                key_nombre_rubro = llave
-
     for item in alldata:
 
         if not item[key] and item[key] != 0:
             item[key] = 'Sin Clasificar'
             item['subsubtipoingreso__origen__nombre'] = 'Sin Clasificar'
-            item[key_nombre_rubro] = 'Sin Clasificar'
 
         if item[key] in merged:
             merged[item[key]].update(item)
@@ -148,6 +140,7 @@ def superglue(data=(), key='id', default=0):
         for r in required:
             if not r in item:
                 item[r] = default
+
     return glued
 
 
@@ -162,6 +155,7 @@ def dictfetchall(cursor):
 
 
 def graphChart(parameters):
+
     data_bar = RawDataPool(
         series=[
             {
@@ -218,6 +212,7 @@ def graphChart(parameters):
 
 
 def graphTwoBarChart(parameters):
+
     data_bar = RawDataPool(
         series=[
             {
