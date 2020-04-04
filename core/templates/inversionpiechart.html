@@ -202,13 +202,6 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            <tr class="pma-bg-white">
-                                <td><strong>TOTAL</strong></td>
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'asignado'|floatformat:2 }}</strong></td>
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_sum:'ejecutado'|floatformat:2 }}</strong></td>
-                            </tr>
                             </tbody>
                             <tfoot class="font-12px font-color-azul">
                             <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify pma-bg-white">
