@@ -524,29 +524,48 @@ def ogm_chart(municipio=None, year=None, portada=False):
             else:
                 d['nivel'] = 0
 
+        TipoGasto.PERSONAL = year_data.mapping.get('gpersonal', TipoGasto.PERSONAL)
+
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl="SELECT clasificacion,\
-                (SELECT SUM({quesumar}) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_TipoGasto ON core_GastoDetalle.tipogasto_id=core_TipoGasto.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
-                (SELECT SUM(poblacion) FROM lugar_Poblacion \
-                JOIN lugar_clasificacionmunicano ON lugar_Poblacion.municipio_id = lugar_clasificacionmunicano.municipio_id \
-                JOIN lugar_clasificacionmunic ON lugar_clasificacionmunicano.clasificacion_id=lugar_clasificacionmunic.id \
-                WHERE lugar_Poblacion.anio={year} AND lugar_clasificacionmunic.clasificacion=clase.clasificacion)\
+        sql_tpl = "SELECT clasificacion,\
+                ((SELECT SUM({quesumar}) FROM core_gastodetalle as cgd \
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_tipogasto ctg ON cgd.tipogasto_id=ctg.codigo \
+                JOIN lugar_clasificacionmunicano lcc ON cg.municipio_id=lcc.municipio_id AND cg.anio=lcc.anio \
+                WHERE cg.anio={year} AND cg.periodo='{periodo}' \
+                AND ctg.codigo='{tipogasto}' \
+                AND lcc.clasificacion_id=clase.id) / \
+                (select sum(lp.poblacion) \
+                from lugar_poblacion as lp \
+                where lp.anio={year} \
+                and lp.municipio_id in (select lc.municipio_id \
+                from lugar_clasificacionmunicano lc \
+                where lc.clasificacion_id = clase.id)))\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL,)
+        sql = sql_tpl.format(quesumar="asignado",
+                             year=year,
+                             periodo=PERIODO_INICIAL,
+                             tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo,)
+        sql = sql_tpl.format(quesumar="ejecutado",
+                             year=year,
+                             periodo=periodo,
+                             tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO,)
+        sql = sql_tpl.format(quesumar="asignado",
+                             year=year,
+                             periodo=PERIODO_ACTUALIZADO,
+                             tipogasto=TipoGasto.PERSONAL)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
+        porclasep = glue(inicial, final,
+                         'clasificacion',
+                         actualizado=actualizado)
 
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial= list(GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values('subsubtipogasto__origen__nombre').order_by('subsubtipogasto__origen__nombre').annotate(asignado=Sum('asignado')))

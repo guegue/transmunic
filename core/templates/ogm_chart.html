@@ -47,7 +47,14 @@
                                 </span>
                             <div class="info-box-content">
                                     <span class="info-box-number font-17px">
-                                        <strong>Inicial {{ asignado|million|intcomma }} M. de Córdobas</strong>
+                                        <strong>
+                                             Inicial {{ asignado|million|intcomma }} M. de C&oacute;rdobas
+                                            {% if asignado_percent %}
+                                                ({{ asignado_percent }}%)
+                                            {% elif ejecutado_percent %}
+                                                (0%)
+                                            {% endif %}
+                                        </strong>
                                     </span>
                             </div>
                         </div>
@@ -58,7 +65,17 @@
                                 </span>
                             <div class="info-box-content">
                                     <span class="info-box-number font-17px">
-                                        <strong>Cierre {{ ejecutado|million|intcomma }} M. de Córdobas</strong>
+                                        <strong>
+                                            Cierre
+                                            {% if periodo_list|keyvalue:year == 'I' %}
+                                                0 M. de C&oacute;rdobas
+                                            {% else %}
+                                                {{ ejecutado|million|intcomma }} M. de C&oacute;rdobas
+                                                {% if ejecutado_percent %}
+                                                    ({{ ejecutado_percent }}%)
+                                                {% endif %}
+                                            {% endif %}
+                                        </strong>
                                     </span>
                             </div>
                         </div>
@@ -235,6 +252,7 @@
                                     {% endif %}
                                 </tr>
                             {% endfor %}
+                            {% comment %}
                             <tr>
                                 <td>
                                     <strong>TOTAL</strong>
@@ -249,6 +267,7 @@
                                     </td>
                                 {% endif %}
                             </tr>
+                            {% endcomment %}
                             </tbody>
                             <tfoot class="font-12px font-color-azul">
                             <tr>
