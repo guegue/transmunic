@@ -150,7 +150,10 @@ CONFIGURACION_TABLAS_EXCEL = {
     },
     "oim7": {
         "titulo": u"Ingresos por períodos",
-        "subtitulo": u"Millones de córdobas corrientes",
+        "subtitulo": '',
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
+        "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
+        "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
         "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
