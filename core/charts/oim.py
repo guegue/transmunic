@@ -7,6 +7,7 @@
 
 from itertools import chain
 from operator import itemgetter
+from collections import OrderedDict
 
 from django.conf import settings
 from django.db import connection
@@ -1020,12 +1021,17 @@ def oim_chart(municipio=None, year=None, portada=False):
         source_cuadro = IngresoDetalle.objects.all()
     porano_table = {}
     ano_table = {}
-    ys = source_cuadro.order_by(subsubtipoingreso__origen__nombre).values(
-        subsubtipoingreso__origen__nombre).distinct()
+    ys = source_cuadro. \
+        order_by(subsubtipoingreso__origen__nombre). \
+        values(subsubtipoingreso__origen__nombre,
+               subsubtipoingreso__origen__orden). \
+        distinct()
     for y in ys:
         name = y[subsubtipoingreso__origen__nombre]
-        label = name if name else 'Sin Clasificar'
+        order = y[subsubtipoingreso__origen__orden]
+        label = name or 'Sin Clasificar'
         porano_table[label] = {}
+        porano_table[label]['orden'] = order or 999
         for ayear in year_list:
             # elige prefijo segun anho
             prefix = 'subsubtipoingreso'
@@ -1063,12 +1069,15 @@ def oim_chart(municipio=None, year=None, portada=False):
             porano_table[label]['extra'] = value if value else '...'
     for y in ys:
         name = y[subsubtipoingreso__origen__nombre]
-        label = name if name else 'Sin Clasificar'
+        label = name or 'Sin Clasificar'
         for ayear in year_list:
             if porano_table[label][ayear]['raw']:
                 porano_table[label][ayear]['percent'] = format(
                     porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
+    # ordenar rubros de informacion historica
+    porano_table = OrderedDict(sorted(porano_table.iteritems(),
+                                      key=lambda x: x[1]['orden']))
     if portada:
         charts = (ejecutado_pie,)
     elif bar_horizontal:
