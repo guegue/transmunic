@@ -527,7 +527,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
         TipoGasto.PERSONAL = year_data.mapping.get('gpersonal', TipoGasto.PERSONAL)
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
-        sql_tpl="SELECT clasificacion,\
+        sql_tpl = "SELECT clasificacion,\
                 ((SELECT SUM({quesumar}) FROM core_gastodetalle as cgd \
                 JOIN core_gasto cg ON cgd.gasto_id=cg.id \
                 JOIN core_tipogasto ctg ON cgd.tipogasto_id=ctg.codigo \
