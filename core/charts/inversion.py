@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from operator import itemgetter
+from collections import OrderedDict
 
 from django.db import connection
 from django.db.models import Sum, Avg
@@ -925,7 +926,14 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     # tabla: get inversions por año
     porano_table = {}
     ano_table = {}
-    ys = source_ultimos. \
+    filter_municipio = {}
+    if municipio:
+        filter_municipio = {
+            'inversion__municipio__slug': municipio
+        }
+
+    ys = Proyecto.objects. \
+        filter(**filter_municipio). \
         order_by('catinversion__nombre'). \
         values('catinversion__nombre'). \
         distinct()
@@ -934,10 +942,16 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         label = name or 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_ultimos. \
-                filter(inversion__anio=ayear,
-                       catinversion__nombre=label). \
-                aggregate(total=Sum('asignado'))['total']
+            periodo_anio = periodo_list[str(ayear)]
+            quesumar = 'ejecutado' if periodo_anio == 'F' else 'asignado'
+            filter_municipio['inversion__anio'] = ayear
+            filter_municipio['inversion__periodo'] = periodo_anio
+            filter_municipio['catinversion__nombre'] = label
+            value = Proyecto.objects. \
+                filter(**filter_municipio). \
+                order_by(). \
+                values(quesumar). \
+                aggregate(total=Sum(quesumar))['total']
             porano_table[label][ayear] = {}
             porano_table[label][ayear]['raw'] = value or ''
 
@@ -953,8 +967,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                        inversion__periodo=periodo,
                        tipoproyecto__nombre=name,
                        inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
-                       inversion__municipio__clase__anio=year).\
-                    aggregate(total=Avg(quesumar))['total']
+                       inversion__municipio__clase__anio=year). \
+                aggregate(total=Avg(quesumar))['total']
             porano_table[name]['extra'] = value or '...'
 
     for y in ys:
@@ -966,6 +980,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                     porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     charts = [pie, bar, bar_horizontal]
+
+    porano_table = OrderedDict(sorted(porano_table.iteritems()))
 
     return {
         'charts': charts,

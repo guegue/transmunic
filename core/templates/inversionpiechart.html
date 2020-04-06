@@ -106,9 +106,6 @@
                                 </thead>
                                 <tbody>
                                 {% for row in cat %}
-                                    {% if forloop.first %}
-                                        {{ row }}
-                                    {% endif %}
                                     <tr>
                                         <td colspan="1" class="text-left">{{ row.catinversion__nombre }}</td>
                                         {% if periodo_list|keyvalue:year == 'I' %}
