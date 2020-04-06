@@ -35,21 +35,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ingresodetalle',
             name='subsubtipoingreso',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubSubTipoIngreso'),
         ),
         migrations.AlterField(
             model_name='ingresodetalle',
             name='subtipoingreso',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubTipoIngreso'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.SubTipoIngreso'),
         ),
         migrations.AlterField(
             model_name='tipogasto',
             name='clasificacion',
-            field=models.IntegerField(choices=[(0, b'Gasto Corriente'), (1, b'Gasto de Capital'), (2, b'Aplicacion financiera')], default=0, null=True),
+            field=models.IntegerField(choices=[(
+                0, b'Gasto Corriente'), (1, b'Gasto de Capital'), (2, b'Aplicacion financiera')], default=0, null=True),
         ),
         migrations.AlterField(
             model_name='tipoingreso',
             name='clasificacion',
-            field=models.IntegerField(choices=[(0, b'Ingreso Corriente'), (1, b'Ingreso Capital'), (2, b'Financiamiento Deficit')], default=0, null=True),
+            field=models.IntegerField(choices=[(
+                0, b'Ingreso Corriente'), (1, b'Ingreso Capital'), (2, b'Financiamiento Deficit')], default=0, null=True),
         ),
     ]
