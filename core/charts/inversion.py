@@ -9,8 +9,7 @@ from chartit import DataPool, Chart, RawDataPool
 
 from core.models import (Anio, Proyecto, Inversion, Municipio,
                          InversionFuenteDetalle, PERIODO_INICIAL,
-                         PERIODO_ACTUALIZADO, PERIODO_FINAL,
-                         AREAGEOGRAFICA_VERBOSE)
+                         PERIODO_ACTUALIZADO, PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall, glue,
                         superglue, percentage, xnumber, graphChart)
 from lugar.models import Poblacion, ClasificacionMunicAno
@@ -149,7 +148,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         source_ultimos = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
-            inversion__anio__gt=year_list[-6])\
+            inversion__anio__gt=year_list[1])\
             .values('inversion__anio')\
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -455,7 +454,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         source_clase = None
         #source_ultimos = Proyecto.objects.values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_ultimos = Proyecto.objects.filter(
-            inversion__anio__gt=year_list[-6])\
+            inversion__anio__gt=year_list[1])\
             .values('inversion__anio')\
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -919,15 +918,21 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     # tabla: get inversions por año
     porano_table = {}
     ano_table = {}
-    ys = source_ultimos.order_by('catinversion__nombre').values('catinversion__nombre').distinct()
+    ys = source_ultimos. \
+        order_by('catinversion__nombre'). \
+        values('catinversion__nombre'). \
+        distinct()
     for y in ys:
         name = y['catinversion__nombre']
-        label = name if name else 'Sin Clasificar'
+        label = name or 'Sin Clasificar'
         porano_table[label] = {}
         for ayear in year_list:
-            value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
+            value = source_ultimos. \
+                filter(inversion__anio=ayear,
+                       catinversion__nombre=label). \
+                aggregate(total=Sum('asignado'))['total']
             porano_table[label][ayear] = {}
-            porano_table[label][ayear]['raw'] = value if value else ''
+            porano_table[label][ayear]['raw'] = value or ''
 
             if not ayear in ano_table:
                 ano_table[ayear] = 0
@@ -936,14 +941,18 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         if municipio and year:
             periodo = PERIODO_FINAL
             quesumar = 'ejecutado'
-            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=name, \
-                    inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
+            value = Proyecto.objects. \
+                filter(inversion__anio=year,
+                       inversion__periodo=periodo,
+                       tipoproyecto__nombre=name,
+                       inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                       inversion__municipio__clase__anio=year).\
                     aggregate(total=Avg(quesumar))['total']
-            porano_table[name]['extra'] = value if value else '...'
+            porano_table[name]['extra'] = value or '...'
 
     for y in ys:
         name = y['catinversion__nombre']
-        label = name if name else 'Sin Clasificar'
+        label = name or 'Sin Clasificar'
         for ayear in year_list:
             if porano_table[label][ayear]['raw']:
                 porano_table[label][ayear]['percent'] = format(

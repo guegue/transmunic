@@ -571,23 +571,27 @@
                     <tr>
                         <th colspan="1" rowspan="2" class="text-center">Categor&iacute;as</th>
                         {% for year in year_list %}
-                            <th rowspan="1" colspan="2"
-                                class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                <strong>{{ year }}</strong>
-                                {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
-                            </th>
+                            {% if year >= 2012 %}
+                                <th rowspan="1" colspan="2"
+                                    class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    <strong>{{ year }}</strong>
+                                    {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
+                                </th>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for year in year_list %}
-                            <th colspan="1"
-                                class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                M. de C&oacute;rdobas
-                            </th>
-                            <th colspan="1"
-                                class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                %
-                            </th>
+                            {% if year >= 2012 %}
+                                <th colspan="1"
+                                    class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    M. de C&oacute;rdobas
+                                </th>
+                                <th colspan="1"
+                                    class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    %
+                                </th>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                     </thead>
@@ -596,14 +600,16 @@
                         <tr>
                             <td class="text-left">{{ key }}</td>
                             {% for year in year_list %}
-                                {% with year_data=data|keyvalue:year %}
-                                    <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                        {{ year_data.raw|million|intcomma }}
-                                    </td>
-                                    <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                        {{ year_data.percent|default:"0%" }}
-                                    </td>
-                                {% endwith %}
+                                {% if year >= 2012 %}
+                                    {% with year_data=data|keyvalue:year %}
+                                        <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                            {{ year_data.raw|million|intcomma }}
+                                        </td>
+                                        <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                            {{ year_data.percent|default:"0%" }}
+                                        </td>
+                                    {% endwith %}
+                                {% endif %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
