@@ -4,21 +4,17 @@
 # Gastos de funcionamiento charts /core/gf
 #
 ##############################################################################
-import json
-
 from itertools import chain
-from datetime import datetime, time
 from operator import itemgetter
 
 from django.conf import settings
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response, render
-from django.template import RequestContext
+from django.db.models import Sum
+from django.shortcuts import render
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
+from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
+from core.models import Anio, GastoDetalle, Gasto, Municipio, TipoGasto
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, percentage,
@@ -27,11 +23,10 @@ from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
 from lugar.models import ClasificacionMunicAno
 
-from transmunic import settings as pma_settings
-
 colorscheme = settings.CHARTS_COLORSCHEME
 colors_array = settings.COLORS_ARRAY
 chart_options = settings.CHART_OPTIONS
+
 
 def gf_chart(request):
     # XXX: why this is not a view?
@@ -370,20 +365,60 @@ def gf_chart(request):
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases) porcentage
         sql_tpl = "SELECT clasificacion,\
-                (SELECT SUM(asignado) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_SubSubTipoGasto ON core_GastoDetalle.subsubtipogasto_id=core_SubSubTipoGasto.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_subsubtipogasto.clasificacion={subsubtipogasto} AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
-                (SELECT SUM(asignado) FROM core_GastoDetalle JOIN  core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_SubSubTipoGasto ON core_GastoDetalle.subsubtipogasto_id=core_SubSubTipoGasto.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id HAVING SUM(asignado)>0) * 100 \
-                AS {asignado},\
-                (SELECT SUM(ejecutado) FROM core_GastoDetalle JOIN core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_SubSubTipoGasto ON core_GastoDetalle.subsubtipogasto_id=core_SubSubTipoGasto.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND core_subsubtipogasto.clasificacion={subsubtipogasto} AND lugar_clasificacionmunicano.clasificacion_id=clase.id) /\
-                (SELECT SUM(ejecutado) FROM core_GastoDetalle JOIN  core_Gasto ON core_GastoDetalle.gasto_id=core_Gasto.id JOIN core_SubSubTipoGasto ON core_GastoDetalle.subsubtipogasto_id=core_SubSubTipoGasto.codigo \
-                JOIN lugar_clasificacionmunicano ON core_Gasto.municipio_id=lugar_clasificacionmunicano.municipio_id AND core_Gasto.anio=lugar_clasificacionmunicano.anio \
-                WHERE core_Gasto.anio={year} AND core_Gasto.periodo='{periodo}' AND lugar_clasificacionmunicano.clasificacion_id=clase.id HAVING SUM(ejecutado)>0) * 100 \
-                AS {ejecutado}\
+                (SELECT SUM(asignado) FROM core_gastodetalle cgd\
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} AND cg.periodo='{periodo}' \
+                AND sstg.clasificacion={subsubtipogasto} \
+                AND lcma.clasificacion_id=clase.id) AS {asignado},\
+                (SELECT SUM(asignado) FROM core_gastodetalle cgd\
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} AND cg.periodo='{periodo}' \
+                AND sstg.clasificacion={subsubtipogasto} \
+                AND lcma.clasificacion_id=clase.id) /\
+                (SELECT SUM(asignado) FROM core_gastodetalle as cgd \
+                JOIN core_gasto as cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto as sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} \
+                AND cg.periodo='{periodo}' \
+                AND lcma.clasificacion_id=clase.id \
+                HAVING SUM(asignado)>0) * 100 \
+                AS {asignado}_porcentaje,\
+                (SELECT SUM(ejecutado) FROM core_gastodetalle cgd\
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} \
+                AND cg.periodo='{periodo}' \
+                AND sstg.clasificacion={subsubtipogasto} \
+                AND lcma.clasificacion_id=clase.id) as {ejecutado},\
+                (SELECT SUM(ejecutado) FROM core_gastodetalle cgd\
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} \
+                AND cg.periodo='{periodo}' \
+                AND sstg.clasificacion={subsubtipogasto} \
+                AND lcma.clasificacion_id=clase.id) /\
+                (SELECT SUM(ejecutado) FROM core_gastodetalle cgd\
+                JOIN core_gasto cg ON cgd.gasto_id=cg.id \
+                JOIN core_subsubtipogasto sstg ON cgd.subsubtipogasto_id=sstg.codigo \
+                JOIN lugar_clasificacionmunicano lcma ON cg.municipio_id=lcma.municipio_id \
+                AND cg.anio=lcma.anio \
+                WHERE cg.anio={year} \
+                AND cg.periodo='{periodo}' \
+                AND lcma.clasificacion_id=clase.id \
+                HAVING SUM(ejecutado)>0) * 100 \
+                AS {ejecutado}_porcentaje\
                 FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
         sql = sql_tpl.format(asignado="inicial_asignado", ejecutado='inicial_ejecutado',
                              year=year, periodo=PERIODO_INICIAL, subsubtipogasto=TipoGasto.CORRIENTE)
@@ -411,8 +446,11 @@ def gf_chart(request):
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
         #porclasep = glue(inicial, final, 'clasificacion', actualizado=actualizado)
-        porclasep = superglue(data=(inicial, porclasep_periodo, final,
-                                    actualizado), key='clasificacion')
+        porclasep = superglue(data=(inicial,
+                                    porclasep_periodo,
+                                    final,
+                                    actualizado),
+                              key='clasificacion')
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
         rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
@@ -478,7 +516,6 @@ def gf_chart(request):
             ejecutado = (item for item in source_final if item["gasto__anio"] == int(year)).next()[
                 'ejecutado']
             total_ejecutado = total_ejecutado_anio[0]['ejecutado']
-            print(ejecutado, total_ejecutado)
             ejecutado_percent = percentage(ejecutado, total_ejecutado)
         except StopIteration:
             ejecutado = 0
@@ -740,7 +777,7 @@ def gf_chart(request):
             'title': 'Porcentaje del Gasto Total',
             'labelX_axis': 'Grupos',
             'labelY_axis': 'Porcentaje',
-            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f} M. de cordobas</b>',
         }
         bar_horizontal = graphChart(parameters)
 

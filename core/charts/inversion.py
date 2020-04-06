@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from operator import itemgetter
+from collections import OrderedDict
 
 from django.db import connection
 from django.db.models import Sum, Avg
@@ -9,8 +10,7 @@ from chartit import DataPool, Chart, RawDataPool
 
 from core.models import (Anio, Proyecto, Inversion, Municipio,
                          InversionFuenteDetalle, PERIODO_INICIAL,
-                         PERIODO_ACTUALIZADO, PERIODO_FINAL,
-                         AREAGEOGRAFICA_VERBOSE)
+                         PERIODO_ACTUALIZADO, PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall, glue,
                         superglue, percentage, xnumber, graphChart)
 from lugar.models import Poblacion, ClasificacionMunicAno
@@ -149,7 +149,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         source_ultimos = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
-            inversion__anio__gt=year_list[-6])\
+            inversion__anio__gt=year_list[1])\
             .values('inversion__anio')\
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -215,27 +215,30 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         anual_inicial = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_INICIAL)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(asignado=Sum('asignado'))\
             .order_by('inversion__anio')
 
         anual_actualizado = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_ACTUALIZADO)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(asignado=Sum('asignado'))\
             .order_by('inversion__anio')
 
         anual_final = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_FINAL)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(ejecutado=Sum('ejecutado'))\
             .order_by('inversion__anio')
 
-        anual2 = glue(
-            inicial=anual_inicial, final=anual_final,
-            key='inversion__anio')
+        # anual2 = glue(
+        #     inicial=anual_inicial, final=anual_final,
+        #     key='inversion__anio')
         anual3 = glue(
             inicial=anual_inicial, final=anual_final,
             actualizado=anual_actualizado, key='inversion__anio')
@@ -455,7 +458,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         source_clase = None
         #source_ultimos = Proyecto.objects.values('inversion__anio').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
         source_ultimos = Proyecto.objects.filter(
-            inversion__anio__gt=year_list[-6])\
+            inversion__anio__gt=year_list[1])\
             .values('inversion__anio')\
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
@@ -496,9 +499,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'catinversion__slug')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))\
             .order_by('catinversion')
-        cat2 = superglue(
-            data=(cat_inicial, cat_final),
-            key='catinversion__nombre')
+        # cat2 = superglue(
+        #     data=(cat_inicial, cat_final),
+        #     key='catinversion__nombre')
         cat3 = superglue(
             data=(cat_inicial, cat_final, cat_actualizado, cat_periodo),
             key='catinversion__nombre')
@@ -506,17 +509,20 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         # tabla4
         anual_inicial = Proyecto.objects. \
             filter(inversion__periodo=PERIODO_INICIAL). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(asignado=Sum('asignado')). \
             order_by('inversion__anio')
         anual_actualizado = Proyecto.objects. \
             filter(inversion__periodo=PERIODO_ACTUALIZADO). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(asignado=Sum('asignado')). \
             order_by('inversion__anio')
         anual_final = Proyecto.objects.\
             filter(inversion__periodo=PERIODO_FINAL). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(ejecutado=Sum('ejecutado')). \
             order_by('inversion__anio')
 
@@ -900,7 +906,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     for row in cat3:
         row['ini_asig_porcentaje'] = percentage(row['asignado'], asignado)
         total_asig_porcentaje += row['ini_asig_porcentaje']
-        row['act_porcentaje'] = percentage(row.get('actualizado_asignado'), actualizado_asignado)
+        row['act_porcentaje'] = percentage(row.get('actualizado_asignado'),
+                                           actualizado_asignado)
         total_act_porcentaje += row['act_porcentaje']
         row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
         total_ejec_porcentaje += row['ejec_porcentaje']
@@ -919,37 +926,64 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     # tabla: get inversions por año
     porano_table = {}
     ano_table = {}
-    ys = source_ultimos.order_by('catinversion__nombre').values('catinversion__nombre').distinct()
+    filter_municipio = {}
+    if municipio:
+        filter_municipio = {
+            'inversion__municipio__slug': municipio
+        }
+
+    ys = Proyecto.objects. \
+        filter(**filter_municipio). \
+        order_by('catinversion__nombre'). \
+        values('catinversion__nombre'). \
+        distinct()
     for y in ys:
         name = y['catinversion__nombre']
-        label = name if name else 'Sin Clasificar'
-        porano_table[label] = {}
-        for ayear in year_list:
-            value = source_ultimos.filter(inversion__anio=ayear, catinversion__nombre=label).aggregate(total=Sum('asignado'))['total']
-            porano_table[label][ayear] = {}
-            porano_table[label][ayear]['raw'] = value if value else ''
+        if name:
+            label = name
+            porano_table[label] = {}
+            for ayear in year_list:
+                periodo_anio = periodo_list[str(ayear)]
+                quesumar = 'ejecutado' if periodo_anio == 'F' else 'asignado'
+                filter_municipio['inversion__anio'] = ayear
+                filter_municipio['inversion__periodo'] = periodo_anio
+                filter_municipio['catinversion__nombre'] = label
+                value = Proyecto.objects. \
+                    filter(**filter_municipio). \
+                    order_by(). \
+                    values(quesumar). \
+                    aggregate(total=Sum(quesumar))['total']
+                porano_table[label][ayear] = {}
+                porano_table[label][ayear]['raw'] = value or ''
 
-            if not ayear in ano_table:
-                ano_table[ayear] = 0
-            ano_table[ayear] += value if value else 0
+                if not ayear in ano_table:
+                    ano_table[ayear] = 0
+                ano_table[ayear] += value if value else 0
 
-        if municipio and year:
-            periodo = PERIODO_FINAL
-            quesumar = 'ejecutado'
-            value = Proyecto.objects.filter(inversion__anio=year, inversion__periodo=periodo, tipoproyecto__nombre=name, \
-                    inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion, inversion__municipio__clase__anio=year).\
+            if municipio and year:
+                periodo = PERIODO_FINAL
+                quesumar = 'ejecutado'
+                value = Proyecto.objects. \
+                    filter(inversion__anio=year,
+                           inversion__periodo=periodo,
+                           tipoproyecto__nombre=name,
+                           inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                           inversion__municipio__clase__anio=year). \
                     aggregate(total=Avg(quesumar))['total']
-            porano_table[name]['extra'] = value if value else '...'
+                porano_table[name]['extra'] = value or '...'
 
     for y in ys:
         name = y['catinversion__nombre']
-        label = name if name else 'Sin Clasificar'
-        for ayear in year_list:
-            if porano_table[label][ayear]['raw']:
-                porano_table[label][ayear]['percent'] = format(
-                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
+        if name:
+            label = name
+            for ayear in year_list:
+                if porano_table[label][ayear]['raw']:
+                    porano_table[label][ayear]['percent'] = format(
+                        porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     charts = [pie, bar, bar_horizontal]
+
+    porano_table = OrderedDict(sorted(porano_table.iteritems()))
 
     return {
         'charts': charts,
