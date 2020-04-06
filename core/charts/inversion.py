@@ -939,45 +939,47 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         distinct()
     for y in ys:
         name = y['catinversion__nombre']
-        label = name or 'Sin Clasificar'
-        porano_table[label] = {}
-        for ayear in year_list:
-            periodo_anio = periodo_list[str(ayear)]
-            quesumar = 'ejecutado' if periodo_anio == 'F' else 'asignado'
-            filter_municipio['inversion__anio'] = ayear
-            filter_municipio['inversion__periodo'] = periodo_anio
-            filter_municipio['catinversion__nombre'] = label
-            value = Proyecto.objects. \
-                filter(**filter_municipio). \
-                order_by(). \
-                values(quesumar). \
-                aggregate(total=Sum(quesumar))['total']
-            porano_table[label][ayear] = {}
-            porano_table[label][ayear]['raw'] = value or ''
+        if name:
+            label = name
+            porano_table[label] = {}
+            for ayear in year_list:
+                periodo_anio = periodo_list[str(ayear)]
+                quesumar = 'ejecutado' if periodo_anio == 'F' else 'asignado'
+                filter_municipio['inversion__anio'] = ayear
+                filter_municipio['inversion__periodo'] = periodo_anio
+                filter_municipio['catinversion__nombre'] = label
+                value = Proyecto.objects. \
+                    filter(**filter_municipio). \
+                    order_by(). \
+                    values(quesumar). \
+                    aggregate(total=Sum(quesumar))['total']
+                porano_table[label][ayear] = {}
+                porano_table[label][ayear]['raw'] = value or ''
 
-            if not ayear in ano_table:
-                ano_table[ayear] = 0
-            ano_table[ayear] += value if value else 0
+                if not ayear in ano_table:
+                    ano_table[ayear] = 0
+                ano_table[ayear] += value if value else 0
 
-        if municipio and year:
-            periodo = PERIODO_FINAL
-            quesumar = 'ejecutado'
-            value = Proyecto.objects. \
-                filter(inversion__anio=year,
-                       inversion__periodo=periodo,
-                       tipoproyecto__nombre=name,
-                       inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
-                       inversion__municipio__clase__anio=year). \
-                aggregate(total=Avg(quesumar))['total']
-            porano_table[name]['extra'] = value or '...'
+            if municipio and year:
+                periodo = PERIODO_FINAL
+                quesumar = 'ejecutado'
+                value = Proyecto.objects. \
+                    filter(inversion__anio=year,
+                           inversion__periodo=periodo,
+                           tipoproyecto__nombre=name,
+                           inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                           inversion__municipio__clase__anio=year). \
+                    aggregate(total=Avg(quesumar))['total']
+                porano_table[name]['extra'] = value or '...'
 
     for y in ys:
         name = y['catinversion__nombre']
-        label = name or 'Sin Clasificar'
-        for ayear in year_list:
-            if porano_table[label][ayear]['raw']:
-                porano_table[label][ayear]['percent'] = format(
-                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
+        if name:
+            label = name
+            for ayear in year_list:
+                if porano_table[label][ayear]['raw']:
+                    porano_table[label][ayear]['percent'] = format(
+                        porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     charts = [pie, bar, bar_horizontal]
 
