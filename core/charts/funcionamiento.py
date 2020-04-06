@@ -777,7 +777,7 @@ def gf_chart(request):
             'title': 'Porcentaje del Gasto Total',
             'labelX_axis': 'Grupos',
             'labelY_axis': 'Porcentaje',
-            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f} M. de cordobas</b>',
         }
         bar_horizontal = graphChart(parameters)
 
