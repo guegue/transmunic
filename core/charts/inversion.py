@@ -214,27 +214,30 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         anual_inicial = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_INICIAL)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(asignado=Sum('asignado'))\
             .order_by('inversion__anio')
 
         anual_actualizado = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_ACTUALIZADO)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(asignado=Sum('asignado'))\
             .order_by('inversion__anio')
 
         anual_final = Proyecto.objects.filter(
             inversion__municipio__slug=municipio,
             inversion__periodo=PERIODO_FINAL)\
-            .values('inversion__anio')\
+            .values('inversion__anio',
+                    'inversion__periodo')\
             .annotate(ejecutado=Sum('ejecutado'))\
             .order_by('inversion__anio')
 
-        anual2 = glue(
-            inicial=anual_inicial, final=anual_final,
-            key='inversion__anio')
+        # anual2 = glue(
+        #     inicial=anual_inicial, final=anual_final,
+        #     key='inversion__anio')
         anual3 = glue(
             inicial=anual_inicial, final=anual_final,
             actualizado=anual_actualizado, key='inversion__anio')
@@ -495,9 +498,9 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 'catinversion__slug')\
             .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))\
             .order_by('catinversion')
-        cat2 = superglue(
-            data=(cat_inicial, cat_final),
-            key='catinversion__nombre')
+        # cat2 = superglue(
+        #     data=(cat_inicial, cat_final),
+        #     key='catinversion__nombre')
         cat3 = superglue(
             data=(cat_inicial, cat_final, cat_actualizado, cat_periodo),
             key='catinversion__nombre')
@@ -505,17 +508,20 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         # tabla4
         anual_inicial = Proyecto.objects. \
             filter(inversion__periodo=PERIODO_INICIAL). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(asignado=Sum('asignado')). \
             order_by('inversion__anio')
         anual_actualizado = Proyecto.objects. \
             filter(inversion__periodo=PERIODO_ACTUALIZADO). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(asignado=Sum('asignado')). \
             order_by('inversion__anio')
         anual_final = Proyecto.objects.\
             filter(inversion__periodo=PERIODO_FINAL). \
-            values('inversion__anio'). \
+            values('inversion__anio',
+                   'inversion__periodo'). \
             annotate(ejecutado=Sum('ejecutado')). \
             order_by('inversion__anio')
 
