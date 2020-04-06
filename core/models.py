@@ -153,9 +153,11 @@ class TipoGasto(models.Model):
     TRANSFERENCIAS_CAPITAL = '6000000'
     CORRIENTE = 0
     CAPITAL = 1
+    FINANCIERA = 2
     CLASIFICACION_CHOICES = (
         (CORRIENTE, 'Gasto Corriente'),
         (CAPITAL, 'Gasto de Capital'),
+        (FINANCIERA, 'Aplicacion financiera'),
     )
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200, )
@@ -241,9 +243,11 @@ class TipoIngreso(models.Model):
     TRANSFERENCIAS_CORRIENTES = '15000000'
     CORRIENTE = 0
     CAPITAL = 1
+    FINANCIAMIENTO = 2
     CLASIFICACION_CHOICES = (
         (CORRIENTE, 'Ingreso Corriente'),
         (CAPITAL, 'Ingreso Capital'),
+        (FINANCIAMIENTO, 'Financiamiento Deficit'),
     )
     codigo = models.CharField(max_length=25,  primary_key=True)
     nombre = models.CharField(max_length=200, )
