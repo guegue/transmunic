@@ -183,14 +183,18 @@
                             <thead>
                             <tr class="blanco pma-bg-blue">
                                 <th>Categor&iacute;a de municipio</th>
+
                                 <th>Asignado</th>
-                                <th>Ejecutado</th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th>Ejecutado</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
                                     <td>{{ row.clasificacion }}</td>
+
                                     <td class="text-right">
                                         {% if row.asignado %}
                                             {{ row.asignado|floatformat:2 }}
@@ -198,13 +202,15 @@
                                             0
                                         {% endif %}
                                     </td>
-                                    <td class="text-right">
-                                        {% if row.ejecutado %}
-                                            {{ row.ejecutado|floatformat:2 }}
-                                        {% else %}
-                                            0
-                                        {% endif %}
-                                    </td>
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <td class="text-right">
+                                            {% if row.ejecutado %}
+                                                {{ row.ejecutado|floatformat:2 }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -571,10 +577,10 @@
                 {% endif %}
                 {% descargar_excel "icat7" %}
                 </h4>
-                <table class="table">
+                <table class="table small-font">
                     <thead>
                     <tr>
-                        <th colspan="1" rowspan="2" class="text-center">Categor&iacute;as</th>
+                        <th colspan="1" rowspan="2" class="text-center fixed">Categor&iacute;as</th>
                         {% for year in year_list %}
                             {% if year >= 2012 %}
                                 <th rowspan="1" colspan="2"
@@ -603,7 +609,7 @@
                     <tbody>
                     {% for key, data in porano.items %}
                         <tr>
-                            <td class="text-left">{{ key }}</td>
+                            <td class="text-left fixed">{{ key }}</td>
                             {% for year in year_list %}
                                 {% if year >= 2012 %}
                                     {% with year_data=data|keyvalue:year %}
