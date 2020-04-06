@@ -56,19 +56,24 @@
                         <div class="tab-pane pma-summary pma-index-inversion-icons active" id="icons">
                             <div class="row categorias_inversion">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
-                                    {% for i in bubble_data_nojson.children %}
+                                    {% for i in cat %}
                                         <div class="icons-inversion col-xs-6 col-sm-2 col-md-2 text-center height-categoria">
-                                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}"
+                                            <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__slug }}"
                                                class="font-color-celeste">
-                                                <span class="info-box-icon pma-icon {{ i.slug }}"></span>
+                                                <span class="info-box-icon pma-icon {{ i.catinversion__slug }}"></span>
                                             </a>
                                             <h5 class="text-center">
-                                                <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.name }}"
+                                                <a href="/core/plan-de-inversion?inversion__anio={{ year }}&inversion__periodo={{ periodo }}&catinversion={{ i.catinversion__slug }}"
                                                    class="font-color-celeste">
-                                                    <strong>{{ i.label }}</strong>
+                                                    <strong>{{ i.catinversion__nombre }}</strong>
                                                 </a>
                                                 <br/>
-                                                <span class="font-17px">{{ i.amount }}</span>
+                                                {% if periodo == 'I' %}
+                                                    <span class="font-17px">{{ i.inicial_asignado|million|intcomma }}</span>
+                                                {% else %}
+                                                    <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
+                                                {% endif %}
+
                                             </h5>
                                         </div>
                                     {% endfor %}
@@ -101,6 +106,9 @@
                                 </thead>
                                 <tbody>
                                 {% for row in cat %}
+                                    {% if forloop.first %}
+                                        {{ row }}
+                                    {% endif %}
                                     <tr>
                                         <td colspan="1" class="text-left">{{ row.catinversion__nombre }}</td>
                                         {% if periodo_list|keyvalue:year == 'I' %}

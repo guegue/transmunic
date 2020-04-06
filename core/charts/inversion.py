@@ -905,7 +905,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
     for row in cat3:
         row['ini_asig_porcentaje'] = percentage(row['asignado'], asignado)
         total_asig_porcentaje += row['ini_asig_porcentaje']
-        row['act_porcentaje'] = percentage(row.get('actualizado_asignado'), actualizado_asignado)
+        row['act_porcentaje'] = percentage(row.get('actualizado_asignado'),
+                                           actualizado_asignado)
         total_act_porcentaje += row['act_porcentaje']
         row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
         total_ejec_porcentaje += row['ejec_porcentaje']
