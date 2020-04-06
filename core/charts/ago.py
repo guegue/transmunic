@@ -394,15 +394,11 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         'indicator_subtitle': "Ingresos corrientes propios por rubro",
         'indicator_subtitle2': "Gastos corrientes totales por rubro",
         'rankin_name': "Dependencia para asumir gastos corrientes con ingresos propios",
-        'indicator_description': """El ‘indicador de dependencia’ mide la
-                participación relativa de los ingresos por transferencias
-                (corrientes y de capital) sobre el total de los ingresos del
-                Municipio. Al hacerlo, aquel indicador permite saber hasta
-                dónde las finanzas locales son efectivamente controladas por la
-                 administración local o en qué medida dependen de las
-                 transferencias del Gobierno Central establecidas por Ley.
-                 Cuanto más dependiente sean las finanzas municipales, menos
-                 posible es una planificación financiera confiable.""",
+        'indicator_description': """Mide el grado de dependencia que tiene el municipio 
+                para cubrir los gastos de operación o de funcionamiento con sus propios 
+                recursos corrientes, sin depender de recursos externos al municipio. 
+                Un resultado negativo significa que es dependiente y si es positivo es auto sostenible.
+                 """,
             'bubble_data_1': bubble_data_ingreso,
             'bubble_data_2': bubble_data_gasto,
             'mi_clase': mi_clase,
