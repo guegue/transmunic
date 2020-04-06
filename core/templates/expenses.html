@@ -184,7 +184,7 @@
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 ">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
@@ -212,38 +212,63 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr class="bg-primary">
-                                <th class="text-center">Grupo</th>
-                                <th class="text-center">P. Inicial</th>
-                                <th class="text-center">Ejecutado</th>
+                                <th class="text-center" rowspan="2">Grupo</th>
+                                <th class="text-center" colspan="2">P. Inicial</th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-center" colspan="2">Ejecutado</th>
+                                {% endif %}
+                            </tr>
+                            <tr class="bg-primary">
+                                <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
+                                <th class="text-center" colspan="1">%</th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
+                                    <th class="text-center" colspan="1">%</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for row in porclasep %}
                                 <tr>
                                     <td class="text-center">{{ row.clasificacion }}</td>
-                                    <td class="text-right">
-                                        {% if row.asignado %}{{ row.asignado|floatformat:2 }}%{% else %}
-                                            0% {% endif %}</td>
-                                    <td class="text-right">
-                                        {% if periodo_list|keyvalue:year == 'I' %}
-                                            {{ row.ejecutado|floatformat:2|default:0 }}%
-                                        {% else %}
-                                            0
-                                        {% endif %}</td>
+
+                                    {% if row.asignado %}
+                                        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
+                                    {% else %}
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">0%</td>
+                                    {% endif %}
+
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <td class="text-right"> {{ row.ejecutado|million|intcomma|default:0 }}</td>
+                                        <td class="text-right"> {{ row.ejecutado_porcentaje|floatformat:2|default:0 }}%</td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td class="text-center">NACIONAL</td>
-                                <td class="text-right">
-                                    <strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong></td>
-                                <td class="text-right">
-                                    {% if periodo_list|keyvalue:year != 'I' %}
-                                        <strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong>{% endif %}
-                                </td>
+                                <th class="text-center">NACIONAL</th>
+                                <th class="text-right">
+                                    <strong>{{ asignado|million|intcomma }}</strong>
+                                </th>
+                                <th class="text-right">
+                                    <strong>{{ asignado_percent }}%</strong>
+                                </th>
+
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-right">
+                                        <strong>{{ ejecutado|million|intcomma }}</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>{{ ejecutado_percent }}%</strong>
+                                    </th>
+                                {% endif %}
+
                             </tr>
                             </tbody>
                             <tfoot class="font-12px font-color-azul">
-                            <th colspan="3" rowspan="1" class="text-justify">
+                            <th colspan="{% if periodo_list|keyvalue:year == 'I' %}3{% else %}5{% endif %}" rowspan="1"
+                                class="text-justify">
                                 <strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
                                 de transmunic.gob.ni<strong>.</strong></th>
@@ -251,7 +276,7 @@
                         </table>
                     </div>
                     <div class="col-lg-7 col-md-7">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
