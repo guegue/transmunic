@@ -591,7 +591,6 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         c2 = 0
         for c, atributo in enumerate(celdas):
             value = obtener_valor(row, atributo)
-            #print("value={}, row={}, atributo={}".format(value, row, atributo))
 
             if isinstance(value, dict):
                 for subvalue in value.values():
