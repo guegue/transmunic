@@ -1028,52 +1028,54 @@ def oim_chart(municipio=None, year=None, portada=False):
         distinct()
     for y in ys:
         name = y[subsubtipoingreso__origen__nombre]
-        order = y[subsubtipoingreso__origen__orden]
-        label = name or 'Sin Clasificar'
-        porano_table[label] = {}
-        porano_table[label]['orden'] = order or 999
-        for ayear in year_list:
-            # elige prefijo segun anho
-            prefix = 'subsubtipoingreso'
-            if ayear >= 2018:
-                prefix = 'sub3tipoingreso'
-            my_subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
+        if name:
+            order = y[subsubtipoingreso__origen__orden]
+            label = name
+            porano_table[label] = {}
+            porano_table[label]['orden'] = order
+            for ayear in year_list:
+                # elige prefijo segun anho
+                prefix = 'subsubtipoingreso'
+                if ayear >= 2018:
+                    prefix = 'sub3tipoingreso'
+                my_subsubtipoingreso__origen__nombre = '{}__origen__nombre'.format(prefix)
 
-            periodo = Anio.objects.get(anio=ayear).periodo
-            quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-            filter_array = {'ingreso__anio': ayear, 'ingreso__periodo': periodo,
-                            my_subsubtipoingreso__origen__nombre: name}
-            value = source_cuadro.filter(**filter_array). \
-                exclude(tipoingreso_id=saldo_caja). \
-                aggregate(total=Sum(quesumar))['total']
-            porano_table[label][ayear] = {}
-            porano_table[label][ayear]['raw'] = value if value else ''
-            if not ayear in ano_table:
-                ano_table[ayear] = 0
-            ano_table[ayear] += value if value else 0
+                periodo = Anio.objects.get(anio=ayear).periodo
+                quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+                filter_array = {'ingreso__anio': ayear, 'ingreso__periodo': periodo,
+                                my_subsubtipoingreso__origen__nombre: name}
+                value = source_cuadro.filter(**filter_array). \
+                    exclude(tipoingreso_id=saldo_caja). \
+                    aggregate(total=Sum(quesumar))['total']
+                porano_table[label][ayear] = {}
+                porano_table[label][ayear]['raw'] = value if value else ''
+                if not ayear in ano_table:
+                    ano_table[ayear] = 0
+                ano_table[ayear] += value if value else 0
 
-        # validamos si el municipio no es null con el anio
-        if municipio and year:
-            periodo = PERIODO_FINAL
-            quesumar = 'ejecutado'
-            filter_array = {'ingreso__anio': year, 'ingreso__periodo': periodo,
-                            subsubtipoingreso__origen__nombre: label,
-                            'ingreso__municipio__clasificaciones__clasificacion': mi_clase.clasificacion,
-                            'ingreso__municipio__clase__anio': year}
-            value = IngresoDetalle.objects. \
-                filter(**filter_array). \
-                exclude(tipoingreso_id=saldo_caja). \
-                aggregate(total=Sum(quesumar))['total']
-            if value:
-                value = value / mi_clase_count
-            porano_table[label]['extra'] = value if value else '...'
+            # validamos si el municipio no es null con el anio
+            if municipio and year:
+                periodo = PERIODO_FINAL
+                quesumar = 'ejecutado'
+                filter_array = {'ingreso__anio': year, 'ingreso__periodo': periodo,
+                                subsubtipoingreso__origen__nombre: label,
+                                'ingreso__municipio__clasificaciones__clasificacion': mi_clase.clasificacion,
+                                'ingreso__municipio__clase__anio': year}
+                value = IngresoDetalle.objects. \
+                    filter(**filter_array). \
+                    exclude(tipoingreso_id=saldo_caja). \
+                    aggregate(total=Sum(quesumar))['total']
+                if value:
+                    value = value / mi_clase_count
+                porano_table[label]['extra'] = value if value else '...'
     for y in ys:
         name = y[subsubtipoingreso__origen__nombre]
-        label = name or 'Sin Clasificar'
-        for ayear in year_list:
-            if porano_table[label][ayear]['raw']:
-                porano_table[label][ayear]['percent'] = format(
-                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
+        if name:
+            label = name
+            for ayear in year_list:
+                if porano_table[label][ayear]['raw']:
+                    porano_table[label][ayear]['percent'] = format(
+                        porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     # ordenar rubros de informacion historica
     porano_table = OrderedDict(sorted(porano_table.iteritems(),
