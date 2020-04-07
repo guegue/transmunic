@@ -953,41 +953,43 @@ def ogm_chart(municipio=None, year=None, portada=False):
         'subsubtipogasto__origen__nombre').distinct()
     for y in ys:
         name = y['subsubtipogasto__origen__nombre']
-        label = name if name else 'Sin Clasificar'
-        porano_table[label] = {}
-        for ayear in year_list:
-            periodo = Anio.objects.get(anio=ayear).periodo
-            quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-            value = source_cuadro.\
-                filter(gasto__anio=ayear, gasto__periodo=periodo,
-                       subsubtipogasto__origen__nombre=name).\
-                aggregate(total=Sum(quesumar))['total']
-            porano_table[label][ayear] = {}
-            porano_table[label][ayear]['raw'] = value if value else ''
-            if not ayear in ano_table:
-                ano_table[ayear] = 0
-            ano_table[ayear] += value if value else 0
+        if name:
+            label = name
+            porano_table[label] = {}
+            for ayear in year_list:
+                periodo = Anio.objects.get(anio=ayear).periodo
+                quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+                value = source_cuadro.\
+                    filter(gasto__anio=ayear, gasto__periodo=periodo,
+                           subsubtipogasto__origen__nombre=name).\
+                    aggregate(total=Sum(quesumar))['total']
+                porano_table[label][ayear] = {}
+                porano_table[label][ayear]['raw'] = value if value else ''
+                if not ayear in ano_table:
+                    ano_table[ayear] = 0
+                ano_table[ayear] += value if value else 0
 
-        if municipio and year:
-            periodo = PERIODO_FINAL
-            quesumar = 'ejecutado'
-            value = GastoDetalle.objects.\
-                filter(gasto__anio=year, gasto__periodo=periodo,
-                       subsubtipogasto__origen__nombre=name,
-                       gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
-                       gasto__municipio__clase__anio=year).\
-                aggregate(total=Sum(quesumar))['total']
-            if value:
-                value = value / mi_clase_count
-            porano_table[label]['extra'] = value if value else '...'
+            if municipio and year:
+                periodo = PERIODO_FINAL
+                quesumar = 'ejecutado'
+                value = GastoDetalle.objects.\
+                    filter(gasto__anio=year, gasto__periodo=periodo,
+                           subsubtipogasto__origen__nombre=name,
+                           gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion,
+                           gasto__municipio__clase__anio=year).\
+                    aggregate(total=Sum(quesumar))['total']
+                if value:
+                    value = value / mi_clase_count
+                porano_table[label]['extra'] = value if value else '...'
 
     for y in ys:
         name = y['subsubtipogasto__origen__nombre']
-        label = name if name else 'Sin Clasificar'
-        for ayear in year_list:
-            if porano_table[label][ayear]['raw']:
-                porano_table[label][ayear]['percent'] = format(
-                    porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
+        if name:
+            label = name
+            for ayear in year_list:
+                if porano_table[label][ayear]['raw']:
+                    porano_table[label][ayear]['percent'] = format(
+                        porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
     if portada:
         charts = (ejecutado_pie,)
