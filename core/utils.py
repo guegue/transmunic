@@ -544,7 +544,8 @@ def obtener_valor(instance, name, es_diccionario=False):
         return obtener_valor(instance, name, es_diccionario=True)
 
 
-def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados, celdas, tipo_totales):
+def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados, celdas,
+                     tipo_totales):
     hoja = libro.add_sheet(sheet_name)
     indice_fila, indice_columna = 0, 0
     columns_number = len(encabezados) + 1
@@ -565,32 +566,49 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
     )
     indice_fila += 2
     # ESCRIBIR ENCABEZADOS
+    i2 = 0
     for i, encabezado in enumerate(encabezados):
         hoja.write(indice_fila,
-                   indice_columna + i,
+                   indice_columna + i + i2,
                    encabezado.capitalize(),
                    COLUMN_HEADER_FORMAT_SIN_RELLENO
                    )
-        hoja.col(indice_columna + i).width = 256 * 30
+        hoja.col(indice_columna + i + i2).width = 256 * 30
+
+        # excepción de columnas extras para oim7
+        if sheet_name == 'oim7' and i > 0:
+            i2 += 1
+            hoja.write(indice_fila,
+                       indice_columna + i + i2,
+                       '%',
+                       COLUMN_HEADER_FORMAT_SIN_RELLENO
+                       )
 
     # ESCRIBIR CELDAS
     totales = {}
     for row in queryset:
         indice_fila += 1
+        c2 = 0
         for c, atributo in enumerate(celdas):
             value = obtener_valor(row, atributo)
 
-            if isinstance(value, Decimal):
+            if isinstance(value, dict):
+                for subvalue in value.values():
+                    if '%' in str(subvalue):
+                        subvalue = Decimal(subvalue.replace('%', ''))
+                    formato = NUMBER_FORMAT
+                    hoja.write(indice_fila, indice_columna + c + c2, subvalue, formato)
+                    c2 += 1
+                c2 -= 1
+            elif isinstance(value, Decimal):
                 value = value if isinstance(value, Decimal) else Decimal("{0}".format(value))
                 valor_anterior = totales.get(atributo, Decimal("0"))
                 totales[atributo] = valor_anterior + value
                 formato = PERCENTAGE_FORMAT if "/" in atributo else NUMBER_FORMAT
-                hoja.write(indice_fila, indice_columna + c, value, formato
-                           )
+                hoja.write(indice_fila, indice_columna + c + c2, value, formato)
             else:
                 value = value if value != 0 else "-"
-                hoja.write(indice_fila, indice_columna + c, unicode(value), LEFT_FORMAT
-                           )
+                hoja.write(indice_fila, indice_columna + c + c2, unicode(value), LEFT_FORMAT)
 
     if tipo_totales:
         # ESCRIBIR FILA DE TOTALES
