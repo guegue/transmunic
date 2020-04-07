@@ -746,10 +746,10 @@
             </div>
         </div>
     </div>
-    <div id="detail-3" class="container medium">
+    <div id="detail-3" class="container">
         <div class="row">
             <div class="col-xs-12 col-md-12 table-responsive" style="height: 560px">
-                <table class="table">
+                <table class="table border-in-fixed-columns">
                     <thead>
                     <tr>
                         <td colspan="10">
@@ -761,14 +761,13 @@
                             {% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}
                                 <h4>{{ municipio }}</h4>{% endif %}
                             {% descargar_excel "oim7" %}
-                            </h4>
                         </td>
                     </tr>
                     <tr>
-                        <th rowspan="2" colspan="1" class="text-center">Rubros</th>
+                        <th rowspan="2" colspan="1" class="text-center fixed first-child">Rubros</th>
                         {% for year in year_list %}
                             <th rowspan="1" colspan="2"
-                                class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                 <strong>{{ year }}</strong>
                             </th>
                         {% endfor %}
@@ -776,11 +775,11 @@
                     <tr>
                         {% for year in year_list %}
                             <th rowspan="1" colspan="1"
-                                class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                M. de C&oacute;rdobas
+                                class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                M. de C$
                             </th>
                             <th rowspan="1" colspan="1"
-                                class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                 %
                             </th>
                         {% endfor %}
@@ -789,11 +788,11 @@
                     <tbody>
                     {% for key, data in porano.items %}
                         <tr>
-                            <td class="text-left border-right">{{ key }}</td>
+                            <td class="text-left border-right fixed first-child">{{ key }}</td>
                             {% for year in year_list %}
                                 {% with year_data=data|keyvalue:year %}
-                                    <td class="text-right border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">{{ year_data.raw|million|intcomma }}</td>
-                                    <td class="text-right border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">{{ year_data.percent|default:"0%" }}</td>
+                                    <td class="text-right border-left font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.percent|default:"0%" }}</td>
                                 {% endwith %}
                             {% endfor %}
                         </tr>

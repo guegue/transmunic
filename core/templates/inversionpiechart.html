@@ -576,15 +576,14 @@
                     <h4>{{ municipio }}</h4>
                 {% endif %}
                 {% descargar_excel "icat7" %}
-                </h4>
                 <table class="table border-in-fixed-columns">
                     <thead>
                     <tr>
-                        <th colspan="1" style="font-size: 20px" rowspan="2" class="text-center fixed">Categor&iacute;as</th>
+                        <th colspan="1" rowspan="2" class="text-center fixed first-child">Categor&iacute;as</th>
                         {% for year in year_list %}
                             {% if year >= 2012 %}
                                 <th rowspan="1" colspan="2"
-                                    class="text-center no-border-bottom border-sides {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                     <strong>{{ year }}</strong>
                                     {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
                                 </th>
@@ -595,11 +594,11 @@
                         {% for year in year_list %}
                             {% if year >= 2012 %}
                                 <th colspan="1"
-                                    class="no-border-top text-center border-left {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
-                                    M. de C&oacute;rdobas
+                                    class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                    M. de C$
                                 </th>
                                 <th colspan="1"
-                                    class="no-border-top text-center border-right {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                    class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                     %
                                 </th>
                             {% endif %}
@@ -609,14 +608,14 @@
                     <tbody>
                     {% for key, data in porano.items %}
                         <tr>
-                            <td class="text-left fixed" style="font-size: 20px">{{ key }}</td>
+                            <td class="text-left fixed first-child">{{ key }}</td>
                             {% for year in year_list %}
                                 {% if year >= 2012 %}
                                     {% with year_data=data|keyvalue:year %}
-                                        <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                             {{ year_data.raw|million|intcomma }}
                                         </td>
-                                        <td class="text-center {% if forloop.counter|divisibleby:2 %} background-color-white {% else %} background-color-gray {% endif %}">
+                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                             {{ year_data.percent|default:"0%" }}
                                         </td>
                                     {% endwith %}

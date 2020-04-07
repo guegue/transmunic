@@ -230,6 +230,8 @@
 .vertical-middle {vertical-align: middle !important;}
 .fixed, .fixed2 {background-color: #48A1B1;border: 1px solid #fff !important; color: #fff;left: 0;position: sticky;}
 .fixed2 {left: 55px;}
+table.border-in-fixed-columns .fixed{ left: -15px;}
 table.small-font, table.border-in-fixed-columns{border-collapse: separate !important;border: 1px solid #ddd !important;}
+td.first-child, th.first-child{width: 300px;}
 span#select2-municipio2-container span.select2-selection__placeholder, ul#select2-municipio2-results{color: rgba(0,0,255,0.6) !important;}
 form#formularioMunicipio2 span.select2{width: 180px !important;}
