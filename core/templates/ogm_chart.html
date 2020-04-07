@@ -796,7 +796,7 @@
             </div>
         </div>
 
-        <div id="detail-3" class="container medium">
+        <div id="detail-3" class="container">
             <div class="row">
                 <div class="col-xs-12 text-center table-responsive">
                     <h3>Gastos por per&iacute;odo</h3>
@@ -850,10 +850,10 @@
                     <div class="col-md-12 text-center">
                         <h3>Gastos por per&iacute;odos por rubros</h3>
                         <hr class="pma-line-4"/>
-                        <table class="table table-bordered ">
+                        <table class="table table-bordered border-in-fixed-columns">
                             <thead>
                             <tr class="bg-primary">
-                                <th rowspan="2" colspan="1"></th>
+                                <th rowspan="2" colspan="1" class="fixed first-child"></th>
                                 {% for year in year_list %}
                                     <th rowspan="1" colspan="2" class="text-center no-border-bottom">
                                         <strong>{{ year }}</strong>
@@ -862,10 +862,10 @@
                             </tr>
                             <tr class="bg-primary">
                                 {% for year in year_list %}
-                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right">
-                                        M. de C&oacute;rdobas
+                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right text-nowrap font-13px">
+                                        M. de C$
                                     </th>
-                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left">
+                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left font-13px">
                                         %
                                     </th>
                                 {% endfor %}
@@ -874,11 +874,11 @@
                             <tbody>
                             {% for key, data in porano.items %}
                                 <tr>
-                                    <td class="text-left">{{ key }}</td>
+                                    <td class="text-left fixed first-child">{{ key }}</td>
                                     {% for year in year_list %}
                                         {% with year_data=data|keyvalue:year %}
-                                            <td class="text-right border-left">{{ year_data.raw|million|intcomma }}</td>
-                                            <td class="text-right border-right">{{ year_data.percent|default:"0%" }}</td>
+                                            <td class="text-right border-left font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.raw|million|intcomma }}</td>
+                                            <td class="text-right border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.percent|default:"0%" }}</td>
                                         {% endwith %}
                                     {% endfor %}
                                 </tr>
