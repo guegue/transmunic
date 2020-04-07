@@ -360,7 +360,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion, 1) if row['ejecutado'] and total_poblacion > 0 else 0
             row['asignado_percent'] = round(row['asignado'] / total_poblacion, 1) if row['asignado'] and total_poblacion > 0 else 0
 
-        otros = sorted(otros, key=itemgetter('ejecutado_percent'), reverse=True)
+        sort_key = "{}_percent".format(quesumar)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # source base
         source = Proyecto.objects.filter(

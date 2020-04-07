@@ -253,7 +253,7 @@ def ogm_chart(municipio=None, year=None, portada=False):
             row['asignado_percent'] = round(
                 row['asignado'] / total_poblacion, 1) if total_poblacion > 0 else 0
         sort_key = "{}_percent".format(quesumar)
-        otros = sorted(otros, key=itemgetter(sort_key), reverse=False)
+        otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # obtiene datos para grafico comparativo de tipo de gastos
         tipo_inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio, gasto__anio=year, gasto__periodo=PERIODO_INICIAL).values(
