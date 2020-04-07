@@ -535,6 +535,8 @@ def obtener_valor(instance, name, es_diccionario=False):
                 value = (value1 - value2) if value1 <> 0 else Decimal("0")
         else:
             try:
+                if 'descripcion' in instance.keys() and 'nombre' in name:
+                    name = 'descripcion'
                 value = instance[name] if es_diccionario else getattr(instance, name)
             except KeyError:
                 value = 0
