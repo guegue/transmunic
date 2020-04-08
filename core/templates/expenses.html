@@ -213,55 +213,78 @@
                             <thead>
                             <tr class="bg-primary">
                                 <th class="text-center" rowspan="2">Grupo</th>
-                                <th class="text-center" colspan="2">P. Inicial</th>
+                                <th class="text-center no-border-bottom"
+                                    {% if request.resolver_match.url_name == 'gastos_funcion' %}colspan="2"{% endif %}>
+                                    P. Inicial
+                                </th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
-                                    <th class="text-center" colspan="2">Ejecutado</th>
+                                    <th class="text-center no-border-bottom" colspan="2">Ejecutado</th>
                                 {% endif %}
                             </tr>
-                            <tr class="bg-primary">
-                                <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
-                                <th class="text-center" colspan="1">%</th>
-                                {% if periodo_list|keyvalue:year != 'I' %}
-                                    <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
-                                    <th class="text-center" colspan="1">%</th>
-                                {% endif %}
-                            </tr>
+
+                            {% if request.resolver_match.url_name == 'gastos_funcion' %}
+                                <tr class="bg-primary">
+                                    <th class="text-center no-border-top no-border-right" colspan="1">M. de C$</th>
+                                    <th class="text-center no-border-top no-border-left" colspan="1">%</th>
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <th class="text-center no-border-top no-border-right" colspan="1">M. de C$</th>
+                                        <th class="text-center no-border-top no-border-left" colspan="1">%</th>
+                                    {% endif %}
+                                </tr>
+                            {% endif %}
                             </thead>
                             <tbody>
                             {% for row in porclasep %}
                                 <tr>
                                     <td class="text-center">{{ row.clasificacion }}</td>
+                                    {% if request.resolver_match.url_name == 'gastos_funcion' %}
+                                        {% if row.asignado %}
+                                            <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                                            <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
+                                        {% else %}
+                                            <td class="text-right">0</td>
+                                            <td class="text-right">0%</td>
+                                        {% endif %}
 
-                                    {% if row.asignado %}
-                                        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
-                                    {% else %}
-                                        <td class="text-right">0</td>
-                                        <td class="text-right">0%</td>
-                                    {% endif %}
-
-                                    {% if periodo_list|keyvalue:year != 'I' %}
-                                        <td class="text-right"> {{ row.ejecutado|million|intcomma|default:0 }}</td>
-                                        <td class="text-right"> {{ row.ejecutado_porcentaje|floatformat:2|default:0 }}%</td>
+                                        {% if periodo_list|keyvalue:year != 'I' %}
+                                            <td class="text-right"> {{ row.ejecutado|million|intcomma|default:0 }}</td>
+                                            <td class="text-right"> {{ row.ejecutado_porcentaje|floatformat:2|default:0 }}%</td>
+                                        {% endif %}
+                                    {% elif request.resolver_match.url_name == 'gastos_personal' %}
+                                        <td class="text-right">{{ row.asignado|floatformat:2 }}%</td>
+                                        {% if periodo_list|keyvalue:year != 'I' %}
+                                            <td class="text-right"> {{ row.ejecutado|floatformat:2 }}%</td>
+                                        {% endif %}
                                     {% endif %}
                                 </tr>
                             {% endfor %}
                             <tr>
                                 <th class="text-center">NACIONAL</th>
-                                <th class="text-right">
-                                    <strong>{{ asignado|million|intcomma }}</strong>
-                                </th>
-                                <th class="text-right">
-                                    <strong>{{ asignado_percent }}%</strong>
-                                </th>
+                                {% if request.resolver_match.url_name == 'gastos_funcion' %}
+                                    <th class="text-right">
+                                        <strong>{{ asignado|million|intcomma }}</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>{{ asignado_percent }}%</strong>
+                                    </th>
 
-                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <th class="text-right">
+                                            <strong>{{ ejecutado|million|intcomma }}</strong>
+                                        </th>
+                                        <th class="text-right">
+                                            <strong>{{ ejecutado_percent }}%</strong>
+                                        </th>
+                                    {% endif %}
+                                {% elif request.resolver_match.url_name == 'gastos_personal' %}
                                     <th class="text-right">
-                                        <strong>{{ ejecutado|million|intcomma }}</strong>
+                                        <strong>{{ asignado_percent }}%</strong>
                                     </th>
-                                    <th class="text-right">
-                                        <strong>{{ ejecutado_percent }}%</strong>
-                                    </th>
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <th class="text-right">
+                                            <strong>{{ ejecutado_percent }}%</strong>
+                                        </th>
+                                    {% endif %}
                                 {% endif %}
 
                             </tr>
@@ -410,14 +433,14 @@
                             <td></td>
                             <td></td>
                             <td colspan="4" class="text-center">
-                                <h4>Modificación intermedia
+                                <h4 class="font-color-white">Modificación intermedia
                                     <a href="#" data-toggle="tooltip"
                                        data-original-title="Modificación al {{ year_data.actualizado }}"
-                                       class="link-     info">*</a>
+                                       class="link-info">*</a>
                                 </h4>
                             </td>
                             <td colspan="4" class="text-center">
-                                <h4>Modificación al cierre
+                                <h4 class="font-color-white">Modificación al cierre
                                     <a href="#" data-toggle="tooltip"
                                        data-original-title="Modificación al {{ year_data.final }}"
                                        class="link-info">*</a>
