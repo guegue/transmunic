@@ -7,21 +7,21 @@
 import json
 
 from itertools import chain
-from datetime import datetime, time
 from operator import itemgetter
 
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response, render
-from django.template import RequestContext
+from django.db.models import Sum
+from django.shortcuts import render
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
+from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, Inversion, Proyecto, Municipio, TipoGasto, InversionFuente, InversionFuenteDetalle, CatInversion
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
+from core.models import (Anio, GastoDetalle, Gasto, Municipio,
+                         TipoGasto)
+from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
+                         PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, xnumber,
-                        graphChart)
+                        graphChart, percentage)
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 
@@ -92,28 +92,61 @@ def gpersonal_chart(request):
         municipio_row = Municipio.objects.get(slug=municipio)
         municipio_id = municipio_row.id
         municipio_nombre = municipio_row.nombre
-        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-                                                     tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
-                                                   tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_periodo = GastoDetalle.objects.filter(gasto__periodo=periodo,
-                                                     tipogasto=TipoGasto.PERSONAL, gasto__municipio__slug=municipio).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        source_inicial = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   tipogasto=TipoGasto.PERSONAL,
+                   gasto__municipio__slug=municipio). \
+            values('gasto__anio'). \
+            order_by('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_FINAL,
+                   tipogasto=TipoGasto.PERSONAL,
+                   gasto__municipio__slug=municipio). \
+            values('gasto__anio'). \
+            order_by('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        source_periodo = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   tipogasto=TipoGasto.PERSONAL,
+                   gasto__municipio__slug=municipio). \
+            values('gasto__anio'). \
+            order_by('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+
+        total_asignado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   gasto__municipio__slug=municipio,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(asignado=Sum('asignado'))
+        total_ejecutado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   gasto__municipio__slug=municipio,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'))
 
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial if item["gasto__anio"] == int(
                 year)).next()['asignado']
+            total_asignado = total_asignado_anio[0]['asignado']
+            asignado_percent = percentage(asignado, total_asignado)
         except StopIteration:
             asignado = 0
+            total_asignado = 0
+            asignado_percent = 0
         try:
             ejecutado = (item for item in source_periodo if item["gasto__anio"] == int(year)).next()[
                 'ejecutado']
+            total_ejecutado = 0
+            ejecutado_percent = 0
         except StopIteration:
             ejecutado = 0
 
@@ -343,26 +376,60 @@ def gpersonal_chart(request):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-                                                   tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').
-                       annotate(asignado=Sum('asignado')).order_by())
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
-                                                 tipogasto__in=PERSONALES).values('gasto__anio', 'gasto__periodo').
-                     annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
+        inicial = list(GastoDetalle.objects.
+                       filter(gasto__periodo=PERIODO_INICIAL,
+                              tipogasto__in=PERSONALES).
+                       values('gasto__anio',
+                              'gasto__periodo').
+                       annotate(asignado=Sum('asignado')).
+                       order_by())
+        final = list(GastoDetalle.objects.
+                     filter(gasto__periodo=PERIODO_FINAL,
+                            tipogasto__in=PERSONALES).
+                     values('gasto__anio',
+                            'gasto__periodo').
+                     annotate(ejecutado=Sum('ejecutado')).
+                     order_by())
 
-        source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,
-                                                     tipogasto=TipoGasto.PERSONAL).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_final = GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL,
-                                                   tipogasto=TipoGasto.PERSONAL).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
-        source_periodo = GastoDetalle.objects.filter(gasto__periodo=periodo,
-                                                     tipogasto=TipoGasto.PERSONAL).\
-            values('gasto__anio').order_by('gasto__anio').annotate(
-                ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
+        anual2 = glue(inicial=inicial,
+                      final=final,
+                      key='gasto__anio')
+
+        source_inicial = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   tipogasto=TipoGasto.PERSONAL).\
+            values('gasto__anio').\
+            order_by('gasto__anio').\
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        source_final = GastoDetalle.objects.\
+            filter(gasto__periodo=PERIODO_FINAL,
+                   tipogasto=TipoGasto.PERSONAL).\
+            values('gasto__anio').\
+            order_by('gasto__anio').\
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+        source_periodo = GastoDetalle.objects.\
+            filter(gasto__periodo=periodo,
+                   tipogasto=TipoGasto.PERSONAL).\
+            values('gasto__anio').\
+            order_by('gasto__anio').\
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado'))
+
+        total_asignado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=PERIODO_INICIAL,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(asignado=Sum('asignado'))
+        total_ejecutado_anio = GastoDetalle.objects. \
+            filter(gasto__periodo=periodo,
+                   gasto__anio=year). \
+            order_by('gasto__anio'). \
+            values('gasto__anio'). \
+            annotate(ejecutado=Sum('ejecutado'))
+
         for record in source_inicial:
             try:
                 record['ejecutado'] = source_final.filter(
@@ -375,13 +442,21 @@ def gpersonal_chart(request):
         try:
             asignado = (item for item in source_inicial if item["gasto__anio"] == int(
                 year)).next()['asignado']
+            total_asignado = total_asignado_anio[0]['asignado']
+            asignado_percent = percentage(asignado, total_asignado)
         except StopIteration:
             asignado = 0
+            total_asignado = 0
+            asignado_percent = 0
         try:
             ejecutado = (item for item in source_periodo if item["gasto__anio"] == int(year)).next()[
                 'ejecutado']
+            total_ejecutado = total_ejecutado_anio[0]['ejecutado']
+            ejecutado_percent = percentage(ejecutado, total_ejecutado)
         except StopIteration:
             ejecutado = 0
+            total_ejecutado = 0
+            ejecutado_percent = 0
         source = glue(source_inicial, source_final, 'gasto__anio')
 
         # grafico de ejecutado y asignado a nivel nacional (distintas clases)
@@ -771,8 +846,10 @@ def gpersonal_chart(request):
         return obtener_excel_response(reporte=reporte, data=data)
 
     template_name = 'expenses.html'
-    context = {'charts': charts, 'municipio': municipio_row,
-               'municipio_list': municipio_list, 'year_list': year_list,
+    context = {'charts': charts,
+               'municipio': municipio_row,
+               'municipio_list': municipio_list,
+               'year_list': year_list,
                'indicator_name': "Gastos de personal",
                'indicator_description': "Mide el porcentaje del gasto total, "
                                         "destinado a sufragar los salarios y"
@@ -789,6 +866,8 @@ def gpersonal_chart(request):
                'mi_clase': mi_clase,
                'year': year,
                'mostraren': "porcentaje",
+               'asignado_percent': asignado_percent,
+               'ejecutado_percent': ejecutado_percent,
                }
     return render(request, template_name, context)
 

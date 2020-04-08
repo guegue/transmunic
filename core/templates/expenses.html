@@ -278,11 +278,11 @@
                                     {% endif %}
                                 {% elif request.resolver_match.url_name == 'gastos_personal' %}
                                     <th class="text-right">
-                                        <strong>{{ porclasep|total_avg:'asignado'|floatformat:2 }}%</strong>
+                                        <strong>{{ asignado_percent }}%</strong>
                                     </th>
                                     {% if periodo_list|keyvalue:year != 'I' %}
                                         <th class="text-right">
-                                            <strong>{{ porclasep|total_avg:'ejecutado'|floatformat:2 }}%</strong>
+                                            <strong>{{ ejecutado_percent }}%</strong>
                                         </th>
                                     {% endif %}
                                 {% endif %}
