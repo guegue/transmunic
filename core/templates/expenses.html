@@ -213,17 +213,17 @@
                             <thead>
                             <tr class="bg-primary">
                                 <th class="text-center" rowspan="2">Grupo</th>
-                                <th class="text-center" colspan="2">P. Inicial</th>
+                                <th class="text-center no-border-bottom" colspan="2">P. Inicial</th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
-                                    <th class="text-center" colspan="2">Ejecutado</th>
+                                    <th class="text-center no-border-bottom" colspan="2">Ejecutado</th>
                                 {% endif %}
                             </tr>
                             <tr class="bg-primary">
-                                <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
-                                <th class="text-center" colspan="1">%</th>
+                                <th class="text-center no-border-top no-border-right" colspan="1">M. de C$</th>
+                                <th class="text-center no-border-top no-border-left" colspan="1">%</th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
-                                    <th class="text-center" colspan="1">M. de c&oacute;rdobas</th>
-                                    <th class="text-center" colspan="1">%</th>
+                                    <th class="text-center no-border-top no-border-right" colspan="1">M. de C$</th>
+                                    <th class="text-center no-border-top no-border-left" colspan="1">%</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -410,14 +410,14 @@
                             <td></td>
                             <td></td>
                             <td colspan="4" class="text-center">
-                                <h4>Modificación intermedia
+                                <h4 class="font-color-white">Modificación intermedia
                                     <a href="#" data-toggle="tooltip"
                                        data-original-title="Modificación al {{ year_data.actualizado }}"
-                                       class="link-     info">*</a>
+                                       class="link-info">*</a>
                                 </h4>
                             </td>
                             <td colspan="4" class="text-center">
-                                <h4>Modificación al cierre
+                                <h4 class="font-color-white">Modificación al cierre
                                     <a href="#" data-toggle="tooltip"
                                        data-original-title="Modificación al {{ year_data.final }}"
                                        class="link-info">*</a>
