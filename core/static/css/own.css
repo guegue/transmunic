@@ -11,7 +11,7 @@
     font-size: 17px;
 }
 .small-font th {
-    font-size: 15px; 
+    font-size: 15px;
     font-weight: bold;
 }
 .font-30px {
@@ -235,3 +235,4 @@ table.small-font, table.border-in-fixed-columns{border-collapse: separate !impor
 td.first-child, th.first-child{width: 300px;}
 span#select2-municipio2-container span.select2-selection__placeholder, ul#select2-municipio2-results{color: rgba(0,0,255,0.6) !important;}
 form#formularioMunicipio2 span.select2{width: 180px !important;}
+ul li a, ol li a{ outline: none }
