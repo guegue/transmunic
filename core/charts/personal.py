@@ -20,8 +20,8 @@ from core.models import (Anio, GastoDetalle, Gasto, Municipio,
 from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, getPeriods, dictfetchall,
-                        glue, superglue, xnumber,
-                        graphChart, percentage)
+                        glue, superglue, xnumber, percentage)
+from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 

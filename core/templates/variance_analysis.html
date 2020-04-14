@@ -233,17 +233,19 @@
                     {% include 'municipal-triangle.html' %}
                 {% elif not municipio and request.resolver_match.url_name != 'ejecucion_presupuesto' %}
                     <div class="col-xs-5 col-sm-5 col-md-5 table-responsive">
-                        <h3>{{ indicator_name }} <br> por categoría de Municipios</h3>
+                        <h3>{{ indicator_name }} <br> por categor&iacute;a de Municipios</h3>
                         <table class="table table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
-                                <th class="text-left">Categoría de municipio</th>
+                                <th class="text-left">Categor&iacute;a de municipio</th>
                                 <th class="text-right">
-                                     P. Inicial
+                                    P. Inicial
                                 </th>
-                                <th class="text-right">
-                                     Ejecución
-                                </th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-right">
+                                        Ejecución
+                                    </th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -257,20 +259,22 @@
                                             {{ row.ingreso|floatformat:2|intcomma }}
                                         {% else %} 0 {% endif %}%
                                     </td>
-                                    <td class="text-right">
-                                        {% if row.ejecutado %}
-                                            {{ row.ejecutado|floatformat:2 }}
-                                        {% elif row.gasto %}
-                                            {{ row.gasto|floatformat:2|intcomma }}
-                                        {% else %} 0 {% endif %}%
-                                    </td>
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <td class="text-right">
+                                            {% if row.ejecutado %}
+                                                {{ row.ejecutado|floatformat:2 }}
+                                            {% elif row.gasto %}
+                                                {{ row.gasto|floatformat:2|intcomma }}
+                                            {% else %} 0 {% endif %}%
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 {% elif not municipio and request.resolver_match.url_name == 'ejecucion_presupuesto' %}
@@ -281,10 +285,10 @@
                             <tr class="bg-primary">
                                 <th class="text-left">Categoría de municipio</th>
                                 <th class="text-right">
-                                     P. Inicial
+                                    P. Inicial
                                 </th>
                                 <th class="text-right">
-                                     Ejecución
+                                    Ejecución
                                 </th>
                             </tr>
                             </thead>
@@ -347,22 +351,22 @@
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-left">Municipios</th>
-				{% if periodo_list|keyvalue:year == 'I' %}
+                                {% if periodo_list|keyvalue:year == 'I' %}
                                     <th class="text-right">
                                         P. Inicial
                                     </th>
-				{% else %}
+                                {% else %}
                                     <th class="text-right">
                                         Ejecución
                                     </th>
-				{% endif %}
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for row in otros %}
                                 <tr>
                                     <td class="text-left">{{ row.nombre }}</td>
-				    {% if periodo_list|keyvalue:year == 'I' %}
+                                    {% if periodo_list|keyvalue:year == 'I' %}
                                         <td class="text-right">
                                             {% if row.asignado %}
                                                 {{ row.asignado|floatformat:2 }}
@@ -385,7 +389,7 @@
                         </table>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12 ">
-                        <div id="bar_horizontal" class="view-alternative"> <h3>Informaci&oacute;n no disponible</h3>
+                        <div id="bar_horizontal" class="view-alternative"><h3>Informaci&oacute;n no disponible</h3>
                         </div>
                     </div>
                 </div>
@@ -434,15 +438,15 @@
             </div> <!-- .events-wrapper -->
 
             <ul class="cd-timeline-navigation">
-                <li><a href="#0" class="prev inactive">Prev</a></li>
-                <li><a href="#0" class="next">Next</a></li>
+                <li><a href="javascript:;" class="prev inactive">Prev</a></li>
+                <li><a href="javascript:;" class="next">Next</a></li>
             </ul> <!-- .cd-timeline-navigation -->
         </div> <!-- .timeline -->
 
         <div class="events-content">
             <ol>
                 {% for row in anuales %}
-                    <li><a href="" data-date="01/01/{{ expense.gasto__anio }} 00:00"
+                    <li><a href="javascript:;" data-date="01/01/{{ expense.gasto__anio }} 00:00"
                             {% if expense.gasto__anio == year|add:"0" %} class="selected" {% endif %}
                     ></a></li>
                 {% endfor %}
@@ -456,10 +460,11 @@
                 <h4 class="text-info">Millones de córdobas corrientes</h4>
                 <table class="table table-condensed">
                     <tr class="info">
-                        <th>Años</th>
-                        <th>Inicial</th>
-                        <th>Ejecutado</th>
-                        <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a>
+                        <th class="text-center">Años</th>
+                        <th class="text-center">Inicial</th>
+                        <th class="text-center">Ejecutado</th>
+                        <th class="text-center"><a href="#" data-toggle="tooltip"
+                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
                         </th>
                     </tr>
                     {% for row in anuales %}
@@ -490,10 +495,11 @@
                 <h4 class="text-info">Millones de córdobas corrientes</h4>
                 <table class="table table-condensed">
                     <tr class="info">
-                        <th>Años</th>
-                        <th>Inicial</th>
-                        <th>Ejecutado</th>
-                        <th><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a>
+                        <th class="text-center">Años</th>
+                        <th class="text-center">Inicial</th>
+                        <th class="text-center">Ejecutado</th>
+                        <th class="text-center"><a href="#" data-toggle="tooltip"
+                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
                         </th>
                     </tr>
                     {% for row in anualesg %}

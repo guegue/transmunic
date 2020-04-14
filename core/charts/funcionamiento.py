@@ -17,8 +17,8 @@ from chartit import Chart, RawDataPool
 from core.models import Anio, GastoDetalle, Gasto, Municipio, TipoGasto
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import (getYears, getPeriods, dictfetchall,
-                        glue, superglue, percentage,
-                        graphChart)
+                        glue, superglue, percentage)
+from core.graphics import graphChart
 from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
 from lugar.models import ClasificacionMunicAno

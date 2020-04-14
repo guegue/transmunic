@@ -21,7 +21,8 @@ from core.models import (Anio, IngresoDetalle, Ingreso,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, dictfetchall, glue,
                         superglue, getPeriods, xnumber,
-                        percentage, graphChart)
+                        percentage)
+from core.graphics import graphChart
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 colorscheme = settings.CHARTS_COLORSCHEME

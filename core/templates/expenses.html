@@ -190,8 +190,7 @@
                 </div>
             </div>
         </div>
-    {% endif %}
-    {% if not municipio %}
+    {% else %}
         <div class="loaded">
             <div class="container">
                 <div class="row">
@@ -211,6 +210,21 @@
                     <div class="col-lg-5 col-md-5 table-responsive">
                         <table class="table table-bordered">
                             <thead>
+                            <tr>
+                                <th colspan="5"><h4>Porcentaje del gasto
+                                    total destinado a {{ indicator_name }}, presupuesto
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        de cierre
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        intermedio
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        inicial
+                                    {% endif %}
+                                    {{ year }}
+                                </h4>
+                                </th>
+                            </tr>
+
                             <tr class="bg-primary">
                                 <th class="text-center" rowspan="2">Grupo</th>
                                 <th class="text-center no-border-bottom"

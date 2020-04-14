@@ -36,7 +36,7 @@ def xnumber(number):
         return 0
 
 
-def percentage(dividend, divider):
+def percentage(dividend, divider, decimals=1):
     if not dividend:
         return 0
     if not divider:
@@ -44,7 +44,7 @@ def percentage(dividend, divider):
     if divider == 0:
         return 0
 
-    return round(dividend / xnumber(divider) * 100, 1)
+    return round(dividend / xnumber(divider) * 100, decimals)
 
 
 def getPeriods(model):  # ;)
@@ -159,112 +159,3 @@ def dictfetchall(cursor):
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
     ]
-
-
-def graphChart(parameters):
-    data_bar = RawDataPool(
-        series=[
-            {
-                'options': {
-                    'source': parameters.get('data')
-                },
-                'terms': [
-                    parameters.get('field1'),
-                    parameters.get('field2'),
-                ]
-            }
-        ]
-    )
-    bar_chart = Chart(
-        datasource=data_bar,
-        series_options=[
-            {
-                'options': {
-                    'type': parameters.get('typechart'),
-                    'colorByPoint': True,
-                },
-                'terms': {
-                    parameters.get('field1'): [
-                        parameters.get('field2')
-                    ]
-                },
-            }],
-        chart_options={
-            'legend': {
-                'enabled': False
-            },
-            'colors': colors_array,
-            'title': {
-                'text': parameters.get('title')
-            },
-            'xAxis': {
-                'title': {
-                    'text': parameters.get('labelX_axis')
-                }
-            },
-            'yAxis': {
-                'title': {
-                    'text': parameters.get('labelY_axis')
-                }
-            },
-            'tooltip': {
-                'pointFormat': parameters.get('pointFormat'),
-            }
-        },
-        x_sortf_mapf_mts=(None, None, False, True),
-    )
-
-    return bar_chart
-
-
-def graphTwoBarChart(parameters):
-    data_bar = RawDataPool(
-        series=[
-            {
-                'options': {
-                    'source': parameters.get('data')
-                },
-                'terms': [
-                    parameters.get('field1'),
-                    parameters.get('field2'),
-                    parameters.get('field3'),
-                ]
-            }
-        ]
-    )
-    bar_chart = Chart(
-        datasource=data_bar,
-        series_options=[
-            {
-                'options': {
-                    'type': 'column',
-                    'colorByPoint': True,
-                },
-                'terms': {
-                    parameters.get('field1'): [
-                        parameters.get('field2'),
-                        parameters.get('field3'),
-                    ]
-                },
-            }],
-        chart_options={
-            'legend': {
-                'enabled': False
-            },
-            'colors': colors_array,
-            'title': {
-                'text': parameters.get('title')
-            },
-            'xAxis': {
-                'title': {
-                    'text': parameters.get('labelX_axis')
-                }
-            },
-            'yAxis': {
-                'title': {
-                    'text': parameters.get('labelY_axis')
-                }
-            }
-        })
-
-    return bar_chart
