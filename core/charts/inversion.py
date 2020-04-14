@@ -773,29 +773,17 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             datacol: row[datacol] / 1000000,
         })
 
-    inversion_tipo = RawDataPool(
-        series=[{
-            'options': {'source': tipos},
-            'terms':  ['catinversion__nombre', datacol],
-        }],
-    )
-    inversion_source = RawDataPool(
-        series=[{
-            'options': {'source': tipo},
-            'terms':  ['catinversion__nombre', datacol],
-        }]
-    )
-    bar = Chart(
-        datasource=inversion_tipo,
-        series_options=[{'options': {
-            'type': 'column',
-            'colorByPoint': True,
-            'stacking': False},
-            'terms': {
-            'catinversion__nombre': [datacol],
-        },
-        }],
-        chart_options=chart_options)
+    parameters = {
+        'data': tipos,
+        'field1': 'catinversion__nombre',
+        'field2': datacol,
+        'typechart': 'column',
+        'title': ' ',
+        'labelX_axis': 'Rubros',
+        'labelY_axis': 'Millones de C$',
+        'pointFormat': '<b>{point.y:.2f} M. de C$</b>',
+    }
+    bar = graphChart(parameters)
     parameters = {
         'data': tipos,
         'field1': 'catinversion__nombre',
@@ -804,7 +792,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'labelX_axis': 'Rubros',
         'labelY_axis': 'Millones de C$',
         'pointFormat': '',
-        'format': '{point.percentage:.1f} %',
+        'format': '{point.percentage: .1f}%',
     }
     pie = graphPie(parameters)
 

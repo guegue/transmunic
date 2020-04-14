@@ -51,7 +51,8 @@ def graphChart(parameters):
             'yAxis': {
                 'title': {
                     'text': parameters.get('labelY_axis')
-                }
+                },
+                'tickInterval': 100
             },
             'tooltip': {
                 'pointFormat': parameters.get('pointFormat'),
