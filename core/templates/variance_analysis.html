@@ -233,17 +233,19 @@
                     {% include 'municipal-triangle.html' %}
                 {% elif not municipio and request.resolver_match.url_name != 'ejecucion_presupuesto' %}
                     <div class="col-xs-5 col-sm-5 col-md-5 table-responsive">
-                        <h3>{{ indicator_name }} <br> por categoría de Municipios</h3>
+                        <h3>{{ indicator_name }} <br> por categor&iacute;a de Municipios</h3>
                         <table class="table table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
-                                <th class="text-left">Categoría de municipio</th>
+                                <th class="text-left">Categor&iacute;a de municipio</th>
                                 <th class="text-right">
                                     P. Inicial
                                 </th>
-                                <th class="text-right">
-                                    Ejecución
-                                </th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-right">
+                                        Ejecución
+                                    </th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -257,13 +259,15 @@
                                             {{ row.ingreso|floatformat:2|intcomma }}
                                         {% else %} 0 {% endif %}%
                                     </td>
-                                    <td class="text-right">
-                                        {% if row.ejecutado %}
-                                            {{ row.ejecutado|floatformat:2 }}
-                                        {% elif row.gasto %}
-                                            {{ row.gasto|floatformat:2|intcomma }}
-                                        {% else %} 0 {% endif %}%
-                                    </td>
+                                    {% if periodo_list|keyvalue:year != 'I' %}
+                                        <td class="text-right">
+                                            {% if row.ejecutado %}
+                                                {{ row.ejecutado|floatformat:2 }}
+                                            {% elif row.gasto %}
+                                                {{ row.gasto|floatformat:2|intcomma }}
+                                            {% else %} 0 {% endif %}%
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -459,7 +463,8 @@
                         <th class="text-center">Años</th>
                         <th class="text-center">Inicial</th>
                         <th class="text-center">Ejecutado</th>
-                        <th class="text-center"><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a>
+                        <th class="text-center"><a href="#" data-toggle="tooltip"
+                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
                         </th>
                     </tr>
                     {% for row in anuales %}
@@ -493,7 +498,8 @@
                         <th class="text-center">Años</th>
                         <th class="text-center">Inicial</th>
                         <th class="text-center">Ejecutado</th>
-                        <th class="text-center"><a href="#" data-toggle="tooltip" data-original-title="Ejecutado/Inicial" class="link-info">%</a>
+                        <th class="text-center"><a href="#" data-toggle="tooltip"
+                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
                         </th>
                     </tr>
                     {% for row in anualesg %}
