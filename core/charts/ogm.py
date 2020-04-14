@@ -16,7 +16,8 @@ from core.models import (Anio, GastoDetalle, Gasto, Municipio,
                          TipoGasto, PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, getPeriods, dictfetchall, glue, superglue,
-                        percentage, xnumber, graphChart)
+                        percentage, xnumber)
+from core.graphics import graphChart
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings

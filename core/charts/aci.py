@@ -1,34 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from itertools import chain
-from datetime import datetime, time
 import json
 
 from django.conf import settings
 from django.db import connection
-from django.db.models import Q, Sum, Max, Min, Avg, Count
-from django.shortcuts import render_to_response, render
-from django.template import RequestContext
+from django.db.models import Sum
+from django.shortcuts import render
 
-from chartit import DataPool, Chart, PivotDataPool, PivotChart, RawDataPool
+from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, Ingreso, GastoDetalle, Gasto, \
-    Inversion, Proyecto, Municipio, TipoIngreso, TipoGasto, \
-    InversionFuente, InversionFuenteDetalle, CatInversion
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, \
-    PERIODO_VERBOSE
+from core.models import (Anio, IngresoDetalle, GastoDetalle,
+                         Gasto, Municipio, TipoIngreso,
+                         TipoGasto)
+from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
+                         PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall,
-                        glue, superglue, xnumber,
-                        graphChart)
+                        glue, superglue, xnumber)
+from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 from operator import itemgetter
 
-from transmunic import settings as pma_settings
-
 colorscheme = settings.CHARTS_COLORSCHEME
 colors_array = settings.COLORS_ARRAY
 chart_options = settings.CHART_OPTIONS
+
 
 def aci_chart(request, municipio=None, year=None, portada=False):
 

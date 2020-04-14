@@ -12,7 +12,8 @@ from core.models import (Anio, Proyecto, Inversion, Municipio,
                          InversionFuenteDetalle, PERIODO_INICIAL,
                          PERIODO_ACTUALIZADO, PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall, glue,
-                        superglue, percentage, xnumber, graphChart)
+                        superglue, percentage, xnumber)
+from core.graphics import graphChart
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
