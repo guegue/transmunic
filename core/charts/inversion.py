@@ -13,7 +13,7 @@ from core.models import (Anio, Proyecto, Inversion, Municipio,
                          PERIODO_ACTUALIZADO, PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall, glue,
                         superglue, percentage, xnumber)
-from core.graphics import graphChart
+from core.graphics import graphChart, graphPie
 from lugar.models import Poblacion, ClasificacionMunicAno
 
 from transmunic import settings as pma_settings
@@ -796,17 +796,17 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         },
         }],
         chart_options=chart_options)
-
-    custom_chart_options = chart_options.copy()
-    custom_chart_options['tooltip']['pointFormat'] = ''
-    pie = Chart(
-        datasource=inversion_tipo,
-        series_options=[
-            {
-                'options': {'type': 'pie', 'stacking': False},
-                'terms': {'catinversion__nombre': [datacol]},
-            }],
-        chart_options=custom_chart_options)
+    parameters = {
+        'data': tipos,
+        'field1': 'catinversion__nombre',
+        'field2': datacol,
+        'title': ' ',
+        'labelX_axis': 'Rubros',
+        'labelY_axis': 'Millones de C$',
+        'pointFormat': '',
+        'format': '{point.percentage:.1f} %',
+    }
+    pie = graphPie(parameters)
 
     data_ultimos = DataPool(
            series=

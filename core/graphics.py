@@ -63,6 +63,84 @@ def graphChart(parameters):
     return bar_chart
 
 
+def graphPie(parameters):
+    data_pie = RawDataPool(
+        series=[
+            {
+                'options': {
+                    'source': parameters.get('data')
+                },
+                'terms': [
+                    parameters.get('field1'),
+                    parameters.get('field2'),
+                ]
+            }
+        ]
+    )
+    pie_chart = Chart(
+        datasource=data_pie,
+        series_options=[
+            {
+                'options': {
+                    'type': 'pie',
+                    'stacking': False,
+                },
+                'terms': {
+                    parameters.get('field1'): [
+                        parameters.get('field2')
+                    ]
+                },
+            }],
+        chart_options={
+            'credits': {
+                'enabled': False
+            },
+            'legend': {
+                'enabled': True
+            },
+            'title': {
+                'enabled': False,
+                'text': parameters.get('title')
+            },
+            'xAxis': {
+                'title': {
+                    'text': parameters.get('labelX_axis')
+                }
+            },
+            'yAxis': {
+                'title': {
+                    'text': parameters.get('labelY_axis')
+                }
+            },
+            'colors': colors_array,
+            'tooltip': {
+                'pointFormat': parameters.get('pointFormat'),
+            },
+            'plotOptions': {
+                'column': {
+                    'depth': 35,
+                    'showInLegend': False,
+                    'dataLabels': {
+                        'enabled': False,
+                        'format': parameters.get('format').replace('percentage', 'y', 1)
+                    }
+                },
+                'pie': {
+                    'depth': 35,
+                    'showInLegend': True,
+                    'dataLabels': {
+                        'enabled': True,
+                        'format': parameters.get('format')
+                    }
+                }
+            }
+        },
+        x_sortf_mapf_mts=(None, None, False, True),
+    )
+
+    return pie_chart
+
+
 def graphTwoBarChart(parameters):
     data_bar = RawDataPool(
         series=[
