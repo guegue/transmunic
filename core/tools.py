@@ -36,7 +36,7 @@ def xnumber(number):
         return 0
 
 
-def percentage(dividend, divider):
+def percentage(dividend, divider, decimals=1):
     if not dividend:
         return 0
     if not divider:
@@ -44,7 +44,7 @@ def percentage(dividend, divider):
     if divider == 0:
         return 0
 
-    return round(dividend / xnumber(divider) * 100, 1)
+    return round(dividend / xnumber(divider) * 100, decimals)
 
 
 def getPeriods(model):  # ;)
