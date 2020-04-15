@@ -293,8 +293,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         except StopIteration:
             asignado = 0
         try:
-            ejecutado = (item for item in source_final if item["ingreso__anio"] == int(year)).next()[
-                'ejecutado']
+            ejecutado = (item for item in source_final if item["ingreso__anio"] == int(
+                year)).next()['ejecutado']
         except StopIteration:
             ejecutado = 0
 
