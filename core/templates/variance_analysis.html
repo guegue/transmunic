@@ -237,39 +237,86 @@
                         <table class="table table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
-                                <th class="text-left">Categor&iacute;a de municipio</th>
-                                <th class="text-right">
+                                <th class="text-left"
+                                    colspan="1"
+                                    rowspan="2">Categor&iacute;a de municipio
+                                </th>
+                                <th class="text-center no-border-bottom"
+                                    colspan="2">
                                     P. Inicial
                                 </th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
-                                    <th class="text-right">
+                                    <th class="text-center no-border-bottom"
+                                        colspan="2">
                                         Ejecución
                                     </th>
                                 {% endif %}
                             </tr>
+                            <tr class="bg-primary">
+                                <th class="text-center no-border-top" colspan="1">
+                                    M. de C$
+                                </th>
+                                <th class="text-center no-border-top" colspan="1">
+                                    %
+                                </th>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <th class="text-center no-border-top" colspan="1">
+                                        M. de C$
+                                    </th>
+                                    <th class="text-center no-border-top" colspan="1">
+                                        %
+                                    </th>
+                                {% endif %}
+                            </tr>
+
                             </thead>
                             <tbody>
                             {% for row in porclasep %}
                                 <tr>
                                     <td class="text-left">{{ row.clasificacion }}</td>
-                                    <td class="text-right">
-                                        {% if row.asignado %}
-                                            {{ row.asignado|floatformat:2 }}
-                                        {% elif row.ingreso %}
-                                            {{ row.ingreso|floatformat:2|intcomma }}
-                                        {% else %} 0 {% endif %}%
-                                    </td>
+                                    {% if row.asignado %}
+                                        <td class="text-right">{{ row.asignado|million|intcomma }}</td>
+                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
+                                    {% elif row.ingreso %}
+                                        {{ row.ingreso|floatformat:2|intcomma }}
+                                    {% else %}
+                                        <td>0</td>
+                                        <td>0%</td>
+                                    {% endif %}
+
                                     {% if periodo_list|keyvalue:year != 'I' %}
-                                        <td class="text-right">
-                                            {% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2 }}
-                                            {% elif row.gasto %}
-                                                {{ row.gasto|floatformat:2|intcomma }}
-                                            {% else %} 0 {% endif %}%
-                                        </td>
+
+                                        {% if row.ejecutado %}
+                                            <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
+                                            <td class="text-right">{{ row.ejecutado_porcentaje|floatformat:2 }}%</td>
+                                        {% elif row.gasto %}
+                                            <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
+                                        {% else %}
+                                            <td>0</td>
+                                            <td>0%</td>
+                                        {% endif %}
+
                                     {% endif %}
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td><strong>Nacional</strong></td>
+                                <td class="text-right">{{ porclasep|total_sum:'asignado'|million|intcomma }}</td>
+                                <td></td>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+
+                                    {% if row.ejecutado %}
+                                        <td class="text-right">{{ porclasep|total_sum:'ejecutado'|million|intcomma }}</td>
+                                        <td></td>
+                                    {% elif row.gasto %}
+                                        <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
+                                    {% else %}
+                                        <td>0</td>
+                                        <td></td>
+                                    {% endif %}
+
+                                {% endif %}
+                            </tr>
                             </tbody>
                         </table>
                     </div>

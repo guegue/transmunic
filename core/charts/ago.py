@@ -229,15 +229,26 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         with open ("core/charts/ago_porclasep.sql", "r") as query_file:
             sql_tpl=query_file.read()
 
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_INICIAL, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        sql = sql_tpl.format(quesumar="asignado",
+                             year=year,
+                             periodo=PERIODO_INICIAL,
+                             tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)
         cursor = connection.cursor()
         cursor.execute(sql)
         inicial = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="ejecutado", year=year, periodo=periodo, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        sql = sql_tpl.format(quesumar="ejecutado",
+                             year=year, periodo=periodo,
+                             tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)
         cursor = connection.cursor()
         cursor.execute(sql)
         final = dictfetchall(cursor)
-        sql = sql_tpl.format(quesumar="asignado", year=year, periodo=PERIODO_ACTUALIZADO, tipoingreso=TipoIngreso.CORRIENTE, notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES, )
+        sql = sql_tpl.format(quesumar="asignado",
+                             year=year,
+                             periodo=PERIODO_ACTUALIZADO,
+                             tipoingreso=TipoIngreso.CORRIENTE,
+                             notipoingreso=TipoIngreso.TRANSFERENCIAS_CORRIENTES)
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
@@ -249,6 +260,14 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         source = dictfetchall(cursor)
+        saldo_caja = '39000000'
+        total_ingresos = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__periodo=periodo). \
+            exclude(tipoingreso=saldo_caja). \
+            order_by(). \
+            aggregate(asignado=Sum('asignado'))
+        print(total_ingresos)
 
     data = RawDataPool(
             series=[
@@ -376,11 +395,12 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         parameters = {
             'data': porclasep,
             'field1': 'clasificacion',
-            'field2': quesumar,
+            'field2': '{}_porcentaje'.format(quesumar),
             'typechart': 'column',
             'title': 'Recaudación percápita',
             'labelX_axis': 'Grupos',
-            'labelY_axis': 'Córdobas',
+            'labelY_axis': 'Porcentaje',
+            'interval': 10,
             'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
         }
         bar_horizontal = graphChart(parameters)
