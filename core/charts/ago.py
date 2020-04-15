@@ -227,16 +227,16 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             filter(gasto__anio=year,
                    gasto__periodo=PERIODO_INICIAL,
                    subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
-                values('tipogasto',
-                       'tipogasto__nombre'). \
+            values('tipogasto',
+                   'tipogasto__nombre'). \
             order_by('tipogasto__codigo'). \
             annotate(inicial_asignado=Sum('asignado'))
         rubrosg_actualizado = GastoDetalle.objects. \
             filter(gasto__anio=year,
                    gasto__periodo=PERIODO_ACTUALIZADO,
                    subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
-                values('tipogasto',
-                       'tipogasto__nombre'). \
+            values('tipogasto',
+                   'tipogasto__nombre'). \
             order_by('tipogasto__codigo'). \
             annotate(actualizado_asignado=Sum('asignado'),
                      actualizado_ejecutado=Sum('ejecutado'))
@@ -244,8 +244,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             filter(gasto__anio=year,
                    gasto__periodo=PERIODO_FINAL,
                    subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
-                values('tipogasto',
-                       'tipogasto__nombre'). \
+            values('tipogasto',
+                   'tipogasto__nombre'). \
             order_by('tipogasto__codigo'). \
             annotate(final_asignado=Sum('asignado'),
                      final_ejecutado=Sum('ejecutado'))
@@ -253,8 +253,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             filter(gasto__anio=year,
                    gasto__periodo=periodo,
                    subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
-                values('tipogasto',
-                       'tipogasto__nombre'). \
+            values('tipogasto',
+                   'tipogasto__nombre'). \
             order_by('tipogasto__codigo'). \
             annotate(ejecutado=Sum('ejecutado'))
         rubrosg = superglue(data=(rubrosg_inicial,
