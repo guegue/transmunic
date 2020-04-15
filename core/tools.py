@@ -80,7 +80,9 @@ def glue(inicial, final, key, actualizado=[]):
     # changes 'asignado' to 'actualizado' #FIXME why not fix this at origin?
     for item in actualizado:
         item['actualizado'] = item.pop('asignado')
-
+        # changes 'asignado_porcentaje' to 'asignado_porcentaje'
+        if 'asignado_porcentaje' in item.keys():
+            item['actualizado_porcentaje'] = item.pop('asignado_porcentaje')
     # do glue
     for item in inicial + final + actualizado:
         if item[key]:
