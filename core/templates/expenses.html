@@ -176,9 +176,9 @@
                                 <td></td>
                                 <td>PROMEDIO</td>
                                 {% if periodo_list|keyvalue:year == 'I' %}
-                                    <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:1 }}%</td>
+                                    <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:2 }}%</td>
                                 {% else %}
-                                    <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:1 }}%</td>
+                                    <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:2 }}%</td>
                                 {% endif %}
                             </tr>
                         </table>
