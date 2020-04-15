@@ -422,9 +422,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         actualizado = dictfetchall(cursor)
-        porclasep = glue(
-            inicial, final, 'clasificacion',
-            actualizado=actualizado)
+        porclasep = glue(inicial, final, 'clasificacion',
+                         actualizado=actualizado)
 
         with open("core/charts/aci.sql", "r") as query_file:
             sql_tpl = query_file.read()
@@ -528,6 +527,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             format(mi_clase.clasificacion),
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
+            'interval': 10,
             'pointFormat': '<span>' + quesumar.capitalize() +
                            '</span>:<b>{point.y:.2f}</b>',
         }
@@ -536,12 +536,13 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         parameters = {
             'data': porclasep,
             'field1': 'clasificacion',
-            'field2': quesumar,
+            'field2': '{}_porcentaje'.format(quesumar),
             'typechart': 'column',
             'title': 'Recaudación percápita',
             'labelX_axis': 'Grupos',
-            'labelY_axis': 'Córdobas',
-            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}</b>',
+            'labelY_axis': 'Porcentaje',
+            'interval': 10,
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
         }
         bar_horizontal = graphChart(parameters)
 
