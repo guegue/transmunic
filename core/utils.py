@@ -94,9 +94,9 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "otros"
     },
     "oim1": {
-        "titulo": u"Rubros de ingresos para el período",
+        "titulo": u"Rubros de ingresos para el período {year} {periodo} {municipio}",
         "subtitulo": '',
-        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen",
         "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
         "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
         "encabezados": ['Rubros de ingresos', 'Inicial', '%'],
@@ -159,10 +159,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": None
     },
     "oim8": {
-        "titulo": u"Ranquin de recaudación por habitante categoría municipal ""E""",
-        "subtitulo": u"Córdobas corrientes por habitante",
-        "encabezados": ["Municipios", "P. Inicial", "Ejecucion"],
-        "celdas": ["ingreso__municipio__nombre", "asignado_percent", "ejecutado_percent"],
+        "titulo": u'Ranking de recaudación percápita {year} Municipio de {municipio} grupo {grupo}',
+        "subtitulo": '',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de ingresos {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de ingresos {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de ingresos {}",
+        "encabezados": ["Municipios", "P. Inicial"],
+        "celdas": ['ingreso__municipio__nombre', "asignado_percent"],
         "qs": "otros"
     },
     "gf1": {
@@ -503,6 +506,20 @@ CONFIGURACION_TABLAS_EXCEL = {
 }
 
 
+def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
+
+    titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
+
+    if 'oim1' == reporte:
+        titulo = titulo.format(year=anio, periodo=periodo_nombre,
+                               municipio=municipio)
+    elif 'oim8' == reporte:
+        titulo = titulo.format(year=anio, municipio=municipio,
+                               grupo=grupo.clasificacion)
+
+    return titulo
+
+
 def obtener_valor(instance, name, es_diccionario=False):
     try:
         if "/" in name or "-" in name:
@@ -591,6 +608,7 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
     for row in queryset:
         indice_fila += 1
         c2 = 0
+        print(celdas)
         for c, atributo in enumerate(celdas):
             value = obtener_valor(row, atributo)
 
@@ -641,12 +659,11 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
 def obtener_excel_response(reporte, data, sheet_name="hoja1"):
     response = HttpResponse(content_type='application/vnd-ms-excel')
     libro = xlwt.Workbook(encoding='utf8')
-    periodo_anio = data['periodo_list'][str(data['year'])]
+    year = data.get('year', '')
+    periodo_anio = data['periodo_list'][str(year)]
+    municipio = data.get('municipio', '')
 
     if "all" in reporte:
-
-        municipio = data.get("municipio", "")
-        year = data.get("year", "")
 
         if reporte == "ogm-all":
             reportes = ["ogm{0}".format(i) for i in range(1, 8)]
@@ -680,7 +697,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         )
 
     else:
-        year = data.get('year', 0)
+        grupo = data.get('mi_clase', '')
         reportes = [reporte]
 
         if periodo_anio == 'I':
@@ -699,27 +716,31 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         if periodo_nombre != 'inicial':
             CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
             columna_porcentaje = ''
-            if 'oim' in reporte:
+            if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
+            elif 'oim8' == reporte:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm' in reporte:
                 columna_porcentaje = 'ejec_porcentaje'
 
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
+            if columna_porcentaje:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
 
-        titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] + ' {} {}'.format(year,
-                                                                                 periodo_nombre)
-        CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] = titulo
-
-        if year >= 2018 and 'oim' in reporte:
+        if int(year) >= 2018 and 'oim1' == reporte:
             sub3_name = 'sub3tipoingreso__origen__nombre'
             CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub3_name
+        elif int(year) < 2018 and 'oim1' == reporte:
+            sub_name = 'subsubtipoingreso__origen__nombre'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub_name
 
-        file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
+        file_name = construir_nombre_archivo(reporte, year,
+                                          periodo_nombre, municipio,
+                                          grupo)
 
     for report_name in reportes:
         report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
-        titulo = report_config["titulo"]
+        titulo = file_name
         sheet_name = report_name
         subtitulo = report_config["subtitulo"]
         encabezados = report_config["encabezados"]
