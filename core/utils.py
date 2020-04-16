@@ -25,8 +25,8 @@ COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center;')
 CONFIGURACION_TABLAS_EXCEL = {
     "ogm1": {
-        "titulo": u"Rubros de gastos para el período",
-        "subtitulo": '',
+        "titulo": u"Rubros de gastos para el período {year} {periodo} {municipio}",
+        "subtitulo": u'',
         "subtitulo_inicio": u"Presupuesto inicial de gastos {} por su destino",
         "subtitulo_intermedio": u"Ejecución intermedia de gastos {} por su destino",
         "subtitulo_cierre": u"Ejecución de gastos {} por su destino",
@@ -87,10 +87,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": None
     },
     "ogm8": {
-        "titulo": u"Ranquin de municipio de misma categoría municipal",
-        "subtitulo": u"Córdobas corrientes por habitante",
-        "encabezados": ["Municipios", "P. Inicial", "Ejecucion"],
-        "celdas": ["gasto__municipio__nombre", "asignado_percent", "ejecutado_percent"],
+        "titulo": u"Ranking de gastos de personal percápita {year} Municipio de {municipio} grupo {grupo}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de gastos {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de gastos {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de gastos {}",
+        "encabezados": ["Municipios", "P. Inicial"],
+        "celdas": ["gasto__municipio__nombre", "asignado_percent"],
         "qs": "otros"
     },
     "oim1": {
@@ -511,12 +514,12 @@ def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
 
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
-    if 'oim1' == reporte:
+    if 'oim1' == reporte or 'ogm1' == reporte:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
     elif 'oim7' == reporte:
         titulo = titulo.format(municipio=municipio)
-    elif 'oim8' == reporte:
+    elif 'oim8' == reporte or 'ogm8' == reporte:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
 
@@ -620,7 +623,6 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
     for row in queryset:
         indice_fila += 1
         c2 = 0
-        print(celdas)
         for c, atributo in enumerate(celdas):
             value = obtener_valor(row, atributo)
 
@@ -674,6 +676,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
     year = data.get('year', '')
     periodo_anio = data['periodo_list'][str(year)]
     municipio = data.get('municipio', '')
+    print(reporte)
 
     if "all" in reporte:
 
@@ -736,7 +739,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             columna_porcentaje = ''
             if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
-            elif 'oim8' == reporte:
+            elif 'oim8' == reporte or 'ogm8' == reporte:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm' in reporte:
                 columna_porcentaje = 'ejec_porcentaje'
