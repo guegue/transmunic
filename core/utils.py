@@ -149,11 +149,12 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "anuales"
     },
     "oim7": {
-        "titulo": u"Ingresos por períodos",
-        "subtitulo": '',
-        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
-        "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
-        "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
+        "titulo": u"Información histórica por rubros de ingresos {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
         "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
@@ -513,6 +514,8 @@ def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     if 'oim1' == reporte:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
+    elif 'oim7' == reporte:
+        titulo = titulo.format(municipio=municipio)
     elif 'oim8' == reporte:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
@@ -563,8 +566,8 @@ def obtener_valor(instance, name, es_diccionario=False):
         return obtener_valor(instance, name, es_diccionario=True)
 
 
-def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados, celdas,
-                     tipo_totales):
+def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
+                     subsubtitulo, encabezados,celdas,tipo_totales):
     hoja = libro.add_sheet(sheet_name)
     indice_fila, indice_columna = 0, 0
     columns_number = len(encabezados) + 1
@@ -583,6 +586,15 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         subtitulo,
         HEADER2
     )
+    # agregando fila para subsubtitulo(Información Historica)
+    if subsubtitulo:
+        indice_fila += 1
+        hoja.write_merge(
+            indice_fila, indice_fila,
+            0, indice_columna + columns_number,
+            subsubtitulo,
+            HEADER2
+        )
     indice_fila += 2
     # ESCRIBIR ENCABEZADOS
     i2 = 0
@@ -700,21 +712,27 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         grupo = data.get('mi_clase', '')
         reportes = [reporte]
 
+        # definiendo subtitulo
         if periodo_anio == 'I':
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_inicio'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_inicio'].format(year)
             periodo_nombre = 'inicial'
         elif periodo_anio == 'A':
             periodo_nombre = 'intermedio'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_intermedio'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_intermedio'].format(year)
         else:
             periodo_nombre = 'cierre'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_cierre'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_cierre'].format(year)
+
+        CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = subtitulo
+
+        # definiendo subsubtitulo si existe municipio en el request
+        if municipio and CONFIGURACION_TABLAS_EXCEL[reporte].get('subsubtitulo'):
+            CONFIGURACION_TABLAS_EXCEL[reporte]['subsubtitulo'] = u'{}'.format(municipio)
 
         if periodo_nombre != 'inicial':
-            CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
+            if not 'oim7' == reporte:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
+
             columna_porcentaje = ''
             if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
@@ -743,6 +761,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         titulo = file_name
         sheet_name = report_name
         subtitulo = report_config["subtitulo"]
+        subsubtitulo = report_config.get('subsubtitulo', '')
         encabezados = report_config["encabezados"]
         celdas = report_config["celdas"]
         tipo_totales = report_config.get("tipo_totales", [])
@@ -772,8 +791,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
         if queryset is not None:
             crear_hoja_excel(libro, sheet_name, queryset,
-                             titulo, subtitulo, encabezados,
-                             celdas, tipo_totales)
+                             titulo, subtitulo, subsubtitulo,
+                             encabezados, celdas, tipo_totales)
         elif len(reportes) == 1:
             libro.add_sheet("{0} vacio".format(sheet_name))
 
