@@ -402,12 +402,14 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "totales"
     },
     "icat2": {
-        "titulo": u"Inversión municipal",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Clasificación de la inversión", "Inicial", "Ejecutado", "% Ejecutado"],
-        "celdas": ["catinversion__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
-        "qs": "cat",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
+        "titulo": u"Ranking de inversión percápita {year} Municipio de {municipio} grupo {grupo}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de inversión {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de inversión {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de inversión {}",
+        "encabezados": ["Municipio", "P. Inicial"],
+        "celdas": ["inversion__municipio__nombre", "asignado_percent"],
+        "qs": "otros"
     },
     "icat3": {
         "titulo": u"Inversión municipal",
@@ -526,7 +528,7 @@ def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
                                municipio=municipio)
     elif '7' in reporte:
         titulo = titulo.format(municipio=municipio)
-    elif 'oim8' == reporte or 'ogm8' == reporte:
+    elif 'oim8' == reporte or 'ogm8' == reporte or 'icat2' == reporte:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
 
@@ -745,7 +747,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             columna_porcentaje = ''
             if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
-            elif 'oim8' == reporte or 'ogm8' == reporte:
+            elif '8' in reporte or 'icat2' == reporte:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'
