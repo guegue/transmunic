@@ -1,4 +1,4 @@
-<form method="post" id="anyofiscal_form" role="form" novalidate class="pull-right">
+<form method="post" id="anyofiscal_form" role="form" novalidate {% if 'ogm7' != reporte %}class="pull-right"{% endif %}>
     {% csrf_token %}
     <input type="hidden" name="reporte" value="{{ reporte }}"></button>
     <button type="submit" class="btn btn-success btn-xs" title="Descargar en Excel" name="excel">

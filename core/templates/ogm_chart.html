@@ -86,7 +86,7 @@
                                     <span class="info-box-icon pma-icon municipality-category">
                                     </span>
                                 <div class="info-box-content">Modificación al 30 de Agosto de 2016
-                                        <span class="info-box-number font-17px">
+                                    <span class="info-box-number font-17px">
                                             <strong>Grupo de municipio {{ mi_clase.clasificacion }}</strong>
                                         </span>
                                 </div>
@@ -798,9 +798,9 @@
 
         <div id="detail-3" class="container">
             <div class="row">
-                <div class="col-xs-12 text-center table-responsive">
-                    <h3>Gastos por per&iacute;odo</h3>
-                    <hr class="pma-line-4"/>
+                <div class="col-xs-12 table-responsive">
+                    <h3 class="text-center">Gastos por per&iacute;odo</h3>
+                    <hr class="pma-line-4 text-center"/>
                     <div class="col-md-offset-4 col-md-5">
                         <table class="table table-condensed">
                             <thead>
@@ -847,11 +847,29 @@
                             </tfoot>
                         </table>
                     </div>
-                    <div class="col-md-12 text-center">
-                        <h3>Gastos por per&iacute;odos por rubros</h3>
+                    <div class="col-xs-12 col-md-12 table-responsive">
+                        <h3 class="text-center">Gastos por per&iacute;odos por rubros</h3>
                         <hr class="pma-line-4"/>
                         <table class="table table-bordered border-in-fixed-columns">
                             <thead>
+                            <tr>
+                                <td colspan="{% widthratio year_list|length|add:1 1 2 %}">
+                                    <h2>
+                                        <strong>Informaci&oacute;n hist&oacute;rica por rubros de gastos</strong>
+                                        <br>
+                                        Ejecuci&oacute;n presupuestaria
+                                    </h2>
+                                    <h4>
+                                        {% if municipio %}
+                                            {{ municipio }}
+                                        {% else %}
+                                            Consolidado 153 municipios
+                                        {% endif %}
+                                    {% descargar_excel "ogm7" %}
+                                    </h4>
+
+                                </td>
+                            </tr>
                             <tr class="bg-primary">
                                 <th rowspan="2" colspan="1" class="fixed first-child"></th>
                                 {% for year in year_list %}
@@ -862,10 +880,12 @@
                             </tr>
                             <tr class="bg-primary">
                                 {% for year in year_list %}
-                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-right text-nowrap font-13px">
+                                    <th rowspan="1" colspan="1"
+                                        class="text-center no-border-top no-border-right text-nowrap font-13px">
                                         M. de C$
                                     </th>
-                                    <th rowspan="1" colspan="1" class="text-center no-border-top no-border-left font-13px">
+                                    <th rowspan="1" colspan="1"
+                                        class="text-center no-border-top no-border-left font-13px">
                                         %
                                     </th>
                                 {% endfor %}
