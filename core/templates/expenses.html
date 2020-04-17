@@ -48,11 +48,7 @@
                 <tbody>
                 {% for row in rubros %}
                     <tr>
-                        {% if indicator == 'gf' %}
-                            <td>{{ row.subsubtipogasto__nombre }}</td>
-                        {% else %}
-                            <td>{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</td>
-                        {% endif %}
+                       <td>{% firstof row.tipogasto__nombre row.subtipogasto__nombre %}</td>
                         {% if periodo_list|keyvalue:year == 'I' %}
                             <td class="text-right">{{ row.inicial_asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.inicial_asignado|div:asignado|mul:100|floatformat:1 }}%</td>
@@ -84,7 +80,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         {% if municipio %}
-                            <h2><strong>Rankin de {{ indicator_name }} {{ year }} </strong><br/>
+                            <h2><strong>Ranking de {{ indicator_name }} {{ year }} </strong><br/>
                                 Municipio de {{ municipio }} grupo "{{ mi_clase.clasificacion }}" </h2>
                         {% endif %}
                         <hr class="pma-line-3"/>

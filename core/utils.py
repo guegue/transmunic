@@ -277,12 +277,14 @@ CONFIGURACION_TABLAS_EXCEL = {
         #                                     "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
     },
     "ago3": {
-        "titulo": u"Ahorro Corriente para Inversiones",
-        "subtitulo": u"por Municipios de Categoría",
-        "encabezados": ["Rubros de ingresos", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["tipoingreso__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
+        "titulo": u"Rubros de ingresos corrientes propios para el período {year} {periodo} {municipio}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos corrientes {} por su origen ",
+        "subtitulo_intermedio": u"Ejecución de ingresos corrientes {} por su origen",
+        "subtitulo_cierre": u"Ejecución de ingresos corrientes {} por su origen",
+        "encabezados": ["Rubros de ingresos", "Inicial", "%"],
+        "celdas": ['tipoingreso__nombre', 'inicial_asignado', 'asignado_porcentaje'],
         "qs": "rubros",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ago4": {
         "titulo": u"Resultado presupuestario gastos corrientes totales",
@@ -523,12 +525,15 @@ CONFIGURACION_TABLAS_EXCEL = {
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
-    if 'oim1' == reporte or 'ogm1' == reporte:
+    array_of_rubros = ['oim1', 'ogm1', 'ago3']
+    array_of_config_groups = ['oim8', 'ogm8', 'icat2']
+
+    if reporte in array_of_rubros:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
     elif '7' in reporte:
         titulo = titulo.format(municipio=municipio)
-    elif 'oim8' == reporte or 'ogm8' == reporte or 'icat2' == reporte:
+    elif reporte in array_of_config_groups:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
 
@@ -751,6 +756,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'
+            elif 'ago3' == reporte:
+                columna_porcentaje = 'ejecutado_porcentaje'
 
             if columna_porcentaje:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
