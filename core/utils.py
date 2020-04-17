@@ -443,9 +443,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "icat7": {
-        "titulo": u"Inversiones Ejecutadas en los últimos años",
-        "subtitulo": u"",
-        "encabezados": [u"Descripción"],
+        "titulo": u"Información histórica por categorias de inversion {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
+        "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
     },
@@ -520,7 +524,7 @@ def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     if 'oim1' == reporte or 'ogm1' == reporte:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
-    elif 'oim7' == reporte or 'ogm7' == reporte:
+    elif '7' in reporte:
         titulo = titulo.format(municipio=municipio)
     elif 'oim8' == reporte or 'ogm8' == reporte:
         titulo = titulo.format(year=anio, municipio=municipio,
@@ -613,7 +617,7 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
         hoja.col(indice_columna + i + i2).width = 256 * 30
 
         # excepción de columnas extras para oim7
-        if sheet_name == 'oim7' or sheet_name == 'ogm7' and i > 0:
+        if '7' in sheet_name and i > 0:
             i2 += 1
             hoja.write(indice_fila,
                        indice_columna + i + i2,
