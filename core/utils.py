@@ -25,8 +25,8 @@ COLUMN_HEADER_FORMAT_SIN_RELLENO = xlwt.easyxf(
     'font: bold on; align: wrap on, vert centre, horiz center;')
 CONFIGURACION_TABLAS_EXCEL = {
     "ogm1": {
-        "titulo": u"Rubros de gastos para el período",
-        "subtitulo": '',
+        "titulo": u"Rubros de gastos para el período {year} {periodo} {municipio}",
+        "subtitulo": u'',
         "subtitulo_inicio": u"Presupuesto inicial de gastos {} por su destino",
         "subtitulo_intermedio": u"Ejecución intermedia de gastos {} por su destino",
         "subtitulo_cierre": u"Ejecución de gastos {} por su destino",
@@ -80,23 +80,30 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "anuales"
     },
     "ogm7": {
-        "titulo": u"Gastos por períodos",
-        "subtitulo": u"Millones de córdobas corrientes",
+        "titulo": u"Información histórica por rubros de gastos {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
         "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
     },
     "ogm8": {
-        "titulo": u"Ranquin de municipio de misma categoría municipal",
-        "subtitulo": u"Córdobas corrientes por habitante",
-        "encabezados": ["Municipios", "P. Inicial", "Ejecucion"],
-        "celdas": ["gasto__municipio__nombre", "asignado_percent", "ejecutado_percent"],
+        "titulo": u"Ranking de gastos de personal percápita {year} Municipio de {municipio} grupo {grupo}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de gastos {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de gastos {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de gastos {}",
+        "encabezados": ["Municipios", "P. Inicial"],
+        "celdas": ["gasto__municipio__nombre", "asignado_percent"],
         "qs": "otros"
     },
     "oim1": {
-        "titulo": u"Rubros de ingresos para el período",
+        "titulo": u"Rubros de ingresos para el período {year} {periodo} {municipio}",
         "subtitulo": '',
-        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen",
         "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
         "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
         "encabezados": ['Rubros de ingresos', 'Inicial', '%'],
@@ -149,20 +156,24 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "anuales"
     },
     "oim7": {
-        "titulo": u"Ingresos por períodos",
-        "subtitulo": '',
-        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen ",
-        "subtitulo_intermedio": u"Ejecución intermedia de ingresos {} por su origen",
-        "subtitulo_cierre": u"Ejecución de ingresos {} por su origen",
+        "titulo": u"Información histórica por rubros de ingresos {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
         "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
     },
     "oim8": {
-        "titulo": u"Ranquin de recaudación por habitante categoría municipal ""E""",
-        "subtitulo": u"Córdobas corrientes por habitante",
-        "encabezados": ["Municipios", "P. Inicial", "Ejecucion"],
-        "celdas": ["ingreso__municipio__nombre", "asignado_percent", "ejecutado_percent"],
+        "titulo": u'Ranking de recaudación percápita {year} Municipio de {municipio} grupo {grupo}',
+        "subtitulo": '',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de ingresos {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de ingresos {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de ingresos {}",
+        "encabezados": ["Municipios", "P. Inicial"],
+        "celdas": ['ingreso__municipio__nombre', "asignado_percent"],
         "qs": "otros"
     },
     "gf1": {
@@ -391,12 +402,14 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "totales"
     },
     "icat2": {
-        "titulo": u"Inversión municipal",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Clasificación de la inversión", "Inicial", "Ejecutado", "% Ejecutado"],
-        "celdas": ["catinversion__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
-        "qs": "cat",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
+        "titulo": u"Ranking de inversión percápita {year} Municipio de {municipio} grupo {grupo}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Córdobas corrientes por habitante en base a Presupuesto inicial de inversión {}",
+        "subtitulo_intermedio": u"Córdobas corrientes por habitante en base a Ejecución de intermedia de inversión {}",
+        "subtitulo_cierre": u"Córdobas corrientes por habitante en base a Ejecución de cierre de inversión {}",
+        "encabezados": ["Municipio", "P. Inicial"],
+        "celdas": ["inversion__municipio__nombre", "asignado_percent"],
+        "qs": "otros"
     },
     "icat3": {
         "titulo": u"Inversión municipal",
@@ -432,9 +445,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "icat7": {
-        "titulo": u"Inversiones Ejecutadas en los últimos años",
-        "subtitulo": u"",
-        "encabezados": [u"Descripción"],
+        "titulo": u"Información histórica por categorias de inversion {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
+        "encabezados": [u"Rubro"],
         "celdas": ["descripcion"],
         "qs": None
     },
@@ -503,6 +520,21 @@ CONFIGURACION_TABLAS_EXCEL = {
 }
 
 
+def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
+    titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
+
+    if 'oim1' == reporte or 'ogm1' == reporte:
+        titulo = titulo.format(year=anio, periodo=periodo_nombre,
+                               municipio=municipio)
+    elif '7' in reporte:
+        titulo = titulo.format(municipio=municipio)
+    elif 'oim8' == reporte or 'ogm8' == reporte or 'icat2' == reporte:
+        titulo = titulo.format(year=anio, municipio=municipio,
+                               grupo=grupo.clasificacion)
+
+    return titulo
+
+
 def obtener_valor(instance, name, es_diccionario=False):
     try:
         if "/" in name or "-" in name:
@@ -546,8 +578,8 @@ def obtener_valor(instance, name, es_diccionario=False):
         return obtener_valor(instance, name, es_diccionario=True)
 
 
-def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados, celdas,
-                     tipo_totales):
+def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
+                     subsubtitulo, encabezados, celdas, tipo_totales):
     hoja = libro.add_sheet(sheet_name)
     indice_fila, indice_columna = 0, 0
     columns_number = len(encabezados) + 1
@@ -566,6 +598,15 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         subtitulo,
         HEADER2
     )
+    # agregando fila para subsubtitulo(Información Historica)
+    if subsubtitulo:
+        indice_fila += 1
+        hoja.write_merge(
+            indice_fila, indice_fila,
+            0, indice_columna + columns_number,
+            subsubtitulo,
+            HEADER2
+        )
     indice_fila += 2
     # ESCRIBIR ENCABEZADOS
     i2 = 0
@@ -578,7 +619,7 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
         hoja.col(indice_columna + i + i2).width = 256 * 30
 
         # excepción de columnas extras para oim7
-        if sheet_name == 'oim7' and i > 0:
+        if '7' in sheet_name and i > 0:
             i2 += 1
             hoja.write(indice_fila,
                        indice_columna + i + i2,
@@ -641,12 +682,11 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo, encabezados
 def obtener_excel_response(reporte, data, sheet_name="hoja1"):
     response = HttpResponse(content_type='application/vnd-ms-excel')
     libro = xlwt.Workbook(encoding='utf8')
-    periodo_anio = data['periodo_list'][str(data['year'])]
+    year = data.get('year', '')
+    periodo_anio = data['periodo_list'][str(year)]
+    municipio = data.get('municipio', '')
 
     if "all" in reporte:
-
-        municipio = data.get("municipio", "")
-        year = data.get("year", "")
 
         if reporte == "ogm-all":
             reportes = ["ogm{0}".format(i) for i in range(1, 8)]
@@ -680,48 +720,59 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         )
 
     else:
-        year = data.get('year', 0)
+        grupo = data.get('mi_clase', '')
         reportes = [reporte]
 
+        # definiendo subtitulo
         if periodo_anio == 'I':
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_inicio'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_inicio'].format(year)
             periodo_nombre = 'inicial'
         elif periodo_anio == 'A':
             periodo_nombre = 'intermedio'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_intermedio'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_intermedio'].format(year)
         else:
             periodo_nombre = 'cierre'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = CONFIGURACION_TABLAS_EXCEL[reporte][
-                'subtitulo_cierre'].format(year)
+            subtitulo = CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo_cierre'].format(year)
+
+        CONFIGURACION_TABLAS_EXCEL[reporte]['subtitulo'] = subtitulo
+
+        # definiendo subsubtitulo si existe municipio en el request
+        if municipio and CONFIGURACION_TABLAS_EXCEL[reporte].get('subsubtitulo'):
+            CONFIGURACION_TABLAS_EXCEL[reporte]['subsubtitulo'] = u'{}'.format(municipio)
 
         if periodo_nombre != 'inicial':
-            CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
+            if not '7' in reporte:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
+
             columna_porcentaje = ''
-            if 'oim' in reporte:
+            if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
-            elif 'ogm' in reporte:
+            elif '8' in reporte or 'icat2' == reporte:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
+            elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'
 
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
-            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
+            if columna_porcentaje:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][2] = columna_porcentaje
 
-        titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] + ' {} {}'.format(year,
-                                                                                 periodo_nombre)
-        CONFIGURACION_TABLAS_EXCEL[reporte]['titulo'] = titulo
-
-        if year >= 2018 and 'oim' in reporte:
+        if int(year) >= 2018 and 'oim1' == reporte:
             sub3_name = 'sub3tipoingreso__origen__nombre'
             CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub3_name
+        elif int(year) < 2018 and 'oim1' == reporte:
+            sub_name = 'subsubtipoingreso__origen__nombre'
+            CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][0] = sub_name
 
-        file_name = CONFIGURACION_TABLAS_EXCEL[reporte]["titulo"]
+        file_name = construir_nombre_archivo(reporte, year,
+                                             periodo_nombre, municipio,
+                                             grupo)
 
     for report_name in reportes:
         report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
-        titulo = report_config["titulo"]
+        titulo = file_name
         sheet_name = report_name
         subtitulo = report_config["subtitulo"]
+        subsubtitulo = report_config.get('subsubtitulo', '')
         encabezados = report_config["encabezados"]
         celdas = report_config["celdas"]
         tipo_totales = report_config.get("tipo_totales", [])
@@ -751,8 +802,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
         if queryset is not None:
             crear_hoja_excel(libro, sheet_name, queryset,
-                             titulo, subtitulo, encabezados,
-                             celdas, tipo_totales)
+                             titulo, subtitulo, subsubtitulo,
+                             encabezados, celdas, tipo_totales)
         elif len(reportes) == 1:
             libro.add_sheet("{0} vacio".format(sheet_name))
 

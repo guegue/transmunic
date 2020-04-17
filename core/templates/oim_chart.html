@@ -117,10 +117,10 @@
                         <table class="table">
                             <thead>
                             <tr class="blanco pma-bg-blue">
-                                <th rowspan="2" style="vertical-align: middle">Grupo de
+                                <th rowspan="2" style="vertical-align: middle" class="no-border-bottom">Grupo de
                                     municipio
                                 </th>
-                                <th rowspan="1" style="border-bottom: none;" class="text-center">
+                                <th rowspan="1" class="text-center no-border-bottom">
                                     P. Inicial
                                 </th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
@@ -131,7 +131,7 @@
                                             P.Cierre
                                         {% endif %}
                                     </th>
-                                    <th class="no-border-top text-right">%</th>
+                                    <th class="no-border-bottom text-right">%</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -152,7 +152,7 @@
                                             {{ row.ejecutado|floatformat:2|intcomma|default:0 }}
                                         </td>
                                         <td class="text-right">
-                                            {% widthratio row.ejecutado row.asignado 100 %}
+                                            {% widthratio row.ejecutado row.asignado 100 %}%
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -748,7 +748,7 @@
     </div>
     <div id="detail-3" class="container">
         <div class="row">
-            <div class="col-xs-12 col-md-12 table-responsive" >
+            <div class="col-xs-12 col-md-12 table-responsive">
                 <table class="table border-in-fixed-columns">
                     <thead>
                     <tr>

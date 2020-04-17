@@ -314,6 +314,7 @@ def inversion_categoria_view(request):
             'otros': data['otros'],
             'totales': data['totales'],
             'charts': data['charts'],
+            'periodo_list': periodo_list,
             'year_list': data['year_list'],
             'municipio_list': data['municipio_list'],
             'asignado': data['asignado'],
