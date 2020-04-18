@@ -277,7 +277,8 @@ CONFIGURACION_TABLAS_EXCEL = {
         #                                     "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
     },
     "ago3": {
-        "titulo": u"Rubros de ingresos corrientes propios para el período {year} {periodo} {municipio}",
+        "titulo": u"Rubros de ingresos corrientes propios para el " +
+                  u"período {year} {periodo} {municipio}",
         "subtitulo": u'',
         "subtitulo_inicio": u"Presupuesto inicial de ingresos corrientes {} por su origen ",
         "subtitulo_intermedio": u"Ejecución de ingresos corrientes {} por su origen",
@@ -750,7 +751,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             CONFIGURACION_TABLAS_EXCEL[reporte]['subsubtitulo'] = u'{}'.format(municipio)
 
         if periodo_nombre != 'inicial':
-            if not reporte in ARRAY_OF_CONFIG_INFO_HIS:
+            if reporte not in ARRAY_OF_CONFIG_INFO_HIS:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
 
             columna_porcentaje = ''
