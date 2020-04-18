@@ -77,6 +77,8 @@ def gpersonal_chart(request):
     # obtiene último periodo del año que se quiere ver
     year_data = Anio.objects.get(anio=year)
     periodo = year_data.periodo
+    total_nacional_asignado = 0
+    total_nacional_ejecutado = 0
 
     # obtiene codigo de tipo gasto de 'mapping' fallback a valor por defecto definido en models
     TipoGasto.PERSONAL = year_data.mapping.get('gpersonal', TipoGasto.PERSONAL)
@@ -218,7 +220,7 @@ def gpersonal_chart(request):
                                 municipios_periodo),
                           key='gasto__municipio__nombre')
         # inserta porcentages de total de gastos
-        total = {}
+        total = {'total_asignado':0,'total_ejecutado':0,'total_asignado_gp':0,'total_ejecutado_gp':0}
         for row in otros:
             total['asignado'] = GastoDetalle.objects. \
                 filter(gasto__anio=year,
@@ -233,7 +235,15 @@ def gpersonal_chart(request):
 
             row['asignado_percent'] = percentage(row['asignado'], total['asignado'], 2)
             row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'], 2)
+            total['total_asignado_gp'] += row['asignado']
+            total['total_ejecutado_gp'] += row['ejecutado']
+            total['total_asignado'] += total['asignado']
+            total['total_ejecutado'] += total['ejecutado']
         sort_key = "{}_percent".format(quesumar)
+        #Obteniendo la media nacional
+        total_nacional_asignado = percentage(total['total_asignado_gp'], total['total_asignado'], 2)
+        total_nacional_ejecutado = percentage(total['total_ejecutado_gp'], total['total_ejecutado'], 2)
+
         otros = sorted(otros, key=itemgetter(sort_key), reverse=False)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
@@ -906,6 +916,8 @@ def gpersonal_chart(request):
                'mostraren': "porcentaje",
                'asignado_percent': asignado_percent,
                'ejecutado_percent': ejecutado_percent,
+               'total_nacional_asignado': total_nacional_asignado,
+               'total_nacional_ejecutado': total_nacional_ejecutado
                }
     return render(request, template_name, context)
 

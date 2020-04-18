@@ -170,11 +170,11 @@
                             {% endfor %}
                             <tr class="success">
                                 <td></td>
-                                <td>PROMEDIO</td>
+                                <td>NACIONAL</td>
                                 {% if periodo_list|keyvalue:year == 'I' %}
-                                    <td class="text-right">{{ otros|total_avg:'asignado_percent'|floatformat:2 }}%</td>
+                                    <td class="text-right">{{ total_nacional_asignado }}%</td>
                                 {% else %}
-                                    <td class="text-right">{{ otros|total_avg:'ejecutado_percent'|floatformat:2 }}%</td>
+                                    <td class="text-right">{{ total_nacional_ejecutado }}%</td>
                                 {% endif %}
                             </tr>
                         </table>
