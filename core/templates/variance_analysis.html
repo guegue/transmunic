@@ -554,7 +554,7 @@
                             <td class="text-right">{{ row.asignado|million|intcomma }}</td>
                             <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
                             {% if row.asignado %}
-                                <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
+                                <td class="montos text-right">{{ row.ejecutado_porcentaje }}%</td>
                             {% endif %}
                         </tr>
                     {% endfor %}

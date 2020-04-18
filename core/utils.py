@@ -323,10 +323,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ago8": {
-        "titulo": u"Ejecución presupuestaria - Gasto corrientes totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Años", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado/asignado"],
+        "titulo": u"Ejecución presupuestaria - Gasto corrientes totales {municipio} {year}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Millones de córdobas corrientes",
+        "subtitulo_intermedio": u"Millones de córdobas corrientes",
+        "subtitulo_cierre": u"Millones de córdobas corrientes",
+        "encabezados": [u"Años", "Inicial", "Ejecutado", "% (Ejecutado/Inicial)"],
+        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado_porcentaje"],
         "qs": "anualesg",
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
@@ -521,19 +524,20 @@ CONFIGURACION_TABLAS_EXCEL = {
     },
 }
 
+ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6']
+ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8']
+
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
-    array_of_rubros = ['oim1', 'ogm1', 'ago3', 'ago6']
-    array_of_config_groups = ['oim8', 'ogm8', 'icat2']
-
-    if reporte in array_of_rubros:
+    if reporte in ARRAY_OF_RUBROS:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
-    elif '7' in reporte:
-        titulo = titulo.format(municipio=municipio)
-    elif reporte in array_of_config_groups:
+    elif reporte in ARRAY_OF_CONFIG_INFO_HIS:
+        titulo = titulo.format(municipio=municipio, year=anio)
+    elif reporte in ARRAY_OF_CONFIG_GROUPS:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
 
@@ -746,13 +750,13 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             CONFIGURACION_TABLAS_EXCEL[reporte]['subsubtitulo'] = u'{}'.format(municipio)
 
         if periodo_nombre != 'inicial':
-            if not '7' in reporte:
+            if not reporte in ARRAY_OF_CONFIG_INFO_HIS:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
 
             columna_porcentaje = ''
             if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
-            elif '8' in reporte or 'icat2' == reporte:
+            elif reporte in ARRAY_OF_CONFIG_GROUPS:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'

@@ -418,6 +418,10 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         row['asignado_porcentaje'] = percentage(row['inicial_asignado'], asignado, 2)
         row['ejecutado_porcentaje'] = percentage(row['ejecutado'], ejecutado, 2)
 
+    for row in anual2g:
+        if row['asignado']:
+            row['ejecutado_porcentaje'] = percentage(row['ejecutado'], row['asignado'])
+
     data = RawDataPool(
             series=[
                 {
