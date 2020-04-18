@@ -277,12 +277,15 @@ CONFIGURACION_TABLAS_EXCEL = {
         #                                     "tipo_totales": ["PROMEDIO","AVERAGE","AVERAGE"]
     },
     "ago3": {
-        "titulo": u"Ahorro Corriente para Inversiones",
-        "subtitulo": u"por Municipios de Categoría",
-        "encabezados": ["Rubros de ingresos", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["tipoingreso__nombre", "asignado", "ejecutado", "ejecutado/asignado"],
+        "titulo": u"Rubros de ingresos corrientes propios para el " +
+                  u"período {year} {periodo} {municipio}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos corrientes {} por su origen ",
+        "subtitulo_intermedio": u"Ejecución de ingresos corrientes {} por su origen",
+        "subtitulo_cierre": u"Ejecución de ingresos corrientes {} por su origen",
+        "encabezados": ["Rubros de ingresos", "Inicial", "%"],
+        "celdas": ['tipoingreso__nombre', 'inicial_asignado', 'asignado_porcentaje'],
         "qs": "rubros",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ago4": {
         "titulo": u"Resultado presupuestario gastos corrientes totales",
@@ -303,14 +306,14 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "ago6": {
-        "titulo": u"Modificaciones al presupuesto - Gastos corrientes totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": ["Rubros del gastos corrientes", "Inicial", "Actualizado", "Modificado", "Ejecutado",
-                        "% (ejecutado/actualizado)"],
-        "celdas": ["tipogasto__nombre", "inicial_asignado", "actualizado", "actualizado-asignado", "ejecutado",
-                   "ejecutado/actualizado"],
+        "titulo": u"Rubros de gastos corrientes para el período {year} {periodo} {municipio}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {} por su destino ",
+        "subtitulo_intermedio": u" Ejecución de gastos corrientes {} por su destino",
+        "subtitulo_cierre": u" Ejecución de gastos corrientes {} por su destino",
+        "encabezados": ["Rubros del gastos corrientes", "Inicial", "%"],
+        "celdas": ["tipogasto__nombre", "inicial_asignado", "asignado_porcentaje"],
         "qs": "rubrosg",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "ago7": {
         "titulo": u"Ejecución presupuestaria del ingreso corrientes propios",
@@ -321,10 +324,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ago8": {
-        "titulo": u"Ejecución presupuestaria - Gasto corrientes totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Años", "Inicial", "Ejecutado", "% (ejecutado/inicial)"],
-        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado/asignado"],
+        "titulo": u"Ejecución presupuestaria - Gasto corrientes totales {municipio} {year}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Millones de córdobas corrientes",
+        "subtitulo_intermedio": u"Millones de córdobas corrientes",
+        "subtitulo_cierre": u"Millones de córdobas corrientes",
+        "encabezados": [u"Años", "Inicial", "Ejecutado", "% (Ejecutado/Inicial)"],
+        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado_porcentaje"],
         "qs": "anualesg",
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
@@ -519,16 +525,20 @@ CONFIGURACION_TABLAS_EXCEL = {
     },
 }
 
+ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6']
+ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8']
+
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
-    if 'oim1' == reporte or 'ogm1' == reporte:
+    if reporte in ARRAY_OF_RUBROS:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
-    elif '7' in reporte:
-        titulo = titulo.format(municipio=municipio)
-    elif 'oim8' == reporte or 'ogm8' == reporte or 'icat2' == reporte:
+    elif reporte in ARRAY_OF_CONFIG_INFO_HIS:
+        titulo = titulo.format(municipio=municipio, year=anio)
+    elif reporte in ARRAY_OF_CONFIG_GROUPS:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
 
@@ -741,16 +751,18 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
             CONFIGURACION_TABLAS_EXCEL[reporte]['subsubtitulo'] = u'{}'.format(municipio)
 
         if periodo_nombre != 'inicial':
-            if not '7' in reporte:
+            if reporte not in ARRAY_OF_CONFIG_INFO_HIS:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][1] = 'Ejecutado'
 
             columna_porcentaje = ''
             if 'oim1' == reporte:
                 columna_porcentaje = 'ejecutado_percent'
-            elif '8' in reporte or 'icat2' == reporte:
+            elif reporte in ARRAY_OF_CONFIG_GROUPS:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'
+            elif 'ago3' == reporte or 'ago6' == reporte:
+                columna_porcentaje = 'ejecutado_porcentaje'
 
             if columna_porcentaje:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'

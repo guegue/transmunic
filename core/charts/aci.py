@@ -15,7 +15,8 @@ from core.models import (Anio, IngresoDetalle, GastoDetalle,
 from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL)
 from core.tools import (getYears, getPeriods, dictfetchall,
-                        glue, superglue, xnumber)
+                        glue, superglue, xnumber,
+                        percentage)
 from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
@@ -431,6 +432,20 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         cursor = connection.cursor()
         cursor.execute(sql)
         source = dictfetchall(cursor)
+
+    # calcular el porcentaje de los rubros
+    for row in rubros:
+        row['asignado_porcentaje'] = percentage(row['asignado'], asignado)
+        row['ejecutado_porcentaje'] = percentage(row['ejecutado'], ejecutado)
+
+    # calcular el porcentaje de los rubrosg
+    for row in rubrosg:
+        row['asignado_porcentaje'] = percentage(row['inicial_asignado'], asignado, 2)
+        row['ejecutado_porcentaje'] = percentage(row['ejecutado'], ejecutado, 2)
+
+    for row in anual2g:
+        if row['asignado']:
+            row['ejecutado_porcentaje'] = percentage(row['ejecutado'], row['asignado'])
 
     data_ingreso = RawDataPool(
         series=[
