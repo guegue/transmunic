@@ -305,14 +305,14 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "ago6": {
-        "titulo": u"Modificaciones al presupuesto - Gastos corrientes totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": ["Rubros del gastos corrientes", "Inicial", "Actualizado", "Modificado", "Ejecutado",
-                        "% (ejecutado/actualizado)"],
-        "celdas": ["tipogasto__nombre", "inicial_asignado", "actualizado", "actualizado-asignado", "ejecutado",
-                   "ejecutado/actualizado"],
+        "titulo": u"Rubros de gastos corrientes para el período {year} {periodo} {municipio}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {} por su destino ",
+        "subtitulo_intermedio": u" Ejecución de gastos corrientes {} por su destino",
+        "subtitulo_cierre": u" Ejecución de gastos corrientes {} por su destino",
+        "encabezados": ["Rubros del gastos corrientes", "Inicial", "%"],
+        "celdas": ["tipogasto__nombre", "inicial_asignado", "asignado_porcentaje"],
         "qs": "rubrosg",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "SUM", "SUM", "/"]
     },
     "ago7": {
         "titulo": u"Ejecución presupuestaria del ingreso corrientes propios",
@@ -525,7 +525,7 @@ CONFIGURACION_TABLAS_EXCEL = {
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
-    array_of_rubros = ['oim1', 'ogm1', 'ago3']
+    array_of_rubros = ['oim1', 'ogm1', 'ago3', 'ago6']
     array_of_config_groups = ['oim8', 'ogm8', 'icat2']
 
     if reporte in array_of_rubros:
@@ -756,7 +756,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado_percent'
             elif 'ogm1' == reporte:
                 columna_porcentaje = 'ejec_porcentaje'
-            elif 'ago3' == reporte:
+            elif 'ago3' == reporte or 'ago6' == reporte:
                 columna_porcentaje = 'ejecutado_porcentaje'
 
             if columna_porcentaje:
