@@ -343,7 +343,6 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                                  rubros_periodo),
                            key='tipoingreso')
 
-
         source_inicial = IngresoDetalle.objects. \
             filter(ingreso__periodo=PERIODO_INICIAL,
                    tipoingreso__clasificacion=TipoGasto.CORRIENTE). \
