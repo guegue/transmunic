@@ -581,27 +581,23 @@
                     <tr>
                         <th colspan="1" rowspan="2" class="text-center fixed first-child">Categor&iacute;as</th>
                         {% for year in year_list %}
-                            {% if year >= 2012 %}
                                 <th rowspan="1" colspan="2"
                                     class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                     <strong>{{ year }}</strong>
                                     {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
                                 </th>
-                            {% endif %}
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for year in year_list %}
-                            {% if year >= 2012 %}
-                                <th colspan="1"
-                                    class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                    M. de C$
-                                </th>
-                                <th colspan="1"
-                                    class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                    %
-                                </th>
-                            {% endif %}
+                            <th colspan="1"
+                                class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                M. de C$
+                            </th>
+                            <th colspan="1"
+                                class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                %
+                            </th>
                         {% endfor %}
                     </tr>
                     </thead>
@@ -610,16 +606,14 @@
                         <tr>
                             <td class="text-left fixed first-child">{{ key }}</td>
                             {% for year in year_list %}
-                                {% if year >= 2012 %}
-                                    {% with year_data=data|keyvalue:year %}
-                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                            {{ year_data.raw|million|intcomma }}
-                                        </td>
-                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                            {{ year_data.percent|default:"0%" }}
-                                        </td>
-                                    {% endwith %}
-                                {% endif %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                        {{ year_data.raw|million|intcomma }}
+                                    </td>
+                                    <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                        {{ year_data.percent|default:"0%" }}
+                                    </td>
+                                {% endwith %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
