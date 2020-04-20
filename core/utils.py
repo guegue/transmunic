@@ -476,10 +476,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "otros"
     },
     "ep3": {
-        "titulo": u"Ejecución del presupuesto de ingresos",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Rubros del ingreso", "Inicial", "Ejecutado", "% Ejecutado/Inicial"],
-        "celdas": ["tipoingreso__clasificacion", "asignado", "ejecutado", "ejecutado/asignado"],
+        "titulo": u"Total de ingresos para el período {year} {periodo} {municipio}",
+        "subtitulo": u"",
+        "subtitulo_inicio": u"Presupuesto inicial de ingresos {} por su origen",
+        "subtitulo_intermedio": u"Presupuesto intermedio de ingresos {} por su origen",
+        "subtitulo_cierre": u"Presupuesto cierre de ingresos {} por su origen",
+        "encabezados": [u"Rubros del ingreso", "Inicial"],
+        "celdas": ["tipoingreso__clasificacion", "asignado"],
         "qs": "rubros"
     },
     "ep4": {
@@ -499,12 +502,13 @@ CONFIGURACION_TABLAS_EXCEL = {
         "qs": "rubros"
     },
     "ep6": {
-        "titulo": u"Modificaciones al presupuesto - Gastos Totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Rubros del gastos corrientes", "Inicial", "Actualizado", u"Modificación", "Ejecutado",
-                        "% Ejecutado/Actualizado"],
-        "celdas": ["subsubtipogasto__clasificacion", "asignado", "actualizado", "actualizado-asignado", "ejecutado",
-                   "ejecutado/actualizado"],
+        "titulo": u"Total de gastos para el período {year} {periodo} {municipio}",
+        "subtitulo": u"",
+        "subtitulo_inicio": u"Presupuesto inicial de gastos {} por su destino",
+        "subtitulo_intermedio": u"Presupuesto intermedio de gastos {} por su destino",
+        "subtitulo_cierre": u"Presupuesto cierre de gastos {} por su destino",
+        "encabezados": [u"Rubros de gastos", "Inicial"],
+        "celdas": ["subsubtipogasto__clasificacion", "asignado"],
         "qs": "rubrosg"
     },
     "ep7": {
@@ -525,7 +529,7 @@ CONFIGURACION_TABLAS_EXCEL = {
     },
 }
 
-ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6']
+ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6', 'ep3', 'ep6']
 ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
 ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7']
 
@@ -775,6 +779,11 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
                 columna_porcentaje = 'ejec_porcentaje'
             elif 'ago3' == reporte or 'ago6' == reporte:
                 columna_porcentaje = 'ejecutado_porcentaje'
+            elif 'ep3' == reporte or 'ep6' == reporte:
+                CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'].append('Ejecutado')
+                CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'].append('% (Ejecutado/Inicial)')
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'].append('ejecutado')
+                CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'].append('ejecutado/asignado')
 
             if columna_porcentaje:
                 CONFIGURACION_TABLAS_EXCEL[reporte]['celdas'][1] = 'ejecutado'
