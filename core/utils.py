@@ -527,7 +527,7 @@ CONFIGURACION_TABLAS_EXCEL = {
 
 ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6']
 ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
-ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7']
 
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
@@ -646,10 +646,17 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
             value = obtener_valor(row, atributo)
 
             if isinstance(value, dict):
-                for subvalue in value.values():
-                    if '%' in str(subvalue):
-                        subvalue = Decimal(subvalue.replace('%', ''))
-                    formato = NUMBER_FORMAT
+                formato = NUMBER_FORMAT
+                if len(value.values()) > 1:
+                    for subvalue in value.values():
+                        if '%' in str(subvalue):
+                            subvalue = Decimal(subvalue.replace('%', ''))
+                        hoja.write(indice_fila, indice_columna + c + c2, subvalue, formato)
+                        c2 += 1
+                else:
+                    subvalue = Decimal('0')
+                    hoja.write(indice_fila, indice_columna + c + c2, subvalue, formato)
+                    c2 += 1
                     hoja.write(indice_fila, indice_columna + c + c2, subvalue, formato)
                     c2 += 1
                 c2 -= 1
@@ -666,6 +673,11 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
     if tipo_totales:
         # ESCRIBIR FILA DE TOTALES
         indice_fila += 1
+        if 'descripcion' in celdas:
+            for anio in celdas[1:]:
+                celdas.append(anio)
+                tipo_totales.append('SUM')
+
         for c, atributo in enumerate(celdas):
             if 'percent' not in atributo and 'porcentaje' not in atributo:
                 if c > 0:
