@@ -378,23 +378,40 @@ def ogm_chart(municipio=None, year=None, portada=False):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
+        inicial = list(GastoDetalle.objects.
+                       filter(gasto__periodo=PERIODO_INICIAL).
+                       values('gasto__anio',
+                              'gasto__periodo').
+                       annotate(asignado=Sum('asignado')).
+                       order_by())
+        final = list(GastoDetalle.objects.
+                     filter(gasto__periodo=PERIODO_FINAL).
+                     values('gasto__anio',
+                            'gasto__periodo').
+                     annotate(ejecutado=Sum('ejecutado')).
+                     order_by())
+        anual2 = glue(inicial=inicial,
+                      final=final,
+                      key='gasto__anio')
 
-        source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values(
-            'subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
+        source = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=periodo).\
+            values('subsubtipogasto__origen__nombre').\
+            annotate(**{quesumar: Sum(quesumar)}).\
+            order_by('subsubtipogasto__origen__nombre')
         tipos_inicial = GastoDetalle.objects.\
-            filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).\
-            values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug',
+            filter(gasto__anio=year,
+                   gasto__periodo=PERIODO_INICIAL).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__slug',
                    'subsubtipogasto__origen__orden').\
             annotate(asignado=Sum('asignado')).\
             order_by('subsubtipogasto__origen__orden')
         tipos_final = GastoDetalle.objects.\
             filter(gasto__anio=year, gasto__periodo=periodo).\
-            values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug',
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__slug',
                    'subsubtipogasto__origen__orden').\
             annotate(ejecutado=Sum('ejecutado')).\
             order_by('subsubtipogasto__origen__orden')
