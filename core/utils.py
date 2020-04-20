@@ -331,8 +331,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "subtitulo_cierre": u"Millones de córdobas corrientes",
         "encabezados": [u"Años", "Inicial", "Ejecutado", "% (Ejecutado/Inicial)"],
         "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado_porcentaje"],
-        "qs": "anualesg",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
+        "qs": "anualesg"
     },
     "aci1": {
         "titulo": u"Ahorro Corriente para Inversiones",
