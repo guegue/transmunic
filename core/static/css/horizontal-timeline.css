@@ -144,9 +144,6 @@ Main Components
     background-color: #333333;
     border-color: #333333;
 }
-.cd-horizontal-timeline .events a.selected {
-    pointer-events: none;
-}
 .cd-horizontal-timeline .events a.selected::after {
     background-color: #333333;
     border-color: #333333;
