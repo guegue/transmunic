@@ -338,6 +338,7 @@ def inversion_categoria_view(request):
         'periodo_list': periodo_list,
         'municipio_list': data['municipio_list'],
         'asignado': data['asignado'],
+        'nacional': data['nacional'],
         'asignado_porcentaje': data['asignado_porcentaje'],
         'ejecutado': data['ejecutado'],
         'ejecutado_porcentaje': data['ejecutado_porcentaje'],
