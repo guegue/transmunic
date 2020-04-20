@@ -239,7 +239,6 @@ def ep_chart(request):
         # the new way... re-haciendo "porclasep"
         sql = sql_tpl.format(var='ingreso', quesumar1="asignado", quesumar2="ejecutado",
                              year=year, periodo_inicial=PERIODO_INICIAL, periodo_final=periodo)
-        print sql
         cursor = connection.cursor()
         cursor.execute(sql)
         ingresos = dictfetchall(cursor)
@@ -371,11 +370,20 @@ def ep_chart(request):
             'ejecutado': ejecutado,
             'gejecutado': gastos_ejecutados,
             'gasignado': gastos_asignados,
-            'mi_clase': mi_clase, 'municipio': municipio_row,
-            'year': year, 'ejecutado': ejecutado, 'asignado': asignado,
-            'year_list': year_list, 'municipio_list': municipio_list,
-            'anuales': anual2, 'anualesg': anual2g, 'porclase': porclase,
-            'porclasep': porclasep, 'rubros': rubros, 'rubrosg': rubrosg,
+            'mi_clase': mi_clase,
+            'municipio': municipio_row,
+            'year': year,
+            'ejecutado': ejecutado,
+            'asignado': asignado,
+            'year_list': year_list,
+            'municipio_list': municipio_list,
+            'anuales': anual2,
+            'anualesg': anual2g,
+            'porclase': porclase,
+            'periodo_list': periodo_list,
+            'porclasep': porclasep,
+            'rubros': rubros,
+            'rubrosg': rubrosg,
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
