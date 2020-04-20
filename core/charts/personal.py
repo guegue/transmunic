@@ -220,7 +220,12 @@ def gpersonal_chart(request):
                                 municipios_periodo),
                           key='gasto__municipio__nombre')
         # inserta porcentages de total de gastos
-        total = {'total_asignado':0,'total_ejecutado':0,'total_asignado_gp':0,'total_ejecutado_gp':0}
+        total = {
+            'total_asignado': 0,
+            'total_ejecutado': 0,
+            'total_asignado_gp': 0,
+            'total_ejecutado_gp': 0
+        }
         for row in otros:
             total['asignado'] = GastoDetalle.objects. \
                 filter(gasto__anio=year,
@@ -233,8 +238,8 @@ def gpersonal_chart(request):
                        gasto__municipio__id=row['gasto__municipio__id']). \
                 aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
 
-            row['asignado_percent'] = percentage(row['asignado'], total['asignado'], 2)
-            row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'], 2)
+            row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
+            row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
             total['total_asignado_gp'] += row['asignado']
             total['total_ejecutado_gp'] += row['ejecutado']
             total['total_asignado'] += total['asignado']
