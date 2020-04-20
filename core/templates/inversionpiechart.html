@@ -570,7 +570,7 @@
     </div>
     <div id="detail-3" class="container">
         <div class="row">
-            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive">
+            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive" style="height: 560px">
                 <h2>
                     <strong>Informaci&oacute;n hist&oacute;rica por &aacute;reas de inversi&oacute;n</strong>
                     <br>
@@ -588,7 +588,8 @@
                         <th colspan="1" rowspan="2" class="text-center fixed first-child">Categor&iacute;as</th>
                         {% for year in year_list %}
                             <th rowspan="1" colspan="2"
-                                class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                class="text-center no-border-bottom border-sides fixed-row
+                                 background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                 <strong>
                                     {{ year }}
                                     {% if periodo_list|keyvalue:year != 'F' %}
@@ -604,11 +605,13 @@
                     <tr>
                         {% for year in year_list %}
                             <th colspan="1"
-                                class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                class="no-border-top text-center border-left font-13px text-nowrap fixed-row2
+                                background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                 M. de C$
                             </th>
                             <th colspan="1"
-                                class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                class="no-border-top text-center border-right font-13px fixed-row2
+                                background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
                                 %
                             </th>
                         {% endfor %}
