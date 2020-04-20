@@ -701,10 +701,16 @@
                     <ol>
                         {% for row in anuales %}
                             <li>
-                                <a href="#0" data-date="01/01/{{ row.ingreso__anio }} 00:00"
-                                        {% if row.ingreso__anio == year|add:"0" %} class="selected" {% endif %}
+                                <a href="#" data-date="01/01/{{ row.ingreso__anio }} 00:00"
+                                   {% if row.ingreso__anio == year|add:"0" %}class="selected"{% endif %}
                                    style="left:{{ forloop.counter|mul:"135" }}px;">
-                                    <span class="posicion">{{ row.ingreso__anio }}</span>
+                                    <span class="posicion"
+                                          {% if row.ingreso__periodo != 'F' %}data-toggle="tooltip"
+                                          data-placement="top"
+                                          title="P.{% if row.ingreso__periodo == 'I' %}Inicial{% else %}Intermedio{% endif %}"{% endif %}>
+                                        {{ row.ingreso__anio }}
+                                        {% if row.ingreso__periodo == 'I' %}*{% endif %}
+                                    </span>
                                     <br/>
                                     {% if row.ingreso__periodo == 'I' %}
                                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
@@ -768,7 +774,15 @@
                         {% for year in year_list %}
                             <th rowspan="1" colspan="2"
                                 class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                <strong>{{ year }}</strong>
+                                <strong>
+                                    {{ year }}
+                                    {% if periodo_list|keyvalue:year != 'F' %}
+                                        <span data-toggle="tooltip"
+                                          data-placement="top"
+                                          title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                                Intermedio{% endif %}">*</span>
+                                    {% endif %}
+                                </strong>
                             </th>
                         {% endfor %}
                     </tr>

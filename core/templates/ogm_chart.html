@@ -750,10 +750,18 @@
                             <div class="events" style="width: {{ anuales|length|add:1|mul:135 }}px;">
                                 <ol>
                                     {% for row in anuales %}
-                                        <li><a href="#0" data-date="01/01/{{ row.gasto__anio }} 00:00"
-                                                {% if row.gasto__anio == year|add:"0" %} class="selected" {% endif %}
-                                               style="left:{{ forloop.counter|mul:135 }}px;"><span
-                                                class="posicion">{{ row.gasto__anio }}</span><br/>
+                                        <li><a href="#" data-date="01/01/{{ row.gasto__anio }} 00:00"
+                                               {% if row.gasto__anio == year|add:"0" %}class="selected"{% endif %}
+                                               style="left:{{ forloop.counter|mul:135 }}px;">
+                                                <span
+                                                        class="posicion"
+                                                        {% if row.gasto__periodo != 'F' %}data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="P.{% if row.gasto__periodo == 'I' %}Inicial{% else %}Intermedio{% endif %}"{% endif %}>
+                                                    {{ row.gasto__anio }}
+                                                    {% if row.gasto__periodo == 'I' %}*{% endif %}
+                                                </span>
+                                            <br/>
                                             {% if row.gasto__periodo == 'I' %}
                                                 <span class="line-cifra text-right">{{ row.asignado|million|intcomma }}</span>
                                             {% else %}
@@ -865,7 +873,7 @@
                                         {% else %}
                                             Consolidado 153 municipios
                                         {% endif %}
-                                    {% descargar_excel "ogm7" %}
+                                        {% descargar_excel "ogm7" %}
                                     </h4>
 
                                 </td>
@@ -874,8 +882,15 @@
                                 <th rowspan="2" colspan="1" class="fixed first-child"></th>
                                 {% for year in year_list %}
                                     <th rowspan="1" colspan="2" class="text-center no-border-bottom">
-                                        <strong>{{ year }}</strong>
-                                        {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}</th>
+                                    <strong>
+                                        {{ year }}
+                                        {% if periodo_list|keyvalue:year != 'F' %}
+                                            <span data-toggle="tooltip"
+                                          data-placement="top"
+                                          title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                                    Intermedio{% endif %}">*</span>
+                                        {% endif %}
+                                    </strong>
                                 {% endfor %}
                             </tr>
                             <tr class="bg-primary">

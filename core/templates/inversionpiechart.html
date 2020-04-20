@@ -521,10 +521,16 @@
                     <ol>
                         {% for row in anuales %}
                             <li>
-                                <a href="#0" data-date="01/01/{{ row.inversion__anio }} 00:00"
+                                <a href="#" data-date="01/01/{{ row.inversion__anio }} 00:00"
                                         {% if row.inversion__anio == year|add:"0" %} class="selected" {% endif %}
-                                   style="left:{{ forloop.counter|mul:"135" }}px;"><span
-                                        class="posicion">{{ row.inversion__anio }}</span>
+                                   style="left:{{ forloop.counter|mul:"135" }}px;">
+                                     <span class="posicion"
+                                           {% if row.inversion__periodo == 'I' %}data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="P.{% if row.inversion__periodo == 'I' %}Inicial{% else %}Intermedio{% endif %}"{% endif %}>
+                                        {{ row.inversion__anio }}
+                                         {% if row.inversion__periodo == 'I' %}*{% endif %}
+                                    </span>
                                     <br/>
                                     {% if row.inversion__periodo == 'I' %}
                                         <span class="line-cifra">{{ row.asignado|million|intcomma }}</span>
@@ -564,7 +570,7 @@
     </div>
     <div id="detail-3" class="container">
         <div class="row">
-            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive">
+            <div class="col-md-12 col-sm-12 col-lg-12 table-responsive" style="height: 560px">
                 <h2>
                     <strong>Informaci&oacute;n hist&oacute;rica por &aacute;reas de inversi&oacute;n</strong>
                     <br>
@@ -581,27 +587,33 @@
                     <tr>
                         <th colspan="1" rowspan="2" class="text-center fixed first-child">Categor&iacute;as</th>
                         {% for year in year_list %}
-                            {% if year >= 2012 %}
-                                <th rowspan="1" colspan="2"
-                                    class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                    <strong>{{ year }}</strong>
-                                    {% if periodo_list|keyvalue:year == 'A' %}*Actualizado*{% endif %}
-                                </th>
-                            {% endif %}
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides fixed-row
+                                 background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                <strong>
+                                    {{ year }}
+                                    {% if periodo_list|keyvalue:year != 'F' %}
+                                        <span data-toggle="tooltip"
+                                          data-placement="top"
+                                          title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                                Intermedio{% endif %}">*</span>
+                                    {% endif %}
+                                </strong>
+                            </th>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for year in year_list %}
-                            {% if year >= 2012 %}
-                                <th colspan="1"
-                                    class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                    M. de C$
-                                </th>
-                                <th colspan="1"
-                                    class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                    %
-                                </th>
-                            {% endif %}
+                            <th colspan="1"
+                                class="no-border-top text-center border-left font-13px text-nowrap fixed-row2
+                                background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                M. de C$
+                            </th>
+                            <th colspan="1"
+                                class="no-border-top text-center border-right font-13px fixed-row2
+                                background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                %
+                            </th>
                         {% endfor %}
                     </tr>
                     </thead>
@@ -610,16 +622,14 @@
                         <tr>
                             <td class="text-left fixed first-child">{{ key }}</td>
                             {% for year in year_list %}
-                                {% if year >= 2012 %}
-                                    {% with year_data=data|keyvalue:year %}
-                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                            {{ year_data.raw|million|intcomma }}
-                                        </td>
-                                        <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
-                                            {{ year_data.percent|default:"0%" }}
-                                        </td>
-                                    {% endwith %}
-                                {% endif %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                        {{ year_data.raw|million|intcomma }}
+                                    </td>
+                                    <td class="text-center font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                        {{ year_data.percent|default:"0%" }}
+                                    </td>
+                                {% endwith %}
                             {% endfor %}
                         </tr>
                     {% endfor %}

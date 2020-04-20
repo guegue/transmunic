@@ -7,6 +7,7 @@
 
 from itertools import chain
 from operator import itemgetter
+from collections import OrderedDict
 
 from django.db import connection
 from django.db.models import Sum
@@ -174,29 +175,33 @@ def ogm_chart(municipio=None, year=None, portada=False):
                             key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = GastoDetalle.objects.\
+        rubros_inicial = GastoDetalle.objects. \
             filter(gasto__anio=year,
                    gasto__municipio__slug=municipio,
-                   gasto__periodo=PERIODO_INICIAL).\
+                   gasto__periodo=PERIODO_INICIAL). \
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
+            annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = GastoDetalle.objects. \
             filter(gasto__anio=year,
                    gasto__municipio__slug=municipio,
-                   gasto__periodo=PERIODO_ACTUALIZADO).\
+                   gasto__periodo=PERIODO_ACTUALIZADO). \
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(actualizado_asignado=Sum('asignado'),
                      actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = GastoDetalle.objects.\
+        rubros_final = GastoDetalle.objects. \
             filter(gasto__anio=year,
                    gasto__municipio__slug=municipio,
-                   gasto__periodo=PERIODO_FINAL).\
+                   gasto__periodo=PERIODO_FINAL). \
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(final_asignado=Sum('asignado'),
                      final_ejecutado=Sum('ejecutado'))
         rubros_periodo = GastoDetalle.objects.\
@@ -204,12 +209,16 @@ def ogm_chart(municipio=None, year=None, portada=False):
                    gasto__municipio__slug=municipio,
                    gasto__periodo=periodo,).\
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(ejecutado=Sum('ejecutado'))
 
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='subsubtipogasto__origen__nombre')
+        rubros = superglue(data=(rubros_inicial,
+                                 rubros_final,
+                                 rubros_actualizado,
+                                 rubros_periodo),
+                           key='subsubtipogasto__origen__nombre')
 
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
@@ -378,23 +387,40 @@ def ogm_chart(municipio=None, year=None, portada=False):
         municipio = ''
 
         # obtiene datos comparativo de todos los años
-        inicial = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
-        final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, tipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2 = glue(inicial=inicial, final=final, key='gasto__anio')
+        inicial = list(GastoDetalle.objects.
+                       filter(gasto__periodo=PERIODO_INICIAL).
+                       values('gasto__anio',
+                              'gasto__periodo').
+                       annotate(asignado=Sum('asignado')).
+                       order_by())
+        final = list(GastoDetalle.objects.
+                     filter(gasto__periodo=PERIODO_FINAL).
+                     values('gasto__anio',
+                            'gasto__periodo').
+                     annotate(ejecutado=Sum('ejecutado')).
+                     order_by())
+        anual2 = glue(inicial=inicial,
+                      final=final,
+                      key='gasto__anio')
 
-        source = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo).values(
-            'subsubtipogasto__origen__nombre').annotate(**{quesumar: Sum(quesumar)}).order_by('subsubtipogasto__origen__nombre')
+        source = GastoDetalle.objects.\
+            filter(gasto__anio=year,
+                   gasto__periodo=periodo).\
+            values('subsubtipogasto__origen__nombre').\
+            annotate(**{quesumar: Sum(quesumar)}).\
+            order_by('subsubtipogasto__origen__nombre')
         tipos_inicial = GastoDetalle.objects.\
-            filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL).\
-            values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug',
+            filter(gasto__anio=year,
+                   gasto__periodo=PERIODO_INICIAL).\
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__slug',
                    'subsubtipogasto__origen__orden').\
             annotate(asignado=Sum('asignado')).\
             order_by('subsubtipogasto__origen__orden')
         tipos_final = GastoDetalle.objects.\
             filter(gasto__anio=year, gasto__periodo=periodo).\
-            values('subsubtipogasto__origen__nombre', 'subsubtipogasto__origen__slug',
+            values('subsubtipogasto__origen__nombre',
+                   'subsubtipogasto__origen__slug',
                    'subsubtipogasto__origen__orden').\
             annotate(ejecutado=Sum('ejecutado')).\
             order_by('subsubtipogasto__origen__orden')
@@ -451,43 +477,50 @@ def ogm_chart(municipio=None, year=None, portada=False):
                             key='subsubtipogasto__codigo')
 
         # obtiene datos de gastos en ditintos rubros
-        rubros_inicial = GastoDetalle.objects.\
+        rubros_inicial = GastoDetalle.objects. \
             filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_INICIAL).\
+                   gasto__periodo=PERIODO_INICIAL). \
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.\
+        rubros_actualizado = GastoDetalle.objects. \
             filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_ACTUALIZADO).\
+                   gasto__periodo=PERIODO_ACTUALIZADO). \
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(actualizado_asignado=Sum('asignado'),
                      actualizado_ejecutado=Sum('ejecutado'))
         rubros_final = GastoDetalle.objects.\
             filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_FINAL).\
+                   gasto__periodo=PERIODO_FINAL). \
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(final_asignado=Sum('asignado'),
                      final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = GastoDetalle.objects.\
+        rubros_periodo = GastoDetalle.objects. \
             filter(gasto__anio=year,
-                   gasto__periodo=periodo).\
+                   gasto__periodo=periodo). \
             exclude(tipogasto__codigo=TipoGasto.IMPREVISTOS).\
             values('subsubtipogasto__origen__nombre',
-                   'subsubtipogasto__origen__shortname').\
-            order_by().\
+                   'subsubtipogasto__origen__shortname',
+                   'subsubtipogasto__origen__orden'). \
+            order_by('subsubtipogasto__origen__orden'). \
             annotate(ejecutado=Sum('ejecutado'))
 
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='subsubtipogasto__origen__nombre')
+        rubros = superglue(data=(rubros_inicial,
+                                 rubros_final,
+                                 rubros_actualizado,
+                                 rubros_periodo),
+                           key='subsubtipogasto__origen__nombre')
 
         source_inicial = GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL,).\
             values('gasto__anio').order_by('gasto__anio').annotate(
@@ -929,9 +962,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
         bar_horizontal = graphChart(parameters)
 
     # tabla: get total and percent
-    total = {}
-    total['ejecutado'] = sum(item['ejecutado'] for item in sources)
-    total['asignado'] = sum(item['asignado'] for item in sources)
+    total = {
+        'ejecutado': sum(item['ejecutado'] for item in sources),
+        'asignado': sum(item['asignado'] for item in sources)
+    }
     for row in sources:
         row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
         row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
@@ -950,13 +984,18 @@ def ogm_chart(municipio=None, year=None, portada=False):
         source_cuadro = GastoDetalle.objects.all()
     porano_table = {}
     ano_table = {}
-    ys = source_cuadro.order_by('subsubtipogasto__origen__nombre').values(
-        'subsubtipogasto__origen__nombre').distinct()
+    ys = source_cuadro. \
+        order_by('subsubtipogasto__origen__nombre'). \
+        values('subsubtipogasto__origen__nombre',
+               'subsubtipogasto__origen__orden'). \
+        distinct()
     for y in ys:
         name = y['subsubtipogasto__origen__nombre']
         if name:
+            order = y['subsubtipogasto__origen__orden']
             label = name
             porano_table[label] = {}
+            porano_table[label]['orden'] = order
             for ayear in year_list:
                 periodo = Anio.objects.get(anio=ayear).periodo
                 quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
@@ -992,6 +1031,10 @@ def ogm_chart(municipio=None, year=None, portada=False):
                     porano_table[label][ayear]['percent'] = format(
                         porano_table[label][ayear]['raw'] / ano_table[ayear], '.2%')
 
+    # ordenar rubros de informacion historica
+    porano_table = OrderedDict(sorted(porano_table.iteritems(),
+                                      key=lambda x: x[1]['orden']))
+
     if portada:
         charts = (ejecutado_pie,)
     elif bar_horizontal:
@@ -1001,6 +1044,8 @@ def ogm_chart(municipio=None, year=None, portada=False):
 
     ''  # ordenando destino de los recursos por campo orden
     sources = sorted(sources, key=lambda i: i['subsubtipogasto__origen__orden'])
+    ''  # ordenando rubros por el orden de la bd
+    rubros = sorted(rubros, key=lambda i: i['subsubtipogasto__origen__orden'])
 
     return {
         'charts': charts,

@@ -766,18 +766,20 @@ def gf_chart(request):
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Recaudación por habitante en córdobas corrientes',
             'pointFormat': '<span>Presupuesto Inicial</span>:<b>{point.y}</b>',
+            'interval': 10
         }
         bar_horizontal = graphChart(parameters)
     elif porclasep:
         parameters = {
             'data': porclasep,
             'field1': 'clasificacion',
-            'field2': quesumar,
+            'field2': '{}_porcentaje'.format(quesumar),
             'typechart': 'column',
             'title': 'Porcentaje del Gasto Total',
             'labelX_axis': 'Grupos',
             'labelY_axis': 'Porcentaje',
-            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f} M. de cordobas</b>',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}%</b>',
+            'interval': 10
         }
         bar_horizontal = graphChart(parameters)
 
