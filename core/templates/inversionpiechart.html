@@ -73,7 +73,6 @@
                                                 {% else %}
                                                     <span class="font-17px">{{ i.ejecutado|million|intcomma }}</span>
                                                 {% endif %}
-
                                             </h5>
                                         </div>
                                     {% endfor %}
@@ -194,7 +193,6 @@
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
                                     <td>{{ row.clasificacion }}</td>
-
                                     <td class="text-right">
                                         {% if row.asignado %}
                                             {{ row.asignado|floatformat:2 }}
@@ -213,9 +211,16 @@
                                     {% endif %}
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td>Nacional</td>
+                                <td class="text-right">{{ nacional.asignado|floatformat:2 }}</td>
+                                {% if periodo_list|keyvalue:year != 'I' %}
+                                    <td class="text-right">{{ nacional.ejecutado|floatformat:2 }}</td>
+                                {% endif %}
+                            </tr>
                             </tbody>
                             <tfoot class="font-12px font-color-azul">
-                            <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify pma-bg-white">
+                            <th colspan="{{ year_list|length }}" rowspan="1" eclass="text-justify pma-bg-white">
                                 <strong>Fuente: </strong>Elaboraci&oacute;n
                                 propia a partir
                                 de transmunic.gob.ni<strong>.</strong></th>
@@ -594,8 +599,8 @@
                                     {{ year }}
                                     {% if periodo_list|keyvalue:year != 'F' %}
                                         <span data-toggle="tooltip"
-                                          data-placement="top"
-                                          title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                              data-placement="top"
+                                              title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
                                                 Intermedio{% endif %}">*</span>
                                     {% endif %}
                                 </strong>

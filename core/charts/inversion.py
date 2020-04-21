@@ -124,6 +124,7 @@ def inversion_chart(municipio=None):
 #
 ##############################################################################
 def inversion_categoria_chart(municipio=None, year=None, portada=False):
+    media_nacional = 0
     municipio_list = Municipio.objects.all()
     year_list = getYears(Inversion)
     periodo_list = getPeriods(Inversion)
@@ -465,48 +466,57 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             .annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado'))
 
         # tabla2, tabla3
-        cat_inicial = Proyecto.objects.filter(
-            inversion__periodo=PERIODO_INICIAL, inversion__anio=year)\
-            .values(
-                'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color',
-                'catinversion__slug')\
-            .annotate(inicial_asignado=Sum('asignado'))\
+        cat_inicial = Proyecto.objects. \
+            filter(inversion__periodo=PERIODO_INICIAL,
+                   inversion__anio=year) \
+            .values('catinversion__nombre',
+                    'catinversion__id',
+                    'catinversion__shortname',
+                    'catinversion__color',
+                    'catinversion__slug') \
+            .annotate(inicial_asignado=Sum('asignado')) \
             .order_by('catinversion')
-        cat_actualizado = Proyecto.objects.filter(
-            inversion__periodo=PERIODO_ACTUALIZADO, inversion__anio=year)\
-            .values(
-                'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color',
-                'catinversion__slug')\
-            .annotate(
-                actualizado_asignado=Sum('asignado'),
-                actualizado_ejecutado=Sum('ejecutado'))\
+        cat_actualizado = Proyecto.objects. \
+            filter(inversion__periodo=PERIODO_ACTUALIZADO,
+                   inversion__anio=year) \
+            .values('catinversion__nombre',
+                    'catinversion__id',
+                    'catinversion__shortname',
+                    'catinversion__color',
+                    'catinversion__slug') \
+            .annotate(actualizado_asignado=Sum('asignado'),
+                      actualizado_ejecutado=Sum('ejecutado')) \
             .order_by('catinversion')
-        cat_final = Proyecto.objects.filter(
-            inversion__periodo=PERIODO_FINAL, inversion__anio=year)\
-            .values(
-                'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color',
-                'catinversion__slug')\
-            .annotate(
-                final_asignado=Sum('asignado'),
-                final_ejecutado=Sum('ejecutado'))\
+        cat_final = Proyecto.objects. \
+            filter(inversion__periodo=PERIODO_FINAL,
+                   inversion__anio=year) \
+            .values('catinversion__nombre',
+                    'catinversion__id',
+                    'catinversion__shortname',
+                    'catinversion__color',
+                    'catinversion__slug') \
+            .annotate(final_asignado=Sum('asignado'),
+                      final_ejecutado=Sum('ejecutado')) \
             .order_by('catinversion')
-        cat_periodo = Proyecto.objects.filter(
-            inversion__periodo=periodo, inversion__anio=year)\
-            .values(
-                'catinversion__nombre', 'catinversion__id',
-                'catinversion__shortname', 'catinversion__color',
-                'catinversion__slug')\
-            .annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))\
+        cat_periodo = Proyecto.objects. \
+            filter(inversion__periodo=periodo,
+                   inversion__anio=year) \
+            .values('catinversion__nombre',
+                    'catinversion__id',
+                    'catinversion__shortname',
+                    'catinversion__color',
+                    'catinversion__slug') \
+            .annotate(asignado=Sum('asignado'),
+                      ejecutado=Sum('ejecutado'))\
             .order_by('catinversion')
         # cat2 = superglue(
         #     data=(cat_inicial, cat_final),
         #     key='catinversion__nombre')
-        cat3 = superglue(
-            data=(cat_inicial, cat_final, cat_actualizado, cat_periodo),
-            key='catinversion__nombre')
+        cat3 = superglue(data=(cat_inicial,
+                               cat_final,
+                               cat_actualizado,
+                               cat_periodo),
+                         key='catinversion__nombre')
 
         # tabla4
         anual_inicial = Proyecto.objects. \
@@ -611,7 +621,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                 AND lc.clasificacion_id=clase.id) / \
                 (select sum(lp.poblacion) from lugar_poblacion as lp \
                 where lp.anio={year} and lp.municipio_id in (select lcc.municipio_id \
-                from lugar_clasificacionmunicano lcc where lcc.clasificacion_id = clase.id)))\
+                from lugar_clasificacionmunicano lcc \
+                where lcc.clasificacion_id = clase.id and anio={year})))\
                 AS {quesumar} FROM lugar_clasificacionmunic AS clase ORDER BY clasificacion"
 
         sql = sql_tpl.format(quesumar="asignado",
@@ -635,6 +646,30 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
 
         porclasep = glue(inicial, final, 'clasificacion',
                          actualizado=actualizado)
+
+        # obtener la media nacional por clase:
+        sql_tpl = "SELECT ((SELECT SUM(asignado) FROM core_Proyecto as cp\
+                JOIN core_Inversion as ci ON cp.inversion_id=ci.id \
+                JOIN core_CatInversion cci ON cp.catinversion_id=cci.id \
+                JOIN lugar_clasificacionmunicano lc ON ci.municipio_id=lc.municipio_id \
+                AND ci.anio=lc.anio \
+                WHERE ci.anio={year} AND ci.periodo='{periodo}') / \
+                (select sum(lp.poblacion) from lugar_poblacion as lp \
+                where lp.anio={year})) as asignado, \
+                ((SELECT SUM(ejecutado) FROM core_Proyecto as cp\
+                JOIN core_Inversion as ci ON cp.inversion_id=ci.id \
+                JOIN core_CatInversion cci ON cp.catinversion_id=cci.id \
+                JOIN lugar_clasificacionmunicano lc ON ci.municipio_id=lc.municipio_id \
+                AND ci.anio=lc.anio \
+                WHERE ci.anio={year} AND ci.periodo='F') / \
+                (select sum(lp.poblacion) from lugar_poblacion as lp \
+                where lp.anio={year})) as ejecutado"
+
+        sql = sql_tpl.format(year=year,
+                             periodo=PERIODO_INICIAL)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        media_nacional = dictfetchall(cursor)[0]
 
         # para luego obtener valores para este año y nada más? FIXME !
         source_inicial = Proyecto.objects. \
@@ -856,7 +891,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             format(mi_clase.clasificacion),
             'labelX_axis': 'Municipio',
             'labelY_axis': 'Gasto por habitante',
-            'pointFormat': '<span>Inversion Asignada</span>:<b>{point.y}</b>',
+            'pointFormat': '<span>Inversion Asignada</span>:<b>{point.y}%</b>',
         }
         bar_horizontal = graphChart(parameters)
     elif porclasep:
@@ -867,8 +902,8 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             'typechart': 'column',
             'title': 'Inversión percápita',
             'labelX_axis': 'Grupos',
-            'labelY_axis': 'Córdobas',
-            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f}</b>',
+            'labelY_axis': 'M. de C$',
+            'pointFormat': '<span>{series.name}</span>:<b>{point.y:.2f} M. de C$</b>',
         }
         bar_horizontal = graphChart(parameters)
 
@@ -901,7 +936,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         total_act_porcentaje += row['act_porcentaje']
         row['ejec_porcentaje'] = percentage(row['ejecutado'], ejecutado)
         total_ejec_porcentaje += row['ejec_porcentaje']
-
 
     if source_clase:
         total_clase = source_clase.aggregate(total=Sum('clase'))['total']
@@ -994,4 +1028,5 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         'year_list': year_list,
         'municipio_list': municipio_list,
         'periodo_list': periodo_list,
+        'nacional': media_nacional,
         'municipio': municipio_row}
