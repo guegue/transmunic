@@ -952,7 +952,7 @@ def gpersonal_chart(request):
         for ayear in year_list:
             if porano_table[name][ayear]['raw']:
                 porano_table[name][ayear]['percent'] = format(
-                porano_table[name][ayear]['raw'] / ano_table[ayear], '.2%')
+                    porano_table[name][ayear]['raw'] / ano_table[ayear], '.2%')
 
     # ordenar rubros de informacion historica
     porano_table = OrderedDict(sorted(porano_table.iteritems(),

@@ -496,7 +496,7 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                     'catinversion__color',
                     'catinversion__slug') \
             .annotate(final_asignado=Sum('asignado'),
-                    final_ejecutado=Sum('ejecutado')) \
+                      final_ejecutado=Sum('ejecutado')) \
             .order_by('catinversion')
         cat_periodo = Proyecto.objects. \
             filter(inversion__periodo=periodo,
@@ -698,7 +698,6 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             ejecutado = 0
         # FIXME que es esto: ???
         source_anios = glue(source_inicial, source_final, 'inversion__anio')
-
 
     # conviert R en Rural, etc.
     # for d in area:
