@@ -8,6 +8,7 @@ import json
 
 from itertools import chain
 from operator import itemgetter
+from collections import OrderedDict
 
 from django.db import connection
 from django.db.models import Sum
@@ -16,7 +17,7 @@ from django.shortcuts import render
 from chartit import Chart, RawDataPool
 
 from core.models import (Anio, GastoDetalle, Gasto, Municipio,
-                         TipoGasto)
+                         TipoGasto, SubTipoGasto)
 from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, getPeriods, dictfetchall,
@@ -875,6 +876,88 @@ def gpersonal_chart(request):
     else:
         charts = (pie, bar)
 
+    filtros = {}
+    if municipio:
+        filtros['gasto__municipio__slug'] = municipio
+
+    # creando diccionario de informacion historica
+    porano_table = {}
+    ano_table = {}
+    anios_map = list(Anio.objects.values('anio', 'mapping'))
+    for rubro in rubros:
+        name = rubro['subtipogasto__nombre']
+        codigo_orden = rubro['subtipogasto__codigo']
+        porano_table[name] = {}
+        porano_table[name]['orden'] = codigo_orden
+        for ayear in year_list:
+            codigo_rubro = codigo_orden
+            gasto = None
+
+            if year >= 2018 > ayear:
+                # obtener codigo viejo si año actual >= 2018
+                gasto = SubTipoGasto.objects. \
+                    filter(nombre__icontains=name) .\
+                    exclude(codigo=codigo_rubro). \
+                    first()
+            elif year <= 2017 and ayear >= 2018:
+                # obtener codigo nuevo si año actual <= 2018
+                gasto = SubTipoGasto.objects. \
+                    filter(nombre__icontains=name). \
+                    exclude(codigo=codigo_rubro). \
+                    first()
+            codigo_rubro = gasto.codigo if gasto else codigo_rubro
+
+            tipo = filter(lambda i: i['anio'] == ayear, anios_map)
+
+            periodo = periodo_list[str(ayear)]
+            filtros['gasto__anio'] = ayear
+            filtros['gasto__periodo'] = periodo
+            filtros['tipogasto'] = tipo[0]['mapping']['gpersonal']
+            filtros['subtipogasto__codigo'] = codigo_rubro
+            quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
+
+            value = GastoDetalle.objects. \
+                filter(**filtros). \
+                values(quesumar). \
+                order_by('gasto__anio'). \
+                aggregate(total=Sum(quesumar))['total']
+            porano_table[name][ayear] = {}
+            porano_table[name][ayear]['raw'] = value or ''
+
+            if ayear not in ano_table:
+                ano_table[ayear] = 0
+            ano_table[ayear] += value or 0
+
+        if municipio and year:
+            clase = 'gasto__municipio__clasificaciones__clasificacion'
+            periodo = PERIODO_FINAL
+            quesumar = 'ejecutado'
+
+            filtros['gasto__anio'] = year
+            filtros['gasto__periodo'] = periodo
+            filtros['tipogasto'] = TipoGasto.PERSONAL
+            filtros['subtipogasto__codigo'] = rubro['subtipogasto__codigo']
+            filtros[clase] = mi_clase.clasificacion
+            value = GastoDetalle.objects. \
+                filter(**filtros). \
+                values('gasto__anio'). \
+                order_by('gasto__anio'). \
+                aggregate(total=Sum(quesumar))['total']
+            if value:
+                value /= mi_clase_count
+            porano_table[name]['extra'] = value or '...'
+
+    for rubro in rubros:
+        name = rubro['subtipogasto__nombre']
+        for ayear in year_list:
+            if porano_table[name][ayear]['raw']:
+                porano_table[name][ayear]['percent'] = format(
+                porano_table[name][ayear]['raw'] / ano_table[ayear], '.2%')
+
+    # ordenar rubros de informacion historica
+    porano_table = OrderedDict(sorted(porano_table.iteritems(),
+                                      key=lambda x: x[1]['orden']))
+
     # Bubble tree data
     bubble_source = personal_bubbletree_data_gasto(municipio, year, portada)
 
@@ -894,6 +977,8 @@ def gpersonal_chart(request):
                 'porclase': porclase,
                 'porclasep': porclasep,
                 'mi_clase': mi_clase,
+                'porano': porano_table,
+                'periodo_list': periodo_list,
                 'year': year}
 
         return obtener_excel_response(reporte=reporte, data=data)
@@ -918,6 +1003,7 @@ def gpersonal_chart(request):
                'porclasep': porclasep,
                'mi_clase': mi_clase,
                'year': year,
+               'porano': porano_table,
                'mostraren': "porcentaje",
                'asignado_percent': asignado_percent,
                'ejecutado_percent': ejecutado_percent,
