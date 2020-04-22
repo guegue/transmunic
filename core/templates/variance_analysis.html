@@ -287,9 +287,9 @@
                                     <td class="text-left">{{ row.clasificacion }}</td>
                                     {% if row.asignado %}
                                         <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
+                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:1 }}%</td>
                                     {% elif row.ingreso %}
-                                        {{ row.ingreso|floatformat:2|intcomma }}
+                                        <td>{{ row.ingreso|floatformat:1|intcomma }}</td>
                                     {% else %}
                                         <td>0</td>
                                         <td>0%</td>
@@ -299,9 +299,9 @@
 
                                         {% if row.ejecutado %}
                                             <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                                            <td class="text-right">{{ row.ejecutado_porcentaje|floatformat:2 }}%</td>
+                                            <td class="text-right">{{ row.ejecutado_porcentaje|floatformat:1 }}%</td>
                                         {% elif row.gasto %}
-                                            <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
+                                            <td class="text-right">{{ row.gasto|floatformat:1|intcomma }}</td>
                                         {% else %}
                                             <td>0</td>
                                             <td>0%</td>
@@ -313,17 +313,25 @@
                             <tr>
                                 <td><strong>Nacional</strong></td>
                                 <td class="text-right">{{ porclasep|total_sum:'asignado'|million|intcomma }}</td>
-                                <td></td>
+                                <td class="text-right">
+                                    {% with nacional_ago=porclasep|total_sum:'asignado' tdi=rubros|total_sum:'inicial_asignado' %}
+                                        {{ nacional_ago|div:tdi|mul:100|floatformat:1 }}%
+                                    {% endwith %}
+                                </td>
                                 {% if periodo_list|keyvalue:year != 'I' %}
 
                                     {% if row.ejecutado %}
                                         <td class="text-right">{{ porclasep|total_sum:'ejecutado'|million|intcomma }}</td>
-                                        <td></td>
+                                        <td>
+                                            {% with nacional_ago=porclasep|total_sum:'asignado' tdi=rubros|total_sum:'ejecutado' %}
+                                                {{ nacional_ago|div:tdi|mul:100|floatformat:1 }}%
+                                            {% endwith %}
+                                        </td>
                                     {% elif row.gasto %}
                                         <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
                                     {% else %}
-                                        <td>0</td>
-                                        <td></td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right"></td>
                                     {% endif %}
 
                                 {% endif %}
