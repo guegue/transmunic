@@ -319,9 +319,9 @@ CONFIGURACION_TABLAS_EXCEL = {
     "ago6": {
         "titulo": u"Rubros de gastos corrientes para el período {year} {periodo} {municipio}",
         "subtitulo": u'',
-        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {} por su destino ",
-        "subtitulo_intermedio": u" Ejecución de gastos corrientes {} por su destino",
-        "subtitulo_cierre": u" Ejecución de gastos corrientes {} por su destino",
+        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {}",
+        "subtitulo_intermedio": u" Ejecución de gastos corrientes {}",
+        "subtitulo_cierre": u" Ejecución de gastos corrientes {}",
         "encabezados": ["Rubros del gastos corrientes", "Inicial", "%"],
         "celdas": ["tipogasto__nombre", "inicial_asignado", "asignado_porcentaje"],
         "qs": "rubrosg",
