@@ -548,7 +548,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         periodo_nombre = ''
         if periodo == 'I':
             periodo_nombre = 'Inicial'
-        elif periodo=='A':
+        elif periodo == 'A':
             periodo_nombre = 'Intermedio'
         else:
             periodo_nombre = 'Cierre'
