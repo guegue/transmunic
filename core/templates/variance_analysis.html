@@ -494,14 +494,15 @@
                                         {% if expense.gasto__periodo == 'I' %}*{% endif %}
                                     </span>
                                     <br/>
+
                                     {% if expense.gasto__periodo == 'I' %}
-                                        <span class="line-cifra">Gastos: {{ expense.asignado|million|intcomma }}</span>
-                                        <br/>
-                                        <span class="line-cifra">Ingresos: {{ income.asignado|million|intcomma }}</span>
+                                        <span class="line-cifra">
+                                            {{ income.asignado|sub:expense.asignado|million|intcomma }}
+                                        </span>
                                     {% else %}
-                                        <span class="line-cifra">Gastos: {{ expense.ejecutado|million|intcomma }}</span>
-                                        <br/>
-                                        <span class="line-cifra">Ingresos: {{ income.ejecutado|million|intcomma }}</span>
+                                        <span class="line-cifra">
+                                            {{ income.ejecutado|sub:expense.ejecutado|million|intcomma }}
+                                        </span>
                                     {% endif %}
                                 </a>
                             </li>
