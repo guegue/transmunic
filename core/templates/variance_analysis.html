@@ -146,7 +146,7 @@
                                     Presupuesto inicial de gastos corrientes
                                 {% endif %}
                                 {{ year }}
-                                por su destino {% descargar_excel "ago6" %}</h5>
+                                {% descargar_excel "ago6" %}</h5>
                         </td>
                     </tr>
                     <tr class="bg-primary">
@@ -217,13 +217,25 @@
                 {% if request.resolver_match.url_name != 'ejecucion_presupuesto' %}
                     <div class="col-md-12">
                         {% if not municipio %}
-                            <h2><strong>{{ rankin_name }}</strong> <br/>
+                            <h2>
+                                <strong>
+                                    {{ rankin_name }} {{ year }}
+                                    {% if periodo_list|keyvalue:year == 'F' %}
+                                        ejecutados
+                                    {% elif periodo_list|keyvalue:year == 'A' %}
+                                        ejecutado intermedio
+                                    {% elif periodo_list|keyvalue:year == 'I' %}
+                                        presupuesto inicial
+                                    {% endif %}
+                                </strong>
+                                <br/>
                             </h2>
                         {% else %}
                             <h2><strong>{{ rankin_name }}, presupuesto {{ year }}</strong> <br>
                                 Municipio de {{ municipio }} grupo
                                 "{{ mi_clase.clasificacion }}"</h2>
                         {% endif %}
+                        <h4>Millones de córdobas corrientes</h4>
                         <hr class="pma-line-3"/>
                     </div>
                 {% endif %}
@@ -232,13 +244,13 @@
                     {% include 'municipal-triangle.html' %}
                 {% elif not municipio and request.resolver_match.url_name != 'ejecucion_presupuesto' %}
                     <div class="col-xs-5 col-sm-5 col-md-5 table-responsive">
-                        <h3>{{ indicator_name }} <br> por categor&iacute;a de Municipios</h3>
+                        <h3>{{ indicator_name }} <br> por grupo de Municipios</h3>
                         <table class="table table-condensed table-striped pma-bg-white">
                             <thead class="thead-inverse">
                             <tr class="bg-primary">
                                 <th class="text-left"
                                     colspan="1"
-                                    rowspan="2">Categor&iacute;a de municipio
+                                    rowspan="2">Grupo de municipio
                                 </th>
                                 <th class="text-center no-border-bottom"
                                     colspan="2">

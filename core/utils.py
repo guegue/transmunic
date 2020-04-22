@@ -261,6 +261,17 @@ CONFIGURACION_TABLAS_EXCEL = {
         "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado/asignado"],
         "qs": "anuales"
     },
+    'gp7': {
+        "titulo": u"Información histórica por rubros de gasto de personal {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
+        "encabezados": [u"Rubro"],
+        "celdas": ["descripcion"],
+        "qs": None
+    },
     "ago1": {
         "titulo": u"Autonomía para asumir el gasto corriente con ingresos corrientes propios",
         "subtitulo": u"por Categoría de Municipios",
@@ -308,9 +319,9 @@ CONFIGURACION_TABLAS_EXCEL = {
     "ago6": {
         "titulo": u"Rubros de gastos corrientes para el período {year} {periodo} {municipio}",
         "subtitulo": u'',
-        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {} por su destino ",
-        "subtitulo_intermedio": u" Ejecución de gastos corrientes {} por su destino",
-        "subtitulo_cierre": u" Ejecución de gastos corrientes {} por su destino",
+        "subtitulo_inicio": u"Presupuesto inicial de gastos corrientes {}",
+        "subtitulo_intermedio": u" Ejecución de gastos corrientes {}",
+        "subtitulo_cierre": u" Ejecución de gastos corrientes {}",
         "encabezados": ["Rubros del gastos corrientes", "Inicial", "%"],
         "celdas": ["tipogasto__nombre", "inicial_asignado", "asignado_porcentaje"],
         "qs": "rubrosg",
@@ -530,7 +541,7 @@ CONFIGURACION_TABLAS_EXCEL = {
 
 ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6', 'ep3', 'ep6']
 ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
-ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7', 'gp7']
 
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
@@ -812,6 +823,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         if report_config["qs"] is not None:
             queryset = data[report_config["qs"]]
         else:
+            celdas = ['descripcion']
+            encabezados = ['Rubro']
             for year in data["year_list"]:
                 nombre = unicode(year)
                 encabezados.append(nombre)
