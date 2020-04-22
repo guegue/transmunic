@@ -182,7 +182,6 @@
                             <thead>
                             <tr class="blanco pma-bg-blue">
                                 <th>Categor&iacute;a de municipio</th>
-
                                 <th>Asignado</th>
                                 {% if periodo_list|keyvalue:year != 'I' %}
                                     <th>Ejecutado</th>
@@ -195,7 +194,7 @@
                                     <td>{{ row.clasificacion }}</td>
                                     <td class="text-right">
                                         {% if row.asignado %}
-                                            {{ row.asignado|floatformat:2 }}
+                                            {{ row.asignado|floatformat:2|intcomma }}
                                         {% else %}
                                             0
                                         {% endif %}
@@ -203,7 +202,7 @@
                                     {% if periodo_list|keyvalue:year != 'I' %}
                                         <td class="text-right">
                                             {% if row.ejecutado %}
-                                                {{ row.ejecutado|floatformat:2 }}
+                                                {{ row.ejecutado|floatformat:2|intcomma }}
                                             {% else %}
                                                 0
                                             {% endif %}
