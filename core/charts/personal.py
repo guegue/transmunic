@@ -17,7 +17,7 @@ from django.shortcuts import render
 from chartit import Chart, RawDataPool
 
 from core.models import (Anio, GastoDetalle, Gasto, Municipio,
-                         TipoGasto, SubTipoGasto)
+                         TipoGasto, SubTipoGasto, OrigenGastoPersonal)
 from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
                          PERIODO_FINAL, PERIODO_VERBOSE)
 from core.tools import (getYears, getPeriods, dictfetchall,
@@ -884,36 +884,22 @@ def gpersonal_chart(request):
     porano_table = {}
     ano_table = {}
     anios_map = list(Anio.objects.values('anio', 'mapping'))
-    for rubro in rubros:
-        name = rubro['subtipogasto__nombre']
-        codigo_orden = rubro['subtipogasto__codigo']
+    gastos_personal = OrigenGastoPersonal.objects. \
+        values('id', 'nombre', 'orden')
+    for rubro in gastos_personal:
+        name = rubro['nombre']
+        orden = rubro['orden']
         porano_table[name] = {}
-        porano_table[name]['orden'] = codigo_orden
+        porano_table[name]['orden'] = orden
         for ayear in year_list:
-            codigo_rubro = codigo_orden
-            gasto = None
-
-            if year >= 2018 > ayear:
-                # obtener codigo viejo si año actual >= 2018
-                gasto = SubTipoGasto.objects. \
-                    filter(nombre__icontains=name) .\
-                    exclude(codigo=codigo_rubro). \
-                    first()
-            elif year <= 2017 and ayear >= 2018:
-                # obtener codigo nuevo si año actual <= 2018
-                gasto = SubTipoGasto.objects. \
-                    filter(nombre__icontains=name). \
-                    exclude(codigo=codigo_rubro). \
-                    first()
-            codigo_rubro = gasto.codigo if gasto else codigo_rubro
-
             tipo = filter(lambda i: i['anio'] == ayear, anios_map)
 
             periodo = periodo_list[str(ayear)]
             filtros['gasto__anio'] = ayear
             filtros['gasto__periodo'] = periodo
             filtros['tipogasto'] = tipo[0]['mapping']['gpersonal']
-            filtros['subtipogasto__codigo'] = codigo_rubro
+            filtros['subsubtipogasto__origen_gp'] = rubro['id']
+
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
             value = GastoDetalle.objects. \
@@ -936,7 +922,7 @@ def gpersonal_chart(request):
             filtros['gasto__anio'] = year
             filtros['gasto__periodo'] = periodo
             filtros['tipogasto'] = TipoGasto.PERSONAL
-            filtros['subtipogasto__codigo'] = rubro['subtipogasto__codigo']
+            filtros['subsubtipogasto__origen_gp'] = rubro['id']
             filtros[clase] = mi_clase.clasificacion
             value = GastoDetalle.objects. \
                 filter(**filtros). \
@@ -947,8 +933,8 @@ def gpersonal_chart(request):
                 value /= mi_clase_count
             porano_table[name]['extra'] = value or '...'
 
-    for rubro in rubros:
-        name = rubro['subtipogasto__nombre']
+    for rubro in gastos_personal:
+        name = rubro['nombre']
         for ayear in year_list:
             if porano_table[name][ayear]['raw']:
                 porano_table[name][ayear]['percent'] = format(

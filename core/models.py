@@ -145,6 +145,19 @@ class OrigenGasto(models.Model):
     def __unicode__(self):
         return self.nombre
 
+class OrigenGastoPersonal(models.Model):
+    nombre = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Origen de Gasto de personal'
+        verbose_name = 'Origen de los gastos de personal'
+        ordering = ['orden','nombre']
+
+    def __unicode__(self):
+        return self.nombre
 
 class TipoGasto(models.Model):
     PERSONAL = '1000000'
@@ -209,6 +222,7 @@ class SubSubTipoGasto(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
+    origen_gp = models.ForeignKey(OrigenGastoPersonal, related_name='origen_gp', null=True)
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES,
         default=0, null=True)

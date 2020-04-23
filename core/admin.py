@@ -1,6 +1,6 @@
 from django.contrib import admin
 from core.models import (Profile, Organizacion, Anio, AnioTransferencia, Grafico, CatInversion, TipoGasto,
-                         SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, TipoIngreso,
+                         SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, OrigenGastoPersonal, TipoIngreso,
                          SubSubTipoIngreso, Sub3TipoIngreso, SubTipoIngreso, TipoFuenteFmto, FuenteFmto,
                          InversionFuente, Transferencia, Inversion, Proyecto, Ingreso, Gasto, IngresoRenglon,
                          GastoRenglon, GastoDetalle, IngresoDetalle, InversionFuenteDetalle)
@@ -119,6 +119,7 @@ admin.site.register(SubTipoGasto)
 admin.site.register(SubSubTipoGasto, SubSubTipoGastoAdmin)
 admin.site.register(OrigenRecurso)
 admin.site.register(OrigenGasto)
+admin.site.register(OrigenGastoPersonal)
 admin.site.register(TipoIngreso, TipoIngresoAdmin)
 admin.site.register(SubSubTipoIngreso, SubSubTipoIngresoAdmin)
 admin.site.register(Sub3TipoIngreso, Sub3TipoIngresoAdmin)
