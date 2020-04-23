@@ -88,7 +88,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                        filter(ingreso__municipio__slug=municipio,
                               ingreso__periodo=PERIODO_INICIAL,
                               tipoingreso__clasificacion=TipoIngreso.CORRIENTE).
-                       exclude(exclude(tipoingreso__in=codigos_trans_corriente)).
+                       exclude(tipoingreso__in=codigos_trans_corriente).
                        values('ingreso__anio',
                               'ingreso__periodo').
                        annotate(asignado=Sum('asignado')).
@@ -97,7 +97,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                      filter(ingreso__municipio__slug=municipio,
                             ingreso__periodo=PERIODO_FINAL,
                             tipoingreso__clasificacion=TipoIngreso.CORRIENTE).
-                     exclude(exclude(tipoingreso__in=codigos_trans_corriente)).
+                     exclude(tipoingreso__in=codigos_trans_corriente).
                      values('ingreso__anio', 'ingreso__periodo').
                      annotate(ejecutado=Sum('ejecutado')).
                      order_by())
@@ -560,6 +560,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         from core.utils import obtener_excel_response
         data = {
             'charts': (bar,),
+            'indicator_name': "Dependencia para asumir gastos corrientes",
             'source': source,
             'mi_clase': mi_clase,
             'municipio': municipio_row,

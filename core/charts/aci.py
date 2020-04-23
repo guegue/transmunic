@@ -545,14 +545,13 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'asignado': asignado,
             'year_list': year_list,
             'municipio_list': municipio_list,
-            'anuales': anual2,
-            'anualesg': anual2g,
-            'anual_ago': anuales,
+            'anuales': anuales,
             'porclase': porclase,
             'porclasep': porclasep,
             'rubros': rubros,
             'rubrosg': rubrosg,
             'periodo_list': periodo_list,
+            'indicator_name': 'Ahorro Corriente',
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
