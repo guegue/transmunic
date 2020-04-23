@@ -287,9 +287,9 @@
                                     <td class="text-left">{{ row.clasificacion }}</td>
                                     {% if row.asignado %}
                                         <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:2 }}%</td>
+                                        <td class="text-right">{{ row.asignado_porcentaje|floatformat:1 }}%</td>
                                     {% elif row.ingreso %}
-                                        {{ row.ingreso|floatformat:2|intcomma }}
+                                        <td>{{ row.ingreso|floatformat:1|intcomma }}</td>
                                     {% else %}
                                         <td>0</td>
                                         <td>0%</td>
@@ -299,9 +299,9 @@
 
                                         {% if row.ejecutado %}
                                             <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                                            <td class="text-right">{{ row.ejecutado_porcentaje|floatformat:2 }}%</td>
+                                            <td class="text-right">{{ row.ejecutado_porcentaje|floatformat:1 }}%</td>
                                         {% elif row.gasto %}
-                                            <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
+                                            <td class="text-right">{{ row.gasto|floatformat:1|intcomma }}</td>
                                         {% else %}
                                             <td>0</td>
                                             <td>0%</td>
@@ -313,17 +313,25 @@
                             <tr>
                                 <td><strong>Nacional</strong></td>
                                 <td class="text-right">{{ porclasep|total_sum:'asignado'|million|intcomma }}</td>
-                                <td></td>
+                                <td class="text-right">
+                                    {% with nacional_ago=porclasep|total_sum:'asignado' tdi=rubros|total_sum:'inicial_asignado' %}
+                                        {{ nacional_ago|div:tdi|mul:100|floatformat:1 }}%
+                                    {% endwith %}
+                                </td>
                                 {% if periodo_list|keyvalue:year != 'I' %}
 
                                     {% if row.ejecutado %}
                                         <td class="text-right">{{ porclasep|total_sum:'ejecutado'|million|intcomma }}</td>
-                                        <td></td>
+                                        <td>
+                                            {% with nacional_ago=porclasep|total_sum:'asignado' tdi=rubros|total_sum:'ejecutado' %}
+                                                {{ nacional_ago|div:tdi|mul:100|floatformat:1 }}%
+                                            {% endwith %}
+                                        </td>
                                     {% elif row.gasto %}
                                         <td class="text-right">{{ row.gasto|floatformat:2|intcomma }}</td>
                                     {% else %}
-                                        <td>0</td>
-                                        <td></td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right"></td>
                                     {% endif %}
 
                                 {% endif %}
@@ -486,14 +494,15 @@
                                         {% if expense.gasto__periodo == 'I' %}*{% endif %}
                                     </span>
                                     <br/>
+
                                     {% if expense.gasto__periodo == 'I' %}
-                                        <span class="line-cifra">Gastos: {{ expense.asignado|million|intcomma }}</span>
-                                        <br/>
-                                        <span class="line-cifra">Ingresos: {{ income.asignado|million|intcomma }}</span>
+                                        <span class="line-cifra">
+                                            {{ income.asignado|sub:expense.asignado|million|intcomma }}
+                                        </span>
                                     {% else %}
-                                        <span class="line-cifra">Gastos: {{ expense.ejecutado|million|intcomma }}</span>
-                                        <br/>
-                                        <span class="line-cifra">Ingresos: {{ income.ejecutado|million|intcomma }}</span>
+                                        <span class="line-cifra">
+                                            {{ income.ejecutado|sub:expense.ejecutado|million|intcomma }}
+                                        </span>
                                     {% endif %}
                                 </a>
                             </li>
@@ -521,88 +530,39 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 table-responsive">
-                <h3>Ejecución presupuestaria del ingreso corrientes propios</h3>
-                <h4 class="text-info">Millones de córdobas corrientes</h4>
-                <table class="table table-condensed">
-                    <tr class="info">
-                        <th class="text-center">Años</th>
-                        <th class="text-center">Inicial</th>
-                        <th class="text-center">Ejecutado</th>
-                        <th class="text-center"><a href="#" data-toggle="tooltip"
-                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
-                        </th>
-                    </tr>
-                    {% for row in anuales %}
-                        <tr>
-                            <td>
-                                {{ row.ingreso__anio }}
-                                {% if periodo_list|keyvalue:row.ingreso__anio != 'F' %}
-                                    <span data-toggle="tooltip"
-                                          data-placement="top"
-                                          title="P.{% if row.ingreso__periodo == 'I' %}Inicial{% else %}
-                                            Intermedio{% endif %}">*</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                            <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                            {% if row.asignado %}
-                                <td class="montos text-right">{{ row.ejecutado|div:row.asignado|mul:100|floatformat:1 }}%</td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    <tr class="success bold">
-                        <td>TOTAL</td>
-                        <td class="text-right">{{ anuales|total_sum:'asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ anuales|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% with total_sum_asignado=anuales|total_sum:'asignado' %}
-                            {% if total_sum_asignado %}
-                                <td class="montos text-right">{{ anuales|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
-                            {% endif %}
-                        {% endwith %}
-                    </tr>
-                </table>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 table-responsive">
+            <div class="col-lg-12 col-md-12 col-sm-12">
                 {% descargar_excel "ago8" %}
-                <h3>Ejecución presupuestaria - Gasto corrientes totales</h3>
+                <h3>Informaci&oacute;n Histor&iacute;ca de {{ indicator_name }}</h3>
                 <h4 class="text-info">Millones de córdobas corrientes</h4>
                 <table class="table table-condensed">
+                    <thead>
                     <tr class="info">
                         <th class="text-center">Años</th>
-                        <th class="text-center">Inicial</th>
-                        <th class="text-center">Ejecutado</th>
-                        <th class="text-center"><a href="#" data-toggle="tooltip"
-                                                   data-original-title="Ejecutado/Inicial" class="link-info">%</a>
-                        </th>
+                        <th class="text-center">Ingreso corrientes propios</th>
+                        <th class="text-center">Gasto corrientes totales</th>
+                        <th class="text-center">Dependencia para asumir gastos corrientes</th>
+                        <th class="text-center">%</th>
                     </tr>
-                    {% for row in anualesg %}
+                    </thead>
+                    <tbody>
+                    {% for anual in anuales %}
                         <tr>
-                            <td>{{ row.gasto__anio }}
-                                {% if periodo_list|keyvalue:row.gasto__anio != 'F' %}
+                            <td class="text-right">
+                                {{ anual.anio }}
+                                {% if periodo_list|keyvalue:anual.anio != 'F' %}
                                     <span data-toggle="tooltip"
                                           data-placement="top"
-                                          title="P.{% if periodo_list|keyvalue:row.gasto__anio == 'I' %}Inicial{% else %}
+                                          title="P.{% if periodo_list|keyvalue:anual.anio == 'I' %}Inicial{% else %}
                                             Intermedio{% endif %}">*</span>
                                 {% endif %}
                             </td>
-                            <td class="text-right">{{ row.asignado|million|intcomma }}</td>
-                            <td class="text-right">{{ row.ejecutado|million|intcomma }}</td>
-                            {% if row.asignado %}
-                                <td class="montos text-right">{{ row.ejecutado_porcentaje }}%</td>
-                            {% endif %}
+                            <td class="text-right">{{ anual.total_ingreso|million|intcomma }}</td>
+                            <td class="text-right">{{ anual.total_gasto|million|intcomma }}</td>
+                            <td class="text-right">{{ anual.diferencia|million|intcomma }}</td>
+                            <td class="text-right">{{ anual.diferencia_porcentaje }}%</td>
                         </tr>
                     {% endfor %}
-                    <tr class="success bold">
-                        <td>TOTAL</td>
-                        <td class="text-right">{{ anualesg|total_sum:'asignado'|million|intcomma }}</td>
-                        <td class="text-right">{{ anualesg|total_sum:'ejecutado'|million|intcomma }}</td>
-                        {% with total_sum_asignado=anualesg|total_sum:'asignado' %}
-                            {% if total_sum_asignado %}
-                                <td class="montos text-right">{{ anualesg|total_sum:'ejecutado'|div:total_sum_asignado|mul:100|floatformat:1 }}%</td>
-                            {% endif %}
-                        {% endwith %}
-                    </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

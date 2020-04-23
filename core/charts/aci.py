@@ -279,10 +279,22 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(asignado=Sum('asignado')))
-        finalg = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
-            'gasto__anio', 'gasto__periodo').order_by('gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado')))
+        inicialg = list(GastoDetalle.objects.
+                        filter(gasto__periodo=PERIODO_INICIAL,
+                               subsubtipogasto__clasificacion=TipoGasto.CORRIENTE).
+                        values('gasto__anio',
+                               'gasto__periodo').
+                        order_by('gasto__anio',
+                                 'gasto__periodo').
+                        annotate(asignado=Sum('asignado')))
+        finalg = list(GastoDetalle.objects.
+                      filter(gasto__periodo=PERIODO_FINAL,
+                             subsubtipogasto__clasificacion=TipoGasto.CORRIENTE).
+                      values('gasto__anio',
+                             'gasto__periodo').
+                      order_by('gasto__anio',
+                               'gasto__periodo').
+                      annotate(ejecutado=Sum('ejecutado')))
         anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
 
         # obtiene datos de gastos en ditintos rubros
@@ -505,6 +517,18 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             }],
         chart_options=chart_options)
 
+    # fusionando anuales y anualesg
+    anuales = []
+    for i in range(len(anual2)):
+        aci = anual2[i].get('asignado', 0) - anual2g[i].get('asignado', 0)
+        anuales.append({
+            'anio': anual2[i].get('ingreso__anio', 0),
+            'total_ingreso': anual2[i].get('asignado', 0),
+            'total_gasto': anual2g[i].get('asignado', 0),
+            'diferencia': aci,
+            'diferencia_porcentaje': percentage(aci, anual2[i].get('asignado'))
+        })
+
     # FIXME BS
     porclase = None
 
@@ -521,13 +545,13 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'asignado': asignado,
             'year_list': year_list,
             'municipio_list': municipio_list,
-            'anuales': anual2,
-            'anualesg': anual2g,
+            'anuales': anuales,
             'porclase': porclase,
             'porclasep': porclasep,
             'rubros': rubros,
             'rubrosg': rubrosg,
             'periodo_list': periodo_list,
+            'indicator_name': 'Ahorro Corriente',
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
@@ -591,8 +615,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'municipio_list': municipio_list,
             'bubble_data_1': bubble_data_ingreso,
             'bubble_data_2': bubble_data_gasto,
-            'anuales': anual2,
-            'anualesg': anual2g,
+            'anuales': anuales,
             'history': zip(anual2, anual2g),
             'porclase': porclase,
             'porclasep': porclasep,

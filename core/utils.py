@@ -335,14 +335,17 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ago8": {
-        "titulo": u"Ejecución presupuestaria - Gasto corrientes totales {municipio} {year}",
+        "titulo": u"Información Historíca de {indicador} {municipio} {year}",
         "subtitulo": u'',
         "subtitulo_inicio": u"Millones de córdobas corrientes",
         "subtitulo_intermedio": u"Millones de córdobas corrientes",
         "subtitulo_cierre": u"Millones de córdobas corrientes",
-        "encabezados": [u"Años", "Inicial", "Ejecutado", "% (Ejecutado/Inicial)"],
-        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado_porcentaje"],
-        "qs": "anualesg"
+        "encabezados": [u"Años", "Ingreso corrientes propios",
+                        "Gasto corrientes totales",
+                        "Dependencia para asumir gastos corrientes", '%'],
+        "celdas": ["anio", "total_ingreso", "total_gasto", "diferencia",
+                   'diferencia_porcentaje'],
+        "qs": "anuales"
     },
     "aci1": {
         "titulo": u"Ahorro Corriente para Inversiones",
@@ -544,14 +547,15 @@ ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
 ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7', 'gp7']
 
 
-def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo):
+def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo, indicador):
     titulo = CONFIGURACION_TABLAS_EXCEL[reporte]['titulo']
 
     if reporte in ARRAY_OF_RUBROS:
         titulo = titulo.format(year=anio, periodo=periodo_nombre,
                                municipio=municipio)
     elif reporte in ARRAY_OF_CONFIG_INFO_HIS:
-        titulo = titulo.format(municipio=municipio, year=anio)
+        titulo = titulo.format(municipio=municipio, year=anio,
+                               indicador=indicador)
     elif reporte in ARRAY_OF_CONFIG_GROUPS:
         titulo = titulo.format(year=anio, municipio=municipio,
                                grupo=grupo.clasificacion)
@@ -757,6 +761,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
     else:
         grupo = data.get('mi_clase', '')
+        indicador = data.get('indicator_name', '')
         reportes = [reporte]
 
         # definiendo subtitulo
@@ -808,7 +813,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
         file_name = construir_nombre_archivo(reporte, year,
                                              periodo_nombre, municipio,
-                                             grupo)
+                                             grupo,indicador )
 
     for report_name in reportes:
         report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
