@@ -898,7 +898,7 @@ def gpersonal_chart(request):
             filtros['gasto__anio'] = ayear
             filtros['gasto__periodo'] = periodo
             filtros['tipogasto'] = tipo[0]['mapping']['gpersonal']
-            filtros['subsubtipogasto__origen_gp'] = rubro['id']
+            filtros['subtipogasto__origen_gp'] = rubro['id']
 
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
 
@@ -922,7 +922,7 @@ def gpersonal_chart(request):
             filtros['gasto__anio'] = year
             filtros['gasto__periodo'] = periodo
             filtros['tipogasto'] = TipoGasto.PERSONAL
-            filtros['subsubtipogasto__origen_gp'] = rubro['id']
+            filtros['subtipogasto__origen_gp'] = rubro['id']
             filtros[clase] = mi_clase.clasificacion
             value = GastoDetalle.objects. \
                 filter(**filtros). \

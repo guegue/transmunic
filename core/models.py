@@ -196,6 +196,7 @@ class SubTipoGasto(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
+    origen_gp = models.ForeignKey(OrigenGastoPersonal, related_name='origen_gp', null=True)
 
     class Meta:
         verbose_name_plural = 'Sub tipos de gastos'
@@ -222,7 +223,6 @@ class SubSubTipoGasto(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
-    origen_gp = models.ForeignKey(OrigenGastoPersonal, related_name='origen_gp', null=True)
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES,
         default=0, null=True)
