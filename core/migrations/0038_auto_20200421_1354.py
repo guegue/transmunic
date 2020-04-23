@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrigenGastoPersonal',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=200, unique=True)),
                 ('slug', autoslug.fields.AutoSlugField(editable=False, populate_from=b'nombre')),
                 ('shortname', models.CharField(blank=True, max_length=25, null=True)),
@@ -32,6 +33,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subsubtipogasto',
             name='origen_gp',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='origen_gp', to='core.OrigenGastoPersonal'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='origen_gp', to='core.OrigenGastoPersonal'),
         ),
     ]

@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subtipogasto',
             name='origen_gp',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='origen_gp', to='core.OrigenGastoPersonal'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='origen_gp', to='core.OrigenGastoPersonal'),
         ),
     ]

@@ -140,10 +140,11 @@ class OrigenGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Origenes de los gastos'
         verbose_name = 'Origen de los gastos'
-        ordering = ['orden','nombre']
+        ordering = ['orden', 'nombre']
 
     def __unicode__(self):
         return self.nombre
+
 
 class OrigenGastoPersonal(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
@@ -154,10 +155,11 @@ class OrigenGastoPersonal(models.Model):
     class Meta:
         verbose_name_plural = 'Origen de Gasto de personal'
         verbose_name = 'Origen de los gastos de personal'
-        ordering = ['orden','nombre']
+        ordering = ['orden', 'nombre']
 
     def __unicode__(self):
         return self.nombre
+
 
 class TipoGasto(models.Model):
     PERSONAL = '1000000'
