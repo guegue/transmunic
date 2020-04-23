@@ -140,7 +140,22 @@ class OrigenGasto(models.Model):
     class Meta:
         verbose_name_plural = 'Origenes de los gastos'
         verbose_name = 'Origen de los gastos'
-        ordering = ['orden','nombre']
+        ordering = ['orden', 'nombre']
+
+    def __unicode__(self):
+        return self.nombre
+
+
+class OrigenGastoPersonal(models.Model):
+    nombre = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Origen de Gasto de personal'
+        verbose_name = 'Origen de los gastos de personal'
+        ordering = ['orden', 'nombre']
 
     def __unicode__(self):
         return self.nombre
@@ -183,6 +198,9 @@ class SubTipoGasto(models.Model):
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
+    origen_gp = models.ForeignKey(OrigenGastoPersonal,
+                                  related_name='origen_gp',
+                                  null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Sub tipos de gastos'
