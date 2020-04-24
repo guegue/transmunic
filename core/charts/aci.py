@@ -581,7 +581,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             periodo_nombre = 'Cierre'
         titulo = 'Ahorro Corriente corrientes {year} ' \
                  'periodo {periodo}'.format(year=year,
-                                                              periodo=periodo_nombre)
+                                            periodo=periodo_nombre)
         parameters = {
             'data': porclasep,
             'field1': 'clasificacion',

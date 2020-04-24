@@ -192,8 +192,10 @@ def gf_chart(request):
             total['total_ejecutado'] += total['ejecutado'] or 0
 
             # Obteniendo la media nacional
-            total_nacional_asignado = percentage(total['total_asignado_gp'], total['total_asignado'], 2)
-            total_nacional_ejecutado = percentage(total['total_ejecutado_gp'], total['total_ejecutado'], 2)
+            total_nacional_asignado = percentage(
+                total['total_asignado_gp'], total['total_asignado'], 2)
+            total_nacional_ejecutado = percentage(
+                total['total_ejecutado_gp'], total['total_ejecutado'], 2)
 
         sort_key = "{}_percent".format(quesumar)
         otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
@@ -873,7 +875,7 @@ def gf_chart(request):
         'indicator_name': "Gastos de funcionamiento",
         'indicator': "gf",
         'mostraren': "porcentaje",
-        'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina," \
+        'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina,"
                                  " para gastos de funcionamiento de la municipalidad. ",
         'otros': otros,
         'rubros': rubros,
