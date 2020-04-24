@@ -573,12 +573,21 @@ def aci_chart(request, municipio=None, year=None, portada=False):
         }
         bar_horizontal = graphChart(parameters)
     elif porclasep:
+        if periodo == 'I':
+            periodo_nombre = 'Inicial'
+        elif periodo == 'A':
+            periodo_nombre = 'Intermedio'
+        else:
+            periodo_nombre = 'Cierre'
+        titulo = 'Ahorro Corriente corrientes {year} ' \
+                 'periodo {periodo}'.format(year=year,
+                                            periodo=periodo_nombre)
         parameters = {
             'data': porclasep,
             'field1': 'clasificacion',
             'field2': '{}_porcentaje'.format(quesumar),
             'typechart': 'column',
-            'title': 'Recaudación percápita',
+            'title': titulo,
             'labelX_axis': 'Grupos',
             'labelY_axis': 'Porcentaje',
             'interval': 10,

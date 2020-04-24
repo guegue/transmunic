@@ -165,13 +165,16 @@ def gpersonal_chart(request):
             mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(
                 clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
 
+        filters_municipio = {
+            'gasto__anio': year,
+            'gasto__municipio__clase__anio': year,
+            'tipogasto': TipoGasto.PERSONAL,
+            'gasto__municipio__clasificaciones__clasificacion': mi_clase.clasificacion
+        }
         # obtiene datos de municipios de la misma clase
         municipios_inicial = GastoDetalle.objects. \
-            filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_INICIAL,
-                   gasto__municipio__clase__anio=year,
-                   tipogasto=TipoGasto.PERSONAL,
-                   gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion). \
+            filter(**filters_municipio). \
+            filter(gasto__periodo=PERIODO_INICIAL). \
             values('gasto__municipio__nombre',
                    'gasto__municipio__id',
                    'gasto__municipio__slug'). \
@@ -179,11 +182,8 @@ def gpersonal_chart(request):
             annotate(inicial_asignado=Sum('asignado'),
                      inicial_ejecutado=Sum('ejecutado'))
         municipios_actualizado = GastoDetalle.objects. \
-            filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_ACTUALIZADO,
-                   gasto__municipio__clase__anio=year,
-                   tipogasto=TipoGasto.PERSONAL,
-                   gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion). \
+            filter(**filters_municipio). \
+            filter(gasto__periodo=PERIODO_ACTUALIZADO). \
             values('gasto__municipio__nombre',
                    'gasto__municipio__id',
                    'gasto__municipio__slug'). \
@@ -191,11 +191,8 @@ def gpersonal_chart(request):
             annotate(actualizado_asignado=Sum('asignado'),
                      actualizado_ejecutado=Sum('ejecutado'))
         municipios_final = GastoDetalle.objects. \
-            filter(gasto__anio=year,
-                   gasto__periodo=PERIODO_FINAL,
-                   gasto__municipio__clase__anio=year,
-                   tipogasto=TipoGasto.PERSONAL,
-                   gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
+            filter(**filters_municipio). \
+            filter(gasto__periodo=PERIODO_FINAL). \
             values('gasto__municipio__nombre',
                    'gasto__municipio__id',
                    'gasto__municipio__slug'). \
@@ -203,11 +200,8 @@ def gpersonal_chart(request):
             annotate(final_asignado=Sum('asignado'),
                      final_ejecutado=Sum('ejecutado'))
         municipios_periodo = GastoDetalle.objects. \
-            filter(gasto__anio=year,
-                   gasto__periodo=periodo,
-                   gasto__municipio__clase__anio=year,
-                   tipogasto=TipoGasto.PERSONAL,
-                   gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion). \
+            filter(**filters_municipio). \
+            filter(gasto__periodo=periodo). \
             values('gasto__municipio__nombre',
                    'gasto__municipio__id',
                    'gasto__municipio__slug'). \
@@ -245,11 +239,12 @@ def gpersonal_chart(request):
             total['total_ejecutado_gp'] += row['ejecutado']
             total['total_asignado'] += total['asignado']
             total['total_ejecutado'] += total['ejecutado']
-        sort_key = "{}_percent".format(quesumar)
-        #Obteniendo la media nacional
+
+        # Obteniendo la media nacional
         total_nacional_asignado = percentage(total['total_asignado_gp'], total['total_asignado'], 2)
         total_nacional_ejecutado = percentage(total['total_ejecutado_gp'], total['total_ejecutado'], 2)
 
+        sort_key = "{}_percent".format(quesumar)
         otros = sorted(otros, key=itemgetter(sort_key), reverse=False)
 
         # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
