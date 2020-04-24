@@ -43,6 +43,8 @@ def gf_chart(request):
     datacol = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     asignado_percent = 0
     ejecutado_percent = 0
+    total_nacional_asignado = 0
+    total_nacional_ejecutado = 0
 
     from collections import OrderedDict  # FIXME move up
     if municipio:
@@ -107,41 +109,92 @@ def gf_chart(request):
             municipio__slug=municipio).values('anio', 'clasificacion__clasificacion').annotate())
         mi_clase_anios_count = {}
         for aclase in mi_clase_anios:
-            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects.filter(
-                clasificacion__clasificacion=aclase['clasificacion__clasificacion'], anio=aclase['anio']).count()
+            mi_clase_anios_count[aclase['anio']] = ClasificacionMunicAno.objects. \
+                filter(clasificacion__clasificacion=aclase['clasificacion__clasificacion'],
+                       anio=aclase['anio']). \
+                count()
+
+        filter_municipio = {
+            'gasto__anio': year,
+            'gasto__municipio__clase__anio': year,
+            'subsubtipogasto__clasificacion': TipoGasto.CORRIENTE,
+            'gasto__municipio__clasificaciones__clasificacion': mi_clase.clasificacion
+        }
 
         # obtiene datos de municipios de la misma clase
-        municipios_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, gasto__municipio__clase__anio=year,
-                                                         subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').\
-            annotate(inicial_asignado=Sum('asignado')).order_by()
-        municipios_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, gasto__municipio__clase__anio=year,
-                                                             subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').\
+        municipios_inicial = GastoDetalle.objects. \
+            filter(**filter_municipio). \
+            filter(gasto__periodo=PERIODO_INICIAL). \
+            values('gasto__municipio__id',
+                   'gasto__municipio__nombre',
+                   'gasto__municipio__slug'). \
+            annotate(inicial_asignado=Sum('asignado')). \
+            order_by()
+        municipios_actualizado = GastoDetalle.objects. \
+            filter(**filter_municipio). \
+            filter(gasto__periodo=PERIODO_ACTUALIZADO).\
+            values('gasto__municipio__id',
+                   'gasto__municipio__nombre',
+                   'gasto__municipio__slug').\
             annotate(actualizado_asignado=Sum('asignado'),
-                     actualizado_ejecutado=Sum('ejecutado')).order_by()
-        municipios_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, gasto__municipio__clase__anio=year,
-                                                       subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').\
-            annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado')).order_by()
-        municipios_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, gasto__municipio__clase__anio=year,
-                                                         subsubtipogasto__clasificacion=TipoGasto.CORRIENTE, gasto__municipio__clasificaciones__clasificacion=mi_clase.clasificacion).\
-            values('gasto__municipio__nombre', 'gasto__municipio__slug').\
-            annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado')).order_by()
-        #otros = glue(municipios_inicial, municipios_final, 'gasto__municipio__nombre', actualizado=municipios_actualizado)
-        otros = superglue(data=(municipios_inicial, municipios_final,
-                                municipios_actualizado, municipios_periodo), key='gasto__municipio__nombre')
+                     actualizado_ejecutado=Sum('ejecutado')). \
+            order_by()
+        municipios_final = GastoDetalle.objects. \
+            filter(**filter_municipio). \
+            filter(gasto__periodo=PERIODO_FINAL). \
+            values('gasto__municipio__id',
+                   'gasto__municipio__nombre',
+                   'gasto__municipio__slug'). \
+            annotate(final_asignado=Sum('asignado'),
+                     final_ejecutado=Sum('ejecutado')). \
+            order_by()
+        municipios_periodo = GastoDetalle.objects. \
+            filter(**filter_municipio). \
+            filter(gasto__periodo=periodo). \
+            values('gasto__municipio__id',
+                   'gasto__municipio__nombre',
+                   'gasto__municipio__slug'). \
+            annotate(asignado=Sum('asignado'),
+                     ejecutado=Sum('ejecutado')). \
+            order_by()
+
+        otros = superglue(data=(municipios_inicial,
+                                municipios_final,
+                                municipios_actualizado,
+                                municipios_periodo),
+                          key='gasto__municipio__nombre')
+
         # inserta porcentages de total de gastos
+        total = {
+            'total_asignado': 0,
+            'total_ejecutado': 0,
+            'total_asignado_gp': 0,
+            'total_ejecutado_gp': 0
+        }
         for row in otros:
-            total = {}
-            total['asignado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL,
-                                                            gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(asignado=Sum('asignado'))['asignado']
-            total['ejecutado'] = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo,
-                                                             gasto__municipio__nombre=row['gasto__municipio__nombre']).aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
-            row['ejecutado_percent'] = round(
-                row['ejecutado'] / total['ejecutado'] * 100, 2) if total['ejecutado'] > 0 else 0
-            row['asignado_percent'] = round(
-                row['asignado'] / total['asignado'] * 100, 2) if total['asignado'] > 0 else 0
+            filter_municipio = {
+                'gasto__anio': year,
+                'gasto__municipio__id': row['gasto__municipio__id']
+            }
+            total['asignado'] = GastoDetalle.objects. \
+                filter(**filter_municipio). \
+                filter(gasto__periodo=PERIODO_INICIAL). \
+                aggregate(asignado=Sum('asignado'))['asignado']
+            total['ejecutado'] = GastoDetalle.objects. \
+                filter(**filter_municipio). \
+                filter(gasto__periodo=periodo). \
+                aggregate(ejecutado=Sum('ejecutado'))['ejecutado']
+            row['asignado_percent'] = percentage(row['asignado'], total['asignado'])
+            row['ejecutado_percent'] = percentage(row['ejecutado'], total['ejecutado'])
+            total['total_asignado_gp'] += row['asignado']
+            total['total_ejecutado_gp'] += row['ejecutado'] or 0
+            total['total_asignado'] += total['asignado']
+            total['total_ejecutado'] += total['ejecutado'] or 0
+
+            # Obteniendo la media nacional
+            total_nacional_asignado = percentage(total['total_asignado_gp'], total['total_asignado'], 2)
+            total_nacional_ejecutado = percentage(total['total_ejecutado_gp'], total['total_ejecutado'], 2)
+
         sort_key = "{}_percent".format(quesumar)
         otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
@@ -813,20 +866,28 @@ def gf_chart(request):
 
     template_name = 'expenses.html'
     context = {
-        'charts': charts, 'municipio': municipio_row,
+        'charts': charts,
+        'municipio': municipio_row,
         'municipio_list': municipio_list,
         'year_list': year_list,
         'indicator_name': "Gastos de funcionamiento",
         'indicator': "gf",
         'mostraren': "porcentaje",
-        'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina, para gastos de funcionamiento de la municipalidad. ",
-        'otros': otros, 'rubros': rubros,
-        'anuales': anual2, 'ejecutado': ejecutado,
-        'asignado': asignado, 'porclase': porclase,
+        'indicator_description': "Mide el porcentaje del presupuesto de gasto que el Municipio destina," \
+                                 " para gastos de funcionamiento de la municipalidad. ",
+        'otros': otros,
+        'rubros': rubros,
+        'anuales': anual2,
+        'ejecutado': ejecutado,
+        'asignado': asignado,
+        'porclase': porclase,
         'bubble_data': bubble_source,
         'asignado_percent': asignado_percent,
         'ejecutado_percent': ejecutado_percent,
         'periodo_list': periodo_list,
-        'porclasep': porclasep, 'mi_clase': mi_clase,
+        'porclasep': porclasep,
+        'mi_clase': mi_clase,
+        'total_nacional_asignado': total_nacional_asignado,
+        'total_nacional_ejecutado': total_nacional_ejecutado,
         'year': year}
     return render(request, template_name, context)
