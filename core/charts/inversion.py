@@ -300,13 +300,14 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
         # obtiene clase y contador (otros en misma clase) para este año
         mi_clase = ClasificacionMunicAno.objects.get(
             municipio__slug=municipio, anio=year)
-        mi_clase_count = ClasificacionMunicAno.objects.filter(
-            clasificacion__clasificacion=mi_clase.clasificacion, anio=year)\
-            .count()
+        # mi_clase_count = ClasificacionMunicAno.objects.filter(
+        #     clasificacion__clasificacion=mi_clase.clasificacion, anio=year)\
+        #     .count()
         # obtiene clase y contador (otros en misma clase) para todos los años
-        mi_clase_anios = list(
-            ClasificacionMunicAno.objects.filter(municipio__slug=municipio)
-            .values('anio', 'clasificacion__clasificacion').annotate())
+        mi_clase_anios = list(ClasificacionMunicAno.objects.
+                              filter(municipio__slug=municipio).
+                              values('anio',
+                                     'clasificacion__clasificacion'))
         mi_clase_anios_count = {}
 
         for aclase in mi_clase_anios:
@@ -317,74 +318,81 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
                         ],
                     anio=aclase['anio']).count()
 
+        filters_municipios = {
+            'inversion__anio': year,
+            'inversion__municipio__clase__anio': year,
+            'inversion__municipio__clasificaciones__clasificacion': mi_clase.clasificacion
+        }
+
         # obtiene datos de municipios de la misma clase
-        municipios_inicial = Proyecto.objects.filter(
-            inversion__anio=year, inversion__periodo=PERIODO_INICIAL,
-            inversion__municipio__clase__anio=year,
-            inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
-            .values(
-                'inversion__municipio__nombre', 'inversion__municipio__slug')\
-            .order_by('inversion__municipio__nombre')\
+        municipios_inicial = Proyecto.objects. \
+            filter(**filters_municipios). \
+            filter(inversion__periodo=PERIODO_INICIAL) \
+            .values('inversion__municipio__nombre',
+                    'inversion__municipio__slug') \
+            .order_by('inversion__municipio__nombre') \
             .annotate(asignado=Sum('asignado'))
 
-        municipios_actualizado = Proyecto.objects.filter(
-            inversion__anio=year, inversion__periodo=PERIODO_ACTUALIZADO,
-            inversion__municipio__clase__anio=year,
-            inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
-            .values(
-                'inversion__municipio__nombre', 'inversion__municipio__slug')\
-            .order_by('inversion__municipio__nombre')\
+        municipios_actualizado = Proyecto.objects. \
+            filter(**filters_municipios). \
+            filter(inversion__periodo=PERIODO_ACTUALIZADO) \
+            .values('inversion__municipio__nombre',
+                    'inversion__municipio__slug') \
+            .order_by('inversion__municipio__nombre') \
             .annotate(asignado=Sum('asignado'))
 
-        municipios_final = Proyecto.objects.filter(
-            inversion__anio=year, inversion__periodo=periodo,
-            inversion__municipio__clase__anio=year,
-            inversion__municipio__clasificaciones__clasificacion=mi_clase.clasificacion)\
-            .values(
-                'inversion__municipio__nombre', 'inversion__municipio__slug')\
-            .order_by('inversion__municipio__nombre')\
+        municipios_final = Proyecto.objects. \
+            filter(**filters_municipios). \
+            filter(inversion__periodo=PERIODO_FINAL) \
+            .values('inversion__municipio__nombre',
+                    'inversion__municipio__slug') \
+            .order_by('inversion__municipio__nombre') \
             .annotate(ejecutado=Sum('ejecutado'))
 
-        otros = glue(
-            municipios_inicial, municipios_final,
-            'inversion__municipio__nombre', actualizado=municipios_actualizado)
+        otros = glue(municipios_inicial,
+                     municipios_final,
+                     'inversion__municipio__nombre',
+                     actualizado=municipios_actualizado)
         # inserta porcentages de total de gastos
         for row in otros:
             try:
-                total_poblacion = Poblacion.objects.get(
-                    anio=year,
-                    municipio__slug=row['inversion__municipio__slug'])\
+                total_poblacion = Poblacion.objects. \
+                    get(anio=year,
+                        municipio__slug=row['inversion__municipio__slug']) \
                     .poblacion
             except:
                 total_poblacion = 0
 
             row['poblacion'] = total_poblacion
-            row['ejecutado_percent'] = round(row['ejecutado'] / total_poblacion, 1) if row['ejecutado'] and total_poblacion > 0 else 0
-            row['asignado_percent'] = round(row['asignado'] / total_poblacion, 1) if row['asignado'] and total_poblacion > 0 else 0
+            row['ejecutado_percent'] = percentage(row['ejecutado'], total_poblacion)
+            row['asignado_percent'] = percentage(row['asignado'], total_poblacion)
 
         sort_key = "{}_percent".format(quesumar)
         otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
         # source base
-        source = Proyecto.objects.filter(
-            inversion__municipio__slug=municipio,
-            inversion__anio=year)\
-            .values('catinversion__nombre')\
-            .annotate(ejecutado=Sum(quesumar))\
-            .order_by('catinversion__nombre')
+        source = Proyecto.objects. \
+            filter(inversion__municipio__slug=municipio,
+                   inversion__anio=year). \
+            values('catinversion__nombre'). \
+            annotate(ejecutado=Sum(quesumar)). \
+            order_by('catinversion__nombre')
 
-        tipos_inicial = Proyecto.objects.filter(
-            inversion__municipio__slug=municipio,
-            inversion__anio=year, inversion__periodo=PERIODO_INICIAL)\
-            .values('catinversion__nombre')\
-            .annotate(asignado=Sum('asignado')).order_by('catinversion__nombre')
+        tipos_inicial = Proyecto.objects. \
+            filter(inversion__municipio__slug=municipio,
+                   inversion__anio=year,
+                   inversion__periodo=PERIODO_INICIAL) \
+            .values('catinversion__nombre') \
+            .annotate(asignado=Sum('asignado')). \
+            order_by('catinversion__nombre')
 
-        tipos_final = Proyecto.objects.filter(\
-            inversion__municipio__slug=municipio, inversion__anio=year,
-            inversion__periodo=periodo)\
-            .values('catinversion__nombre')\
-            .annotate(ejecutado=Sum('ejecutado'))\
-            .order_by('catinversion__nombre')
+        tipos_final = Proyecto.objects. \
+            filter(inversion__municipio__slug=municipio,
+                   inversion__anio=year,
+                   inversion__periodo=periodo). \
+            values('catinversion__nombre'). \
+            annotate(ejecutado=Sum('ejecutado')). \
+            order_by('catinversion__nombre')
 
         sources = glue(tipos_inicial, tipos_final, 'catinversion__nombre')
 
@@ -396,14 +404,20 @@ def inversion_categoria_chart(municipio=None, year=None, portada=False):
             .values('catinversion__nombre')\
             .annotate(clase=Sum(quesumar))
 
-        source_inicial = Proyecto.objects.filter(inversion__periodo=PERIODO_INICIAL, \
-            inversion__municipio__slug=municipio).\
-            values('inversion__anio').\
-            annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by()
-        source_final = Proyecto.objects.filter(inversion__periodo=periodo, \
-            inversion__municipio__slug=municipio).\
-            values('inversion__anio').\
-            annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')).order_by()
+        source_inicial = Proyecto.objects. \
+            filter(inversion__periodo=PERIODO_INICIAL,
+                   inversion__municipio__slug=municipio). \
+            values('inversion__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado')).\
+            order_by()
+        source_final = Proyecto.objects. \
+            filter(inversion__periodo=periodo,
+                   inversion__municipio__slug=municipio). \
+            values('inversion__anio'). \
+            annotate(ejecutado=Sum('ejecutado'),
+                     asignado=Sum('asignado')).\
+            order_by()
         # obtiene valores para este año de las listas
         try:
             asignado = (item for item in source_inicial

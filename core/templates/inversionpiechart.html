@@ -192,6 +192,7 @@
                             {% for row in porclasep %}
                                 <tr class="pma-bg-white">
                                     <td>{{ row.clasificacion }}</td>
+                                    f
                                     <td class="text-right">
                                         {% if row.asignado %}
                                             {{ row.asignado|floatformat:2|intcomma }}
@@ -350,6 +351,24 @@
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
+                                <tr>
+                                    <td colspan="2" class="text-center"><strong>TOTAL</strong></td>
+                                    <td class="text-center">
+                                        <strong>
+                                            {% if ejecutado <= 0 %}
+                                                {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
+                                                    {{ numerator|div:denominator|floatformat:2|intcomma }}
+                                                {% endwith %}
+                                            {% elif denominador > 0 and year != '2016' %}
+                                                {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
+                                                    {{ numerator|div:denominator|floatformat:2|intcomma }}
+                                                {% endwith %}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </strong>
+                                    </td>
+                                </tr>
                                 </tbody>
                                 <tfoot class="font-12px font-color-azul">
                                 <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
@@ -357,27 +376,6 @@
                                     propia a partir
                                     de transmunic.gob.ni<strong>.</strong></th>
                                 </tfoot>
-                                {% comment %}
-                            <tfoot>
-                            <tr class="">
-                                <td colspan="2">TOTAL</td>
-                                {% if numerador > 0 %}
-                                    <td class="text-right">
-                                        {% with numerator=otros|total_sum:'asignado' denominator=otros|total_sum:'poblacion' %}
-                                            {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    </td>
-                                {% else %}
-                                    <td class="text-right">0</td>
-                                {% endif %}
-                                {% if denominador > 0 and year != '2016' %}
-                                    <td class="text-right">
-                                        {% with numerator=otros|total_sum:'ejecutado' denominator=otros|total_sum:'poblacion' %}
-                                            {{ numerator|div:denominator|floatformat:2|intcomma }} {% endwith %}
-                                    </td>
-                                {% endif %}
-                            </tr>
-                            </tfoot>
-                            {% endcomment %}
                             </table>
                         </div>
                     </div>
