@@ -342,7 +342,7 @@ CONFIGURACION_TABLAS_EXCEL = {
         "subtitulo_cierre": u"Millones de córdobas corrientes",
         "encabezados": [u"Años", "Ingreso corrientes propios",
                         "Gasto corrientes totales",
-                        "Dependencia para asumir gastos corrientes", '%'],
+                        "(M. de C$)", '(%)'],
         "celdas": ["anio", "total_ingreso", "total_gasto", "diferencia",
                    'diferencia_porcentaje'],
         "qs": "anuales"
@@ -813,7 +813,13 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
 
         file_name = construir_nombre_archivo(reporte, year,
                                              periodo_nombre, municipio,
-                                             grupo,indicador )
+                                             grupo, indicador)
+
+        if 'ago8' == reporte:
+            for i in [3, 4]:
+                tipo_dato = 'M. de C$' if i == 3 else '%'
+                encabezado = '{}({})'.format(indicador, tipo_dato)
+                CONFIGURACION_TABLAS_EXCEL[reporte]['encabezados'][i] = encabezado
 
     for report_name in reportes:
         report_config = CONFIGURACION_TABLAS_EXCEL[report_name]
