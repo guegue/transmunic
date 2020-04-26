@@ -13,7 +13,8 @@ from core.models import (Profile, Organizacion, Anio,
                          IngresoRenglon, GastoRenglon,
                          GastoDetalle, IngresoDetalle,
                          InversionFuenteDetalle,
-                         OrigenIngresosCorrientes)
+                         OrigenIngresosCorrientes,
+                         OrigenGastosCorrientes)
 
 
 # Register your models here.
@@ -132,7 +133,7 @@ class SubTipoGastoAdmin(admin.ModelAdmin):
     search_fields = ['nombre', 'codigo']
 
 
-class OrigenIngresosCorrientesAdmin(admin.ModelAdmin):
+class OrigendeCorrientesAdmin(admin.ModelAdmin):
     list_display = ['id', 'nombre', 'shortname', 'orden']
     list_display_links = ['id', 'nombre']
     search_fields = ['nombre', 'codigo']
@@ -144,7 +145,8 @@ admin.site.register(Anio)
 admin.site.register(AnioTransferencia)
 admin.site.register(Grafico)
 admin.site.register(CatInversion)
-admin.site.register(OrigenIngresosCorrientes, OrigenIngresosCorrientesAdmin)
+admin.site.register(OrigenIngresosCorrientes, OrigendeCorrientesAdmin)
+admin.site.register(OrigenGastosCorrientes, OrigendeCorrientesAdmin)
 admin.site.register(TipoGasto)
 admin.site.register(SubTipoGasto, SubTipoGastoAdmin)
 admin.site.register(SubSubTipoGasto, SubSubTipoGastoAdmin)

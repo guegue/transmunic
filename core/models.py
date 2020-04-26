@@ -211,6 +211,21 @@ class SubTipoGasto(models.Model):
         return self.nombre
 
 
+class OrigenGastosCorrientes(models.Model):
+    nombre = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Origen de Gastos Corrientes'
+        verbose_name = 'Origen de Gasto Corriente'
+        ordering = ['orden', 'nombre']
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class SubSubTipoGasto(models.Model):
     CORRIENTE = '0'
     CAPITAL = '1'
@@ -227,9 +242,11 @@ class SubSubTipoGasto(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
-    clasificacion = models.IntegerField(
-        choices=CLASIFICACION_CHOICES,
-        default=0, null=True)
+    clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES,
+                                        default=0, null=True)
+    origen_gc = models.ForeignKey(OrigenGastosCorrientes, null=True,
+                                  blank=True, on_delete=models.CASCADE,
+                                  verbose_name='Origen Gasto de Corrienterm ')
 
     class Meta:
         verbose_name_plural = 'Sub sub tipos de gastos'
