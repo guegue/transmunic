@@ -17,7 +17,8 @@ from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, xnumber,
                         percentage)
-from core.history import historial_igresos_corrientes
+from core.history import (historial_gastos_corrientes,
+                          historial_ingresos_corrientes)
 from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
@@ -554,11 +555,14 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'diferencia_porcentaje': percentage(ago, anual2[i].get('asignado'))
         })
 
-    porano_table = historial_igresos_corrientes(periodo_list, year,
+    historico_ingreso = historial_ingresos_corrientes(periodo_list, year,
                                                 TipoIngreso.CORRIENTE,
                                                 TipoIngreso.TRANSFERENCIAS_CORRIENTES,
                                                 municipio_id)
-    print(porano_table)
+    historico_gasto = historial_gastos_corrientes(periodo_list, year,
+                                                     TipoGasto.CORRIENTE,
+                                                     municipio_id)
+    print(historico_gasto)
     # FIXME BS
     porclase = None
 
