@@ -17,6 +17,7 @@ from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, xnumber,
                         percentage)
+from core.history import historial_igresos_corrientes
 from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
@@ -48,6 +49,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     # recolectando los codigos de transferencias de corrientes de cada año
     codigos_trans_corriente = [amap['transferencias_corrientes'] for amap in Anio.objects.all().
                       values_list('mapping', flat=True).distinct()]
+    municipio_id = None
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -200,7 +202,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                                  rubros_actualizado, rubros_periodo), key='tipoingreso')
 
         # obtiene clase y contador (otros en misma clase) para este año
-        mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
+        mi_clase = ClasificacionMunicAno.objects.get(municipio__id=municipio_id, anio=year)
         # mi_clase_count = ClasificacionMunicAno.objects.filter(
         #    clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
         # obtiene clase y contador (otros en misma clase) para todos los años
@@ -552,6 +554,11 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'diferencia_porcentaje': percentage(ago, anual2[i].get('asignado'))
         })
 
+    porano_table = historial_igresos_corrientes(periodo_list, year,
+                                                TipoIngreso.CORRIENTE,
+                                                TipoIngreso.TRANSFERENCIAS_CORRIENTES,
+                                                municipio_id)
+    print(porano_table)
     # FIXME BS
     porclase = None
 
