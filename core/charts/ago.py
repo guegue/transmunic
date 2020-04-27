@@ -584,6 +584,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'rubrosg': rubrosg,
             'mostraren': "porcentaje",
             'periodo_list': periodo_list,
+            'historico_ingreso': historico_ingreso,
+            'historico_gasto': historico_gasto,
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
@@ -656,6 +658,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         'porclasep': porclasep,
         'rubros': rubros,
         'periodo_list': periodo_list,
+        'historico_ingreso': historico_ingreso,
+        'historico_gasto': historico_gasto,
         'rubrosg': rubrosg,
         'mostraren': "porcentaje",
         'otros': otros

@@ -818,6 +818,152 @@
     {% endif %}
 {% endblock %}
 
+{% block section5 %}
+    <br>
+    <div class="container wide">
+        <div class="row">
+            <div class="col-xs-12 col-md-12 table-responsive">
+                <table class="table border-in-fixed-columns">
+                    <thead>
+                    <tr>
+                        <td colspan="10">
+                            <h2>
+                                <strong>Informaci&oacute;n hist&oacute;rica por ingresos corrientes propios </strong>
+                                <br>
+                                Ejecuci&oacute;n presupuestaria
+                            </h2>
+                            {% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}
+                                <h4>{{ municipio }}</h4>{% endif %}
+                            {% descargar_excel "gp7" %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2" colspan="1" class="text-center fixed first-child">Rubros</th>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                <strong>
+                                    {{ year }}
+                                    {% if periodo_list|keyvalue:year != 'F' %}
+                                        <span data-toggle="tooltip"
+                                              data-placement="top"
+                                              title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                                Intermedio{% endif %}">*</span>
+                                    {% endif %}
+                                </strong>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                M. de C$
+                            </th>
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                %
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, data in historico_ingreso.items %}
+                        <tr>
+                            <td class="text-left border-right fixed first-child">{{ key }}</td>
+                            {% for year in year_list %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-right border-left font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.percent|default:"0%" }}</td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot class="font-12px font-color-azul">
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                        <strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong>
+                    </th>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <br>
+    <div class="row">
+         <div class="col-xs-12 col-md-12 table-responsive">
+                <table class="table border-in-fixed-columns">
+                    <thead>
+                    <tr>
+                        <td colspan="10">
+                            <h2>
+                                <strong>Informaci&oacute;n hist&oacute;rica por gastos corrientes totales </strong>
+                                <br>
+                                Ejecuci&oacute;n presupuestaria
+                            </h2>
+                            {% if not municipio %}<h4>Consolidado 153 municipios</h4>{% else %}
+                                <h4>{{ municipio }}</h4>{% endif %}
+                            {% descargar_excel "gp7" %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2" colspan="1" class="text-center fixed first-child">Rubros</th>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="2"
+                                class="text-center no-border-bottom border-sides background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                <strong>
+                                    {{ year }}
+                                    {% if periodo_list|keyvalue:year != 'F' %}
+                                        <span data-toggle="tooltip"
+                                              data-placement="top"
+                                              title="P.{% if periodo_list|keyvalue:year == 'I' %}Inicial{% else %}
+                                                Intermedio{% endif %}">*</span>
+                                    {% endif %}
+                                </strong>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for year in year_list %}
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-left font-13px text-nowrap background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                M. de C$
+                            </th>
+                            <th rowspan="1" colspan="1"
+                                class="no-border-top text-center border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">
+                                %
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, data in historico_gasto.items %}
+                        <tr>
+                            <td class="text-left border-right fixed first-child">{{ key }}</td>
+                            {% for year in year_list %}
+                                {% with year_data=data|keyvalue:year %}
+                                    <td class="text-right border-left font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.raw|million|intcomma }}</td>
+                                    <td class="text-right border-right font-13px background-color-{% if forloop.counter|divisibleby:2 %}white{% else %}gray{% endif %}">{{ year_data.percent|default:"0%" }}</td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot class="font-12px font-color-azul">
+                    <th colspan="{{ year_list|length }}" rowspan="1" class="text-justify">
+                        <strong>Fuente: </strong>Elaboraci&oacute;n
+                        propia a partir
+                        de transmunic.gob.ni<strong>.</strong>
+                    </th>
+                    </tfoot>
+                </table>
+            </div>
+    </div>
+    </div>
+{% endblock %}
+
+
 {% block extra_footer_scripts %}
     <script type="text/javascript" src="{% static 'js/jquery-migrate.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/raphael-min.js' %}"></script>

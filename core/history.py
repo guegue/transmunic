@@ -52,7 +52,7 @@ def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso=No
             historico[name][year] = {}
             historico[name][year]['raw'] = total or 0
 
-            if ayear not in historico_anio:
+            if year not in historico_anio:
                 historico_anio[year] = 0
 
             historico_anio[year] += total or 0
@@ -126,7 +126,7 @@ def historial_gastos_corrientes(periodo_list, current_year, municipio_id=None):
             historico[name][year] = {}
             historico[name][year]['raw'] = total or 0
 
-            if ayear not in historico_anio:
+            if year not in historico_anio:
                 historico_anio[year] = 0
 
             historico_anio[year] += total or 0
