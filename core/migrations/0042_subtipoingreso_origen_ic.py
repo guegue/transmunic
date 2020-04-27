@@ -16,7 +16,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subtipoingreso',
             name='origen_ic',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    to='core.OrigenIngresosCorrientes', verbose_name=b'Origen ingreso corriente'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.
+                                    models.deletion.CASCADE,
+                                    to='core.OrigenIngresosCorrientes',
+                                    verbose_name=b'Origen ingreso corriente'),
         ),
     ]

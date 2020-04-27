@@ -16,7 +16,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subsubtipogasto',
             name='origen_gc',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    to='core.OrigenGastosCorrientes', verbose_name=b'Origen Gasto de Corrienterm '),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.
+                                    models.deletion.CASCADE,
+                                    to='core.OrigenGastosCorrientes',
+                                    verbose_name=b'Origen Gasto de Corriente'),
         ),
     ]

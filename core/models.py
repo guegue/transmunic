@@ -246,7 +246,7 @@ class SubSubTipoGasto(models.Model):
                                         default=0, null=True)
     origen_gc = models.ForeignKey(OrigenGastosCorrientes, null=True,
                                   blank=True, on_delete=models.CASCADE,
-                                  verbose_name='Origen Gasto de Corrienterm ')
+                                  verbose_name='Origen Gasto de Corriente')
 
     class Meta:
         verbose_name_plural = 'Sub sub tipos de gastos'
