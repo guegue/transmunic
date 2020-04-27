@@ -556,13 +556,10 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         })
 
     historico_ingreso = historial_ingresos_corrientes(periodo_list, year,
-                                                TipoIngreso.CORRIENTE,
                                                 TipoIngreso.TRANSFERENCIAS_CORRIENTES,
                                                 municipio_id)
     historico_gasto = historial_gastos_corrientes(periodo_list, year,
-                                                     TipoGasto.CORRIENTE,
                                                      municipio_id)
-    print(historico_gasto)
     # FIXME BS
     porclase = None
 

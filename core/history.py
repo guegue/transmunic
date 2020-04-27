@@ -4,8 +4,8 @@ from .models import PERIODO_INICIAL, PERIODO_FINAL
 from django.db.models import Sum
 
 
-def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso,
-                                 tipo_ingreso, municipio_id=None):
+def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso=None,
+                                  municipio_id=None):
     """"""  # Contruir una lista de rubro de ingreso corrientes detallada por año
 
     from .models import IngresoDetalle, OrigenIngresosCorrientes
@@ -41,14 +41,14 @@ def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso,
             year = int(ayear)
             filtros['ingreso__anio'] = year
             filtros['ingreso__periodo'] = periodo
-            filtros['tipoingreso__clasificacion'] = tipo_ingreso
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
-            print(filtros, quesumar)
 
             total = IngresoDetalle.objects. \
-                filter(**filtros). \
-                exclude(tipoingreso=no_tipo_ingreso). \
-                aggregate(total=Sum(quesumar))['total']
+                filter(**filtros)
+            if no_tipo_ingreso:
+                total = total.exclude(tipoingreso=no_tipo_ingreso)
+
+            total = total.aggregate(total=Sum(quesumar))['total']
             historico[name][year] = {}
             historico[name][year]['raw'] = total or 0
 
@@ -64,7 +64,6 @@ def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso,
             campo_clase = 'ingreso__municipio__clasificaciones__id'
             filtros_municipio['ingreso__anio'] = current_year
             filtros_municipio['ingreso__periodo'] = periodo
-            filtros_municipio['tipoingreso__clasificacion'] = tipo_ingreso
             filtros_municipio['subtipoingreso__origen_ic_id'] = rubro['id']
             filtros_municipio[campo_clase] = mi_clase.clasificacion_id
 
@@ -85,8 +84,7 @@ def historial_ingresos_corrientes(periodo_list, current_year, no_tipo_ingreso,
     return historico
 
 
-def historial_gastos_corrientes(periodo_list, current_year, tipo_gasto,
-                                municipio_id=None):
+def historial_gastos_corrientes(periodo_list, current_year, municipio_id=None):
     """"""  # Contruir una lista de rubro de gasto corrientes detallada por año
     from .models import GastoDetalle, OrigenGastosCorrientes
 
@@ -121,7 +119,6 @@ def historial_gastos_corrientes(periodo_list, current_year, tipo_gasto,
             year = int(ayear)
             filtros['gasto__anio'] = year
             filtros['gasto__periodo'] = periodo
-            filtros['subsubtipogasto__clasificacion'] = tipo_gasto
             quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
             total = GastoDetalle.objects. \
                 filter(**filtros). \
@@ -141,7 +138,6 @@ def historial_gastos_corrientes(periodo_list, current_year, tipo_gasto,
             campo_clase = 'gasto__municipio__clasificaciones__id'
             filtros_municipio['gasto__anio'] = current_year
             filtros_municipio['gasto__periodo'] = periodo
-            filtros_municipio['subsubtipogasto__clasificacion'] = tipo_gasto
             filtros_municipio['subsubtipogasto__origen_gc_id'] = rubro['id']
             filtros_municipio[campo_clase] = mi_clase.clasificacion_id
 
