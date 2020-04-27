@@ -66,7 +66,7 @@ class Organizacion(models.Model):
 
 
 class Grafico(models.Model):
-    id = models.CharField(max_length=25,  primary_key=True)
+    id = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200, unique=True)
     descripcion = models.TextField(blank=True, null=True)
     notas = models.TextField(blank=True, null=True)
@@ -181,7 +181,7 @@ class TipoGasto(models.Model):
     clasificacion = models.IntegerField(
         choices=CLASIFICACION_CHOICES,
         default=0, null=True)
-    nuevo_catalogo = models.BooleanField(default=False,)
+    nuevo_catalogo = models.BooleanField(default=False, )
 
     class Meta:
         verbose_name_plural = 'Tipos de gastos'
@@ -193,7 +193,7 @@ class TipoGasto(models.Model):
 
 
 class SubTipoGasto(models.Model):
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     tipogasto = models.ForeignKey(TipoGasto, related_name='tipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
@@ -211,6 +211,21 @@ class SubTipoGasto(models.Model):
         return self.nombre
 
 
+class OrigenGastosCorrientes(models.Model):
+    nombre = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Origen de Gastos Corrientes'
+        verbose_name = 'Origen de Gasto Corriente'
+        ordering = ['orden', 'nombre']
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class SubSubTipoGasto(models.Model):
     CORRIENTE = '0'
     CAPITAL = '1'
@@ -221,15 +236,17 @@ class SubSubTipoGasto(models.Model):
         (2, 'Otra'),
     )
     TRANSFERENCIAS_CAPITAL = '6000000'
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
-    clasificacion = models.IntegerField(
-        choices=CLASIFICACION_CHOICES,
-        default=0, null=True)
+    clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES,
+                                        default=0, null=True)
+    origen_gc = models.ForeignKey(OrigenGastosCorrientes, null=True,
+                                  blank=True, on_delete=models.CASCADE,
+                                  verbose_name='Origen Gasto de Corriente')
 
     class Meta:
         verbose_name_plural = 'Sub sub tipos de gastos'
@@ -257,6 +274,21 @@ class OrigenRecurso(models.Model):
         return self.nombre
 
 
+class OrigenIngresosCorrientes(models.Model):
+    nombre = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='nombre')
+    shortname = models.CharField(max_length=25, blank=True, null=True)
+    orden = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Origen de Ingresos Corrientes'
+        verbose_name = 'Origen de Ingreso Corriente'
+        ordering = ['orden', 'nombre']
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class TipoIngreso(models.Model):
     TRANSFERENCIAS_CORRIENTES = '15000000'
     CORRIENTE = 0
@@ -267,7 +299,7 @@ class TipoIngreso(models.Model):
         (CAPITAL, 'Ingreso Capital'),
         (FINANCIAMIENTO, 'Financiamiento Deficit'),
     )
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200, )
     slug = AutoSlugField(populate_from='nombre', null=True)
     shortname = models.CharField(max_length=25, blank=True, null=True)
@@ -287,11 +319,15 @@ class TipoIngreso(models.Model):
 
 
 class SubTipoIngreso(models.Model):
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     tipoingreso = models.ForeignKey(TipoIngreso, related_name='tipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
+    origen_ic = models.ForeignKey(OrigenIngresosCorrientes,
+                                  null=True, blank=True,
+                                  on_delete=models.CASCADE,
+                                  verbose_name='Origen ingreso corriente')
 
     class Meta:
         verbose_name_plural = 'Subtipos de ingreso'
@@ -303,7 +339,7 @@ class SubTipoIngreso(models.Model):
 
 
 class SubSubTipoIngreso(models.Model):
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     subtipoingreso = models.ForeignKey(SubTipoIngreso, related_name='subtipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
@@ -320,7 +356,7 @@ class SubSubTipoIngreso(models.Model):
 
 
 class Sub3TipoIngreso(models.Model):
-    codigo = models.CharField(max_length=25,  primary_key=True)
+    codigo = models.CharField(max_length=25, primary_key=True)
     subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, related_name='subsubtipo')
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
@@ -357,6 +393,7 @@ class IngresoQuerySet(models.QuerySet):
         if hasattr(user, 'profile') and user.profile.municipio:
             return self.filter(municipio=user.profile.municipio)
         return self
+
 
 class Ingreso(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
@@ -398,9 +435,9 @@ class IngresoDetalle(models.Model):
     sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
+        max_digits=12, decimal_places=2, blank=False, null=False)
 
     default_objects = models.Manager()
     objects = IngresoDetalleManager()
@@ -472,16 +509,16 @@ class GastoDetalle(models.Model):
     codigo = models.ForeignKey(GastoRenglon)
     tipogasto = models.ForeignKey(TipoGasto)
     subtipogasto = ChainedForeignKey(
-            SubTipoGasto, chained_field='tipogasto',
-            chained_model_field='tipogasto', null=True, blank=True)
+        SubTipoGasto, chained_field='tipogasto',
+        chained_model_field='tipogasto', null=True, blank=True)
     subsubtipogasto = ChainedForeignKey(
-            SubSubTipoGasto, chained_field='subtipogasto',
-            chained_model_field='subtipogasto', null=True, blank=True)
+        SubSubTipoGasto, chained_field='subtipogasto',
+        chained_model_field='subtipogasto', null=True, blank=True)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
+        max_digits=12, decimal_places=2, blank=False, null=False)
 
     default_objects = models.Manager()
     objects = GastoDetalleManager()
@@ -507,6 +544,7 @@ class TipoProyecto(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
 
 # inversion del municipio
 
@@ -627,9 +665,9 @@ class InversionFuente(models.Model):
     periodo = models.CharField(max_length=1, null=False)
     departamento = models.ForeignKey(Departamento)
     municipio = ChainedForeignKey(
-            Municipio, chained_field='departamento',
-            chained_model_field='depto',
-            null=True, blank=True)
+        Municipio, chained_field='departamento',
+        chained_model_field='depto',
+        null=True, blank=True)
 
     class Meta:
         verbose_name = u'Inversión de fuentes de financiamiento'
@@ -641,12 +679,12 @@ class InversionFuenteDetalle(models.Model):
     inversionfuente = models.ForeignKey(InversionFuente)
     tipofuente = models.ForeignKey(TipoFuenteFmto)
     fuente = ChainedForeignKey(
-            FuenteFmto, chained_field='tipofuente',
-            chained_model_field='tipofuente', null=True, blank=True)
+        FuenteFmto, chained_field='tipofuente',
+        chained_model_field='tipofuente', null=True, blank=True)
     asignado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=True, null=True)
+        max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
-            max_digits=12, decimal_places=2, blank=False, null=False)
+        max_digits=12, decimal_places=2, blank=False, null=False)
 
     class Meta:
         verbose_name = u'Detalle de inversión por fuente'

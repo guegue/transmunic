@@ -1,9 +1,20 @@
 from django.contrib import admin
-from core.models import (Profile, Organizacion, Anio, AnioTransferencia, Grafico, CatInversion, TipoGasto,
-                         SubTipoGasto, SubSubTipoGasto, OrigenRecurso, OrigenGasto, OrigenGastoPersonal, TipoIngreso,
-                         SubSubTipoIngreso, Sub3TipoIngreso, SubTipoIngreso, TipoFuenteFmto, FuenteFmto,
-                         InversionFuente, Transferencia, Inversion, Proyecto, Ingreso, Gasto, IngresoRenglon,
-                         GastoRenglon, GastoDetalle, IngresoDetalle, InversionFuenteDetalle)
+from core.models import (Profile, Organizacion, Anio,
+                         AnioTransferencia, Grafico,
+                         CatInversion, TipoGasto,
+                         SubTipoGasto, SubSubTipoGasto,
+                         OrigenRecurso, OrigenGasto,
+                         OrigenGastoPersonal, TipoIngreso,
+                         SubSubTipoIngreso, Sub3TipoIngreso,
+                         SubTipoIngreso, TipoFuenteFmto,
+                         FuenteFmto, InversionFuente,
+                         Transferencia, Inversion,
+                         Proyecto, Ingreso, Gasto,
+                         IngresoRenglon, GastoRenglon,
+                         GastoDetalle, IngresoDetalle,
+                         InversionFuenteDetalle,
+                         OrigenIngresosCorrientes,
+                         OrigenGastosCorrientes)
 
 
 # Register your models here.
@@ -26,8 +37,10 @@ class SubSubTipoIngresoInline(admin.TabularInline):
 
 class SubTipoIngresoAdmin(admin.ModelAdmin):
     inlines = [SubSubTipoIngresoInline]
-    list_display = ('nombre', 'tipoingreso', 'slug')
-    list_filter = ['tipoingreso']
+    list_display = ('codigo', 'nombre', 'tipoingreso',
+                    'slug', 'origen_ic')
+    list_display_links = ('codigo', 'nombre')
+    list_filter = ['tipoingreso', 'origen_ic']
     search_fields = ('codigo', 'nombre')
 
 
@@ -82,8 +95,11 @@ class IngresoAdmin(AdminForUserMixin, admin.ModelAdmin):
 
 
 class TipoIngresoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'clasificacion')
+    list_display = ['codigo', 'nombre',
+                    'clasificacion', 'nuevo_catalogo', ]
+    list_display_links = ['codigo', 'nombre']
     list_filter = ['clasificacion']
+    search_fields = ['codigo', 'nombre']
 
 
 class ProyectoInline(admin.TabularInline):
@@ -117,12 +133,20 @@ class SubTipoGastoAdmin(admin.ModelAdmin):
     search_fields = ['nombre', 'codigo']
 
 
+class OrigendeCorrientesAdmin(admin.ModelAdmin):
+    list_display = ['id', 'nombre', 'shortname', 'orden']
+    list_display_links = ['id', 'nombre']
+    search_fields = ['nombre', 'codigo']
+
+
 admin.site.register(Profile)
 admin.site.register(Organizacion)
 admin.site.register(Anio)
 admin.site.register(AnioTransferencia)
 admin.site.register(Grafico)
 admin.site.register(CatInversion)
+admin.site.register(OrigenIngresosCorrientes, OrigendeCorrientesAdmin)
+admin.site.register(OrigenGastosCorrientes, OrigendeCorrientesAdmin)
 admin.site.register(TipoGasto)
 admin.site.register(SubTipoGasto, SubTipoGastoAdmin)
 admin.site.register(SubSubTipoGasto, SubSubTipoGastoAdmin)

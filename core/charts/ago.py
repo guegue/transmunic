@@ -17,6 +17,8 @@ from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, xnumber,
                         percentage)
+from core.history import (historial_gastos_corrientes,
+                          historial_ingresos_corrientes)
 from core.graphics import graphChart
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
@@ -48,6 +50,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
     # recolectando los codigos de transferencias de corrientes de cada año
     codigos_trans_corriente = [amap['transferencias_corrientes'] for amap in Anio.objects.all().
                       values_list('mapping', flat=True).distinct()]
+    municipio_id = None
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -200,7 +203,7 @@ def ago_chart(request, municipio=None, year=None, portada=False):
                                  rubros_actualizado, rubros_periodo), key='tipoingreso')
 
         # obtiene clase y contador (otros en misma clase) para este año
-        mi_clase = ClasificacionMunicAno.objects.get(municipio__slug=municipio, anio=year)
+        mi_clase = ClasificacionMunicAno.objects.get(municipio__id=municipio_id, anio=year)
         # mi_clase_count = ClasificacionMunicAno.objects.filter(
         #    clasificacion__clasificacion=mi_clase.clasificacion, anio=year).count()
         # obtiene clase y contador (otros en misma clase) para todos los años
@@ -552,6 +555,11 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'diferencia_porcentaje': percentage(ago, anual2[i].get('asignado'))
         })
 
+    historico_ingreso = historial_ingresos_corrientes(periodo_list, year,
+                                                      TipoIngreso.TRANSFERENCIAS_CORRIENTES,
+                                                      municipio_id)
+    historico_gasto = historial_gastos_corrientes(periodo_list, year,
+                                                  municipio_id)
     # FIXME BS
     porclase = None
 
@@ -576,6 +584,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
             'rubrosg': rubrosg,
             'mostraren': "porcentaje",
             'periodo_list': periodo_list,
+            'historico_ingreso': historico_ingreso,
+            'historico_gasto': historico_gasto,
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
 
@@ -648,6 +658,8 @@ def ago_chart(request, municipio=None, year=None, portada=False):
         'porclasep': porclasep,
         'rubros': rubros,
         'periodo_list': periodo_list,
+        'historico_ingreso': historico_ingreso,
+        'historico_gasto': historico_gasto,
         'rubrosg': rubrosg,
         'mostraren': "porcentaje",
         'otros': otros
