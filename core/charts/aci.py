@@ -18,6 +18,8 @@ from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, xnumber,
                         percentage)
 from core.graphics import graphChart
+from core.history import (historial_ingresos_corrientes,
+                          historial_gastos_corrientes)
 from core.charts.misc import getVar
 from lugar.models import ClasificacionMunicAno
 from operator import itemgetter
@@ -31,6 +33,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
 
     municipio_list = Municipio.objects.all()
     municipio = getVar('municipio', request)
+    municipio_id = None
     periodo_list = getPeriods(Gasto)
     year_list = getYears(Gasto)
     year = getVar('year', request)
@@ -529,6 +532,12 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'diferencia_porcentaje': percentage(aci, anual2[i].get('asignado'))
         })
 
+    historico_ingreso = historial_ingresos_corrientes(periodo_list, year,
+                                                      TipoIngreso.TRANSFERENCIAS_CORRIENTES,
+                                                      municipio_id)
+    historico_gasto = historial_gastos_corrientes(periodo_list, year,
+                                                  municipio_id)
+
     # FIXME BS
     porclase = None
 
@@ -551,6 +560,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'rubros': rubros,
             'rubrosg': rubrosg,
             'periodo_list': periodo_list,
+            'historico_ingreso': historico_ingreso,
+            'historico_gasto': historico_gasto,
             'indicator_name': 'Ahorro Corriente',
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
@@ -631,6 +642,8 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'rubros': rubros,
             'rubrosg': rubrosg,
             'periodo_list': periodo_list,
+            'historico_ingreso': historico_ingreso,
+            'historico_gasto': historico_gasto,
             'mostraren': "porcentaje",
             'otros': otros
         }
