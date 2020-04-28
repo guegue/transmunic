@@ -548,11 +548,35 @@ CONFIGURACION_TABLAS_EXCEL = {
                    "gc_asignado", "gc_ejecutado", 'ep'],
         "qs": "anual_ep",
     },
+    'aci-ago-ingreso': {
+        "titulo": u"Información histórica por ingresos corrientes propios {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
+        "encabezados": [u"Rubro"],
+        "celdas": ["descripcion"],
+        "qs": None
+    },
+    'aci-ago-gasto': {
+        "titulo": u"Información histórica por gastos corrientes totales {municipio}",
+        "subtitulo": u'',
+        "subsubtitulo": u'Consolidado 153 municipios',
+        "subtitulo_inicio": u"Ejecución presupuestaria",
+        "subtitulo_intermedio": u"Ejecución presupuestaria",
+        "subtitulo_cierre": u"Ejecución presupuestaria",
+        "encabezados": [u"Rubro"],
+        "celdas": ["descripcion"],
+        "qs": None
+    },
 }
 
 ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6', 'ep3', 'ep6']
 ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
-ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7', 'gp7', 'ep8']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8',
+                            'icat7', 'gp7', 'ep8',
+                            'aci-ago-ingreso', 'aci-ago-gasto']
 
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo, indicador):
@@ -679,7 +703,8 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
         hoja.col(indice_columna + i + i2).width = 256 * 30
 
         # excepción de columnas extras para oim7
-        if '7' in sheet_name and i > 0:
+        if '7' in sheet_name or 'aci-ago' in sheet_name \
+                and i > 0:
             i2 += 1
             hoja.write(indice_fila,
                        indice_columna + i + i2,
