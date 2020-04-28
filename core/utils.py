@@ -533,18 +533,26 @@ CONFIGURACION_TABLAS_EXCEL = {
         "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
     },
     "ep8": {
-        "titulo": u"Ejecución presupuestaria - Gastos Totales",
-        "subtitulo": u"Millones de córdobas corrientes",
-        "encabezados": [u"Años", "Inicial", "Ejecutado", "% Ejecutado/Inicial"],
-        "celdas": ["gasto__anio", "asignado", "ejecutado", "ejecutado/asignado"],
-        "qs": "anualesg",
-        "tipo_totales": ["TOTALES", "SUM", "SUM", "/"]
+        "titulo": u"Ejecución presupuestaria Ingreso corrientes"
+                  u" propios y Gasto corrientes totales {municipio}",
+        "subtitulo": u'',
+        "subtitulo_inicio": u"Millones de córdobas corrientes",
+        "subtitulo_intermedio": u"Millones de córdobas corrientes",
+        "subtitulo_cierre": u"Millones de córdobas corrientes",
+        "encabezados_1": ['',
+                          {'titulo': 'Ingreso corrientes propios', 'size': 3},
+                          {'titulo': 'Gasto corrientes totales', 'size': 3}],
+        "encabezados": [u"Años", "Inicial", "Ejecutado", "EPI",
+                        "Inicial", "Ejecutado", "EP"],
+        "celdas": ["anio", "ic_asignado", "ic_ejecutado", 'epi',
+                   "gc_asignado", "gc_ejecutado", 'ep'],
+        "qs": "anual_ep",
     },
 }
 
 ARRAY_OF_RUBROS = ['oim1', 'ogm1', 'ago3', 'ago6', 'ep3', 'ep6']
 ARRAY_OF_CONFIG_GROUPS = ['oim8', 'ogm8', 'icat2']
-ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7', 'gp7']
+ARRAY_OF_CONFIG_INFO_HIS = ['oim7', 'ogm7', 'ago8', 'icat7', 'gp7', 'ep8']
 
 
 def construir_nombre_archivo(reporte, anio, periodo_nombre, municipio, grupo, indicador):
@@ -607,7 +615,8 @@ def obtener_valor(instance, name, es_diccionario=False):
 
 
 def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
-                     subsubtitulo, encabezados, celdas, tipo_totales):
+                     subsubtitulo, encabezados_1, encabezados,
+                     celdas, tipo_totales):
     hoja = libro.add_sheet(sheet_name)
     indice_fila, indice_columna = 0, 0
     columns_number = len(encabezados) + 1
@@ -636,6 +645,29 @@ def crear_hoja_excel(libro, sheet_name, queryset, titulo, subtitulo,
             HEADER2
         )
     indice_fila += 2
+
+    if encabezados_1:
+        columna_index = 0
+        for i, encabezado in enumerate(encabezados_1):
+            if isinstance(encabezado, dict):
+                size = encabezado['size']
+                hoja.write_merge(
+                    indice_fila, indice_fila,
+                    columna_index, (columna_index + size - 1),
+                    encabezado['titulo'],
+                    COLUMN_HEADER_FORMAT_SIN_RELLENO
+                )
+                columna_index += size
+            else:
+                hoja.write(indice_fila,
+                           columna_index,
+                           encabezado,
+                           COLUMN_HEADER_FORMAT_SIN_RELLENO
+                           )
+                columna_index += 1
+
+        indice_fila += 1
+
     # ESCRIBIR ENCABEZADOS
     i2 = 0
     for i, encabezado in enumerate(encabezados):
@@ -828,6 +860,7 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         subtitulo = report_config["subtitulo"]
         subsubtitulo = report_config.get('subsubtitulo', '')
         encabezados = report_config["encabezados"]
+        encabezados_1 = report_config.get('encabezados_1')
         celdas = report_config["celdas"]
         tipo_totales = report_config.get("tipo_totales", [])
 
@@ -859,7 +892,8 @@ def obtener_excel_response(reporte, data, sheet_name="hoja1"):
         if queryset is not None:
             crear_hoja_excel(libro, sheet_name, queryset,
                              titulo, subtitulo, subsubtitulo,
-                             encabezados, celdas, tipo_totales)
+                             encabezados_1, encabezados, celdas,
+                             tipo_totales)
         elif len(reportes) == 1:
             libro.add_sheet("{0} vacio".format(sheet_name))
 
