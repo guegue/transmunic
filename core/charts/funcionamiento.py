@@ -18,6 +18,7 @@ from core.models import Anio, GastoDetalle, Gasto, Municipio, TipoGasto
 from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, PERIODO_VERBOSE
 from core.tools import (getYears, getPeriods, dictfetchall,
                         glue, superglue, percentage)
+from core.history import historial_gastos_corrientes
 from core.graphics import graphChart
 from core.charts.misc import getVar
 from core.charts.aci import aci_bubbletree_data_gasto
@@ -45,6 +46,12 @@ def gf_chart(request):
     ejecutado_percent = 0
     total_nacional_asignado = 0
     total_nacional_ejecutado = 0
+    municipio_id = None
+    filtro_rubros = {
+        'gasto__anio': year,
+        'subsubtipogasto__clasificacion': TipoGasto.CORRIENTE
+    }
+    excluir_cuentas_rubros = {}
 
     from collections import OrderedDict  # FIXME move up
     if municipio:
@@ -200,26 +207,8 @@ def gf_chart(request):
         sort_key = "{}_percent".format(quesumar)
         otros = sorted(otros, key=itemgetter(sort_key), reverse=True)
 
-        # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,
-                                                     subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,
-                                                         subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,
-                                                   subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,
-                                                     subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
-        #rubros = glue(rubros_inicial, rubros_final, 'subsubtipogasto__codigo', actualizado=rubros_actualizado)
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='subsubtipogasto__codigo')
+        # indicando filtro por municipio
+        filtro_rubros['gasto__municipio__id'] = municipio_id
 
         # obtiene datos comparativo de todos los años
         inicial = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
@@ -507,31 +496,9 @@ def gf_chart(request):
                                     actualizado),
                               key='clasificacion')
 
-        # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_INICIAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            exclude(subsubtipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            exclude(subsubtipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(inicial_asignado=Sum('asignado'))
-        rubros_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_ACTUALIZADO, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            exclude(subsubtipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            exclude(subsubtipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            exclude(subsubtipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            exclude(subsubtipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__periodo=periodo, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).\
-            exclude(subsubtipogasto__codigo=TipoGasto.IMPREVISTOS).\
-            exclude(subsubtipogasto__codigo=TipoGasto.TRANSFERENCIAS_CAPITAL).\
-            values('subsubtipogasto__codigo', 'subsubtipogasto__nombre', 'subsubtipogasto__shortname').order_by(
-                'subsubtipogasto__codigo').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
-        #rubros = glue(rubros_inicial, rubros_final, 'subsubtipogasto__codigo', actualizado=rubros_actualizado)
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='subsubtipogasto__codigo')
-
+        # indicando que cuentas debo exluir
+        excluir_cuentas_rubros['subsubtipogasto__codigo__in'] = [TipoGasto.IMPREVISTOS,
+                                                                 TipoGasto.TRANSFERENCIAS_CAPITAL]
         source_inicial = GastoDetalle.objects. \
             filter(gasto__periodo=PERIODO_INICIAL,
                    subsubtipogasto__clasificacion=TipoGasto.CORRIENTE). \
@@ -612,6 +579,50 @@ def gf_chart(request):
         final = list(GastoDetalle.objects.filter(gasto__periodo=PERIODO_FINAL, subsubtipogasto__clasificacion=TipoGasto.CORRIENTE,).values(
             'gasto__anio', 'gasto__periodo').annotate(ejecutado=Sum('ejecutado'), asignado=Sum('asignado')))
         comparativo_anios = final
+
+    # obtiene datos de gastos en ditintos rubros de corriente (clasificacion 0)
+    rubros_inicial = GastoDetalle.objects. \
+        filter(**filtro_rubros). \
+        filter(gasto__periodo=PERIODO_INICIAL). \
+        exclude(**excluir_cuentas_rubros). \
+            values('codigo__subsubtipogasto__origen_gc__id',
+                   'codigo__subsubtipogasto__origen_gc__nombre'). \
+            order_by('codigo__subsubtipogasto__origen_gc__orden'). \
+            annotate(inicial_asignado=Sum('asignado'))
+    rubros_actualizado = GastoDetalle.objects. \
+        filter(**filtro_rubros). \
+        filter(gasto__periodo=PERIODO_ACTUALIZADO). \
+        exclude(**excluir_cuentas_rubros). \
+        values('codigo__subsubtipogasto__origen_gc__id',
+               'codigo__subsubtipogasto__origen_gc__nombre'). \
+        order_by('codigo__subsubtipogasto__origen_gc__orden'). \
+        annotate(actualizado_asignado=Sum('asignado'),
+                 actualizado_ejecutado=Sum('ejecutado'))
+    rubros_final = GastoDetalle.objects. \
+        filter(**filtro_rubros). \
+        filter(gasto__periodo=PERIODO_FINAL). \
+        exclude(**excluir_cuentas_rubros). \
+        values('codigo__subsubtipogasto__origen_gc__id',
+               'codigo__subsubtipogasto__origen_gc__nombre'). \
+        order_by('codigo__subsubtipogasto__origen_gc__orden'). \
+        annotate(final_asignado=Sum('asignado'),
+                 final_ejecutado=Sum('ejecutado'))
+    rubros_periodo = GastoDetalle.objects. \
+        filter(**filtro_rubros). \
+        filter(gasto__periodo=periodo). \
+        exclude(**excluir_cuentas_rubros). \
+        values('codigo__subsubtipogasto__origen_gc__id',
+               'codigo__subsubtipogasto__origen_gc__nombre'). \
+        order_by('codigo__subsubtipogasto__origen_gc__orden'). \
+        annotate(asignado=Sum('asignado'),
+                ejecutado=Sum('ejecutado'))
+
+    # rubros = glue(rubros_inicial, rubros_final, 'subsubtipogasto__codigo', actualizado=rubros_actualizado)
+    rubros = superglue(data=(rubros_inicial,
+                             rubros_final,
+                             rubros_actualizado,
+                             rubros_periodo),
+                       key='codigo__subsubtipogasto__origen_gc__id')
 
     #
     # chartit!
@@ -846,6 +857,7 @@ def gf_chart(request):
     else:
         charts = (pie, bar)
 
+    porano_table = historial_gastos_corrientes(periodo_list, year, municipio_id)
     # Bubble tree data
     bubble_source = aci_bubbletree_data_gasto(municipio, year, portada)
 
@@ -853,14 +865,20 @@ def gf_chart(request):
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
 
-        data = {'charts': charts, 'municipio': municipio_row,
+        data = {'charts': charts,
+                'municipio': municipio_row,
                 'municipio_list': municipio_list,
                 'year_list': year_list,
-                'otros': otros, 'rubros': rubros,
+                'otros': otros,
+                'rubros': rubros,
                 'anuales': anual2,
-                'ejecutado': ejecutado, 'asignado': asignado,
-                'porclase': porclase, 'porclasep': porclasep,
-                'mi_clase': mi_clase, 'year': year,
+                'ejecutado': ejecutado,
+                'asignado': asignado,
+                'porclase': porclase,
+                'porclasep': porclasep,
+                'mi_clase': mi_clase,
+                'year': year,
+                'porano': porano_table,
                 'asignado_percent': asignado_percent,
                 'ejecutado_percent': ejecutado_percent}
 
@@ -889,6 +907,7 @@ def gf_chart(request):
         'periodo_list': periodo_list,
         'porclasep': porclasep,
         'mi_clase': mi_clase,
+        'porano': porano_table,
         'total_nacional_asignado': total_nacional_asignado,
         'total_nacional_ejecutado': total_nacional_ejecutado,
         'year': year}

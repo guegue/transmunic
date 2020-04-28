@@ -484,7 +484,7 @@
                         {% for row in rubros %}
                             <tr>
                                 {% if indicator == 'gf' %}
-                                    <td>{{ row.subsubtipogasto__nombre }}</td>
+                                    <td>{{ row.codigo__subsubtipogasto__origen_gc__nombre }}</td>
                                 {% else %}
                                     <td>{% if row.tipogasto__nombre %}{{ row.tipogasto__nombre }}{% else %}
                                         {{ row.subtipogasto__nombre }}{% endif %}</td>
