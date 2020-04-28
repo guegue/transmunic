@@ -6,10 +6,13 @@ from django.shortcuts import render
 
 from chartit import Chart, RawDataPool
 
-from core.models import Anio, IngresoDetalle, GastoDetalle, Gasto, Municipio
-from core.models import PERIODO_INICIAL, PERIODO_ACTUALIZADO, PERIODO_FINAL, CLASIFICACION_VERBOSE
+from core.models import (Anio, IngresoDetalle, GastoDetalle,
+                         Gasto, Municipio)
+from core.models import (PERIODO_INICIAL, PERIODO_ACTUALIZADO,
+                         PERIODO_FINAL, CLASIFICACION_VERBOSE)
 from core.tools import (getYears, dictfetchall, glue,
-                        superglue, getPeriods, percentage)
+                        superglue, getPeriods, percentage,
+                        calculate_ep)
 from core.charts.misc import getVar
 from core.charts.bubble_oim import oim_bubble_chart_data
 from core.charts.bubble_ogm import ogm_bubble_chart_data
@@ -52,6 +55,8 @@ def ep_chart(request):
     quesumar = 'asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     datacol = 'inicial_asignado' if periodo == PERIODO_INICIAL else 'ejecutado'
     portada = False
+    municipio_id = None
+    saldo_caja = '39000000'
 
     if municipio:
         municipio_row = Municipio.objects.get(slug=municipio)
@@ -84,20 +89,43 @@ def ep_chart(request):
         otros = glue(ingresos, gastos, 'nombre')
 
         # obtiene datos de gastos en ditintos rubros
-        rubrosg_inicial = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_INICIAL,).\
-            values('subsubtipogasto__clasificacion',).order_by(
-                'subsubtipogasto__clasificacion').annotate(inicial_asignado=Sum('asignado'))
-        rubrosg_actualizado = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_ACTUALIZADO,).\
-            values('subsubtipogasto__clasificacion',).order_by('subsubtipogasto__clasificacion').annotate(
-                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubrosg_final = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=PERIODO_FINAL,).\
-            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
-                final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubrosg_periodo = GastoDetalle.objects.filter(gasto__anio=year, gasto__municipio__slug=municipio, gasto__periodo=periodo,).\
-            values('subsubtipogasto__clasificacion').order_by('subsubtipogasto__clasificacion').annotate(
-                asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
-        rubrosg = superglue(data=(rubrosg_inicial, rubrosg_final,
-                                  rubrosg_actualizado, rubrosg_periodo), key='subsubtipogasto__clasificacion')
+        rubrosg_inicial = GastoDetalle.objects. \
+            filter(gasto__anio=year,
+                   gasto__municipio__id=municipio_id, gasto__periodo=PERIODO_INICIAL,).\
+            values('subsubtipogasto__clasificacion',). \
+            order_by('subsubtipogasto__clasificacion'). \
+            annotate(inicial_asignado=Sum('asignado'))
+        rubrosg_actualizado = GastoDetalle.objects. \
+            filter(gasto__anio=year,
+                   gasto__municipio__id=municipio_id,
+                   gasto__periodo=PERIODO_ACTUALIZADO). \
+            values('subsubtipogasto__clasificacion'). \
+            order_by('subsubtipogasto__clasificacion'). \
+            annotate(actualizado_asignado=Sum('asignado'),
+                     actualizado_ejecutado=Sum('ejecutado'))
+        rubrosg_final = GastoDetalle.objects. \
+            filter(gasto__anio=year,
+                   gasto__municipio__id=municipio_id,
+                   gasto__periodo=PERIODO_FINAL).\
+            values('subsubtipogasto__clasificacion'). \
+            order_by('subsubtipogasto__clasificacion'). \
+            annotate(final_asignado=Sum('asignado'),
+                     final_ejecutado=Sum('ejecutado'))
+        rubrosg_periodo = GastoDetalle.objects. \
+            filter(gasto__anio=year,
+                   gasto__municipio__id=municipio_id,
+                   gasto__periodo=periodo).\
+            values('subsubtipogasto__clasificacion'). \
+            order_by('subsubtipogasto__clasificacion'). \
+            annotate(asignado=Sum('asignado'),
+                     ejecutado=Sum('ejecutado'))
+
+        rubrosg = superglue(data=(rubrosg_inicial,
+                                  rubrosg_final,
+                                  rubrosg_actualizado,
+                                  rubrosg_periodo),
+                            key='subsubtipogasto__clasificacion')
+
         for r in rubrosg:
             r['subsubtipogasto__clasificacion'] = CLASIFICACION_VERBOSE[r['subsubtipogasto__clasificacion']]
 
@@ -110,22 +138,46 @@ def ep_chart(request):
             ep_gastos = 0
 
         # obtiene datos de ingresos en ditintos rubros de corriente (clasificacion 0)
-        rubros_inicial = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_INICIAL,).\
+        rubros_inicial = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__id=municipio_id,
+                   ingreso__periodo=PERIODO_INICIAL). \
+            exclude(tipoingreso_id=saldo_caja). \
+            values('tipoingreso__clasificacion'). \
+            order_by(). \
+            annotate(inicial_asignado=Sum('asignado'))
+        rubros_actualizado = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__id=municipio_id,
+                   ingreso__periodo=PERIODO_ACTUALIZADO). \
+            values('tipoingreso__clasificacion'). \
+            order_by(). \
+            annotate(actualizado_asignado=Sum('asignado'),
+                     actualizado_ejecutado=Sum('ejecutado'))
+        rubros_final = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__id=municipio_id,
+                   ingreso__periodo=PERIODO_FINAL).\
             exclude(tipoingreso_id=saldo_caja).\
-            values('tipoingreso__clasificacion').order_by().annotate(
-            inicial_asignado=Sum('asignado'))
-        rubros_actualizado = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_ACTUALIZADO,).\
-            values('tipoingreso__clasificacion').order_by().annotate(
-                actualizado_asignado=Sum('asignado'), actualizado_ejecutado=Sum('ejecutado'))
-        rubros_final = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=PERIODO_FINAL,).\
-            exclude(tipoingreso_id=saldo_caja).\
-            values('tipoingreso__clasificacion').order_by().annotate(
-            final_asignado=Sum('asignado'), final_ejecutado=Sum('ejecutado'))
-        rubros_periodo = IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo,).\
-            values('tipoingreso__clasificacion').order_by().annotate(
-                asignado=Sum('asignado'), ejecutado=Sum('ejecutado'))
-        rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
-                                 rubros_periodo), key='tipoingreso__clasificacion')
+            values('tipoingreso__clasificacion'). \
+            order_by(). \
+            annotate(final_asignado=Sum('asignado'),
+                     final_ejecutado=Sum('ejecutado'))
+        rubros_periodo = IngresoDetalle.objects. \
+            filter(ingreso__anio=year,
+                   ingreso__municipio__id=municipio_id,
+                   ingreso__periodo=periodo). \
+            values('tipoingreso__clasificacion'). \
+            order_by(). \
+            annotate(asignado=Sum('asignado'),
+                     ejecutado=Sum('ejecutado'))
+
+        rubros = superglue(data=(rubros_inicial,
+                                 rubros_final,
+                                 rubros_actualizado,
+                                 rubros_periodo),
+                           key='tipoingreso__clasificacion')
+
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
@@ -144,24 +196,47 @@ def ep_chart(request):
         else:
             ep_ingresos = 0
 
+        # obtiene datos comparativo de todos los años
+        inicial = list(IngresoDetalle.objects.
+                       filter(ingreso__municipio__id=municipio_id,
+                              ingreso__periodo=PERIODO_INICIAL).
+                       exclude(tipoingreso_id=saldo_caja).
+                       values('ingreso__anio',
+                              'ingreso__periodo').
+                       annotate(asignado=Sum('asignado')).
+                       order_by())
+        final = list(IngresoDetalle.objects.
+                     filter(ingreso__municipio__id=municipio_id,
+                            ingreso__periodo=PERIODO_FINAL).
+                     exclude(tipoingreso_id=saldo_caja).
+                     values('ingreso__anio',
+                            'ingreso__periodo').
+                     annotate(ejecutado=Sum('ejecutado')).
+                     order_by())
+
+        anual2 = glue(inicial=inicial,
+                      final=final,
+                      key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
-        inicial = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio,
-                                                     ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio',
-                                                                                               'ingreso__periodo').annotate(asignado=Sum('asignado')).order_by())
-        final = list(IngresoDetalle.objects.filter(ingreso__municipio__slug=municipio,
-                                                   ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio',
-                                                                                           'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
+        inicialg = list(GastoDetalle.objects.
+                        filter(gasto__municipio__id=municipio_id,
+                               gasto__periodo=PERIODO_INICIAL).
+                        values('gasto__anio',
+                               'gasto__periodo').
+                        annotate(asignado=Sum('asignado')).
+                        order_by())
+        finalg = list(GastoDetalle.objects.
+                      filter(gasto__municipio__id=municipio_id,
+                             gasto__periodo=PERIODO_FINAL).
+                      values('gasto__anio',
+                             'gasto__periodo').
+                      annotate(ejecutado=Sum('ejecutado')).
+                      order_by())
 
-        # obtiene datos comparativo de todos los años
-        inicialg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
-                                                    gasto__periodo=PERIODO_INICIAL,).values('gasto__anio',
-                                                                                            'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
-        finalg = list(GastoDetalle.objects.filter(gasto__municipio__slug=municipio,
-                                                  gasto__periodo=PERIODO_FINAL,).values('gasto__anio',
-                                                                                        'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
+        anual2g = glue(inicial=inicialg,
+                       final=finalg,
+                       key='gasto__anio')
 
         with open("core/charts/ep_municipio.sql", "r") as query_file:
             sql = query_file.read()
@@ -233,7 +308,6 @@ def ep_chart(request):
         else:
             ep_ingresos = 0
 
-
         with open("core/charts/ep_porclasep.sql", "r") as query_file:
             sql_tpl = query_file.read()
 
@@ -251,22 +325,42 @@ def ep_chart(request):
         porclasep = glue(ingresos, gastos, 'clasificacion')
 
         # obtiene datos comparativo de todos los años
-        inicial = list(IngresoDetalle.objects.filter(
-            ingreso__periodo=PERIODO_INICIAL,).values('ingreso__anio',
-                                                      'ingreso__periodo').annotate(asignado=Sum('asignado')).order_by())
-        final = list(IngresoDetalle.objects.filter(
-            ingreso__periodo=PERIODO_FINAL,).values('ingreso__anio',
-                                                    'ingreso__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2 = glue(inicial=inicial, final=final, key='ingreso__anio')
+        inicial = list(IngresoDetalle.objects.
+                       filter(ingreso__periodo=PERIODO_INICIAL).
+                       exclude(tipoingreso_id=saldo_caja).
+                       values('ingreso__anio',
+                              'ingreso__periodo').
+                       annotate(asignado=Sum('asignado')).
+                       order_by())
+        final = list(IngresoDetalle.objects.
+                     filter(ingreso__periodo=PERIODO_FINAL).
+                     exclude(tipoingreso_id=saldo_caja).
+                     values('ingreso__anio',
+                            'ingreso__periodo').
+                     annotate(ejecutado=Sum('ejecutado')).
+                     order_by())
+
+        anual2 = glue(inicial=inicial,
+                      final=final,
+                      key='ingreso__anio')
 
         # obtiene datos comparativo de todos los años
-        inicialg = list(GastoDetalle.objects.filter(
-            gasto__periodo=PERIODO_INICIAL,).values('gasto__anio',
-                                                    'gasto__periodo').annotate(asignado=Sum('asignado')).order_by())
-        finalg = list(GastoDetalle.objects.filter(
-            gasto__periodo=PERIODO_FINAL,).values('gasto__anio',
-                                                  'gasto__periodo').annotate(ejecutado=Sum('ejecutado')).order_by())
-        anual2g = glue(inicial=inicialg, final=finalg, key='gasto__anio')
+        inicialg = list(GastoDetalle.objects.
+                        filter(gasto__periodo=PERIODO_INICIAL).
+                        values('gasto__anio',
+                               'gasto__periodo').
+                        annotate(asignado=Sum('asignado')).
+                        order_by())
+        finalg = list(GastoDetalle.objects.
+                      filter(gasto__periodo=PERIODO_FINAL).
+                      values('gasto__anio',
+                             'gasto__periodo').
+                      annotate(ejecutado=Sum('ejecutado')).
+                      order_by())
+
+        anual2g = glue(inicial=inicialg,
+                       final=finalg,
+                       key='gasto__anio')
 
         with open("core/charts/ep.sql", "r") as query_file:
             sql = query_file.read()
@@ -361,6 +455,22 @@ def ep_chart(request):
     gastos_ejecutados = gastos_ejecutados
     porclase = None
 
+    index = 0
+    ep_anual = []
+    for row in anual2:
+        ep_anual.append({
+            'anio': row['ingreso__anio'],
+            'ic_asignado': row['asignado'],
+            'ic_ejecutado': row['ejecutado'],
+            'epi': calculate_ep(row['ejecutado'],
+                                row['asignado']),
+            'gc_asignado': anual2g[index]['asignado'],
+            'gc_ejecutado': anual2g[index]['ejecutado'],
+            'ep': calculate_ep(anual2g[index]['ejecutado'],
+                               anual2g[index]['asignado'])
+        })
+        index += 1
+
     bubble_data_ingreso = oim_bubble_chart_data(municipio=municipio, year=year)
     bubble_data_gasto = ogm_bubble_chart_data(municipio=municipio, year=year)
 
@@ -378,12 +488,9 @@ def ep_chart(request):
             'mi_clase': mi_clase,
             'municipio': municipio_row,
             'year': year,
-            'ejecutado': ejecutado,
-            'asignado': asignado,
             'year_list': year_list,
             'municipio_list': municipio_list,
-            'anuales': anual2,
-            'anualesg': anual2g,
+            'anual_ep': ep_anual,
             'porclase': porclase,
             'periodo_list': periodo_list,
             'porclasep': porclasep,
@@ -416,14 +523,13 @@ def ep_chart(request):
         'gejecutado': gastos_ejecutados,
         'gasignado': gastos_asignados,
         'year_list': year_list,
-            'municipio_list': municipio_list,
-            'anuales': anual2,
-            'anualesg': anual2g,
-            'history': zip(anual2, anual2g),
-            'porclase': porclase,
-            'porclasep': porclasep,
-            'rubros': rubros,
-            'rubrosg': rubrosg,
-            'periodo_list': periodo_list,
-            'otros': otros}
+        'municipio_list': municipio_list,
+        'anual_ep': ep_anual,
+        'history': zip(anual2, anual2g),
+        'porclase': porclase,
+        'porclasep': porclasep,
+        'rubros': rubros,
+        'rubrosg': rubrosg,
+        'periodo_list': periodo_list,
+        'otros': otros}
     return render(request, template_name, context)

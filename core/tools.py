@@ -109,6 +109,17 @@ def growthRate(current_year, previus_year, years):
                 decimal.Decimal(1.0 / years)) - 1) * 100
 
 
+def calculate_ep(total_ejecutado, total_presupuestado):
+    if not total_ejecutado:
+        return 0
+    if not total_presupuestado:
+        return 0
+    if total_ejecutado == 0:
+        return 0
+
+    return ((total_ejecutado / total_presupuestado) - 1) * 100
+
+
 def superglue(data=(), key='id', default=0):
     "Glues together different lists of dictionaries using a common key"
 
