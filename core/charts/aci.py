@@ -544,6 +544,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
     reporte = request.POST.get("reporte", "")
     if "excel" in request.POST.keys() and reporte:
         from core.utils import obtener_excel_response
+        porano = historico_gasto if 'gasto' in reporte else historico_ingreso
         data = {
             'charts': (bar, ),
             'mi_clase': mi_clase,
@@ -560,8 +561,7 @@ def aci_chart(request, municipio=None, year=None, portada=False):
             'rubros': rubros,
             'rubrosg': rubrosg,
             'periodo_list': periodo_list,
-            'historico_ingreso': historico_ingreso,
-            'historico_gasto': historico_gasto,
+            'porano': porano,
             'indicator_name': 'Ahorro Corriente',
             'otros': otros}
         return obtener_excel_response(reporte=reporte, data=data)
