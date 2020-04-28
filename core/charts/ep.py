@@ -132,7 +132,7 @@ def ep_chart(request):
         rubros = superglue(data=(rubros_inicial, rubros_final, rubros_actualizado,
                                  rubros_periodo), key='tipoingreso__clasificacion')
         print(IngresoDetalle.objects.filter(ingreso__anio=year, ingreso__municipio__slug=municipio, ingreso__periodo=periodo).
-            values('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado')).order_by().query)
+              values('tipoingreso__clasificacion').annotate(asignado=Sum('asignado'), ejecutado=Sum('ejecutado')).order_by().query)
         for r in rubros:
             r['tipoingreso__clasificacion'] = CLASIFICACION_VERBOSE[r['tipoingreso__clasificacion']]
 
