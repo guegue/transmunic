@@ -585,10 +585,10 @@ def gf_chart(request):
         filter(**filtro_rubros). \
         filter(gasto__periodo=PERIODO_INICIAL). \
         exclude(**excluir_cuentas_rubros). \
-            values('codigo__subsubtipogasto__origen_gc__id',
-                   'codigo__subsubtipogasto__origen_gc__nombre'). \
-            order_by('codigo__subsubtipogasto__origen_gc__orden'). \
-            annotate(inicial_asignado=Sum('asignado'))
+        values('codigo__subsubtipogasto__origen_gc__id',
+               'codigo__subsubtipogasto__origen_gc__nombre'). \
+        order_by('codigo__subsubtipogasto__origen_gc__orden'). \
+        annotate(inicial_asignado=Sum('asignado'))
     rubros_actualizado = GastoDetalle.objects. \
         filter(**filtro_rubros). \
         filter(gasto__periodo=PERIODO_ACTUALIZADO). \
@@ -615,7 +615,7 @@ def gf_chart(request):
                'codigo__subsubtipogasto__origen_gc__nombre'). \
         order_by('codigo__subsubtipogasto__origen_gc__orden'). \
         annotate(asignado=Sum('asignado'),
-                ejecutado=Sum('ejecutado'))
+                 ejecutado=Sum('ejecutado'))
 
     # rubros = glue(rubros_inicial, rubros_final, 'subsubtipogasto__codigo', actualizado=rubros_actualizado)
     rubros = superglue(data=(rubros_inicial,
