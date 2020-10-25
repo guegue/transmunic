@@ -19,7 +19,6 @@ from django.urls.static import static
 from django.conf import settings
 
 from django.contrib import admin
-from django.urls import path
 
 from website.views import DocumentoTipoListView
 from core.views import home, municipio
