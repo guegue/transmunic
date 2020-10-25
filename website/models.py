@@ -33,7 +33,7 @@ class TipoDoc(models.Model):
 
 class Documento(models.Model):
     titulo = models.CharField(max_length=220)
-    tipo = models.ForeignKey(TipoDoc,related_name="Tipo", on_delete=models.SET_NULL)
+    tipo = models.ForeignKey(TipoDoc, related_name="Tipo", on_delete=models.SET_NULL)
     fecha = models.DateField('fecha',blank=True,null=True)
     descripcion = models.TextField(),
     archivo =  models.FileField(upload_to='documentos', blank=True, null=True)

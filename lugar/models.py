@@ -1,9 +1,9 @@
 from django.db import models
 from autoslug import AutoSlugField
-#from pixelfields_smart_selects.db_fields import ChainedForeignKey
+# from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 # Create your models here
-#la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
+# la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
 class ClasificacionMunic(models.Model):
     #clasificacion = models.CharField()
     clasificacion = models.CharField(max_length=120) # FIXME 120???
