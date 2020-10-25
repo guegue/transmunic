@@ -10,7 +10,7 @@ from django.db.models import Sum, Max, Min
 
 from autoslug import AutoSlugField
 from sorl.thumbnail import ImageField
-#from pixelfields_smart_selects.db_fields import models.ForeignKey
+# from pixelfields_smart_selects.db_fields import models.ForeignKey
 
 from lugar.models import Municipio, Departamento
 
@@ -236,11 +236,13 @@ class SubSubTipoGasto(models.Model):
     )
     TRANSFERENCIAS_CAPITAL = '6000000'
     codigo = models.CharField(max_length=25, primary_key=True)
-    subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo', on_delete=models.SET_NULL)
+    subtipogasto = models.ForeignKey(
+        SubTipoGasto, related_name='subtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True, on_delete=models.SET_NULL)
+    origen = models.ForeignKey(OrigenGasto, related_name='origen',
+                               null=True, on_delete=models.SET_NULL)
     clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES,
                                         default=0, null=True)
     origen_gc = models.ForeignKey(OrigenGastosCorrientes, null=True,
@@ -339,11 +341,13 @@ class SubTipoIngreso(models.Model):
 
 class SubSubTipoIngreso(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    subtipoingreso = models.ForeignKey(SubTipoIngreso, related_name='subtipo', on_delete=models.SET_NULL)
+    subtipoingreso = models.ForeignKey(
+        SubTipoIngreso, related_name='subtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True, on_delete=models.SET_NULL)
+    origen = models.ForeignKey(OrigenRecurso, related_name='origen',
+                               null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'Sub-subtipos de ingreso'
@@ -356,11 +360,13 @@ class SubSubTipoIngreso(models.Model):
 
 class Sub3TipoIngreso(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, related_name='subsubtipo', on_delete=models.SET_NULL)
+    subsubtipoingreso = models.ForeignKey(
+        SubSubTipoIngreso, related_name='subsubtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenRecurso, related_name='origen_recurso', null=True, on_delete=models.SET_NULL)
+    origen = models.ForeignKey(OrigenRecurso, related_name='origen_recurso',
+                               null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'Sub3 Tipo de ingreso'
@@ -375,8 +381,10 @@ class Sub3TipoIngreso(models.Model):
 class IngresoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
-    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    subsubtipoingreso = models.ForeignKey(
+        SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    sub3tipoingreso = models.ForeignKey(
+        Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = u'Renglón Ingreso'
@@ -427,9 +435,12 @@ class IngresoDetalle(models.Model):
     ingreso = models.ForeignKey(Ingreso, on_delete=models.SET_NULL)
     codigo = models.ForeignKey(IngresoRenglon, on_delete=models.SET_NULL)
     tipoingreso = models.ForeignKey(TipoIngreso, on_delete=models.SET_NULL)
-    subtipoingreso = models.ForeignKey(SubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
-    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    subtipoingreso = models.ForeignKey(SubTipoIngreso, null=True,
+                                       blank=True, on_delete=models.SET_NULL)
+    subsubtipoingreso = models.ForeignKey(
+        SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    sub3tipoingreso = models.ForeignKey(
+        Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)
@@ -504,7 +515,8 @@ class GastoDetalle(models.Model):
     codigo = models.ForeignKey(GastoRenglon, on_delete=models.SET_NULL)
     tipogasto = models.ForeignKey(TipoGasto, on_delete=models.SET_NULL)
     subtipogasto = models.ForeignKey(SubTipoGasto, null=True, blank=True, on_delete=models.SET_NULL)
-    subsubtipogasto = models.ForeignKey(SubSubTipoGasto, null=True, blank=True, on_delete=models.SET_NULL)
+    subsubtipogasto = models.ForeignKey(
+        SubSubTipoGasto, null=True, blank=True, on_delete=models.SET_NULL)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)

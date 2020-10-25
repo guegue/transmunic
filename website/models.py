@@ -4,6 +4,8 @@ from sorl.thumbnail import ImageField
 from autoslug import AutoSlugField
 
 # Create your models here.
+
+
 class Banner(models.Model):
     municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
     titulo = models.CharField(max_length=200)

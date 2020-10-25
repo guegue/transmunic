@@ -60,6 +60,7 @@ class Municipio(models.Model):
     def __unicode__(self):
         return self.nombre
 
+
 class ClasificacionMunicAno(models.Model):
     municipio = models.ForeignKey(Municipio, related_name="clase", on_delete=models.SET_NULL)
     clasificacion = models.ForeignKey(ClasificacionMunic, related_name="clase",
@@ -76,7 +77,7 @@ class Comarca(models.Model):
     slug = AutoSlugField(populate_from='nombre')
     departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL)
     municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
-    #municipio = ChainedForeignKey(Municipio, chained_field='departamento',
+    # municipio = ChainedForeignKey(Municipio, chained_field='departamento',
     #                              chained_model_field='depto', null=True, blank=True)
     poblacion = models.IntegerField()
     latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
