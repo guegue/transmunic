@@ -31,13 +31,14 @@ class TipoDoc(models.Model):
     class Meta:
         verbose_name = 'Tipo'
 
+
 class Documento(models.Model):
     titulo = models.CharField(max_length=220)
     tipo = models.ForeignKey(TipoDoc, related_name="Tipo", on_delete=models.SET_NULL)
-    fecha = models.DateField('fecha',blank=True,null=True)
+    fecha = models.DateField('fecha', blank=True, null=True)
     descripcion = models.TextField(),
-    archivo =  models.FileField(upload_to='documentos', blank=True, null=True)
-    imagen = ImageField(upload_to='documento',null=True,blank=True)
+    archivo = models.FileField(upload_to='documentos', blank=True, null=True)
+    imagen = ImageField(upload_to='documento', null=True, blank=True)
 
     def __unicode__(self):
         return self.titulo
