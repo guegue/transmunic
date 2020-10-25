@@ -1,6 +1,6 @@
 from django.db import models
 from autoslug import AutoSlugField
-from pixelfields_smart_selects.db_fields import ChainedForeignKey
+#from pixelfields_smart_selects.db_fields import ChainedForeignKey
 
 # Create your models here
 #la clasificacion de un municipio(A,B,C) se determina en base a un promedio en los ingresos
@@ -45,7 +45,7 @@ class MunicipioQuerySet(models.QuerySet):
 
 class Municipio(models.Model):
     nombre = models.CharField(max_length=120, unique=True)
-    depto = models.ForeignKey(Departamento, related_name='departamento')
+    depto = models.ForeignKey(Departamento, related_name='departamento', on_delete=models.SET_NULL)
     slug = AutoSlugField(populate_from='nombre', verbose_name="municipio", unique=True)
     latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10,
@@ -61,8 +61,9 @@ class Municipio(models.Model):
         return self.nombre
 
 class ClasificacionMunicAno(models.Model):
-    municipio = models.ForeignKey(Municipio, related_name="clase")
-    clasificacion = models.ForeignKey(ClasificacionMunic, related_name="clase")
+    municipio = models.ForeignKey(Municipio, related_name="clase", on_delete=models.SET_NULL)
+    clasificacion = models.ForeignKey(ClasificacionMunic, related_name="clase",
+                                      on_delete=models.SET_NULL)
     anio = models.IntegerField()
 
     class Meta:
@@ -73,9 +74,10 @@ class Comarca(models.Model):
     nombre = models.CharField(max_length=120)
     #municipio = models.ForeignKey(Municipio)
     slug = AutoSlugField(populate_from='nombre')
-    departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(Municipio, chained_field='departamento',
-                                  chained_model_field='depto', null=True, blank=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
+    #municipio = ChainedForeignKey(Municipio, chained_field='departamento',
+    #                              chained_model_field='depto', null=True, blank=True)
     poblacion = models.IntegerField()
     latitud = models.DecimalField('Latitud', max_digits=10, decimal_places=6, blank=True, null=True)
     longitud = models.DecimalField('Longitud', max_digits=10,
@@ -89,7 +91,7 @@ class Comarca(models.Model):
 
 
 class Poblacion(models.Model):
-    municipio = models.ForeignKey(Municipio)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
     anio = models.IntegerField()
     poblacion = models.IntegerField()
 
@@ -109,8 +111,8 @@ class Periodo(models.Model):
 
 
 class PeriodoMunic(models.Model):
-    municipio = models.ForeignKey(Municipio)
-    periodo = models.ForeignKey(Periodo)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
+    periodo = models.ForeignKey(Periodo, on_delete=models.SET_NULL)
     partido = models.CharField(max_length=30, null=True)
 
     class Meta:

@@ -5,7 +5,7 @@ from autoslug import AutoSlugField
 
 # Create your models here.
 class Banner(models.Model):
-    municipio = models.ForeignKey(Municipio)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
     titulo = models.CharField(max_length=200)
     vertical = models.BooleanField(default=False)
     descripcion = models.CharField(max_length=500, null=True, blank=True)
@@ -31,7 +31,7 @@ class TipoDoc(models.Model):
 
 class Documento(models.Model):
     titulo = models.CharField(max_length=220)
-    tipo = models.ForeignKey(TipoDoc,related_name="Tipo")
+    tipo = models.ForeignKey(TipoDoc,related_name="Tipo", on_delete=models.SET_NULL)
     fecha = models.DateField('fecha',blank=True,null=True)
     descripcion = models.TextField(),
     archivo =  models.FileField(upload_to='documentos', blank=True, null=True)

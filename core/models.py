@@ -10,8 +10,7 @@ from django.db.models import Sum, Max, Min
 
 from autoslug import AutoSlugField
 from sorl.thumbnail import ImageField
-from pixelfields_smart_selects.db_fields import ChainedForeignKey
-from django.utils.encoding import python_2_unicode_compatible
+#from pixelfields_smart_selects.db_fields import models.ForeignKey
 
 from lugar.models import Municipio, Departamento
 
@@ -38,7 +37,7 @@ CLASIFICACION_VERBOSE = {0: 'Corriente', 1: 'Capital', None: 'None',
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = u'Perfil'
@@ -194,12 +193,12 @@ class TipoGasto(models.Model):
 
 class SubTipoGasto(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    tipogasto = models.ForeignKey(TipoGasto, related_name='tipo')
+    tipogasto = models.ForeignKey(TipoGasto, related_name='tipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
     origen_gp = models.ForeignKey(OrigenGastoPersonal,
-                                  related_name='origen_gp',
+                                  related_name='origen_gp', on_delete=models.SET_NULL,
                                   null=True, blank=True)
 
     class Meta:
@@ -237,11 +236,11 @@ class SubSubTipoGasto(models.Model):
     )
     TRANSFERENCIAS_CAPITAL = '6000000'
     codigo = models.CharField(max_length=25, primary_key=True)
-    subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo')
+    subtipogasto = models.ForeignKey(SubTipoGasto, related_name='subtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True)
+    origen = models.ForeignKey(OrigenGasto, related_name='origen', null=True, on_delete=models.SET_NULL)
     clasificacion = models.IntegerField(choices=CLASIFICACION_CHOICES,
                                         default=0, null=True)
     origen_gc = models.ForeignKey(OrigenGastosCorrientes, null=True,
@@ -320,7 +319,7 @@ class TipoIngreso(models.Model):
 
 class SubTipoIngreso(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    tipoingreso = models.ForeignKey(TipoIngreso, related_name='tipo')
+    tipoingreso = models.ForeignKey(TipoIngreso, related_name='tipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
@@ -340,11 +339,11 @@ class SubTipoIngreso(models.Model):
 
 class SubSubTipoIngreso(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    subtipoingreso = models.ForeignKey(SubTipoIngreso, related_name='subtipo')
+    subtipoingreso = models.ForeignKey(SubTipoIngreso, related_name='subtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True)
+    origen = models.ForeignKey(OrigenRecurso, related_name='origen', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'Sub-subtipos de ingreso'
@@ -357,11 +356,11 @@ class SubSubTipoIngreso(models.Model):
 
 class Sub3TipoIngreso(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, related_name='subsubtipo')
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, related_name='subsubtipo', on_delete=models.SET_NULL)
     nombre = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from='nombre')
     shortname = models.CharField(max_length=25, blank=True, null=True)
-    origen = models.ForeignKey(OrigenRecurso, related_name='origen_recurso', null=True)
+    origen = models.ForeignKey(OrigenRecurso, related_name='origen_recurso', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'Sub3 Tipo de ingreso'
@@ -376,8 +375,8 @@ class Sub3TipoIngreso(models.Model):
 class IngresoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True)
-    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = u'Renglón Ingreso'
@@ -399,10 +398,8 @@ class Ingreso(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
-    departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(
-        Municipio, chained_field='departamento',
-        chained_model_field='depto')
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
     descripcion = models.TextField(blank=True, null=True)
     aprobado = models.BooleanField(default=False)
 
@@ -427,12 +424,12 @@ class IngresoDetalleManager(models.Manager):
 
 
 class IngresoDetalle(models.Model):
-    ingreso = models.ForeignKey(Ingreso)
-    codigo = models.ForeignKey(IngresoRenglon)
-    tipoingreso = models.ForeignKey(TipoIngreso)
-    subtipoingreso = models.ForeignKey(SubTipoIngreso, null=True, blank=True)
-    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True)
-    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True)
+    ingreso = models.ForeignKey(Ingreso, on_delete=models.SET_NULL)
+    codigo = models.ForeignKey(IngresoRenglon, on_delete=models.SET_NULL)
+    tipoingreso = models.ForeignKey(TipoIngreso, on_delete=models.SET_NULL)
+    subtipoingreso = models.ForeignKey(SubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    subsubtipoingreso = models.ForeignKey(SubSubTipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
+    sub3tipoingreso = models.ForeignKey(Sub3TipoIngreso, null=True, blank=True, on_delete=models.SET_NULL)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)
@@ -464,10 +461,8 @@ class Gasto(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
-    departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(
-        Municipio, chained_field='departamento',
-        chained_model_field='depto')
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, on_delete=models.SET_NULL)
     descripcion = models.TextField(blank=True, null=True)
     aprobado = models.BooleanField(default=False)
 
@@ -489,7 +484,7 @@ class Gasto(models.Model):
 class GastoRenglon(models.Model):
     codigo = models.CharField(max_length=25, primary_key=True)
     nombre = models.CharField(max_length=200)
-    subsubtipogasto = models.ForeignKey(SubSubTipoGasto)
+    subsubtipogasto = models.ForeignKey(SubSubTipoGasto, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = u'Renglón Gasto'
@@ -505,15 +500,11 @@ class GastoDetalleManager(models.Manager):
 
 
 class GastoDetalle(models.Model):
-    gasto = models.ForeignKey(Gasto)
-    codigo = models.ForeignKey(GastoRenglon)
-    tipogasto = models.ForeignKey(TipoGasto)
-    subtipogasto = ChainedForeignKey(
-        SubTipoGasto, chained_field='tipogasto',
-        chained_model_field='tipogasto', null=True, blank=True)
-    subsubtipogasto = ChainedForeignKey(
-        SubSubTipoGasto, chained_field='subtipogasto',
-        chained_model_field='subtipogasto', null=True, blank=True)
+    gasto = models.ForeignKey(Gasto, on_delete=models.SET_NULL)
+    codigo = models.ForeignKey(GastoRenglon, on_delete=models.SET_NULL)
+    tipogasto = models.ForeignKey(TipoGasto, on_delete=models.SET_NULL)
+    subtipogasto = models.ForeignKey(SubTipoGasto, null=True, blank=True, on_delete=models.SET_NULL)
+    subsubtipogasto = models.ForeignKey(SubSubTipoGasto, null=True, blank=True, on_delete=models.SET_NULL)
     cuenta = models.CharField(max_length=400, null=False)
     asignado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)
@@ -557,8 +548,8 @@ class InversionQuerySet(models.QuerySet):
 
 
 class Inversion(models.Model):
-    departamento = models.ForeignKey(Departamento, null=True)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    departamento = models.ForeignKey(Departamento, null=True, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.SET_NULL)
     nombremunic = models.CharField(max_length=250, null=True, blank=True)
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
@@ -592,14 +583,14 @@ class Proyecto(models.Model):
         (OTROS, 'Otros'),
     )
     inversion = models.ForeignKey(
-        Inversion, related_name='inversion', null=False)
+        Inversion, related_name='inversion', null=False, on_delete=models.SET_NULL)
     codigo = models.CharField(max_length=20, null=True)
     nombre = models.CharField(max_length=500)
     tipoproyecto = models.ForeignKey(
-        TipoProyecto, related_name='tipo_proyecto', null=True, blank=True)
+        TipoProyecto, related_name='tipo_proyecto', null=True, blank=True, on_delete=models.SET_NULL)
     catinversion = models.ForeignKey(
         CatInversion, related_name='categoria_inversion',
-        null=True, blank=True, verbose_name=u"Categoría de Inversión")
+        null=True, blank=True, verbose_name=u"Categoría de Inversión", on_delete=models.SET_NULL)
     areageografica = models.CharField(
         choices=AREA_CHOICES, max_length=1, null=True, blank=True)
     asignado = models.DecimalField(
@@ -647,7 +638,7 @@ class TipoFuenteFmto(models.Model):
 class FuenteFmto(models.Model):
     nombre = models.CharField(max_length=250, unique=True)
     slug = AutoSlugField(populate_from='nombre')
-    tipofuente = models.ForeignKey(TipoFuenteFmto)
+    tipofuente = models.ForeignKey(TipoFuenteFmto, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Fuente de financiamiento'
@@ -663,11 +654,8 @@ class InversionFuente(models.Model):
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)
-    departamento = models.ForeignKey(Departamento)
-    municipio = ChainedForeignKey(
-        Municipio, chained_field='departamento',
-        chained_model_field='depto',
-        null=True, blank=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = u'Inversión de fuentes de financiamiento'
@@ -676,11 +664,9 @@ class InversionFuente(models.Model):
 
 
 class InversionFuenteDetalle(models.Model):
-    inversionfuente = models.ForeignKey(InversionFuente)
-    tipofuente = models.ForeignKey(TipoFuenteFmto)
-    fuente = ChainedForeignKey(
-        FuenteFmto, chained_field='tipofuente',
-        chained_model_field='tipofuente', null=True, blank=True)
+    inversionfuente = models.ForeignKey(InversionFuente, on_delete=models.SET_NULL)
+    tipofuente = models.ForeignKey(TipoFuenteFmto, on_delete=models.SET_NULL)
+    fuente = models.ForeignKey(FuenteFmto, null=True, blank=True, on_delete=models.SET_NULL)
     asignado = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)
     ejecutado = models.DecimalField(
@@ -693,8 +679,8 @@ class InversionFuenteDetalle(models.Model):
 
 
 class Transferencia(models.Model):
-    departamento = models.ForeignKey(Departamento, null=True, blank=True)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    departamento = models.ForeignKey(Departamento, null=True, blank=True, on_delete=models.SET_NULL)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.SET_NULL)
     fecha = models.DateField(null=False, verbose_name='Fecha de entrada')
     anio = models.IntegerField(null=False, verbose_name=u'Año')
     periodo = models.CharField(max_length=1, null=False)

@@ -67,10 +67,10 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.postgres',
 
-    'model_report',
+    #'model_report',
     'sorl.thumbnail',
-    'pixelfields_smart_selects',
-    'chartit',
+    #'pixelfields_smart_selects',
+    #'chartit',
     'mathfilters',
     'explorer',
 
